@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xn.hk.account.dao.AccountDao">
+	<!--使用redis作为mybatis的二级缓存,针对具体某条语句禁用缓存,useCache="false",这里的RedisCache是个别名 -->
+	<cache eviction="LRU" type="RedisCache" />
+	<!-- 账务映射 -->
+	<resultMap type="Account" id="accountMap">
+		<id property="accountId" column="account_id" />
+		<id property="accountTitle" column="account_title" />
+		<id property="userId" column="user_id" />
+		<result property="accountFee" column="account_fee" />
+		<result property="accountType" column="account_type" />
+		<result property="isOk" column="is_ok" />
+		<result property="curmonth" column="curmonth" />
+		<result property="curday" column="curday" />
+		<result property="createTime" column="create_time" />
+		<result property="updateTime" column="update_time" />
+		<result property="remark" column="remark" />
+		<result property="userName" column="user_name" />
+
+		<association property="type" javaType="AccountType">
+			<id property="typeId" column="type_id" />
+			<result property="typeName" column="type_name" />
+			<result property="parentType" column="parent_type" />
+			<result property="isOk" column="is_ok" />
+			<result property="createTime" column="create_time" />
+			<result property="updateTime" column="update_time" />
+			<result property="remark" column="remark" />
+		</association>
+	</resultMap>
+	<!-- 定义数据库基本列,只适用代替单表的* -->
+	<sql id="Base_Column_List">account_id,account_title,user_id,type_id,account_fee,account_type,is_ok,curmonth,curday,create_time,update_time,remark
+	</sql>
+	<!-- 个人账务分页显示列表 -->
+	<select id="pagePersonalList" parameterType="BasePage"
+		resultMap="accountMap">
+		SELECT a.*,u.user_name,t.type_name,t.parent_type FROM
+		tb_xn_account_account a INNER JOIN tb_xn_account_type t ON a.type_id =
+		t.type_id INNER JOIN tb_xn_sys_user u ON a.user_id=u.user_id WHERE
+		a.user_id=#{bean.userId} AND a.is_ok=0
+		<if test="bean != null">
+			<if test="bean.type.parentType != null and bean.type.parentType != ''">
+				and t.parent_type = #{bean.type.parentType}
+			</if>
+			<if test="bean.type.typeId != null and bean.type.typeId != ''">
+				and t.type_id = #{bean.type.typeId}
+			</if>
+			<if test="bean.accountType != null and bean.accountType != ''">
+				and a.account_type like CONCAT(CONCAT('%',
+				#{bean.accountType}),'%')
+			</if>
+			<if test="bean.accountTitle != null and bean.accountTitle != ''">
+				and a.account_title like CONCAT(CONCAT('%',
+				#{bean.accountTitle}),'%')
+			</if>
+			<if test="bean.curmonth != null and bean.curmonth != ''">
+				and a.curmonth = #{bean.curmonth}
+			</if>
+			<if test="bean.curday != null and bean.curday != ''">
+				and a.curday = #{bean.curday}
+			</if>
+		</if>
+		ORDER BY a.create_time DESC
+		LIMIT #{start},#{size}
+	</select>
+	<!-- 个人账务分页总记录数 -->
+	<select id="pagePersonalCount" parameterType="BasePage"
+		resultType="int">
+		SELECT COUNT(1) FROM tb_xn_account_account a INNER JOIN
+		tb_xn_account_type t ON a.type_id = t.type_id INNER JOIN
+		tb_xn_sys_user u ON a.user_id=u.user_id WHERE a.user_id=#{bean.userId}
+		AND
+		a.is_ok=0
+		<if test="bean.type.parentType != null and bean.type.parentType != ''">
+			and t.parent_type = #{bean.type.parentType}
+		</if>
+		<if test="bean.type.typeId != null and bean.type.typeId != ''">
+			and t.type_id = #{bean.type.typeId}
+		</if>
+		<if test="bean.accountType != null and bean.accountType != ''">
+			and a.account_type like CONCAT(CONCAT('%',
+			#{bean.accountType}),'%')
+		</if>
+		<if test="bean.accountTitle != null and bean.accountTitle != ''">
+			and a.account_title like CONCAT(CONCAT('%',
+			#{bean.accountTitle}),'%')
+		</if>
+		<if test="bean.curmonth != null and bean.curmonth != ''">
+			and a.curmonth = #{bean.curmonth}
+		</if>
+		<if test="bean.curday != null and bean.curday != ''">
+			and a.curday = #{bean.curday}
+		</if>
+	</select>
+	<!-- 总账务分页显示列表 -->
+	<select id="pageList" parameterType="BasePage" resultMap="accountMap">
+		SELECT a.*,u.user_name,t.type_name,t.parent_type FROM
+		tb_xn_account_account a INNER JOIN tb_xn_account_type t ON a.type_id =
+		t.type_id INNER JOIN tb_xn_sys_user u ON a.user_id=u.user_id WHERE
+		a.is_ok=0
+		<if test="bean != null">
+			<if test="bean.type.parentType != null and bean.type.parentType != ''">
+				and t.parent_type = #{bean.type.parentType}
+			</if>
+			<if test="bean.userId != null">
+				and a.user_id = #{bean.userId}
+			</if>
+			<if test="bean.accountType != null and bean.accountType != ''">
+				and a.account_type like CONCAT(CONCAT('%',
+				#{bean.accountType}),'%')
+			</if>
+			<if test="bean.accountTitle != null and bean.accountTitle != ''">
+				and a.account_title like CONCAT(CONCAT('%',
+				#{bean.accountTitle}),'%')
+			</if>
+			<if test="bean.curmonth != null and bean.curmonth != ''">
+				and a.curmonth like CONCAT(CONCAT('%',
+				#{bean.curmonth}),'%')
+			</if>
+			<if test="bean.curday != null and bean.curday != ''">
+				and a.curday like CONCAT(CONCAT('%',
+				#{bean.curday}),'%')
+			</if>
+		</if>
+		ORDER BY a.create_time DESC
+		LIMIT #{start},#{size}
+	</select>
+	<!-- 总账务分页总记录数 -->
+	<select id="pageCount" parameterType="BasePage" resultType="int">
+		SELECT COUNT(1) FROM tb_xn_account_account a INNER JOIN
+		tb_xn_account_type t ON a.type_id = t.type_id INNER JOIN
+		tb_xn_sys_user u ON a.user_id=u.user_id WHERE a.is_ok=0
+		<if test="bean.type.parentType != null and bean.type.parentType != ''">
+			and t.parent_type = #{bean.type.parentType}
+		</if>
+		<if test="bean.userId != null">
+			and a.user_id = #{bean.userId}
+		</if>
+		<if test="bean.accountType != null and bean.accountType != ''">
+			and a.account_type like CONCAT(CONCAT('%',
+			#{bean.accountType}),'%')
+		</if>
+		<if test="bean.accountTitle != null and bean.accountTitle != ''">
+			and a.account_title like CONCAT(CONCAT('%',
+			#{bean.accountTitle}),'%')
+		</if>
+		<if test="bean.curmonth != null and bean.curmonth != ''">
+			and a.curmonth like CONCAT(CONCAT('%',
+			#{bean.curmonth}),'%')
+		</if>
+		<if test="bean.curday != null and bean.curday != ''">
+			and a.curday like CONCAT(CONCAT('%',
+			#{bean.curday}),'%')
+		</if>
+	</select>
+	<!-- 添加个人账务 -->
+	<insert id="add" keyProperty="accountId" useGeneratedKeys="true"
+		parameterType="Account">
+		INSERT INTO
+		tb_xn_account_account(account_title,user_id,type_id,account_fee,account_type,is_ok,curmonth,curday,create_time,update_time,remark)
+		VALUES(#{accountTitle},#{userId},#{type.typeId},#{accountFee},#{accountType},0,DATE_FORMAT(NOW(),'%Y%m'),
+		DATE_FORMAT(NOW(),'%Y%m%d'),NOW(),NOW(),#{remark})
+	</insert>
+	<!-- 更新个人账务 -->
+	<update id="update" parameterType="Account">
+		UPDATE tb_xn_account_account
+		SET
+		account_title = #{accountTitle},type_id =
+		#{type.typeId},account_fee =
+		#{accountFee},account_type =
+		#{accountType},update_time=now(),remark=#{remark}
+		where
+		account_id=#{accountId}
+	</update>
+	<!-- 逻辑删除个人账务 -->
+	<update id="delete">
+		UPDATE tb_xn_account_account SET
+		is_ok =
+		1,update_time=now() where account_id=#{0}
+	</update>
+	<!-- 通过账务id查询该账务 -->
+	<select id="findById" parameterType="java.lang.Integer"
+		resultMap="accountMap">
+		SELECT * FROM tb_xn_account_account a INNER JOIN
+		tb_xn_account_type t ON a.type_id = t.type_id WHERE a.is_ok=0 AND
+		a.account_id = #{0}
+	</select>
+	<!-- 根据账务标题和用户ID查询该用户的个人账务标题 -->
+	<select id="findByNameAndUserId" resultMap="accountMap">
+		SELECT * FROM
+		tb_xn_account_account a INNER JOIN
+		tb_xn_account_type t ON a.type_id =
+		t.type_id WHERE a.is_ok=0 AND
+		a.account_title = #{accountTitle} AND
+		a.user_id=#{userId}
+	</select>
+</mapper>

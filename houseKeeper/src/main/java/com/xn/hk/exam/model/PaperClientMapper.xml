@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xn.hk.exam.dao.PaperClientDao">
+	<!--使用redis作为mybatis的二级缓存,针对具体某条语句禁用缓存,useCache="false",这里的RedisCache是个别名 -->
+	<cache eviction="LRU" type="RedisCache" />
+	<!-- 试卷映射 -->
+	<resultMap type="Paper" id="paperMap">
+		<id property="paperId" column="paper_id" />
+		<result property="createPaperId" column="create_paper_id" />
+		<result property="createPaperName" column="user_name" />
+		<result property="paperName" column="paper_name" />
+		<result property="paperScore" column="paper_score" />
+		<result property="totalTime" column="total_time" />
+		<result property="startTime" column="start_time" />
+		<result property="endTime" column="end_time" />
+		<result property="curday" column="curday" />
+		<result property="isAllowed" column="is_allowed" />
+		<result property="isOk" column="is_ok" />
+		<result property="createTime" column="create_time" />
+		<result property="updateTime" column="update_time" />
+		<result property="remark" column="remark" />
+
+		<result property="examPaperId" column="exam_paper_id" />
+		<result property="paperStatus" column="paper_status" />
+	</resultMap>
+	<!-- 定义数据库基本列,只适用代替单表的* -->
+	<sql id="Base_Column_List">paper_id,create_paper_id,paper_name,paper_score,total_time,start_time,end_time,curday,is_allowed,is_ok,create_time,update_time,remark
+	</sql>
+	<!-- 前台试卷分页显示列表 -->
+	<select id="pageList" parameterType="BasePage" resultMap="paperMap">
+		SELECT * FROM tb_xn_exam_paper p INNER JOIN tb_xn_sys_user u ON
+		p.create_paper_id = u.user_id LEFT JOIN (SELECT paper_id,paper_status
+		FROM
+		tb_xn_exam_score WHERE exam_paper_id=#{bean.examPaperId})tb
+		ON
+		p.paper_id=tb.paper_id WHERE p.is_ok=0
+		<if test="bean != null">
+			<if test="bean.paperName != null and bean.paperName != ''">
+				and p.paper_name like CONCAT(CONCAT('%',
+				#{bean.paperName}),'%')
+			</if>
+			<if test="bean.createPaperId != null">
+				and p.create_paper_id = #{bean.createPaperId}
+			</if>
+			<if test="bean.paperScore != null and bean.paperScore != ''">
+				and p.paper_score = #{bean.paperScore}
+			</if>
+			<if test="bean.curday != null and bean.curday != ''">
+				and p.curday = #{bean.curday}
+			</if>
+		</if>
+		ORDER BY p.create_time DESC LIMIT #{start},#{size}
+	</select>
+	<!-- 前台试卷分页总记录数 -->
+	<select id="pageCount" parameterType="BasePage" resultType="int">
+		SELECT count(1) FROM tb_xn_exam_paper p INNER JOIN tb_xn_sys_user u ON
+		p.create_paper_id = u.user_id LEFT JOIN (SELECT paper_id,paper_status
+		FROM
+		tb_xn_exam_score WHERE exam_paper_id=#{bean.examPaperId})tb
+		ON
+		p.paper_id=tb.paper_id WHERE p.is_ok=0
+		<if test="bean != null">
+			<if test="bean.paperName != null and bean.paperName != ''">
+				and p.paper_name like CONCAT(CONCAT('%',
+				#{bean.paperName}),'%')
+			</if>
+			<if test="bean.createPaperId != null">
+				and p.create_paper_id = #{bean.createPaperId}
+			</if>
+			<if test="bean.paperScore != null and bean.paperScore != ''">
+				and p.paper_score = #{bean.paperScore}
+			</if>
+			<if test="bean.curday != null and bean.curday != ''">
+				and p.curday = #{bean.curday}
+			</if>
+		</if>
+	</select>
+	<!-- 将用户的答案保存到用户答案表 -->
+	<insert id="addUserSolution">
+		INSERT INTO
+		tb_xn_exam_solution(paper_id,user_id,question_id,user_solution,is_ok)
+		VALUES(#{paperId},#{userId},#{questionId},#{solution},0)
+	</insert>
+	<!-- 查询该用户该试卷的填写的用户答案 -->
+	<select id="findSolutionByPaperIdAndUserId" resultType="java.lang.String">
+		select
+		user_solution from
+		tb_xn_exam_solution where
+		paper_id=#{paperId} and
+		user_id=#{userId} and is_ok=0
+	</select>
+</mapper>

@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xn.hk.system.dao.RoleDao">
+	<!--使用redis作为mybatis的二级缓存,针对具体某条语句禁用缓存,useCache="false",这里的RedisCache是个别名-->
+	<cache eviction="LRU" type="RedisCache" />
+	<!-- 角色映射 -->
+	<resultMap type="Role" id="roleMap">
+		<id property="roleId" column="role_id" />
+		<result property="roleName" column="role_name" />
+		<result property="isOk" column="is_ok" />
+		<result property="createTime" column="create_time" />
+		<result property="updateTime" column="update_time" />
+		<result property="remark" column="remark" />
+		<result property="moduleName" column="module_name" />
+
+		<collection property="modules" ofType="Module">
+			<id property="moduleId" column="module_id" />
+			<result property="moduleName" column="module_name" />
+			<result property="parentId" column="parent_id" />
+			<result property="moduleLevel" column="module_level" />
+			<result property="actionUrl" column="action_url" />
+			<result property="isAllowed" column="is_allowed" />
+			<result property="isOk" column="is_ok" />
+			<result property="createTime" column="create_time" />
+			<result property="updateTime" column="update_time" />
+			<result property="remark" column="remark" />
+		</collection>
+	</resultMap>
+	<!-- 定义数据库基本列,只适用代替单表的* -->
+	<sql id="Base_Column_List">role_id,role_name,is_ok,create_time,update_time,remark
+	</sql>
+	<!-- 使用分页插件实现分页 -->
+	<select id="pageAll" resultMap="roleMap">
+		SELECT
+		r.role_id,r.role_name,r.create_time,r.update_time,r.remark,GROUP_CONCAT(module_name)
+		AS module_name FROM tb_xn_sys_role r LEFT JOIN tb_xn_sys_role_module
+		rm ON r.role_id = rm.role_id LEFT JOIN tb_xn_sys_module m ON
+		rm.module_id = m.module_id WHERE r.is_ok=0 AND rm.is_ok=0 AND
+		m.is_ok=0 AND m.is_allowed=0 
+		<if test="bean != null">
+			<if test="bean.roleName != null and bean.roleName != ''">
+				and r.role_name like CONCAT(CONCAT('%',
+				#{bean.roleName}),'%')
+			</if>
+			<if test="bean.remark != null and bean.remark != ''">
+				and r.role_name like CONCAT(CONCAT('%',
+				#{bean.remark}),'%')
+			</if>
+		</if>
+		GROUP BY
+		r.role_id,r.role_name,r.update_time,r.remark ORDER BY r.create_time
+		DESC
+	</select>
+	<!-- 查询所有的角色及可访问模块(不允许分配的模块不显示) -->
+	<select id="findAll" resultMap="roleMap">
+		SELECT
+		r.role_id,r.role_name,r.create_time,r.update_time,r.remark,GROUP_CONCAT(module_name)
+		AS module_name FROM tb_xn_sys_role r LEFT JOIN tb_xn_sys_role_module
+		rm ON r.role_id = rm.role_id LEFT JOIN tb_xn_sys_module m ON
+		rm.module_id = m.module_id WHERE r.is_ok=0 AND rm.is_ok=0 AND
+		m.is_ok=0 AND m.is_allowed=0 GROUP BY
+		r.role_id,r.role_name,r.update_time,r.remark ORDER BY r.create_time
+		DESC
+	</select>
+	<!-- 添加角色基本信息,获得刚插入的主键,设置keyProperty="roleId" useGeneratedKeys="true"即可,后面即可从实体中取出主键使用 -->
+	<insert id="add" keyProperty="roleId" useGeneratedKeys="true"
+		parameterType="Role">
+		INSERT INTO
+		tb_xn_sys_role(role_name,is_ok,create_time,update_time,remark)
+		VALUES(#{roleName},0,NOW(),NOW(),#{remark})
+	</insert>
+	<!-- 为该角色分配模块(关系表) -->
+	<insert id="addModuleForRole">
+		INSERT INTO
+		tb_xn_sys_role_module(role_id,module_id,is_ok)
+		VALUES(#{roleId},#{moduleId},0)
+	</insert>
+	<!-- 更新角色基本信息 -->
+	<update id="update" parameterType="Role">
+		UPDATE tb_xn_sys_role SET
+		role_name=#{roleName},update_time=now(),remark=#{remark} where
+		role_id=#{roleId}
+	</update>
+	<!-- 逻辑删除该角色可访问模块(关系表) -->
+	<update id="deleteModuleForRole" parameterType="java.lang.Integer">
+		UPDATE
+		tb_xn_sys_role_module SET is_ok=1 where
+		role_id=#{0}
+	</update>
+	<!-- 逻辑删除角色基本信息 -->
+	<update id="delete" parameterType="java.lang.Integer">
+		UPDATE tb_xn_sys_role SET
+		is_ok=1,update_time=now() where
+		role_id=#{0}
+	</update>
+	<!-- 根据id查询该角色及模块信息 -->
+	<select id="findById" parameterType="java.lang.Integer"
+		resultMap="roleMap">
+		SELECT
+		* FROM tb_xn_sys_role r inner JOIN
+		tb_xn_sys_role_module
+		rm ON r.role_id = rm.role_id inner JOIN
+		tb_xn_sys_module m ON
+		rm.module_id = m.module_id WHERE r.is_ok=0 AND
+		rm.is_ok=0 AND
+		r.role_id = #{0}
+	</select>
+	<!-- 根据名字查询该角色及模块信息 -->
+	<select id="findByName" parameterType="java.lang.String"
+		resultMap="roleMap">
+		SELECT
+		* FROM tb_xn_sys_role r inner JOIN
+		tb_xn_sys_role_module
+		rm ON r.role_id = rm.role_id inner JOIN
+		tb_xn_sys_module m ON
+		rm.module_id = m.module_id WHERE r.is_ok=0 AND
+		r.role_name = #{0}
+	</select>
+</mapper>

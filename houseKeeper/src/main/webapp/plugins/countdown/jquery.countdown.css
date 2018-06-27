@@ -1,0 +1,14 @@
+O.setting{padding-top:20px;}
+.setting .input{height:45px;line-height:45px;width:45px;font-size: 20px;padding-left: 20px;}
+
+.begin{display:inline-block;cursor: pointer;width:40px;height:40px;line-height:40px;border-radius:8px;border-color: #ea8010;background-color: #ea8010;background-image: linear-gradient(0deg,#ea8010,#eee 50%,transparent 100%);box-shadow: 4px 4px 8px #333; margin: 6px 20px;}
+.begin:active{box-shadow:none;}
+
+.time{width:100%;text-align:center;font-size: 18px;font-family: cursive;color: #333;font-weight: 600;}
+.time ul{list-style:none;}
+.time ul li{float:left;width:1px;height:40px;line-height:40px;margin:8px;position:relative;}
+.time ul li span{position: absolute; width: 100%;left: 0px; top: 0;opacity:1;}
+.time ul li span.static{border-radius:8px;border-color: #ea8010;background-color: #ea8010;background-image: linear-gradient(0deg,#ea8010,#eee 50%,transparent 100%);box-shadow: 4px 4px 8px #333;}
+.time ul li span.new{top:-70px;opacity:0;}
+
+.ending{display:none;height: 50px;line-height: 50px;color: orange;}
