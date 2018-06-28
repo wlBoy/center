@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xn.ad.equip.dao.EquipDao">
+	<!-- 设备映射 -->
+	<resultMap type="com.xn.ad.equip.model.Equip" id="equipMap">
+		<id property="equipId" column="equip_id" />
+		<result property="equipName" column="equip_name" />
+		<result property="typeId" column="type_id" />
+		<result property="typeName" column="type_name" />
+		<result property="equipPrice" column="equip_price" />
+		<result property="equipProducer" column="equip_producer" />
+		<result property="addPeople" column="add_people" />
+		<result property="isOk" column="is_ok" />
+		<result property="createTime" column="create_time" />
+		<result property="updateTime" column="update_time" />
+		<result property="remark" column="remark" />
+	</resultMap>
+	<!-- 定义数据库基本列,只适用代替单表的* -->
+	<sql id="Base_Column_List">
+		equip_id,equip_name,type_id,type_name,equip_price,equip_producer,add_people,is_ok,create_time,update_time,remark
+	</sql>
+	<!-- 分页显示列表 -->
+	<select id="pageList" parameterType="Map" resultMap="equipMap">
+		SELECT
+		e.equip_id,e.equip_name,e.type_id,t.type_name,e.equip_price,e.equip_producer,e.add_people,e.is_ok,e.create_time,e.update_time,e.remark
+		FROM tb_xn_equip_equip e left join tb_xn_equip_type t on e.type_id=t.type_id
+		WHERE e.is_ok = 0
+		<if test="equipName != null and equipName != ''">
+			and e.equip_name = #{equipName}
+		</if>
+		ORDER BY e.create_time DESC LIMIT #{start},#{size}
+	</select>
+	<!-- 分页显示列表的总记录数 -->
+	<select id="pageCount" parameterType="Map" resultType="int">
+		SELECT COUNT(1)
+		FROM tb_xn_equip_equip e left join tb_xn_equip_type t on e.type_id=t.type_id
+		WHERE e.is_ok = 0
+		<if test="equipName != null and equipName != ''">
+			and e.equip_name = #{equipName}
+		</if>
+	</select>
+	<!-- 通过设备名查询设备(添加设备是否重复) -->
+	<select id="findByName" parameterType="java.lang.String"
+		resultMap="equipMap">
+		SELECT
+		e.equip_id,e.equip_name,e.type_id,t.type_name,e.equip_price,e.equip_producer,e.add_people,e.is_ok,e.create_time,e.update_time,e.remark
+		FROM tb_xn_equip_equip e left join tb_xn_equip_type t on e.type_id=t.type_id
+		WHERE e.is_ok = 0 AND e.equip_name =
+		#{equipName}
+	</select>
+	<!-- 添加设备 -->
+	<insert id="add" parameterType="com.xn.ad.equip.model.Equip">
+		INSERT INTO
+		tb_xn_equip_equip(equip_name,type_id,equip_price,equip_producer,add_people,is_ok,create_time,update_time,remark)
+		VALUES(#{equipName},#{typeId},#{equipPrice},#{equipProducer},#{addPeople},0,NOW(),NOW(),#{remark})
+	</insert>
+	<!-- 通过设备id查询该设备 -->
+	<select id="findById" parameterType="java.lang.Integer"
+		resultMap="equipMap">
+		SELECT
+		e.equip_id,e.equip_name,e.type_id,t.type_name,e.equip_price,e.equip_producer,e.add_people,e.is_ok,e.create_time,e.update_time,e.remark
+		FROM tb_xn_equip_equip e left join tb_xn_equip_type t on e.type_id=t.type_id
+		WHERE e.is_ok = 0 AND e.equip_id =
+		#{equipId}
+	</select>
+	<!-- 更新设备 -->
+	<update id="update" parameterType="com.xn.ad.equip.model.Type">
+		UPDATE tb_xn_equip_equip
+		<trim prefix="set" suffixOverrides=",">
+			<if test="equipName!=null">equip_name =#{equipName},</if>
+			<if test="typeId!=null">type_id =#{typeId},</if>
+			<if test="equipPrice!=null">equip_price =#{equipPrice},</if>
+			<if test="equipProducer!=null">equip_producer =#{equipProducer},</if>
+			<if test="remark!=null">remark=#{remark},</if>
+			update_time=NOW()
+		</trim>
+		where equip_id =
+		#{equipId}
+	</update>
+	<!--逻辑删除设备类别 -->
+	<update id="delete" parameterType="java.lang.Integer">
+		UPDATE tb_xn_equip_equip set
+		is_ok = 1,update_time = now()
+		where  equip_id =
+		#{equipId}
+	</update>
+</mapper>

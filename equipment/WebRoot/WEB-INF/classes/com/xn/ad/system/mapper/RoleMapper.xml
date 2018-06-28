@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xn.ad.system.dao.RoleDao">
+	<!-- 角色映射 -->
+	<resultMap type="com.xn.ad.system.model.Role" id="roleMap">
+		<id property="roleId" column="role_id" />
+		<result property="roleName" column="role_name" />
+		<result property="isOk" column="is_ok" />
+		<result property="createTime" column="create_time" />
+		<result property="updateTime" column="update_time" />
+		<result property="remark" column="remark" />
+	</resultMap>
+	<!-- 定义数据库基本列,只适用代替单表的*-->
+	<sql id="Base_Column_List">
+	role_id,role_name,is_ok,create_time,update_time,remark
+	</sql>
+	<!-- 不分页显示所有角色数据 -->
+    <select id="findAll" resultMap="roleMap">
+        SELECT 
+        <include refid="Base_Column_List" /> 
+        FROM tb_xn_sys_role 
+        WHERE is_ok=0
+    </select>
+    <!-- 分页显示列表 -->
+	<select id="pageList" parameterType="Map" resultMap="roleMap">
+		SELECT
+		<include refid="Base_Column_List" />
+		FROM tb_xn_sys_role
+		WHERE is_ok=0
+		<if test="roleName != null and roleName != ''">
+			and role_name  = #{roleName}
+		</if>
+		ORDER BY create_time DESC LIMIT #{start},#{size}
+	</select>
+	<!-- 分页显示列表的总记录数 -->
+	<select id="pageCount" parameterType="Map" resultType="int">
+		SELECT COUNT(1) FROM (SELECT
+		<include refid="Base_Column_List" />
+		FROM tb_xn_sys_role	WHERE 1=1
+		<if test="roleName != null and roleName != ''">
+			and role_name  = #{roleName}
+		</if>
+		)a
+	</select>
+	<!-- 通过角色名查询用户(添加角色名是否重复) -->
+	<select id="findByName" parameterType="java.lang.String"
+		resultMap="roleMap">
+		SELECT
+		<include refid="Base_Column_List" />
+		FROM tb_xn_sys_role WHERE is_ok=0 and role_name =
+		#{roleName}
+	</select>
+	<!-- 添加角色基本信息 -->
+	<insert id="add" parameterType="com.xn.ad.system.model.Role">
+		INSERT INTO
+		tb_xn_sys_role(role_name,is_ok,create_time,update_time,remark)
+		VALUES(#{roleName},0,NOW(),NOW(),#{remark})
+	</insert>
+	<!-- 更新角色基本信息 -->
+	<update id="update" parameterType="com.xn.ad.system.model.Role">
+		UPDATE tb_xn_sys_role
+	  <trim prefix="set" suffixOverrides=",">
+        <if test="roleName!=null">role_name=#{roleName},</if>
+        <if test="remark!=null">remark=#{remark},</if>
+           update_time=NOW()
+      </trim>
+		WHERE role_id=#{roleId}
+	</update>
+	<!-- 根据id查询该角色及模块信息-->
+	<select id="findById" parameterType="java.lang.Integer"
+		resultMap="roleMap">
+		SELECT
+		<include refid="Base_Column_List" />
+		FROM 
+		tb_xn_sys_role
+		WHERE is_ok=0 AND role_id  =
+		#{roleId}
+	</select>
+	<!-- 逻辑删除角色 -->
+	<update id="delete" parameterType="java.lang.Integer">
+		update tb_xn_sys_role set is_ok = 1,update_time = now()
+		where role_id=#{roleId}
+	</update>	
+</mapper>

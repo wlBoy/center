@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xn.ad.system.dao.UserDao">
+	<!-- 用户映射 -->
+	<resultMap type="com.xn.ad.system.model.User" id="userMap">
+		<id property="userId" column="user_id" />
+		<result property="userName" column="user_name" />
+		<result property="userPwd" column="user_pwd" />
+		<result property="roleId" column="role_id" />
+		<result property="roleName" column="roleName" />
+		<result property="userState" column="user_state" />
+		<result property="isOk" column="is_ok" />
+		<result property="createTime" column="create_time" />
+		<result property="updateTime" column="update_time" />
+		<result property="remark" column="remark" />
+	</resultMap>
+	<!-- 定义数据库基本列,只适用代替单表的* -->
+	<sql id="Base_Column_List">
+	user_id,role_id,user_name,user_pwd,user_state,is_ok,create_time,update_time,remark
+	</sql>
+	<!-- 根据用户名和密码查询该用户及其角色信息(用于用户登录,冻结状态不能登陆) -->
+	<select id="login" parameterType="com.xn.ad.system.model.User" resultMap="userMap">
+		SELECT
+		<include refid="Base_Column_List" />
+		FROM
+		tb_xn_sys_user 
+		WHERE is_ok = 0 AND user_state=0 AND user_name=#{userName} AND
+		user_pwd=#{userPwd}
+	</select>
+    <!-- 分页显示列表 -->
+	<select id="pageList" parameterType="Map" resultMap="userMap">
+		SELECT
+		u.user_id,u.role_id,r.role_name AS roleName,u.user_name,u.user_pwd,u.user_state,u.is_ok,u.create_time,u.update_time,u.remark
+		FROM tb_xn_sys_user u LEFT JOIN tb_xn_sys_role r ON u.role_id
+		=
+		r.role_id WHERE u.is_ok = 0		
+		<if test="userName != null and userName != ''">
+			and u.user_name  = #{userName}
+		</if>
+		ORDER BY u.create_time DESC LIMIT #{start},#{size}
+	</select>
+	<!-- 分页显示列表的总记录数 -->
+	<select id="pageCount" parameterType="Map" resultType="int">
+		SELECT COUNT(1) FROM (SELECT
+		u.user_id,u.role_id,r.role_name,u.user_name,u.user_pwd,u.user_state,u.is_ok,u.create_time,u.update_time,u.remark
+		FROM tb_xn_sys_user u LEFT JOIN tb_xn_sys_role r ON u.role_id
+		=
+		r.role_id WHERE u.is_ok = 0		
+		<if test="userName != null and userName != ''">
+			and u.user_name  = #{userName}
+		</if>
+		)a
+	</select>
+	<!-- 通过用户名查询用户(添加用户是否重复) -->
+	<select id="findByName" parameterType="java.lang.String"
+		resultMap="userMap">
+		SELECT
+		<include refid="Base_Column_List" />
+		FROM tb_xn_sys_user WHERE is_ok = 0 AND user_name =
+		#{userName}
+	</select>
+	<!-- 添加用户 -->
+	<insert id="add" parameterType="com.xn.ad.system.model.User">
+		INSERT INTO
+		tb_xn_sys_user(role_id,user_name,user_pwd,user_state,is_ok,create_time,update_time,remark)
+		VALUES(#{roleId},#{userName},#{userPwd},#{userState},0,NOW(),NOW(),#{remark})
+	</insert>
+	<!-- 通过用户id查询该用户 -->
+	<select id="findById" parameterType="java.lang.Integer"
+		resultMap="userMap">
+		SELECT
+		<include refid="Base_Column_List" />
+		FROM tb_xn_sys_user WHERE is_ok=0 AND user_id =
+		#{userId}
+	</select>
+	<!-- 更新用户 -->
+	<update id="update" parameterType="com.xn.ad.system.model.User">
+		UPDATE tb_xn_sys_user
+	 <trim prefix="set" suffixOverrides=",">
+        <if test="roleId!=null">role_id = #{roleId},</if>
+        <if test="userName!=null">user_name =#{userName},</if>
+        <if test="userPwd!=null">user_pwd=#{userPwd},</if>
+        <if test="userState!=null">user_state=#{userState},</if>
+        <if test="remark!=null">remark=#{remark},</if>
+           update_time=NOW()
+      </trim>
+		where user_id=#{userId}
+	</update>
+	<!--逻辑删除用户 -->
+	<update id="delete" parameterType="java.lang.Integer">
+		UPDATE tb_xn_sys_user set is_ok = 1,update_time = now()
+		where user_id=#{userId}
+	</update>	
+    
+</mapper>

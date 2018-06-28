@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xn.ad.equip.dao.TypeDao">
+	<!-- 设备类别映射 -->
+	<resultMap type="com.xn.ad.equip.model.Type" id="typeMap">
+		<id property="typeId" column="type_id" />
+		<result property="typeName" column="type_name" />
+		<result property="isOk" column="is_ok" />
+		<result property="createTime" column="create_time" />
+		<result property="updateTime" column="update_time" />
+		<result property="remark" column="remark" />
+	</resultMap>
+	<!-- 定义数据库基本列,只适用代替单表的* -->
+	<sql id="Base_Column_List">
+		type_id,type_name,is_ok,create_time,update_time,remark
+	</sql>
+	<!-- 分页显示列表 -->
+	<select id="pageList" parameterType="Map" resultMap="typeMap">
+		SELECT
+		<include refid="Base_Column_List" />
+		FROM tb_xn_equip_type
+		WHERE is_ok = 0
+		<if test="typeName != null and typeName != ''">
+			and type_name = #{typeName}
+		</if>
+		ORDER BY create_time DESC LIMIT #{start},#{size}
+	</select>
+	<!-- 分页显示列表的总记录数 -->
+	<select id="pageCount" parameterType="Map" resultType="int">
+		SELECT COUNT(1)
+		FROM tb_xn_equip_type WHERE is_ok = 0
+		<if test="typeName != null and typeName != ''">
+			and type_name = #{typeName}
+		</if>
+	</select>
+	<!-- 通过设备类别名查询设备类别(添加设备类别是否重复) -->
+	<select id="findByName" parameterType="java.lang.String"
+		resultMap="typeMap">
+		SELECT
+		<include refid="Base_Column_List" />
+		FROM tb_xn_equip_type WHERE is_ok = 0 AND type_name =
+		#{typeName}
+	</select>
+	<!-- 查询所有的设备类别 -->
+	<select id="findAll" resultMap="typeMap">
+		SELECT
+		<include refid="Base_Column_List" />
+		FROM tb_xn_equip_type WHERE is_ok = 0
+	</select>
+	<!-- 添加设备类别 -->
+	<insert id="add" parameterType="com.xn.ad.equip.model.Type">
+		INSERT INTO
+		tb_xn_equip_type(type_name,is_ok,create_time,update_time,remark)
+		VALUES(#{typeName},0,NOW(),NOW(),#{remark})
+	</insert>
+	<!-- 通过设备类别id查询该设备类别 -->
+	<select id="findById" parameterType="java.lang.Integer"
+		resultMap="typeMap">
+		SELECT
+		<include refid="Base_Column_List" />
+		FROM tb_xn_equip_type WHERE is_ok=0 AND type_id =
+		#{typeId}
+	</select>
+	<!-- 更新设备类别 -->
+	<update id="update" parameterType="com.xn.ad.equip.model.Type">
+		UPDATE tb_xn_equip_type
+		<trim prefix="set" suffixOverrides=",">
+			<if test="typeName!=null">type_name =#{typeName},</if>
+			<if test="remark!=null">remark=#{remark},</if>
+			update_time=NOW()
+		</trim>
+		where type_id=#{typeId}
+	</update>
+	<!--逻辑删除设备类别 -->
+	<update id="delete" parameterType="java.lang.Integer">
+		UPDATE tb_xn_equip_type set
+		is_ok = 1,update_time = now()
+		where type_id=#{typeId}
+	</update>
+</mapper>

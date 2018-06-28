@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xn.ad.system.dao.ModuleDao">
+	<!-- 模块映射 -->
+	<resultMap type="com.xn.ad.system.model.Module" id="moduleMap">
+		<id property="moduleId" column="module_id" />
+		<result property="moduleName" column="module_name" />
+		<result property="parentId" column="parent_id" />
+		<result property="parentName" column="parentName" />
+		<result property="moduleLevel" column="module_level" />
+		<result property="actionUrl" column="action_url" />
+		<result property="isAllowed" column="is_allowed" />
+		<result property="icon" column="icon" />
+		<result property="isOk" column="is_ok" />
+		<result property="createTime" column="create_time" />
+		<result property="updateTime" column="update_time" />
+		<result property="remark" column="remark" />
+	</resultMap>
+	<!-- 定义数据库基本列,只适用代替单表的* -->
+	<sql id="Base_Column_List">
+		module_id,module_name,parent_id,module_level,action_url,icon,is_allowed,is_ok,create_time,update_time,remark
+	</sql>
+
+	<!-- 查询已登录用户的角色查询可访问的模块 -->
+	<select id="getModuleList" resultMap="moduleMap" parameterType="Object">
+		SELECT
+		m.module_id,m.module_name,m.parent_id,m.icon,m.module_level,m.action_url,m.is_allowed,m.is_ok,m.create_time,m.update_time,m.remark
+		FROM tb_xn_sys_module m
+		LEFT JOIN tb_xn_sys_role_module rm
+		ON m.module_id =rm.module_id
+		WHERE rm.role_id=#{roleId} AND m.is_ok=0 AND m.module_level=#{moduleLevel}
+	</select>
+	<!-- 查询父级模块 -->
+	<select id="getParentList" resultMap="moduleMap" parameterType="Object">
+		SELECT
+		<include refid="Base_Column_List" />
+		FROM tb_xn_sys_module
+		WHERE is_ok=0 AND module_level=#{moduleLevel}
+	</select>
+	<!-- 不分页显示所有角色数据 -->
+	<select id="findAll" resultMap="moduleMap">
+		SELECT
+		<include refid="Base_Column_List" />
+		FROM tb_xn_sys_module
+		WHERE is_ok=0
+	</select>
+	<!-- 分页显示列表 -->
+	<select id="pageList" parameterType="Map" resultMap="moduleMap">
+		SELECT
+		m1.module_id,m1.module_name,m2.module_name AS
+		parentName,m1.module_level,m1.action_url,m1.icon,m1.is_allowed,m1.remark,m1.create_time,m1.update_time
+		FROM tb_xn_sys_module m1 LEFT JOIN tb_xn_sys_module m2
+		ON
+		m1.parent_id=m2.module_id
+		WHERE m1.is_ok=0
+		<if test="moduleName != null and moduleName != ''">
+			and m1.module_name = #{moduleName}
+		</if>
+		ORDER BY m1.create_time DESC LIMIT #{start},#{size}
+	</select>
+	<!-- 分页显示列表的总记录数 -->
+	<select id="pageCount" parameterType="Map" resultType="int">
+		SELECT COUNT(1) FROM (SELECT
+		<include refid="Base_Column_List" />
+		FROM tb_xn_sys_module WHERE 1=1
+		<if test="moduleName != null and moduleName != ''">
+			and module_name = #{moduleName}
+		</if>
+		)a
+	</select>
+	<!-- 通过角色名查询用户(添加角色名是否重复) -->
+	<select id="findByName" parameterType="java.lang.String"
+		resultMap="moduleMap">
+		SELECT
+		<include refid="Base_Column_List" />
+		FROM tb_xn_sys_module WHERE is_ok = 0 and module_name =
+		#{moduleName}
+	</select>
+	<!-- 添加角色基本信息 -->
+	<insert id="add" parameterType="com.xn.ad.system.model.Module">
+		INSERT INTO
+		tb_xn_sys_module(module_name,parent_id,module_level,action_url,icon,is_allowed,is_ok,create_time,update_time,remark)
+		VALUES(#{moduleName},#{parentId},#{moduleLevel},#{actionUrl},#{icon},#{isAllowed},0,NOW(),NOW(),#{remark})
+	</insert>
+	<!-- 更新角色基本信息 -->
+	<update id="update" parameterType="com.xn.ad.system.model.Module">
+		UPDATE tb_xn_sys_module
+		<trim prefix="set" suffixOverrides=",">
+			<if test="moduleName!=null">module_name=#{moduleName},</if>
+			<if test="parentId!=null">parent_id=#{parentId},</if>
+			<if test="moduleLevel!=null">module_level=#{moduleLevel},</if>
+			<if test="actionUrl!=null">action_url=#{actionUrl},</if>
+			<if test="icon!=null">icon=#{icon},</if>
+			<if test="isAllowed!=null">is_allowed=#{isAllowed},</if>
+			<if test="remark!=null">remark=#{remark},</if>
+			update_time=NOW()
+		</trim>
+		WHERE module_id=#{moduleId}
+	</update>
+	<!-- 根据id查询该角色及模块信息 -->
+	<select id="findById" parameterType="java.lang.Integer"
+		resultMap="moduleMap">
+		SELECT
+		<include refid="Base_Column_List" />
+		FROM
+		tb_xn_sys_module
+		WHERE is_ok=0 AND module_id =
+		#{moduleId}
+	</select>
+	<!-- 删除角色 -->
+	<update id="delete" parameterType="java.lang.Integer">
+		update tb_xn_sys_module set
+		is_ok = 1,update_time = now()
+		where module_id=#{moduleId}
+	</update>
+</mapper>
