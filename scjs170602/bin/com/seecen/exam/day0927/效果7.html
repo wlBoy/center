@@ -1,0 +1,97 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>图片轮播</title>
+<script type="text/javascript" src="jquery-1.7.2.js"></script>
+<script type="text/javascript">
+$(function(){
+	var i = 0;
+	setInterval(function() {
+		var x = parseInt($("ul>li:eq(" + i + ")").attr("x"));
+		$("ul").animate({
+			right : x
+		}, 300);
+		i++;
+		if (i == 5)
+			i = 0;
+	}, 1000); 
+});
+</script>
+<style type="text/css">
+*{
+	padding:0px;
+	margin:0px;
+}
+ul{
+	width:750px;
+	height:150px;
+	margin:100px auto;
+	position: relative;
+}
+ul>li{
+	width:150px;
+	height:150px;
+	float:left;
+	list-style-type: none;
+}
+ul>li:nth-of-type(1){
+	background-color: red;
+}
+ul>li:nth-of-type(2){
+	background-color: blue;
+}
+ul>li:nth-of-type(3){
+	background-color: yellow;
+}
+ul>li:nth-of-type(4){
+	background-color: green;
+}
+ul>li:nth-of-type(5){
+	background-color: black;
+}
+.btn{
+	width:300px;
+	height:25px;
+	position: absolute;
+	bottom:0px;
+	left:0px;
+}
+.btn>a{
+	display: block;
+	width:25px;
+	height:25px;
+	background-color:red;
+	text-decoration:none;
+	text-align:center;
+	color:#fff;
+	line-height:25px;
+	margin-right:5px;
+	float:left;
+	border-radius:50%;
+}
+.btn>a:hover{
+	color:#f7f8f9;
+	text-decoration: underline;
+}
+</style>
+</head>
+<body>
+<div style="width:150px;overflow:hidden;position: relative;">
+	<ul>
+		<li x="150"></li>
+		<li x="300"></li>
+		<li x="450"></li>
+		<li x="600"></li>
+		<li x="0"></li>
+	</ul>
+	<div class="btn">
+		<a href="javascript:;">1</a>
+		<a href="javascript:;">2</a>
+		<a href="javascript:;">3</a>
+		<a href="javascript:;">4</a>
+		<a href="javascript:;">5</a>
+	</div>
+</div>
+</body>
+</html>

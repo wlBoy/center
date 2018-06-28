@@ -1,0 +1,24 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<title></title>
+		<script type="text/javascript" src="jquery-1.7.2.js"></script>
+		<script>
+			$(document).ready(function(){
+				
+				$("#jmj").mousemove(function(){
+					var x = event.pageX;
+					var y = event.pageY;
+					$("#big").show().css({"position":"absolute","left":x,"top":y}).appendTo("body");
+				});
+				
+			});
+		</script>
+		<style>
+		</style>
+	</head>
+	<body>
+		<img id="jmj"  width="100" src="jmj.jpg">
+		<img id="big" style="display:none;pointer-events:none;" src="jmj.jpg">
+	</body>
+</html>

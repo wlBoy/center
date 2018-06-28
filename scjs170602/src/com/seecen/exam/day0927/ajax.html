@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>ajax原理</title>
+<script>
+	// 1. 根据浏览器创建对象，
+	// 判断浏览器，创建不同的 xmlHttpRequest对象
+	// 2. 执行open指令，设置请求方法类型、url、数据和是否异步
+	// 3. 设置callback函数
+	// 4. 执行send指令，发送请求
+	// 5. 根据readyState 4和服务器status 200处理结果
+	var xhr;
+	function createXhr() {
+		if (window.ActiveXObject) {
+			//IE6及其以下版本浏览器
+			xhr = new ActiveXObject("Microsoft.XMLHTTP");
+		} else if (window.XMLHttpRequest) {
+			//非IE6
+			xhr = new XMLHttpRequest();
+		} 
+	}
+	
+	function doAjax() {
+		if(!xhr) {
+			createXhr();
+		}
+		if(xhr) {
+			// true代表异步
+			xhr.open("get", "test?userName=administrator", true);
+			// 设置回调函数
+			xhr.onreadystatechange = doResult;
+			xhr.send();
+		}
+	}
+	function doPostAjax() {
+		if(!xhr) {
+			createXhr();
+		}
+		if(xhr) {
+			// true代表异步
+			xhr.open("post", "test", true);
+			// 设置回调函数
+			xhr.onreadystatechange = doResult;
+			xhr.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
+			xhr.send("userName=administrator");
+		}
+	}
+	
+	function doResult() {
+		if(xhr.readyState == 4 && xhr.status == 200) {
+			var value = xhr.responseText;
+			alert(value);
+		}
+	}
+	
+	function jqAjax() {
+		$.ajax({
+			url:"test",
+			data:"userName=administrator",
+			method:"post",
+			success:function(r){
+				alert(r);
+			}
+		});
+		
+		
+	}
+</script>
+</head>
+<body>
+	<input type="button" value="test" onclick="doPostAjax();">
+</body>
+</html>

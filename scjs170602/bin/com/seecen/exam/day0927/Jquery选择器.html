@@ -1,0 +1,99 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>jQuery选择器</title>
+<script type="text/javascript" src="jquery-1.7.2.js"></script>
+<script type="text/javascript">
+$(function(){
+	//alert($("label+input").size());匹配所有跟在 label后面的 input元素
+	//alert($("form~input").val());找到 form 元素的所有同辈 input 元素
+	//alert($("li:first").html());获取匹配的第一个元素
+	//alert($("li:last").html());获取匹配的最后个元素
+	//alert($("#dv>input:not(:checked)").val());查找该div下所有未选中的 input元素
+	//$("li:even").css('backgroundColor','red');匹配所有索引值为偶数的元素，从 0 开始计数
+	//$("li:odd").css('backgroundColor','blue');匹配所有索引值为奇数的元素，从 0 开始计数
+	//alert($("li:eq(0)").html());匹配一个给定索引值的元素,从 0 开始计数
+	//alert($("li:gt(3)").size());匹配所有大于给定索引值的元素,从 0 开始计数
+	//alert($("li:lt(3)").size());匹配所有小于给定索引值的元素,从 0 开始计数
+	//$(":header").css('background','#eee');//匹配如 h1, h2, h3之类的标题元素,给页面内所有标题加上背景色
+	//alert($("#fm input").size());查找所有的input元素，下面这些元素都会被匹配到。
+	//alert($("#fm :text").val());匹配所有的单行文本框
+	//alert($("#fm :password").val());匹配所有密码框
+	//alert($("#fm :radio").size);查找所有单选按钮
+	//alert($("#fm :checkbox").size);匹配所有复选框
+	//alert($("#fm :submit").val());匹配所有提交按钮
+	//alert($("#fm :reset").val());匹配所有重置按钮
+	//alert($("#fm :button").val());匹配所有按钮
+	//alert($("#fm :file"));匹配所有文件域
+	//alert($("#fm :image"));匹配所有图像域
+	//alert("#fm :hidden");匹配所有不可见元素，或者type为hidden的元素
+	//alert($("#fm :text[name=name]").val());匹配给定的属性是某个特定值的元素
+	//alert($("#fm :text[name!=name]").val());匹配所有不含有指定的属性，或者属性不等于特定值的元素。
+	//alert($("#fm :text[name^=u]").val());匹配给定的属性是以某些值开始的元素
+	//alert($("#fm :text[name$=man]").val());匹配给定的属性是以某些值结尾的元素
+	//alert($("#fm :text[name*=le]").val());匹配给定的属性是以包含某些值的元素
+	//alert($("#fm :text[name=uname][data=456]").val());复合属性选择器，需要同时满足多个条件时使用。
+	//$("div:contains('John')");查找所有包含 "John"的 div元素
+	//$("div:has(p)").addClass("test");给所有包含 p元素的 div元素添加一个 text类
+	$("#go").click(function(){
+		  $("#aa").animate({"width":100,"height":100,"fontSize":"20px"},1000); 
+	});
+	$("#stop").click(function(){
+	  $("#aa").stop();
+	});
+})
+
+</script>
+</head>
+<body>
+<form>
+  <label>Name:</label>
+  <input name="name" value="aaa"/>
+  <fieldset>
+      <label>Newsletter:</label>
+      <input name="newsletter" value="bbb"/>
+ </fieldset>
+</form>
+<input name="none" value="ccc"/>
+<ul>
+    <li>list item 1</li>
+    <li>list item 2</li>
+    <li>list item 3</li>
+    <li>list item 4</li>
+    <li>list item 5</li>
+</ul>
+<div id="dv">
+	<input name="apple" value="apple"/>
+	<input name="flower" value="flower" checked="checked" />
+</div>
+<h1>Header 1</h1>
+<p>Contents 1</p>
+<h2>Header 2</h2>
+<p>Contents 2</p>
+<form id="fm">
+  <input type="text" value="123" name="name"/>
+  <input type="text" value="456" name="uname" data="456"/>
+  <input type="text" value="789" name="newsletter"/>
+  <input type="text" value="aaa" name="milkman"/>
+  <input type="checkbox" name="newsletter" checked="checked" value="Daily" />
+  <input type="checkbox" name="newsletter" value="Weekly" />
+  <input type="checkbox" name="newsletter" checked="checked" value="Monthly" />
+  <input type="radio" />
+  <input type="image" />
+  <input type="file" />
+  <input type="submit" value="提交"/>
+  <input type="reset" value="重置"/>
+  <input type="password" value="123"/>
+  <input type="button" value="按钮"/>
+  <select>
+  <option value="1">Flowers</option>
+  <option value="2" selected="selected">Gardens</option>
+  <option value="3">Trees</option>
+  </select>
+  <div id="aa" style="width:50px;height:50px;outline:1px solid red">HELLO</div>
+  <button id="go">Go</button> 
+  <button id="stop">STOP!</button>
+</form>
+</body>
+</html>

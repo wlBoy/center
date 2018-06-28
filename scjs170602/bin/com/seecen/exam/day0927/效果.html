@@ -1,0 +1,25 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<title></title>
+		<script type="text/javascript" src="jquery-2.1.1.min.js"></script>
+		<script>
+			$(document).ready(function(){
+				$("input[type=button]").click(function(){
+					//$("#a,#b").slideDown(1000).delay(2000).slideUp(1000);
+					$("body").animate({"scrollTop":0},500,function(){
+						alert("end");
+					}); 
+					//$("#a,#b").animate({"width":300,"height":300,"borderRadius":150,"color":"green","fontSize":200},1000);
+				});
+			});
+		</script>
+	</head>
+	<body>
+		<div id="a" style="border:1px solid red;">aa</div>
+		<br>
+		<div id="b" style="border:1px solid green;margin-bottom:3000px;">bb</div>
+		<input type="button" value="test">
+	
+	</body>
+</html>

@@ -1,0 +1,19 @@
+完成一个可以动态添加数据的String数组的"StringList"
+要求： 调用add(data)可以一直添加数据
+       调用remove(data或者位置如0删除第一个)可以删除数据
+       调用size()获得这个数组里面有N个数据
+       调用get(索引位置)获取当前数据
+       方法之间抛出异常，报错记录日志。
+ 效果：
+	StringList myList = new StringList();
+	myList.add("a");  
+	myList.add("...");  
+	
+	for 遍历出来 {
+		printer(myList.get(i));
+	}
+	
+	myList.remove(数据或索引);
+	for 重新遍历出来看是否删除成功 {
+		printer(myList.get(i));
+	}

@@ -1,0 +1,10 @@
+mysql_driver=com.mysql.jdbc.Driver
+mysql_url=jdbc:mysql://localhost:3306/db_name
+mysql_username=root
+mysql_password=admin
+
+
+oracle_driver=oracle.jdbc.driver.OracleDriver
+oracle_url=jdbc:oracle:thin:@localhost:1521:orcl
+oracle_username=scott
+oracle_password=admin

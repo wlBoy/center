@@ -1,0 +1,10 @@
+-----------------Jquery("write Less,Do More"-写更少的代码，做更多的事情)兼容各种主流浏览器-------------------------
+1)页面加载即执行JQuery的三种方法:1.$(function(){ })2.$(document).ready(function(){})第二种是第一种的完整形式。3.window.onload = function(){ }
+后面两种的区别:[1]执行的时机不同 :window.onload要等整个窗口(包括图片)都加载完才触发执行;$(document).ready()在 DOM 结构绘制完成后就可执行 [2]编写的个数 :window.onload 编写多个时，只有最后的那起作用 ;$(document).ready()可以编写多个，都生效 [3]简化写法 :window.onload 无 ;$(document).ready()可简写为() 
+2)jQuery对象转成DOM对象:两种转换方式将一个jQuery对象转换成DOM对象：[index]和.get(index);DOM对象转成jQuery对象:对于已经是一个DOM对象，只需要用$()把DOM对象包装起来，就可以获得一个jQuery对象了。$(DOM对象);DOM对象才能使用DOM中的方法，jQuery对象是不可以用DOM中的方法。
+3)jquery中attr和prop的区别:对于HTML元素本身就带有的固有属性，在处理时，建议使用prop()方法。对于HTML元素我们自己自定义的DOM属性，在处理时，建议使用attr()方法。
+4)--------------------------------------jQuery中.bind() .live() .delegate() .on()区别:------------------------------------
+$(selector).bind(event,data,function)->.bind()是直接绑定在元素上，也很好的解决了浏览器在事件处理中的兼容问题。
+$(selector).live(event,data,function)//jquery1.9版本以下支持，jquery1.9及其以上版本删除了此方法，jquery1.9以上版本用on()方法来代替->.live()则是通过冒泡的方式来绑定到元素上的。更适合列表类型的，绑定到document DOM节点上。
+$(selector).delegate(childSelector,event,data,function)//jquery1.4.2及其以上版本；->.delegate()则是更精确的小范围使用事件代理，性能优于.live()
+$(selector).on(event,childselector,data,function)//jquery1.7及其以上版本；jquery1.7版本出现之后用于替代bind()，live()绑定事件方式；->.on()则是最新的1.9版本整合了之前的三种方式的新事件绑定机制。.bind(), .live(), .delegate()都是通过.on()来实现的，.unbind(), .die(), .undelegate(),也是一样的都是通过.off()来实现的。

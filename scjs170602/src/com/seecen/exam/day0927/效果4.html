@@ -1,0 +1,46 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta charset="UTF-8">
+<title></title>
+<script type="text/javascript" src="jquery-1.7.2.js"></script>
+<script type="text/javascript">
+$(function(){
+	$("#rbtn").click(function(){
+		$("#s1>option:selected").appendTo($("#s2"));
+	});
+	$("#lbtn").click(function(){
+		$("#s2>option:selected").appendTo($("#s1"));
+	});
+	$("#btn").click(function(){
+		var str = $("#s1>option").toArray().reverse();
+		$("#s1").html(str);
+	});
+})
+</script>
+<style type="text/css">
+	select{
+		width:100px;
+		height:200px;
+	}
+</style>
+</head>
+<body>
+	<select id="s1" size="8" multiple="multiple">
+		<option>选项一</option>
+		<option>选项二</option>
+		<option>选项三</option>
+		<option>选项四</option>
+		<option>选项五</option>
+		<option>选项六</option>
+		<option>选项七</option>
+		<option>选项八</option>
+	</select>
+	<select id="s2" size="8" multiple="multiple">
+		
+	</select>
+	<a href="javascript:;" id="rbtn">右移</a>
+	<a href="javascript:;" id="lbtn">左移</a>
+	<a href="javascript:;" id="btn">反转</a>
+</body>
+</html>

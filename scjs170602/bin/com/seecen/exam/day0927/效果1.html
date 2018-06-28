@@ -1,0 +1,39 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<title></title>
+		<script type="text/javascript" src="jquery-2.1.1.min.js"></script>
+		<script>
+			$(document).ready(function(){
+				$("#whatThis").click(function(){
+					$(this).next("div").slideToggle();
+				});
+			});
+		</script>
+		<style>
+		#whatThis {
+			background-color: #96E555;
+			border:1px solid #0C74CD;
+			width:300px;
+			line-height:30px;
+			cursor:pointer;
+		}
+		#content {
+			line-height: 26px;
+			height:260px;
+			width:300px;
+			border:1px solid #0C74CD;
+			border-top:none;
+			display:none;
+		}
+		</style>
+	</head>
+	<body>
+		<div id="whatThis">
+		什么是jQuery
+		</div>
+		<div id="content">
+		折是内容
+		</div>
+	</body>
+</html>

@@ -1,0 +1,68 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>下拉菜单</title>
+<script type="text/javascript" src="jquery-1.7.2.js"></script>
+<script type="text/javascript">
+$(function(){
+	$("ul").each(function(){
+		$(this).find("li").each(function(i,o){
+			var r = (i+2) * 30;
+			var g = (i+3) * 30;
+			var b = (i+4) * 30;
+			$(o).css("backgroundColor","rgb("+r+","+g+","+b+")");
+		})
+	})
+	$("ul>li:first-child").click(function(){
+		$(this).nextAll("li").slideToggle(500);
+	})
+});
+</script>
+<style type="text/css">
+ul{
+	width:150px;
+	float:left;
+	font-size:18px;
+	text-align:center;
+}
+ul>li{
+	display:none;
+	list-style-type: none;
+}
+ul>li:nth-of-type(1){
+	display:block;
+}
+ul>li>a{
+	text-decoration: none;
+	color:#f7f8f9;
+}
+ul>li>a:hover{
+	color: orange;
+}
+</style>
+</head>
+<body>
+<ul>
+	<li><a href="javascript:;">文章</a></li>
+	<li><a href="javascript:;">Oracle教程</a></li>
+	<li><a href="javascript:;">Java教程</a></li>
+	<li><a href="javascript:;">flex教程</a></li>
+	<li><a href="javascript:;">jsp教程</a></li>
+</ul>
+<ul>
+	<li><a href="javascript:;">论坛</a></li>
+	<li><a href="javascript:;">Mysql论坛</a></li>
+	<li><a href="javascript:;">c#论坛</a></li>
+	<li><a href="javascript:;">servlet论坛</a></li>
+	<li><a href="javascript:;">LOL论坛</a></li>
+</ul>
+<ul>
+	<li><a href="javascript:;">交友</a></li>
+	<li><a href="javascript:;">QQ聊天</a></li>
+	<li><a href="javascript:;">YY聊天</a></li>
+	<li><a href="javascript:;">直播聊天</a></li>
+	<li><a href="javascript:;">微信聊天</a></li>
+</ul>
+</body>
+</html>

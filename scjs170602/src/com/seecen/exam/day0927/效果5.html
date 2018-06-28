@@ -1,0 +1,70 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta charset="UTF-8">
+<title></title>
+<script type="text/javascript" src="jquery-1.7.2.js"></script>
+<script type="text/javascript">
+$(function(){
+	$("#add").click(function(){
+		//alert($("#fm").serialize());
+		var name = $("input[name=name]").val();
+		var email = $("input[name=eamil]").val();
+		var salary = $("input[type=number]").val();
+		var num = $("#tab>tbody>tr").size() + 1;
+		var ar = new Array();
+		ar.push("<tr>");
+		ar.push("<td>");
+		ar.push(num);
+		ar.push("</td>");
+		ar.push("<td>");
+		ar.push(name);
+		ar.push("</td>");
+		ar.push("<td>");
+		ar.push(email);
+		ar.push("</td>");
+		ar.push("<td>");
+		ar.push(salary);
+		ar.push("</td>");
+		ar.push("<td>");
+		ar.push("<a href='javascript:;'>删除</a>");
+		ar.push("</td>");
+		ar.push("</tr>");
+		var str = ar.join("");
+		$("#tab>tbody").append(str);
+	});
+});
+</script>
+<style type="text/css">
+#add{
+	cursor:pointer;
+}
+table{
+	text-align:center;
+}
+</style>
+</head>
+<body>
+<form action="" id="fm">
+用户名:<input type="text" name="name">
+邮箱:<input type="text" name="eamil">
+薪资:<input type="number" name="salary">
+<input type="button" value="添加" id="add">
+</form>
+<hr>
+<table border="1" width="400px" id="tab">
+	<thead>
+		<tr>
+			<th>序号</th>
+			<th>用户名</th>
+			<th>邮箱</th>
+			<th>薪资</th>
+			<th>操作</th>
+		</tr>
+	</thead>
+	<tbody>
+	
+	</tbody>
+</table>
+</body>
+</html>

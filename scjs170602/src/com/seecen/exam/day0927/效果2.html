@@ -1,0 +1,68 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<title></title>
+		<script type="text/javascript" src="jquery-2.1.1.min.js"></script>
+		<script>
+			$(document).ready(function(){
+				$("a").click(function(){
+					if($(this).attr("flag") == 0) {
+						$("#main>li").slideDown();
+						$(this).attr("flag",1);
+						$(this).html("显示精简品牌");
+					} else {
+						$("#main>li:gt(5):not(:last)").slideUp();
+						$(this).attr("flag",0);
+						$(this).html("显示全部品牌");
+					}
+				});
+			});
+		</script>
+		<style>
+		#main {
+			margin:0px;
+			padding:0px;
+			width:600px;
+		}
+		#main>li {
+			width:100px;
+			margin-right:100px;
+			float:left;
+			list-style-type: none;
+		}
+		#main>li:nth-of-type(n+7) {
+			display:none;
+		}
+		#main>li:last-of-type {
+			display:block;
+		}
+		</style>
+	</head>
+	<body>
+		<ul id="main">
+			<li>佳能</li>
+			<li>索尼</li>
+			<li>三星</li>
+			
+			<li>尼康</li>
+			<li>松下</li>
+			<li>卡西欧</li>
+			
+			<li>富士</li>
+			<li>柯达</li>
+			<li>宾得</li>
+		
+			<li>理光</li>
+			<li>奥林巴斯</li>
+			<li>明基</li>
+			
+			<li>爱国者</li>
+			<li>其他品牌相机</li>
+		</ul>
+		<br style="clear: left;">
+		<br>
+		<div align="center" style="width:500px;">
+			<a flag="0" href="javascript:;">显示全部品牌</a>
+		</div>
+	</body>
+</html>
