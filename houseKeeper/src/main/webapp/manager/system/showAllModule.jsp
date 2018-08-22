@@ -68,9 +68,11 @@ $(function(){
 	// 修改弹出层
 	$(".update").click(function() {
 		var modal = showNormalLay("修改模块信息",$("#FormLay"),function(){
-			// 修改表单提交地址，提交表单
+			// 修改表单提交地址，非空检验后提交表单
 			$("#modal2 form").attr("action","${ctx}/system/module/update.do");
-			$("#modal2 form").submit();
+			if(checkForm()){
+				$("#modal2 form").submit();
+			}
 		});
 		modal.show();
 		modal.setHeigth("250px");
@@ -95,26 +97,21 @@ $(function(){
 				changeModule($(this).val(),m.parentId);
 			});
 		},"json"); 
+		checkModuleName();
 	});
 	// 添加弹出层
 	$("#add").click(function() {
 		var modal = showNormalLay("添加模块信息",$("#FormLay"),function(){
-			// 修改表单提交地址，提交表单
+			// 修改表单提交地址，非空检验后提交表单
 			$("#modal2 form").attr("action","${ctx}/system/module/add.do");
-			$("#modal2 form").submit();
+			if(checkForm()){
+				$("#modal2 form").submit();
+			}
 		});
 		modal.show();
 		modal.setHeigth("250px");
 		modal.setWidth("400px");
-		//ajax请求数据库是否存在该模块
-		$("#modal2 form :text[name=moduleName]").blur(function(){
-			var moduleName = $("#modal2 form :text[name=moduleName]").val();
-			$.get("${ctx}/system/rest/findByModuleName.do","moduleName="+moduleName,function(m){
-				if(m.moduleName != null){
-					swal("OMG!", "该模块名已存在，请更换一个!", "error");
-				} 
-			},"json");  
-		});
+		checkModuleName();
 		// 选择框切换模块级别时模块联动
 		$("#modal2 #moduleLevel").change(function(){
 			changeModule($(this).val(),0);
@@ -122,6 +119,29 @@ $(function(){
 	});
 	
 })
+//检查模块名是否存在，保证模块名的唯一性
+function checkModuleName(){
+	var ModuleNameInput = $("#modal2 form :text[name=moduleName]");
+	//ajax请求数据库是否存在该模块
+	ModuleNameInput.blur(function(){
+		$.get("${ctx}/system/rest/findByModuleName.do","moduleName="+ModuleNameInput.val(),function(m){
+			if(m.moduleName != null){
+				ModuleNameInput.val("");
+				ModuleNameInput.select("");
+				swal("OMG!", "该模块名已存在，请更换一个!", "error");
+			} 
+		},"json");    
+	});
+}
+//弹出层表单非空校验
+function checkForm(){
+	var moduleName = $("#modal2 form :text[name=moduleName]").val();
+	if(moduleName==null||moduleName==''){
+		swal("OMG!", "模块名不能为空!", "error");
+		return false;
+	}
+	return true;
+}
 /*删除多条记录*/
 function doDeleteMore(){
 swal({

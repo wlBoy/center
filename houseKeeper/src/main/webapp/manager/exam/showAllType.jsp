@@ -45,9 +45,11 @@ $(function(){
 	// 修改弹出层
 	$(".update").click(function() {
 		var modal = showNormalLay("修改题型信息",$("#FormLay"),function(){
-			// 修改表单提交地址，提交表单
+			// 修改表单提交地址，非空检验后提交表单
 			$("#modal2 form").attr("action","${ctx}/exam/type/update.do");
-			$("#modal2 form").submit();
+			if(checkForm()){
+				$("#modal2 form").submit();
+			}
 		});
 		modal.show();
 		modal.setHeigth("120px");
@@ -59,28 +61,46 @@ $(function(){
 			$("#modal2 form :text[name=remark]").val(t.remark);
 			$("<input type='hidden' name='typeId' value='"+t.typeId+"'>").appendTo($("#modal2 form"));
 		},"json"); 
+		checkUserName();
 	});
 	//添加题型
 	$("#add").click(function() {
 		var modal = showNormalLay("添加题型信息",$("#FormLay"),function(){
-			// 修改表单提交地址，提交表单
+			// 修改表单提交地址，非空检验后提交表单
 			$("#modal2 form").attr("action","${ctx}/exam/type/add.do");
-			$("#modal2 form").submit();
+			if(checkForm()){
+				$("#modal2 form").submit();
+			}
 		});
 		modal.show();
 		modal.setHeigth("120px");
 		modal.setWidth("400px");
-		//ajax请求数据库是否存在该题型
-		$("#modal2 form :text[name=typeName]").blur(function(){
-			var typeName = $("#modal2 form :text[name=typeName]").val();
-			$.get("${ctx}/exam/rest/findByTypeName.do","typeName="+typeName,function(t){
-				if(t.typeName != null){
-					swal("OMG!", "该题型已存在，请更换一个!", "error");
-				} 
-			},"json");  
-		});
+		checkUserName();
 	});
 })
+//检查题型是否存在，保证题型的唯一性
+function checkUserName(){
+	var typeNameInput = $("#modal2 form :text[name=typeName]");
+	//ajax请求数据库是否存在该用户
+	typeNameInput.blur(function(){
+		$.get("${ctx}/exam/rest/findByTypeName.do","typeName="+typeNameInput.val(),function(t){
+			if(t.typeName != null){
+				typeNameInput.val("");
+				typeNameInput.select();
+				swal("OMG!", "该题型已存在，请更换一个!", "error");
+			} 
+		},"json"); 
+	});
+}
+//弹出层表单非空校验
+function checkForm(){
+	var typeName = $("#modal2 form :text[name=typeName]").val();
+	if(typeName==null||typeName==''){
+		swal("OMG!", "题型不能为空!", "error");
+		return false;
+	}
+	return true;
+}
 /*删除一条记录*/
 function doDelete(tid){
 swal({

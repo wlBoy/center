@@ -52,6 +52,27 @@ public class User implements Serializable {
 	 * 该用户拥有的角色
 	 */
 	private Role role;
+	/**
+	 * 用户登录时用
+	 */
+	private String rememberMe;// 是否记住我
+	private String verifyCode;// 验证码
+
+	public String getRememberMe() {
+		return rememberMe;
+	}
+
+	public void setRememberMe(String rememberMe) {
+		this.rememberMe = rememberMe;
+	}
+
+	public String getVerifyCode() {
+		return verifyCode;
+	}
+
+	public void setVerifyCode(String verifyCode) {
+		this.verifyCode = verifyCode;
+	}
 
 	public Integer getUserId() {
 		return userId;

@@ -79,16 +79,16 @@
 						<div class="input-group">
 							<span class="input-group-addon"><i class="icon-key"></i>
 							</span>
-							<input class="form-control left" type="text" name="verifyCodeInput">
+							<input class="form-control left" type="text" name="verifyCode">
 							<img class="right" onclick="changeCode(this);" src="${ctx}/system/user/getVerifyCode.do">
 						</div>
 					</div>
-					<!-- <div class="form-group">
+					<div class="form-group">
 						<a class="pull-right" href="#">忘记密码?</a>
 				        <div class="text-left">
 				          <label class="checkbox"><input type="checkbox" name="rememberMe" id="rememberMe"><span>记住我</span></label>
 				        </div>
-			        </div> -->
+			        </div>
 					<input type="submit" class="btn btn-lg btn-primary btn-block"
 						value="登录">
 				</form>

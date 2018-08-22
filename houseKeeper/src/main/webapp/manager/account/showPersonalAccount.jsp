@@ -54,9 +54,11 @@ $(function(){
 	// 修改弹出层
 	$(".update").click(function() {
 		var modal = showNormalLay("修改个人账务信息",$("#FormLay"),function(){
-			// 修改表单提交地址，提交表单
+			// 修改表单提交地址，非空检验后提交表单
 			$("#modal2 form").attr("action","${ctx}/account/account/update.do");
-			$("#modal2 form").submit();
+			if(checkForm()){
+				$("#modal2 form").submit();
+			}
 		});
 		modal.show();
 		modal.setHeigth("220px");
@@ -82,13 +84,16 @@ $(function(){
 				changeType($(this).val(),a.type.typeId);
 			});
 		},"json"); 
+		checkAccountTitle();
 	});
 	// 添加弹出层
 	$("#add").click(function() {
 		var modal = showNormalLay("添加个人账务信息",$("#FormLay"),function(){
-			// 修改表单提交地址，提交表单
+			// 修改表单提交地址，非空检验后提交表单
 			$("#modal2 form").attr("action","${ctx}/account/account/add.do");
-			$("#modal2 form").submit();
+			if(checkForm()){
+				$("#modal2 form").submit();
+			}
 		});
 		modal.show();
 		modal.setHeigth("220px");
@@ -97,17 +102,42 @@ $(function(){
 			/*账务级别联动*/
 			changeType($(this).val(),0);
 		});
-		//ajax请求数据库是否存在该账务标题
-		$("#modal2 form :text[name=accountTitle]").blur(function(){
-			var accountTitle = $("#modal2 form :text[name=accountTitle]").val();
-			$.get("${ctx}/account/rest/findByAccountTitle.do","accountTitle="+accountTitle,function(a){
-				if(a.accountTitle != null){
-					swal("OMG!", "该账务标题已存在，请更换一个!", "error");
-				}
-			},"json");  
-		});
+		checkAccountTitle();
 	});
 })
+//检查该账务标题是否存在，保证账务标题的唯一性
+function checkAccountTitle(){
+	var accountTitleInput = $("#modal2 form :text[name=accountTitle]");
+	//ajax请求数据库是否存在该用户
+	accountTitleInput.blur(function(){
+		$.get("${ctx}/account/rest/findByAccountTitle.do","accountTitle="+accountTitleInput.val(),function(a){
+			if(a.accountTitle != null){
+				accountTitleInput.val("");
+				accountTitleInput.select();
+				swal("OMG!", "该账务标题已存在，请更换一个!", "error");
+			}
+		},"json");    
+	});
+}
+//弹出层表单非空校验
+function checkForm(){
+	var accountTitle = $("#modal2 form :text[name=accountTitle]").val();
+	var accountFee = $("#modal2 form input[name=accountFee]").val();
+	var accountType = $("#modal2 form :text[name=accountType]").val();
+	if(accountTitle==null||accountTitle==''){
+		swal("OMG!", "账务标题不能为空!", "error");
+		return false;
+	}
+	if(accountFee==null||accountFee==0){
+		swal("OMG!", "账务金额不能为空!", "error");
+		return false;
+	}
+	if(accountType==null||accountType==''){
+		swal("OMG!", "账务方式不能为空!", "error");
+		return false;
+	}
+	return true;
+}
 /*删除多条记录*/
 function doDeleteMore(){
 swal({
@@ -436,7 +466,7 @@ function changeSelectType(){
 			<div class="form-group">
 	            <label class="control-label col-md-3">账务金额</label>
 	            <div class="col-md-8">
-	              <input class="form-control" name="accountFee" type="text">
+	              <input class="form-control" name="accountFee" type="number">
 	            </div>
             </div>
 			<div class="form-group">

@@ -55,9 +55,11 @@ $(function(){
 	// 修改弹出层
 	$(".update").click(function() {
 		var modal = showNormalLay("修改角色信息",$("#FormLay"),function(){
-			// 修改表单提交地址，提交表单
+			// 修改表单提交地址，非空检验后提交表单
 			$("#modal2 form").attr("action","${ctx}/system/role/update.do");
-			$("#modal2 form").submit();
+			if(checkForm()){
+				$("#modal2 form").submit();
+			}
 		});
 		modal.show();
 		modal.setHeigth("220px");
@@ -76,6 +78,7 @@ $(function(){
 					}
 				} 
 			});
+			checkRoleName();
 			// 关联模块
 			linkModule();
 		},"json"); 
@@ -83,9 +86,11 @@ $(function(){
 	//添加角色
 	$("#add").click(function() {
 		var modal = showNormalLay("添加角色信息",$("#FormLay"),function(){
-			// 修改表单提交地址，提交表单
+			// 修改表单提交地址，非空检验后提交表单
 			$("#modal2 form").attr("action","${ctx}/system/role/add.do");
-			$("#modal2 form").submit();
+			if(checkForm()){
+				$("#modal2 form").submit();
+			}
 		});
 		modal.show();
 		modal.setHeigth("220px");
@@ -99,10 +104,34 @@ $(function(){
 				} 
 			},"json");  
 		});
+		checkRoleName();
 		// 关联模块
 		linkModule();
 	});
 })
+//检查角色名是否存在，保证角色名的唯一性
+function checkRoleName(){
+	var roleNameInput = $("#modal2 form :text[name=roleName]");
+	//ajax请求数据库是否存在该用户
+	roleNameInput.blur(function(){
+		$.get("${ctx}/system/rest/findByRoleName.do","roleName="+roleNameInput.val(),function(r){
+			if(r.roleName != null){
+				roleNameInput.val("");
+				roleNameInput.select();
+				swal("OMG!", "该角色已存在，请更换一个!", "error");
+			} 
+		},"json");  
+	});
+}
+// 弹出层表单非空校验
+function checkForm(){
+	var roleName = $("#modal2 form :text[name=roleName]").val();
+	if(roleName==null||roleName==''){
+		swal("OMG!", "角色名不能为空!", "error");
+		return false;
+	}
+	return true;
+}
 /*删除多条记录*/
 function doDeleteMore(){
 swal({

@@ -63,25 +63,20 @@ public class UserController {
 	 * 
 	 * @param user
 	 *            用户实体
-	 * @param rememberMe
-	 *            是否选中记住账户
-	 * @param verifyCodeInput
-	 *            验证码
 	 * @param session
 	 * @param response
 	 * @return ModelAndView
 	 */
 	@RequestMapping(value = "/login.do")
-	public ModelAndView login(User user, String rememberMe, String verifyCodeInput, HttpSession session,
-			HttpServletResponse response) {
+	public ModelAndView login(User user, HttpSession session, HttpServletResponse response) {
 		String userName = user.getUserName();
 		// 使用MD5加密(用户登录密码+登录密码key)存入数据库中,提高密码的加密程度
 		String userPwd = MD5Util.MD5(user.getUserPwd() + Constant.PASSWORD_KEY);
 		// 1.保存cookie实现记住密码功能
-		saveCookie(user, rememberMe, session, response);
+		saveCookie(user, session, response);
 		// 2.取到用户输入的验证码和session中的验证码比较
 		String verifyCodeValue = (String) session.getAttribute(Constant.VERIFY_CODE_KEY);
-		if (!verifyCodeInput.equalsIgnoreCase(verifyCodeValue)) {
+		if (!user.getVerifyCode().equalsIgnoreCase(verifyCodeValue)) {
 			logger.error("验证码错误!");
 			session.setAttribute(Constant.TIP_KEY, StringUtil.genTipMsg("验证码错误!", "error"));
 			return USER_REDITRCT_LOGIN_VIEW;
@@ -128,21 +123,20 @@ public class UserController {
 	 * 保存cookie实现记住密码功能
 	 * 
 	 * @param user
-	 * @param rememberMe
 	 * @param session
 	 * @param response
 	 */
-	private void saveCookie(User user, String rememberMe, HttpSession session, HttpServletResponse response) {
+	private void saveCookie(User user, HttpSession session, HttpServletResponse response) {
 		// 创建Cookie
 		Cookie nameCookie = new Cookie(Constant.USERNAME_KEY, user.getUserName());
 		Cookie pwdCookie = new Cookie(Constant.USERPWD_KEY, user.getUserPwd());
-		logger.info("{}选择{}保存cookie:", user.getUserName(), rememberMe);
-		if (rememberMe == null) {
+		logger.info("{}选择{}保存cookie:", user.getUserName(), user.getRememberMe());
+		if (user.getRememberMe() == null) {
 			// 不保存Cookie
 			nameCookie.setMaxAge(0);
 			pwdCookie.setMaxAge(0);
 		} else {
-			// 设置Cookie的父路径
+			// rememberMe的值为on时，代表选中，设置Cookie的父路径
 			nameCookie.setPath(session.getServletContext().getContextPath() + "/");
 			pwdCookie.setPath(session.getServletContext().getContextPath() + "/");
 			// 保存Cookie的时间长度，单位为秒
@@ -176,8 +170,6 @@ public class UserController {
 			e.printStackTrace();
 		}
 	}
-
-	
 
 	/**
 	 * 账户注销

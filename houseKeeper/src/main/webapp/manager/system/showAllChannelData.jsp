@@ -65,7 +65,7 @@
 $(function(){
 	$("#import").click(function() {
 		var modal = showNormalLay("导入EXCEL数据",$("#importFormLay"),function(){
-			if(checkData()){
+			if(checkForm()){
 				$("#modal2 form").submit();
 			}
 		});
@@ -85,7 +85,7 @@ $(function(){
 	});
 })
 //校验上传文件是否为ECXEL格式的文件   
-function checkData(){    
+function checkForm(){    
    var fileDir = $("#modal2 #upfile").val();    
    var suffix = fileDir.substr(fileDir.lastIndexOf("."));    
    if("" == fileDir){ 
@@ -193,13 +193,13 @@ function checkData(){
 			<jsp:param value="${pages.size }" name="size" />
 		</jsp:include>
 	</div>
-	<!-- 添加表单 -->
+	<!-- 导入EXCEL表单 -->
 	<div id="importFormLay" style="display: none">
 		<form action="${ctx}/data/channel/importExcel.do" enctype="multipart/form-data" method="post">
 			<input id="upfile" type="file" name="upfile">
 		</form>
 	</div>
-	<!-- 添加表单 -->
+	<!-- 导出EXCEL表单，指定文件名 -->
 	<div id="exportAllFormLay" style="display: none">
 		<form action="${ctx}/data/channel/exportAll.do" method="post">
 			文件名: <input type="text" name="fileName">

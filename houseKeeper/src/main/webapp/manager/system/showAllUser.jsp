@@ -61,18 +61,20 @@ $(function(){
 	// 修改弹出层
 	$(".update").click(function() {
 		var modal = showNormalLay("修改用户信息",$("#FormLay"),function(){
-			// 修改表单提交地址，提交表单
+			// 修改表单提交地址，非空检验后提交表单
 			$("#modal2 form").attr("action","${ctx}/system/user/update.do");
-			$("#modal2 form").submit();
+			if(checkForm()){
+				$("#modal2 form").submit();
+			}
 		});
 		modal.show();
 		modal.setHeigth("220px");
 		modal.setWidth("400px");
-		var uid = $(this).attr("value");
 		// 回显数据
+		var uid = $(this).attr("value");
 		$.get("${ctx}/system/rest/findByUserId.do","userId="+uid,function(u){
 			$("#modal2 form :text[name=userName]").val(u.userName);
-			$("#modal2 form :text[name=userPwd]").val(u.userPwd);
+			$("#modal2 form :text[name=userPwd]").val(u.userPwd).attr("disabled",true);
 			$("#modal2 form :text[name=remark]").val(u.remark);
 			$("<input type='hidden' name='userId' value='"+u.userId+"'>").appendTo($("#modal2 form"));
 			/*回显角色 */
@@ -82,26 +84,21 @@ $(function(){
 				}
 			});
 		},"json"); 
+		checkUserName();
 	});
 	// 添加弹出层
 	$("#add").click(function() {
 		var modal = showNormalLay("添加用户信息",$("#FormLay"),function(){
-			// 修改表单提交地址，提交表单
+			// 修改表单提交地址，非空检验后提交表单
 			$("#modal2 form").attr("action","${ctx}/system/user/add.do");
-			$("#modal2 form").submit();
+			if(checkForm()){
+				$("#modal2 form").submit();
+			}
 		});
 		modal.show();
 		modal.setHeigth("220px");
 		modal.setWidth("400px");
-		//ajax请求数据库是否存在该用户
-		$("#modal2 form :text[name=userName]").blur(function(){
-			var userName = $("#modal2 form :text[name=userName]").val();
-			$.get("${ctx}/system/rest/findByUserName.do","userName="+userName,function(u){
-				if(u.userName != null){
-					swal("OMG!", "该用户名已存在，请更换一个!", "error");
-				}
-			},"json");  
-		});
+		checkUserName();
 	});
 	// 上传头像弹出层
 	$(".upload").click(function() {
@@ -119,6 +116,34 @@ $(function(){
 		$("<input type='hidden' name='userId' value='"+uid+"'>").appendTo($("#modal2 form"));
 	});
 })
+//检查用户名是否存在，保证用户名的唯一性
+function checkUserName(){
+	var userNameInput = $("#modal2 form :text[name=userName]");
+	//ajax请求数据库是否存在该用户
+	userNameInput.blur(function(){
+		$.get("${ctx}/system/rest/findByUserName.do","userName="+userNameInput.val(),function(u){
+			if(u.userName != null){
+				userNameInput.val("");
+				userNameInput.select();
+				swal("OMG!", "该用户名已存在，请更换一个!", "error");
+			}
+		},"json");  
+	});
+}
+// 弹出层表单非空校验
+function checkForm(){
+	var userName = $("#modal2 form :text[name=userName]").val();
+	var userPwd = $("#modal2 form :text[name=userPwd]").val();
+	if(userName==null||userName==''){
+		swal("OMG!", "用户名不能为空!", "error");
+		return false;
+	}
+	if(userPwd==null||userPwd==''){
+		swal("OMG!", "密码不能为空!", "error");
+		return false;
+	}
+	return true;
+}
 //校验上传文件是否为图片格式   
 function checkFace(){    
    var face = $("#modal2 #userFace").val();    
@@ -276,7 +301,6 @@ swal({
 						<th>序号</th>
 						<th>头像</th>
 						<th>用户名</th>
-						<th>密码</th>
 						<th>角色名</th>
 						<th>创建时间</th>
 						<th>最后修改时间</th>
@@ -295,7 +319,6 @@ swal({
 								<img width="34px" height="34px" src="/faces/${u.userFace}" onerror="this.src='${ctx}/images/male.jpg;this.onerror=null'"/>
 							</td>
 							<td>${u.userName}</td>
-							<td>${u.userPwd}</td>
 							<td>${u.role.roleName}</td>
 							<td>${u.createTime}</td>
 							<td>${u.updateTime}</td>
