@@ -332,26 +332,29 @@ public class UserController {
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "/uploadFace.do")
-	public ModelAndView uploadFace(User user, MultipartFile file, HttpSession session) throws Exception {
+	public ModelAndView uploadFace(User user, MultipartFile file, HttpSession session) {
 		// 获取上传文件的原名称来构建新文件名
 		String oldName = file.getOriginalFilename();
-		String newName = StringUtil.genUUIDString() + oldName.substring(oldName.lastIndexOf("."), oldName.length());
+		// 获取原文件名的后缀
+		String suffix = oldName.substring(oldName.lastIndexOf("."), oldName.length());
+		String newName = StringUtil.genUUIDString() + suffix;
 		// 本地存储路径,此路径在server.xml中已配置图片虚拟路径对应
 		File dir = new File(Constant.USER_FACE_PATH, newName);
 		if (!dir.exists()) {
 			dir.mkdirs();
 		}
-		// MultipartFile自带的解析方法
-		file.transferTo(dir);
-		user.setUserFace(newName);
-		// 更新用户信息
-		int result = us.uploadFace(user);
-		if (result == 0) {
-			logger.error("用户{}上传头像失败!", user.getUserName());
-		} else {
-			logger.info("用户{}上传头像成功!", user.getUserName());
+		try {
+			// MultipartFile自带的解析方法
+			file.transferTo(dir);
+			user.setUserFace(newName);
+			// 更新用户信息
+			us.uploadFace(user);
 			session.setAttribute(Constant.TIP_KEY, StringUtil.genTipMsg("上传头像成功!", "success"));
+			return USER_REDITRCT_ACTION;
+		} catch (Exception e) {
+			logger.error("用户{}上传头像失败,原因是:{}", user.getUserName(), e.getMessage());
+			session.setAttribute(Constant.TIP_KEY, StringUtil.genTipMsg("上传头像失败!", "error"));
+			return USER_REDITRCT_ACTION;
 		}
-		return USER_REDITRCT_ACTION;
 	}
 }
