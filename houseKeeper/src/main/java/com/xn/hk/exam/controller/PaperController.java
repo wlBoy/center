@@ -72,7 +72,7 @@ public class PaperController {
 		mv.addObject(Constant.PAGE_KEY, pages);
 		// 查询所有的题型,供添加试卷时使用
 		List<QuestionType> types = qts.findAll();
-		mv.addObject(Constant.TYPES_VALUE, types);
+		mv.addObject(Constant.TYPES_KEY, types);
 		logger.info("所有的题型个数为:{}" + types.size());
 		// 查询所有用户信息，供下拉框显示
 		List<User> users = us.findAll();

@@ -47,7 +47,7 @@ public class QuestionTypeController {
 	public ModelAndView showAllType() {
 		ModelAndView mv = new ModelAndView("exam/showAllType");
 		List<QuestionType> types = qts.findAll();
-		mv.addObject(Constant.TYPES_VALUE, types);
+		mv.addObject(Constant.TYPES_KEY, types);
 		logger.info("所有的题型个数为:{}", types.size());
 		return mv;
 	}
