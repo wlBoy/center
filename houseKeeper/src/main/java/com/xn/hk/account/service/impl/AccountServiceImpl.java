@@ -2,7 +2,8 @@ package com.xn.hk.account.service.impl;
 
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -11,6 +12,7 @@ import com.xn.hk.account.dao.MoneyDao;
 import com.xn.hk.account.model.Account;
 import com.xn.hk.account.model.Money;
 import com.xn.hk.account.service.AccountService;
+import com.xn.hk.common.constant.Constant;
 import com.xn.hk.common.dao.BaseDao;
 import com.xn.hk.common.service.impl.BaseServiceImpl;
 import com.xn.hk.common.utils.page.BasePage;
@@ -28,7 +30,7 @@ public class AccountServiceImpl extends BaseServiceImpl<Account> implements Acco
 	/**
 	 * 记录日志
 	 */
-	private static final Logger log = Logger.getLogger(AccountServiceImpl.class);
+	private static final Logger logger = LoggerFactory.getLogger(AccountServiceImpl.class);
 	@Autowired
 	private AccountDao ad;
 	@Autowired
@@ -80,7 +82,7 @@ public class AccountServiceImpl extends BaseServiceImpl<Account> implements Acco
 		account = ad.findById(account.getAccountId());
 		// 添加资产表信息
 		int count = addData(account);
-		return 1 + count;
+		return count + 1;
 	}
 
 	/**
@@ -126,30 +128,30 @@ public class AccountServiceImpl extends BaseServiceImpl<Account> implements Acco
 	 *            账务信息
 	 * @return 影响条数
 	 */
-	private int addData(Account a) {
+	private int addData(Account account) {
 		Money m = new Money();
-		m.setUserId(a.getUserId());
-		m.setCurmonth(a.getCurmonth());
-		m.setCurday(a.getCurday());
+		m.setUserId(account.getUserId());
+		m.setCurmonth(account.getCurmonth());
+		m.setCurday(account.getCurday());
 		Money result = md.findByUserIdAndDate(m);
 		// 根据用户ID和当前日期查找该条数据是否存在
 		if (result == null) {
 			// 不存在,执行插入操作
-			if ("收入".equals(a.getType().getParentType())) {
-				m.setInFee(a.getAccountFee());
+			if (Constant.COMEIN_VALUE.equals(account.getType().getParentType())) {
+				m.setInFee(account.getAccountFee());
 			} else {
-				m.setOutFee(a.getAccountFee());
+				m.setOutFee(account.getAccountFee());
 			}
 			return md.add(m);
 		} else {
 			// 存在,执行更新操作
-			log.info("更新前的总收入金额为:" + result.getInFee() + ",更新前的总支出金额为:" + result.getOutFee());
-			if ("收入".equals(a.getType().getParentType())) {
-				result.setInFee(result.getInFee() + a.getAccountFee());
+			logger.info("更新前-->总收入为:{},总支出为:{}", result.getInFee(), result.getOutFee());
+			if (Constant.COMEIN_VALUE.equals(account.getType().getParentType())) {
+				result.setInFee(result.getInFee() + account.getAccountFee());
 			} else {
-				result.setOutFee(result.getOutFee() + a.getAccountFee());
+				result.setOutFee(result.getOutFee() + account.getAccountFee());
 			}
-			log.info("更新后的总收入金额为:" + result.getInFee() + ",更新后的总支出金额为:" + result.getOutFee());
+			logger.info("更新后-->总收入为:{},总支出为:{}", result.getInFee(), result.getOutFee());
 			md.update(result);
 			return 0;
 		}
@@ -169,14 +171,14 @@ public class AccountServiceImpl extends BaseServiceImpl<Account> implements Acco
 		m.setUserId(oldAccount.getUserId());
 		m.setCurday(oldAccount.getCurday());
 		Money result = md.findByUserIdAndDate(m);
-		log.info("旧账务的总收入金额为:" + result.getInFee() + ",旧账务的总支出金额为:" + result.getOutFee());
+		logger.info("旧账务-->总收入为:{},总支出为:{}", result.getInFee(), result.getOutFee());
 		// 先减去之前账务的金额,再填充更新后账务的金额
-		if ("收入".equals(oldAccount.getType().getParentType())) {
+		if (Constant.COMEIN_VALUE.equals(oldAccount.getType().getParentType())) {
 			result.setInFee(result.getInFee() - oldAccount.getAccountFee() + newAccount.getAccountFee());
 		} else {
 			result.setOutFee(result.getOutFee() - oldAccount.getAccountFee() + newAccount.getAccountFee());
 		}
-		log.info("更新后的总收入金额为:" + result.getInFee() + ",更新后的总支出金额为:" + result.getOutFee());
+		logger.info("更新后-->总收入为:{},总支出为:{}", result.getInFee(), result.getOutFee());
 		return md.update(result);
 	}
 
@@ -192,14 +194,14 @@ public class AccountServiceImpl extends BaseServiceImpl<Account> implements Acco
 		m.setUserId(a.getUserId());
 		m.setCurday(a.getCurday());
 		Money result = md.findByUserIdAndDate(m);
-		log.info("更新前的总收入金额为:" + result.getInFee() + ",更新前的总支出金额为:" + result.getOutFee());
+		logger.info("更新前-->总收入:{},总支出:{}", result.getInFee(), result.getOutFee());
 		// 减去已删除账务的金额
-		if ("收入".equals(a.getType().getParentType())) {
+		if (Constant.COMEIN_VALUE.equals(a.getType().getParentType())) {
 			result.setInFee(result.getInFee() - a.getAccountFee());
 		} else {
 			result.setOutFee(result.getOutFee() - a.getAccountFee());
 		}
-		log.info("更新后的总收入金额为:" + result.getInFee() + ",更新后的总支出金额为:" + result.getOutFee());
+		logger.info("更新后-->总收入为:{},总支出为:{}", result.getInFee(), result.getOutFee());
 		return md.update(result);
 	}
 

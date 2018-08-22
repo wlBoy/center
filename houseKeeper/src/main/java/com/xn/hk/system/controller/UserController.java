@@ -99,16 +99,16 @@ public class UserController {
 				if (userPwd.equals(u.getUserPwd())) {
 					// 根据已登录用户的角色查询可访问的一级模块数组
 					List<Module> oneModules = ms.findModuleByRoleId(Constant.ONE_MODULES_VALUE,
-							user.getRole().getRoleId());
+							u.getRole().getRoleId());
 					// 根据已登录用户的角色查询可访问的二级模块数组
 					List<Module> twoModules = ms.findModuleByRoleId(Constant.TWO_MODULES_VALUE,
-							user.getRole().getRoleId());
+							u.getRole().getRoleId());
 					// 保存该账户角色可访问的一级模块数组和所有的二级模块列表，以便页面遍历
 					session.setAttribute(Constant.ONE_MODULES_KEY, oneModules);
 					session.setAttribute(Constant.TWO_MODULES_KEY, twoModules);
 					logger.info("用户{}登录成功!", userName);
 					// 将该用户保存至session中
-					session.setAttribute(Constant.LOGIN_SESSION_USER_KEY, user);
+					session.setAttribute(Constant.SESSION_USER_KEY, u);
 					return USER_REDITRCT_HOME_VIEW;
 				} else {
 					logger.error("用户{}登录,密码错误!", userName);
@@ -189,7 +189,7 @@ public class UserController {
 	@RequestMapping(value = "/logoff.do")
 	public ModelAndView logoff(HttpSession session) {
 		// 销毁session中的user
-		session.removeAttribute(Constant.LOGIN_SESSION_USER_KEY);
+		session.removeAttribute(Constant.SESSION_USER_KEY);
 		logger.info("注销成功!");
 		session.setAttribute(Constant.TIP_KEY, "<script>$(function(){swal('Good!', '注销成功!', 'success');});</script>");
 		return USER_REDITRCT_LOGIN_VIEW;

@@ -4,7 +4,8 @@ import java.util.List;
 
 import javax.servlet.http.HttpSession;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -12,6 +13,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.xn.hk.common.constant.Constant;
 import com.xn.hk.common.utils.page.BasePage;
+import com.xn.hk.common.utils.string.StringUtil;
 import com.xn.hk.exam.model.Score;
 import com.xn.hk.exam.service.ScoreService;
 import com.xn.hk.system.model.User;
@@ -31,7 +33,11 @@ public class ScoreController {
 	/**
 	 * 记录日志
 	 */
-	private static final Logger log = Logger.getLogger(ScoreController.class);
+	private static final Logger logger = LoggerFactory.getLogger(ScoreController.class);
+	private static final ModelAndView SCORE_REDITRCT_ACTION = new ModelAndView("redirect:showAllScore.do");// 重定向分页所有分数的Action
+	/**
+	 * 注入service层
+	 */
 	@Autowired
 	private ScoreService ss;
 	@Autowired
@@ -48,21 +54,21 @@ public class ScoreController {
 	 */
 	@RequestMapping(value = "/showPersonalScore.do")
 	public ModelAndView showPersonalScore(Score score, BasePage<Score> pages, HttpSession session) {
-		// 从session中拿出当前用户信息,将它塞入分页对象中去
-		User user = (User) session.getAttribute(Constant.LOGIN_SESSION_USER_KEY);
-		score.setExamPaperId(user.getUserId());
 		ModelAndView mv = new ModelAndView("examClient/showPersonalScore");
+		// 从session中拿出当前用户信息,将它塞入分页对象中去
+		User user = (User) session.getAttribute(Constant.SESSION_USER_KEY);
+		score.setExamPaperId(user.getUserId());
 		// 封装查询条件
 		pages.setBean(score);
 		// 试卷分页
 		List<Score> scores = ss.showPersonalList(pages);
 		// 将list封装到分页对象中
 		pages.setList(scores);
-		mv.addObject("pages", pages);
+		mv.addObject(Constant.PAGE_KEY, pages);
 		// 查询所有用户信息，供下拉框显示
 		List<User> users = us.findAll();
-		mv.addObject("users", users);
-		log.info("用户的个数为:" + users.size());
+		mv.addObject(Constant.USER_KEY, users);
+		logger.info("用户的个数为:{}", users.size());
 		return mv;
 	}
 
@@ -84,11 +90,11 @@ public class ScoreController {
 		List<Score> scores = ss.pageList(pages);
 		// 将list封装到分页对象中
 		pages.setList(scores);
-		mv.addObject("pages", pages);
+		mv.addObject(Constant.PAGE_KEY, pages);
 		// 查询所有用户信息，供下拉框显示
 		List<User> users = us.findAll();
-		mv.addObject("users", users);
-		log.info("用户的个数为:" + users.size());
+		mv.addObject(Constant.USER_KEY, users);
+		logger.info("用户的个数为:{}", users.size());
 		return mv;
 	}
 
@@ -101,7 +107,6 @@ public class ScoreController {
 	 */
 	@RequestMapping(value = "/updateScore.do")
 	public ModelAndView updateScore(Integer paperId, Integer userId, Integer[] scores, HttpSession session) {
-		ModelAndView mv = new ModelAndView("redirect:showAllScore.do");
 		// 计算简单题总分
 		Integer sum = 0;
 		for (Integer s : scores) {
@@ -109,7 +114,7 @@ public class ScoreController {
 		}
 		// 根据试卷ID和用户ID给该试卷主观题打分
 		ss.updateScore(paperId, userId, sum);
-		session.setAttribute("msg", "<script>$(function(){swal('Good!', '批阅试卷成功!', 'success');});</script>");
-		return mv;
+		session.setAttribute(Constant.TIP_KEY, StringUtil.genTipMsg("批阅试卷成功!", "success"));
+		return SCORE_REDITRCT_ACTION;
 	}
 }

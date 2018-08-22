@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.xn.hk.common.dao.BaseDao;
 import com.xn.hk.common.service.impl.BaseServiceImpl;
+import com.xn.hk.common.utils.EnumStatus;
 import com.xn.hk.common.utils.page.BasePage;
 import com.xn.hk.exam.dao.PaperDao;
 import com.xn.hk.exam.dao.QuestionDao;
@@ -44,10 +45,10 @@ public class PaperServiceImpl extends BaseServiceImpl<Paper> implements PaperSer
 	 */
 	public int changeState(Integer paperId) {
 		Paper p = pd.findById(paperId);
-		if (p.getIsAllowed() == 0) {
-			return pd.changeState(1, paperId);
+		if (p.getIsAllowed().intValue() == EnumStatus.NORMAL.getCode().intValue()) {
+			return pd.changeState(EnumStatus.ISLOCKED.getCode(), paperId);
 		} else {
-			return pd.changeState(0, paperId);
+			return pd.changeState(EnumStatus.NORMAL.getCode(), paperId);
 		}
 	}
 
@@ -74,7 +75,7 @@ public class PaperServiceImpl extends BaseServiceImpl<Paper> implements PaperSer
 				pd.createPaper(paper.getPaperId(), paper.getTypeIds()[i], qids[j]);
 			}
 		}
-		return 1;
+		return paper.getTypeIds().length * 3 + 1;
 	}
 
 	/**
@@ -98,7 +99,9 @@ public class PaperServiceImpl extends BaseServiceImpl<Paper> implements PaperSer
 
 	/**
 	 * 后台实现已考(待批阅)试卷分页,用于教师批阅试卷
-	 * @param pages 试卷分页
+	 * 
+	 * @param pages
+	 *            试卷分页
 	 * @return 待批阅试卷列表
 	 */
 	public List<Paper> pageRemainReadList(BasePage<Paper> pages) {
@@ -108,7 +111,9 @@ public class PaperServiceImpl extends BaseServiceImpl<Paper> implements PaperSer
 
 	/**
 	 * 在试卷配置表中根据试卷ID查询该试卷简答题的分数
-	 * @param paperId 试卷ID
+	 * 
+	 * @param paperId
+	 *            试卷ID
 	 * @return 简答题的分数
 	 */
 	public Integer findScoreByPaperId(Integer paperId) {

@@ -88,13 +88,13 @@ h5{
 			</ul>
 		</div>
 		<!-- 题目显示区 -->
-		<h4 align=center>${p.paperName} (总分: ${p.paperScore}分)</h4>
-		<h5 align=center>出卷人: ${p.createPaperName} , 总时间: ${p.totalTime}分钟</h5>
+		<h4 align=center>${paper.paperName} (总分: ${paper.paperScore}分)</h4>
+		<h5 align=center>出卷人: ${paper.createPaperName} , 总时间: ${paper.totalTime}分钟</h5>
 		<form action="${ctx}/exam/exam/submitPaper.do" method="post" id="fm">
 			<!-- 试卷ID -->
 			<input type="hidden" name="paperId" value="${p.paperId}"/>
 			<table>
-				<c:forEach var="q" items="${list}" varStatus="i">
+				<c:forEach var="q" items="${qlist}" varStatus="i">
 					<tr class="title">
 						<td>${i.count}.</td>
 						<td colspan="2">(${q.type.typeName}) ${q.questionTitle}

@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.xn.hk.common.dao.BaseDao;
 import com.xn.hk.common.service.impl.BaseServiceImpl;
+import com.xn.hk.common.utils.EnumStatus;
 import com.xn.hk.exam.dao.QuestionDao;
 import com.xn.hk.exam.model.Question;
 import com.xn.hk.exam.service.QuestionService;
@@ -39,10 +40,10 @@ public class QuestionServiceImpl extends BaseServiceImpl<Question> implements Qu
 	 */
 	public int changeState(Integer questionId) {
 		Question q = qd.findById(questionId);
-		if (q.getQuestionStatus() == 0) {
-			return qd.changeState(1, questionId);
+		if (q.getQuestionStatus().intValue() == EnumStatus.NORMAL.getCode().intValue()) {
+			return qd.changeState(EnumStatus.ISLOCKED.getCode(), questionId);
 		} else {
-			return qd.changeState(0, questionId);
+			return qd.changeState(EnumStatus.NORMAL.getCode(), questionId);
 		}
 	}
 

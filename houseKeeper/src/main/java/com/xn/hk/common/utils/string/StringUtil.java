@@ -83,7 +83,7 @@ public final class StringUtil {
 	 * @return
 	 */
 	public static String genTipMsg(String tip, String status) {
-		return "<script>$(function(){swal('OMG!', " + tip + ", " + status + ");});</script>";
+		return "<script>$(function(){swal('OMG!', '" + tip + "', '" + status + "');});</script>";
 	}
 
 	/**
@@ -103,8 +103,8 @@ public final class StringUtil {
 	 * @return 验证码字符串
 	 */
 	public static String drawImg(ByteArrayOutputStream output) {
-		// 随机产生6个字符
-		String code = genRandomString(6);
+		// 随机产生4个字符
+		String code = genRandomString(4);
 		// 设置验证码的宽高
 		int width = 100;
 		int height = 48;

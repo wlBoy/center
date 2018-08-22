@@ -312,7 +312,7 @@ function linkModule(){
             <div class="form-group">
 	            <label class="control-label col-md-3">一级模块</label>
 	            <div class="col-md-9" id="modules">
-	              <c:forEach var="o" items="${oneMenus}" varStatus="i">
+	              <c:forEach var="o" items="${oneModules}" varStatus="i">
 	           		 <!-- 只有这种写法，才能将modelId动态塞入role对象的models属性数组中去 -->
 	              	 <input type="checkbox" class="one" value="${o.moduleId}" name="modules[${i.index}].moduleId">${o.moduleName}
 	              </c:forEach>
@@ -321,9 +321,9 @@ function linkModule(){
             <div class="form-group">
 	            <label class="control-label col-md-3">二级模块</label>
 	            <div class="col-md-9" id="modules">
-	              <c:forEach var="t" items="${twoMenus}" varStatus="i">
+	              <c:forEach var="t" items="${twoModules}" varStatus="i">
 	           		 <!-- 只有这种写法，才能将modelId动态塞入role对象的models属性数组中去 -->
-	              	 <input type="checkbox" class="two" value="${t.moduleId}" data="${t.parentId}"  name="modules[${oneMenuSize+i.index}].moduleId">${t.moduleName}
+	              	 <input type="checkbox" class="two" value="${t.moduleId}" data="${t.parentId}"  name="modules[${oneModulesSize+i.index}].moduleId">${t.moduleName}
 	              </c:forEach>
 	            </div>
 	        </div>

@@ -4,12 +4,15 @@ import java.util.List;
 
 import javax.servlet.http.HttpSession;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.xn.hk.common.constant.Constant;
+import com.xn.hk.common.utils.string.StringUtil;
 import com.xn.hk.exam.model.QuestionType;
 import com.xn.hk.exam.service.QuestionTypeService;
 
@@ -27,7 +30,11 @@ public class QuestionTypeController {
 	/**
 	 * 记录日志
 	 */
-	private static final Logger log = Logger.getLogger(QuestionTypeController.class);
+	private static final Logger logger = LoggerFactory.getLogger(QuestionTypeController.class);
+	private static final ModelAndView QUESTION_TYPE_REDITRCT_ACTION = new ModelAndView("redirect:showAllType.do");// 重定向分页所有题型的Action
+	/**
+	 * 注入service层
+	 */
 	@Autowired
 	private QuestionTypeService qts;
 
@@ -40,71 +47,68 @@ public class QuestionTypeController {
 	public ModelAndView showAllType() {
 		ModelAndView mv = new ModelAndView("exam/showAllType");
 		List<QuestionType> types = qts.findAll();
-		mv.addObject("types", types);
-		log.info("所有的题型个数为:" + types.size());
+		mv.addObject(Constant.TYPES_VALUE, types);
+		logger.info("所有的题型个数为:{}", types.size());
 		return mv;
 	}
 
 	/**
 	 * 添加题型
 	 * 
-	 * @param role
+	 * @param type
 	 *            题型实体
 	 * @param session
 	 * @return ModelAndView
 	 */
 	@RequestMapping(value = "/add.do")
 	public ModelAndView add(QuestionType type, HttpSession session) {
-		ModelAndView mv = new ModelAndView("redirect:showAllType.do");
 		int result = qts.add(type);
 		if (result == 0) {
-			log.error("添加题型失败!");
+			logger.error("添加题型{}失败!", type.getTypeName());
 		} else {
-			log.info("添加题型成功!");
-			session.setAttribute("msg", "<script>$(function(){swal('Good!', '添加题型成功!', 'success');});</script>");
+			logger.info("添加题型{}成功!", type.getTypeName());
+			session.setAttribute(Constant.TIP_KEY, StringUtil.genTipMsg("添加题型成功!", "success"));
 		}
-		return mv;
+		return QUESTION_TYPE_REDITRCT_ACTION;
 	}
 
 	/**
-	 * 更新角色
+	 * 更新题型
 	 * 
-	 * @param role
-	 *            角色实体
+	 * @param type
+	 *            题型实体
 	 * @param session
 	 * @return ModelAndView
 	 */
 	@RequestMapping(value = "/update.do")
 	public ModelAndView update(QuestionType type, HttpSession session) {
-		ModelAndView mv = new ModelAndView("redirect:showAllType.do");
 		int result = qts.update(type);
 		if (result == 0) {
-			log.error("修改题型失败!");
+			logger.error("修改题型{}失败!", type.getTypeName());
 		} else {
-			log.info("修改题型成功!");
-			session.setAttribute("msg", "<script>$(function(){swal('Good!', '修改题型成功!', 'success');});</script>");
+			logger.info("修改题型{}成功!", type.getTypeName());
+			session.setAttribute(Constant.TIP_KEY, StringUtil.genTipMsg("修改题型成功!", "success"));
 		}
-		return mv;
+		return QUESTION_TYPE_REDITRCT_ACTION;
 	}
 
 	/**
-	 * 根据角色ID删除该角色
+	 * 根据题型ID删除该题型
 	 * 
-	 * @param roleId
-	 *            角色ID
+	 * @param typeIds
+	 *            题型ID数组
 	 * @param session
 	 * @return ModelAndView
 	 */
 	@RequestMapping(value = "/delete.do")
 	public ModelAndView delete(Integer[] typeIds, HttpSession session) {
-		ModelAndView mv = new ModelAndView("redirect:showAllType.do");
 		int result = qts.delete(typeIds);
 		if (result == 0) {
-			log.error("删除失败,该角色ID不存在!");
+			logger.error("删除失败,该题型ID不存在!");
 		} else {
-			log.info("删除题型成功!");
-			session.setAttribute("msg", "<script>$(function(){swal('Good!', '删除题型成功!', 'success');});</script>");
+			logger.info("删除题型成功!");
+			session.setAttribute(Constant.TIP_KEY, StringUtil.genTipMsg("删除题型成功!", "success"));
 		}
-		return mv;
+		return QUESTION_TYPE_REDITRCT_ACTION;
 	}
 }

@@ -2,7 +2,8 @@ package com.xn.hk.account.controller;
 
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -10,9 +11,11 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.xn.hk.account.model.Money;
 import com.xn.hk.account.service.MoneyService;
+import com.xn.hk.common.constant.Constant;
 import com.xn.hk.common.utils.page.BasePage;
 import com.xn.hk.system.model.User;
 import com.xn.hk.system.service.UserService;
+
 /**
  * 
  * @Title: MoneyController
@@ -27,11 +30,15 @@ public class MoneyController {
 	/**
 	 * 记录日志
 	 */
-	private static final Logger log = Logger.getLogger(MoneyController.class);
+	private static final Logger logger = LoggerFactory.getLogger(MoneyController.class);
+	/**
+	 * 注入service层
+	 */
 	@Autowired
 	private MoneyService ms;
 	@Autowired
 	private UserService us;
+
 	/**
 	 * 实现总资产分页
 	 * 
@@ -49,11 +56,11 @@ public class MoneyController {
 		List<Money> moneys = ms.pageList(pages);
 		// 将list封装到分页对象中
 		pages.setList(moneys);
-		mv.addObject("pages", pages);
+		mv.addObject(Constant.PAGE_KEY, pages);
 		// 查询所有用户信息，供下拉框显示
 		List<User> users = us.findAll();
-		mv.addObject("users", users);
-		log.info("所有用户个数为:"+users.size());
+		mv.addObject(Constant.USER_KEY, users);
+		logger.info("所有用户个数为:{}", users.size());
 		return mv;
 	}
 

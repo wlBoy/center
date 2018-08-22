@@ -6,7 +6,8 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -14,6 +15,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.xn.hk.common.constant.Constant;
 import com.xn.hk.common.utils.page.BasePage;
+import com.xn.hk.common.utils.string.StringUtil;
 import com.xn.hk.exam.model.Paper;
 import com.xn.hk.exam.model.Question;
 import com.xn.hk.exam.model.Score;
@@ -38,7 +40,10 @@ public class PaperClientController {
 	/**
 	 * 记录日志
 	 */
-	private static final Logger log = Logger.getLogger(PaperClientController.class);
+	private static final Logger logger = LoggerFactory.getLogger(PaperClientController.class);
+	/**
+	 * 注入service层
+	 */
 	@Autowired
 	private PaperClientService pcs;
 	@Autowired
@@ -63,7 +68,7 @@ public class PaperClientController {
 	public ModelAndView showAllClientPaper(Paper paper, BasePage<Paper> pages, HttpSession session) {
 		ModelAndView mv = new ModelAndView("examClient/showAllClientPaper");
 		// 从session中拿出当前用户信息,将它塞入分页对象中去
-		User user = (User) session.getAttribute(Constant.LOGIN_SESSION_USER_KEY);
+		User user = (User) session.getAttribute(Constant.SESSION_USER_KEY);
 		paper.setExamPaperId(user.getUserId());
 		// 封装查询条件
 		pages.setBean(paper);
@@ -71,11 +76,11 @@ public class PaperClientController {
 		List<Paper> papers = pcs.pageList(pages);
 		// 将list封装到分页对象中
 		pages.setList(papers);
-		mv.addObject("pages", pages);
+		mv.addObject(Constant.PAGE_KEY, pages);
 		// 查询所有用户信息，供下拉框显示
 		List<User> users = us.findAll();
-		mv.addObject("users", users);
-		log.info("用户的个数为:" + users.size());
+		mv.addObject(Constant.USER_KEY, users);
+		logger.info("用户的个数为:{}" , users.size());
 		return mv;
 	}
 
@@ -90,12 +95,12 @@ public class PaperClientController {
 	public ModelAndView onlineExam(Integer paperId, HttpSession session) {
 		ModelAndView mv = new ModelAndView("examClient/onlineExam");
 		// 查找改试卷的基本信息
-		Paper p = ps.findById(paperId);
-		mv.addObject("p", p);
-		log.info("该试卷的信息为:" + p);
+		Paper paper = ps.findById(paperId);
+		mv.addObject(Constant.PAPER_KEY, paper);
+		logger.info("该试卷的信息为:{}" ,paper);
 		// 查询该试卷的所有题目信息放至session中,供考试使用和评分使用
-		List<Question> list = qs.findQuestionByPaperId(paperId);
-		session.setAttribute("list", list);
+		List<Question> qlist = qs.findQuestionByPaperId(paperId);
+		session.setAttribute(Constant.QLIST_VALUES, qlist);
 		return mv;
 	}
 
@@ -113,9 +118,9 @@ public class PaperClientController {
 	public ModelAndView submitPaper(Integer paperId, HttpServletRequest request, HttpSession session) {
 		ModelAndView mv = new ModelAndView("redirect:showAllClientPaper.do");
 		// 从session中拿出当前用户信息
-		User user = (User) session.getAttribute(Constant.LOGIN_SESSION_USER_KEY);
+		User user = (User) session.getAttribute(Constant.SESSION_USER_KEY);
 		// 从session中拿出试卷所有题目信息
-		List<Question> qlist = (List<Question>) session.getAttribute("list");
+		List<Question> qlist = (List<Question>) session.getAttribute(Constant.QLIST_VALUES);
 		List<String> userList = new ArrayList<String>();
 		int singleScore = 0;
 		int multipleScore = 0;
@@ -156,7 +161,7 @@ public class PaperClientController {
 		score.setPaperStatus(1);
 		// 添加分数和用户答案
 		pcs.addScoreAndSolution(score, qlist, userList);
-		session.setAttribute("msg", "<script>$(function(){swal('Good!', '交卷成功!', 'success');});</script>");
+		session.setAttribute(Constant.TIP_KEY, StringUtil.genTipMsg("交卷成功!", "success"));
 		return mv;
 	}
 
@@ -170,16 +175,16 @@ public class PaperClientController {
 	@RequestMapping(value = "/showPaperDetail.do")
 	public ModelAndView showPaperDetail(Integer paperId, HttpSession session) {
 		ModelAndView mv = new ModelAndView("examClient/showPaperDetail");
-		User user = (User) session.getAttribute("user");
+		User user = (User) session.getAttribute(Constant.SESSION_USER_KEY);
 		// 查询该用户该试卷的分数表和试卷基本信息
 		Score score = ss.findByPaperIdAndUserId(paperId, user.getUserId());
 		// 查询该用户该试卷的填写的用户答案
 		List<String> ulist = pcs.findSolutionByPaperIdAndUserId(paperId, user.getUserId());
 		// 查询该试卷的所有题目信息
 		List<Question> qlist = qs.findQuestionByPaperId(paperId);
-		mv.addObject("qlist", qlist);
-		mv.addObject("ulist", ulist);
-		mv.addObject("score", score);
+		mv.addObject(Constant.QLIST_VALUES, qlist);
+		mv.addObject(Constant.ULIST_VALUES, ulist);
+		mv.addObject(Constant.SCORE_VALUES, score);
 		return mv;
 	}
 }

@@ -12,11 +12,43 @@ public class Constant {
 	/**
 	 * session中已登录的用户的key
 	 */
-	public final static String LOGIN_SESSION_USER_KEY = "user";
+	public final static String SESSION_USER_KEY = "user";
 	/**
 	 * 提示信息的key
 	 */
 	public final static String TIP_KEY = "msg";
+	/**
+	 * 题目List的value
+	 */
+	public final static String QLIST_VALUES = "qlist";
+	/**
+	 * 用户题目安答案List的value
+	 */
+	public final static String ULIST_VALUES = "ulist";
+	/**
+	 * 分数的value
+	 */
+	public final static String SCORE_VALUES = "score";
+	/**
+	 * 类别的value
+	 */
+	public final static String TYPES_VALUE = "types";
+	/**
+	 * 账务父类别-支出
+	 */
+	public final static String COMEOUT_VALUE = "支出";
+	/**
+	 * 账务父类别-收入
+	 */
+	public final static String COMEIN_VALUE = "收入";
+	/**
+	 * 父类别为收入的子类别的key
+	 */
+	public final static String COMEIN_TYPES_KEY = "comeInTypes";
+	/**
+	 * 父类别为支出的子类别的key
+	 */
+	public final static String COMEOUT_TYPES_KEY = "comeOutTypes";
 	/**
 	 * cookie中的用户名key
 	 */
@@ -36,11 +68,11 @@ public class Constant {
 	/**
 	 * 所有的一级模块的size
 	 */
-	public final static String ONE_MODULES_SIZE = "oneMenuSize";
+	public final static String ONE_MODULES_SIZE = "oneModulesSize";
 	/**
 	 * 所有的而级模块的size
 	 */
-	public final static String TWO_MODULES_SIZE = "twoMenuSize";
+	public final static String TWO_MODULES_SIZE = "oneModulesSize";
 	/**
 	 * 所有的一级模块的value
 	 */
@@ -65,6 +97,18 @@ public class Constant {
 	 * 所有用户的key
 	 */
 	public final static String USER_KEY = "users";
+	/**
+	 * 试卷key
+	 */
+	public final static String PAPER_KEY = "paper";
+	/**
+	 * 试卷IDkey
+	 */
+	public final static String PAPERID_KEY = "paperId";
+	/**
+	 * 用户IDkey
+	 */
+	public final static String USERID_KEY = "userId";
 	/**
 	 * 加密登录密码的key
 	 */

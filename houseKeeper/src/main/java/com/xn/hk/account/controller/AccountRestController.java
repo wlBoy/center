@@ -2,10 +2,12 @@ package com.xn.hk.account.controller;
 
 import javax.servlet.http.HttpSession;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.xn.hk.account.model.Account;
 import com.xn.hk.account.model.AccountType;
@@ -22,13 +24,13 @@ import com.xn.hk.system.model.User;
  * @Author: wanlei
  * @Date: 2018年1月8日 上午9:17:36
  */
-@org.springframework.web.bind.annotation.RestController
+@RestController
 @RequestMapping("/account/rest")
 public class AccountRestController {
 	/**
 	 * 记录日志
 	 */
-	private static final Logger log = Logger.getLogger(AccountRestController.class);
+	private static final Logger logger = LoggerFactory.getLogger(AccountRestController.class);
 	@Autowired
 	private AccountTypeService ats;
 	@Autowired
@@ -44,7 +46,7 @@ public class AccountRestController {
 	@RequestMapping(value = "/findByTypeId.do", method = RequestMethod.GET)
 	public AccountType findByTypeId(Integer typeId) {
 		AccountType type = ats.findById(typeId);
-		log.info("该账务类别的信息为:" + type);
+		logger.info("该账务类别的信息为:" + type);
 		return type;
 	}
 
@@ -58,9 +60,9 @@ public class AccountRestController {
 	@RequestMapping(value = "/findByTypeName.do", method = RequestMethod.GET)
 	public AccountType findByTypeName(String typeName, HttpSession session) {
 		// 从session中拿出当前用户信息
-		User user = (User) session.getAttribute(Constant.LOGIN_SESSION_USER_KEY);
+		User user = (User) session.getAttribute(Constant.SESSION_USER_KEY);
 		AccountType type = ats.findByNameAndUserId(typeName, user.getUserId());
-		log.info("该账务类别的信息为:" + type);
+		logger.info("该账务类别的信息为:" + type);
 		return type;
 	}
 
@@ -74,7 +76,7 @@ public class AccountRestController {
 	@RequestMapping(value = "/findByAccountId.do", method = RequestMethod.GET)
 	public Account findByAccountId(Integer accountId) {
 		Account account = as.findById(accountId);
-		log.info("该账务的信息为:" + account);
+		logger.info("该账务的信息为:" + account);
 		return account;
 	}
 
@@ -88,9 +90,9 @@ public class AccountRestController {
 	@RequestMapping(value = "/findByAccountTitle.do", method = RequestMethod.GET)
 	public Account findByAccountTitle(String accountTitle, HttpSession session) {
 		// 从session中拿出当前用户信息
-		User user = (User) session.getAttribute(Constant.LOGIN_SESSION_USER_KEY);
+		User user = (User) session.getAttribute(Constant.SESSION_USER_KEY);
 		Account account = as.findByNameAndUserId(accountTitle, user.getUserId());
-		log.info("该账务的信息为:" + account);
+		logger.info("该账务的信息为:" + account);
 		return account;
 	}
 }

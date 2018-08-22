@@ -4,7 +4,8 @@ import java.util.List;
 
 import javax.servlet.http.HttpSession;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -12,6 +13,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.xn.hk.common.constant.Constant;
 import com.xn.hk.common.utils.page.BasePage;
+import com.xn.hk.common.utils.string.StringUtil;
 import com.xn.hk.exam.model.Paper;
 import com.xn.hk.exam.model.Question;
 import com.xn.hk.exam.model.QuestionType;
@@ -35,7 +37,11 @@ public class PaperController {
 	/**
 	 * 记录日志
 	 */
-	private static final Logger log = Logger.getLogger(PaperController.class);
+	private static final Logger logger = LoggerFactory.getLogger(PaperController.class);
+	private static final ModelAndView PAPER_REDITRCT_ACTION = new ModelAndView("redirect:showAllPaper.do");// 重定向分页所有试卷的Action
+	/**
+	 * 注入service层
+	 */
 	@Autowired
 	private PaperService ps;
 	@Autowired
@@ -63,15 +69,15 @@ public class PaperController {
 		List<Paper> papers = ps.pageList(pages);
 		// 将list封装到分页对象中
 		pages.setList(papers);
-		mv.addObject("pages", pages);
+		mv.addObject(Constant.PAGE_KEY, pages);
 		// 查询所有的题型,供添加试卷时使用
 		List<QuestionType> types = qts.findAll();
-		mv.addObject("types", types);
-		log.info("所有的题型个数为:" + types.size());
+		mv.addObject(Constant.TYPES_VALUE, types);
+		logger.info("所有的题型个数为:{}" + types.size());
 		// 查询所有用户信息，供下拉框显示
 		List<User> users = us.findAll();
-		mv.addObject("users", users);
-		log.info("用户的个数为:" + users.size());
+		mv.addObject(Constant.USER_KEY, users);
+		logger.info("用户的个数为:{}" + users.size());
 		return mv;
 	}
 
@@ -85,18 +91,17 @@ public class PaperController {
 	 */
 	@RequestMapping(value = "/add.do")
 	public ModelAndView addQuestion(Paper paper, HttpSession session) {
-		ModelAndView mv = new ModelAndView("redirect:showAllPaper.do");
 		// 从session中取出当前用户
-		User user = (User) session.getAttribute(Constant.LOGIN_SESSION_USER_KEY);
+		User user = (User) session.getAttribute(Constant.SESSION_USER_KEY);
 		paper.setCreatePaperId(user.getUserId());
 		int result = ps.addPaper(paper);
 		if (result == 0) {
-			log.error("添加试卷失败!");
+			logger.error("添加试卷{}失败!", paper.getPaperName());
 		} else {
-			log.info("添加试卷成功!");
-			session.setAttribute("msg", "<script>$(function(){swal('Good!', '添加试卷成功!', 'success');});</script>");
+			logger.info("添加试卷{}成功!", paper.getPaperName());
+			session.setAttribute(Constant.TIP_KEY, StringUtil.genTipMsg("添加试卷成功!", "success"));
 		}
-		return mv;
+		return PAPER_REDITRCT_ACTION;
 	}
 
 	/**
@@ -109,15 +114,14 @@ public class PaperController {
 	 */
 	@RequestMapping(value = "/update.do")
 	public ModelAndView updateQuestion(Paper paper, HttpSession session) {
-		ModelAndView mv = new ModelAndView("redirect:showAllPaper.do");
 		int result = ps.update(paper);
 		if (result == 0) {
-			log.error("修改试卷失败!");
+			logger.error("修改试卷{}失败!", paper.getPaperName());
 		} else {
-			log.info("修改试卷成功!");
-			session.setAttribute("msg", "<script>$(function(){swal('Good!', '修改试卷成功!', 'success');});</script>");
+			logger.info("修改试卷{}成功!", paper.getPaperName());
+			session.setAttribute(Constant.TIP_KEY, StringUtil.genTipMsg("修改试卷成功!", "success"));
 		}
-		return mv;
+		return PAPER_REDITRCT_ACTION;
 	}
 
 	/**
@@ -130,15 +134,14 @@ public class PaperController {
 	 */
 	@RequestMapping(value = "/delete.do")
 	public ModelAndView deleteQuestion(Integer[] paperIds, HttpSession session) {
-		ModelAndView mv = new ModelAndView("redirect:showAllPaper.do");
 		int result = ps.deletePaper(paperIds);
 		if (result == 0) {
-			log.error("删除失败,该数组不存在!");
+			logger.error("删除失败,该数组不存在!");
 		} else {
-			log.info("删除试卷成功!");
-			session.setAttribute("msg", "<script>$(function(){swal('Good!', '删除试卷成功!', 'success');});</script>");
+			logger.info("删除试卷成功!");
+			session.setAttribute(Constant.TIP_KEY, StringUtil.genTipMsg("删除试卷成功!", "success"));
 		}
-		return mv;
+		return PAPER_REDITRCT_ACTION;
 	}
 
 	/**
@@ -150,11 +153,9 @@ public class PaperController {
 	 */
 	@RequestMapping(value = "/changeState.do")
 	public ModelAndView changeState(Integer paperId) {
-		ModelAndView mv = new ModelAndView("redirect:showAllPaper.do");
-		// 切换试卷状态
 		ps.changeState(paperId);
-		log.info("切换试卷状态成功!");
-		return mv;
+		logger.info("试卷{}切换状态成功!", paperId);
+		return PAPER_REDITRCT_ACTION;
 	}
 
 	/**
@@ -173,10 +174,10 @@ public class PaperController {
 		List<Question> qList = qs.findAnswerByPaperIdAndUserId(paperId, userId);
 		// 在试卷配置表中根据试卷ID查询该试卷简答题的分数(即每到简答题分数)
 		Integer score = ps.findScoreByPaperId(paperId);
-		mv.addObject("score", score);
-		mv.addObject("paperId", paperId);
-		mv.addObject("userId", userId);
-		mv.addObject("qList", qList);
+		mv.addObject(Constant.SCORE_VALUES, score);
+		mv.addObject(Constant.PAPERID_KEY, paperId);
+		mv.addObject(Constant.USERID_KEY, userId);
+		mv.addObject(Constant.QLIST_VALUES, qList);
 		return mv;
 	}
 

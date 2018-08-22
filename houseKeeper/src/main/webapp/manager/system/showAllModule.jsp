@@ -397,7 +397,7 @@ function changeModule(moduleLevel,parentId){
 	            <div class="col-md-8">
 	           		 <select name="parentId" id="parentModule" class="form-control">
 	           		 	<option value="" class="none show" selected="selected">无</option>
-	           		 	<c:forEach var="m" items="${oneMenus}">
+	           		 	<c:forEach var="m" items="${oneModules}">
 	           				<option class="oneMenus hide" value="${m.moduleId}">${m.moduleName}</option>
 	           			</c:forEach>
 					 </select>

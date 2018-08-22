@@ -69,8 +69,8 @@ public class ScoreServiceImpl extends BaseServiceImpl<Score> implements ScoreSer
 	 *            简答题分数
 	 * @return 影响条数
 	 */
-	public int updateScore(Integer paperId, Integer userId,Integer sum) {
-		return sd.updateScore(paperId,userId,sum);
+	public int updateScore(Integer paperId, Integer userId, Integer sum) {
+		return sd.updateScore(paperId, userId, sum);
 	}
 
 }

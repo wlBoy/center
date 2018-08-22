@@ -1,6 +1,7 @@
 package com.xn.hk.exam.controller;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -27,7 +28,10 @@ public class ExamRestController {
 	/**
 	 * 记录日志
 	 */
-	private static final Logger log = Logger.getLogger(ExamRestController.class);
+	private static final Logger logger = LoggerFactory.getLogger(ExamRestController.class);
+	/**
+	 * 注入service层
+	 */
 	@Autowired
 	private QuestionTypeService qts;
 	@Autowired
@@ -45,7 +49,7 @@ public class ExamRestController {
 	@RequestMapping(value = "/findByTypeId.do", method = RequestMethod.GET)
 	public QuestionType findByTypeId(Integer typeId) {
 		QuestionType t = qts.findById(typeId);
-		log.info("该题型的信息为:" + t);
+		logger.info("该题型的信息为:{}", t);
 		return t;
 	}
 
@@ -59,7 +63,7 @@ public class ExamRestController {
 	@RequestMapping(value = "/findByTypeName.do", method = RequestMethod.GET)
 	public QuestionType findByTypeName(String typeName) {
 		QuestionType t = qts.findByName(typeName);
-		log.info("该题型的信息为:" + t);
+		logger.info("该题型的信息为:{}", t);
 		return t;
 	}
 
@@ -73,7 +77,7 @@ public class ExamRestController {
 	@RequestMapping(value = "/findByQuestionId.do", method = RequestMethod.GET)
 	public Question findByQuestionId(Integer questionId) {
 		Question q = qs.findById(questionId);
-		log.info("该题目的信息为:" + q);
+		logger.info("该题目的信息为:{}", q);
 		return q;
 	}
 
@@ -87,7 +91,7 @@ public class ExamRestController {
 	@RequestMapping(value = "/findByPaperId.do", method = RequestMethod.GET)
 	public Paper findByPaperId(Integer paperId) {
 		Paper p = ps.findById(paperId);
-		log.info("该试卷的信息为:" + p);
+		logger.info("该试卷的信息为:{}", p);
 		return p;
 	}
 }

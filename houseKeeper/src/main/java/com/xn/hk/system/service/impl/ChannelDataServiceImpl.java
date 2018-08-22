@@ -18,7 +18,6 @@ import com.xn.hk.system.dao.ChannelDataDao;
 import com.xn.hk.system.model.ChannelData;
 import com.xn.hk.system.service.ChannelDataService;
 
-
 /**
  * 
  * @Title: ChannelDataServiceImpl
@@ -29,8 +28,7 @@ import com.xn.hk.system.service.ChannelDataService;
  */
 
 @Service
-public class ChannelDataServiceImpl extends BaseServiceImpl<ChannelData>
-		implements ChannelDataService {
+public class ChannelDataServiceImpl extends BaseServiceImpl<ChannelData> implements ChannelDataService {
 	@Autowired
 	private ChannelDataDao cdd;
 
@@ -50,9 +48,9 @@ public class ChannelDataServiceImpl extends BaseServiceImpl<ChannelData>
 	 *            上传的文件的文件名
 	 * @throws Exception
 	 */
-	public int importExcelInfo(InputStream in , String fileName) throws Exception {
+	public int importExcelInfo(InputStream in, String fileName) throws Exception {
 		// 调用工具类将EXCEL表格中的内容封装成list集合
-		List<List<Object>> listob = ExcelUtil.getBankListByExcel(in,fileName);
+		List<List<Object>> listob = ExcelUtil.getBankListByExcel(in, fileName);
 		List<ChannelData> list = new ArrayList<ChannelData>();
 		for (int i = 0; i < listob.size(); i++) {
 			List<Object> ob = listob.get(i);
@@ -97,10 +95,9 @@ public class ChannelDataServiceImpl extends BaseServiceImpl<ChannelData>
 		excel.add(new ExcelBean("开发状态", "status", 0));
 		excel.add(new ExcelBean("合作方式", "partnerType", 0));
 		map.put(0, excel);
-		String sheetName = "杭州讯牛每天数据";
+		String sheetName = "每天渠道数据";
 		// 调用ExcelUtil的方法,将查询出的结果封装到EXCEL文件中
-		xssfWorkbook = ExcelUtil.createExcelFile(ChannelData.class, list, map,
-				sheetName);
+		xssfWorkbook = ExcelUtil.createExcelFile(ChannelData.class, list, map, sheetName);
 		return xssfWorkbook;
 	}
 

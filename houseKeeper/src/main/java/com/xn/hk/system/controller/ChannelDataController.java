@@ -9,8 +9,9 @@ import java.util.List;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import org.apache.log4j.Logger;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,7 +19,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.xn.hk.common.constant.Constant;
 import com.xn.hk.common.utils.page.BasePage;
+import com.xn.hk.common.utils.string.StringUtil;
 import com.xn.hk.system.model.ChannelData;
 import com.xn.hk.system.service.ChannelDataService;
 
@@ -36,7 +39,8 @@ public class ChannelDataController {
 	/**
 	 * 记录日志
 	 */
-	private static final Logger log = Logger.getLogger(ChannelDataController.class);
+	private static final Logger logger = LoggerFactory.getLogger(ChannelDataController.class);
+	private static final ModelAndView CHANNEL_REDITRCT_ACTION = new ModelAndView("redirect:showAllChannelData.do");// 重定向分页所有渠道的Action
 	@Autowired
 	private ChannelDataService cds;
 
@@ -50,19 +54,18 @@ public class ChannelDataController {
 	 */
 	@RequestMapping("/importExcel.do")
 	public ModelAndView importExcel(MultipartFile upfile, HttpSession session) throws Exception {
-		ModelAndView mv = new ModelAndView("redirect:showAllChannelData.do");
 		// 获取上传的文件的输入流
 		InputStream in = upfile.getInputStream();
 		// 获取上传的文件的文件名
 		String fileName = upfile.getOriginalFilename();
 		// 数据导入
-		int result = cds.importExcelInfo(in,fileName);
+		int result = cds.importExcelInfo(in, fileName);
 		if (result > 0) {
-			log.info("导入Excel数据成功!");
-			session.setAttribute("msg", "<script>$(function(){swal('Good!', '导入Excel数据成功!', 'success');});</script>");
+			logger.info("导入Excel数据成功!");
+			session.setAttribute(Constant.TIP_KEY, StringUtil.genTipMsg("导入Excel数据成功!", "success"));
 		}
 		in.close();
-		return mv;
+		return CHANNEL_REDITRCT_ACTION;
 	}
 
 	/**
@@ -78,9 +81,9 @@ public class ChannelDataController {
 	@ResponseBody
 	public void exportAll(String fileName, HttpServletResponse response) throws Exception {
 		response.setCharacterEncoding("UTF-8");
+		fileName = new String(fileName.getBytes("UTF-8"), "ISO8859-1") + ".xlsx";
 		// 防止下载的文件名中文乱码
-		response.setHeader("Content-Disposition",
-				"attachment;filename=" + new String(fileName.getBytes("UTF-8"), "ISO8859-1") + ".xlsx");
+		response.setHeader("Content-Disposition", "attachment;filename=" + fileName);
 		response.setContentType("application/vnd.ms-excel;charset=UTF-8");
 		XSSFWorkbook workbook = null;
 		// 导出Excel文件
@@ -92,9 +95,9 @@ public class ChannelDataController {
 			bot.flush();
 			workbook.write(bot);
 			bot.close();
-			log.info("导出EXCEL成功!");
+			logger.info("导出EXCEL成功!");
 		} catch (IOException e) {
-			e.printStackTrace();
+			logger.error(e.getMessage());
 		}
 	}
 
@@ -115,8 +118,8 @@ public class ChannelDataController {
 		List<ChannelData> list = cds.pageList(pages);
 		// 将list封装到分页对象中
 		pages.setList(list);
-		mv.addObject("pages", pages);
-		log.info("分页大小为:" + list.size());
+		mv.addObject(Constant.PAGE_KEY, pages);
+		logger.info("分页大小为:{}", list.size());
 		return mv;
 	}
 

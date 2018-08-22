@@ -58,7 +58,7 @@ public class ModuleController {
 		pages.setList(modules);
 		mv.addObject(Constant.PAGE_KEY, pages);
 		// 查询所有的一级模块
-		List<Module> oneMenus = ms.findModuleByLevel(1);
+		List<Module> oneMenus = ms.findModuleByLevel(Constant.ONE_MODULES_VALUE);
 		mv.addObject(Constant.ONE_MODULES_KEY, oneMenus);
 		logger.info("一级模块总个数{}", oneMenus.size());
 		return mv;

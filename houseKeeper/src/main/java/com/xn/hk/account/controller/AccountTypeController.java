@@ -4,7 +4,8 @@ import java.util.List;
 
 import javax.servlet.http.HttpSession;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -14,6 +15,7 @@ import com.xn.hk.account.model.AccountType;
 import com.xn.hk.account.service.AccountTypeService;
 import com.xn.hk.common.constant.Constant;
 import com.xn.hk.common.utils.page.BasePage;
+import com.xn.hk.common.utils.string.StringUtil;
 import com.xn.hk.system.model.User;
 
 /**
@@ -30,7 +32,11 @@ public class AccountTypeController {
 	/**
 	 * 记录日志
 	 */
-	private static final Logger log = Logger.getLogger(AccountTypeController.class);
+	private static final Logger logger = LoggerFactory.getLogger(AccountTypeController.class);
+	private static final ModelAndView ACCOUNT_TYPE_REDITRCT_ACTION = new ModelAndView("redirect:showPersonalType.do");// 重定向分页所有账务类别的Action
+	/**
+	 * 注入service层
+	 */
 	@Autowired
 	private AccountTypeService ats;
 
@@ -47,14 +53,14 @@ public class AccountTypeController {
 	public ModelAndView showPersonalType(AccountType type, BasePage<AccountType> pages, HttpSession session) {
 		ModelAndView mv = new ModelAndView("account/showPersonalType");
 		// 从session中拿出当前用户信息,将它塞入分页对象中去
-		User user = (User) session.getAttribute(Constant.LOGIN_SESSION_USER_KEY);
+		User user = (User) session.getAttribute(Constant.SESSION_USER_KEY);
 		type.setUserId(user.getUserId());
 		// 封装查询条件
 		pages.setBean(type);
 		List<AccountType> types = ats.pagePersonalList(pages);
 		// 将list封装到分页对象中
 		pages.setList(types);
-		mv.addObject("pages", pages);
+		mv.addObject(Constant.PAGE_KEY, pages);
 		return mv;
 	}
 
@@ -68,18 +74,17 @@ public class AccountTypeController {
 	 */
 	@RequestMapping(value = "/add.do")
 	public ModelAndView addType(AccountType type, HttpSession session) {
-		ModelAndView mv = new ModelAndView("redirect:showPersonalType.do");
 		// 从session中拿出当前用户信息,将它塞入对象中去
-		User user = (User) session.getAttribute(Constant.LOGIN_SESSION_USER_KEY);
+		User user = (User) session.getAttribute(Constant.SESSION_USER_KEY);
 		type.setUserId(user.getUserId());
 		int result = ats.add(type);
 		if (result == 0) {
-			log.error("添加个人账务类别失败!");
+			logger.error("添加个人账务类别{}失败!", type.getTypeName());
 		} else {
-			log.error("添加个人账务类别成功!");
-			session.setAttribute("msg", "<script>$(function(){swal('Good!', '添加个人账务类别成功!', 'success');});</script>");
+			logger.error("添加个人账务类别{}成功!", type.getTypeName());
+			session.setAttribute(Constant.TIP_KEY, StringUtil.genTipMsg("添加个人账务类别成功!", "success"));
 		}
-		return mv;
+		return ACCOUNT_TYPE_REDITRCT_ACTION;
 	}
 
 	/**
@@ -92,15 +97,14 @@ public class AccountTypeController {
 	 */
 	@RequestMapping(value = "/update.do")
 	public ModelAndView updateType(AccountType type, HttpSession session) {
-		ModelAndView mv = new ModelAndView("redirect:showPersonalType.do");
 		int result = ats.update(type);
 		if (result == 0) {
-			log.error("修改个人账务类别失败!");
+			logger.error("修改个人账务类别{}失败!", type.getTypeName());
 		} else {
-			log.error("修改个人账务类别成功!");
-			session.setAttribute("msg", "<script>$(function(){swal('Good!', '修改个人账务类别成功!', 'success');});</script>");
+			logger.error("修改个人账务类别{}成功!", type.getTypeName());
+			session.setAttribute(Constant.TIP_KEY, StringUtil.genTipMsg("修改个人账务类别成功!", "success"));
 		}
-		return mv;
+		return ACCOUNT_TYPE_REDITRCT_ACTION;
 	}
 
 	/**
@@ -113,14 +117,13 @@ public class AccountTypeController {
 	 */
 	@RequestMapping(value = "/delete.do")
 	public ModelAndView deleteType(Integer[] typeIds, HttpSession session) {
-		ModelAndView mv = new ModelAndView("redirect:showPersonalType.do");
 		int result = ats.delete(typeIds);
 		if (result == 0) {
-			log.error("删除失败,该数组不存在!");
+			logger.error("删除失败,该数组不存在!");
 		} else {
-			log.error("删除个人账务类别成功!");
-			session.setAttribute("msg", "<script>$(function(){swal('Good!', '删除个人账务类别成功!', 'success');});</script>");
+			logger.error("删除个人账务类别成功!");
+			session.setAttribute(Constant.TIP_KEY, StringUtil.genTipMsg("删除个人账务类别成功!", "success"));
 		}
-		return mv;
+		return ACCOUNT_TYPE_REDITRCT_ACTION;
 	}
 }

@@ -73,7 +73,7 @@ public class RoleController {
 		mv.addObject(Constant.ONE_MODULES_SIZE, oneMenus.size());
 		logger.info("一级模块总个数:{}", oneMenus.size());
 		mv.addObject(Constant.TWO_MODULES_KEY, twoMenus);
-		mv.addObject(Constant.TWO_MODULES_KEY, twoMenus.size());
+		mv.addObject(Constant.TWO_MODULES_SIZE, twoMenus.size());
 		logger.info("二级模块总个数:{}", twoMenus.size());
 		return mv;
 	}
