@@ -5,6 +5,6 @@
 		<title></title>
 	</head>
 	<body>
-		<jsp:forward page="/manager/login.jsp"></jsp:forward>
+		<jsp:forward page="/WEB-INF/manager/login.jsp"></jsp:forward>
 	</body>
 </html>

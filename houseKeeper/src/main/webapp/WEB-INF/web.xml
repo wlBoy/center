@@ -111,6 +111,6 @@
 	</filter>
 	<filter-mapping>
 		<filter-name>ManagerLoginFilter</filter-name>
-		<url-pattern>/manager/*</url-pattern>
+		<url-pattern>*.do</url-pattern>
 	</filter-mapping>
 </web-app>

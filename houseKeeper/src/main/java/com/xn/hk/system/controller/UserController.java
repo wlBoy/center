@@ -34,7 +34,7 @@ import com.xn.hk.system.service.UserService;
  * 
  * @Title: UserController
  * @Package: com.xn.ad.system.controller
- * @Description: 处理账户的控制层
+ * @Description: 处理账户的控制层，redirect不能访问WEB-INF下的JSP页面，只有转发才能访问得到，所以可以先重定向到Action，再转发JSP页面
  * @Author: wanlei
  * @Date: 2017-11-28 下午03:22:28
  */
@@ -46,8 +46,8 @@ public class UserController {
 	 */
 	private static final Logger logger = LoggerFactory.getLogger(UserController.class);
 	private static final ModelAndView USER_REDITRCT_ACTION = new ModelAndView("redirect:showAllUser.do");// 重定向分页所有用户的Action
-	private static final ModelAndView USER_REDITRCT_LOGIN_VIEW = new ModelAndView("redirect:/manager/login.jsp");// 重定向登录页面
-	private static final ModelAndView USER_REDITRCT_HOME_VIEW = new ModelAndView("redirect:/manager/home.jsp");// 重定向后台首页页面
+	private static final ModelAndView USER_REDITRCT_LOGIN_VIEW = new ModelAndView("redirect:tologin.do");// 转发到登录页面
+	private static final ModelAndView USER_REDITRCT_HOME_VIEW = new ModelAndView("redirect:tohome.do");// 转发到后台首页页面
 	/**
 	 * 注入service层
 	 */
@@ -57,6 +57,36 @@ public class UserController {
 	private RoleService rs;
 	@Autowired
 	private ModuleService ms;
+
+	/**
+	 * 转到WEB-INF下的登录页面
+	 * 
+	 * @return
+	 */
+	@RequestMapping(value = "/tologin.do")
+	public String toLoginJsp() {
+		return "login";
+	}
+
+	/**
+	 * 转到WEB-INF下的后台首页页面
+	 * 
+	 * @return
+	 */
+	@RequestMapping(value = "/tohome.do")
+	public String toHomeJsp() {
+		return "home";
+	}
+
+	/**
+	 * 转到WEB-INF下的后台欢迎页面
+	 * 
+	 * @return
+	 */
+	@RequestMapping(value = "/towelcome.do")
+	public String toWelcomeJsp() {
+		return "welcome";
+	}
 
 	/**
 	 * 账户登录

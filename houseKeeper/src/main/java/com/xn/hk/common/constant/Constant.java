@@ -55,7 +55,7 @@ public class Constant {
 	/**
 	 * 验证码key
 	 */
-	public final static String VERIFY_CODE_KEY = "verifyCode";
+	public final static String VERIFY_CODE_KEY = "verifyCodeValue";
 	
 	/*----------------------------------角色管理---------------------------------*/
 	/**

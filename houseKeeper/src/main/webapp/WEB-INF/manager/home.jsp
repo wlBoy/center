@@ -51,7 +51,7 @@
     }
 	$(function() {
 		/* 页面初始化时，ifm默认加载首页*/
-		$("#ifm").attr("src","${ctx}/manager/index.jsp"); 
+		$("#ifm").attr("src","${ctx}/system/user/towelcome.do"); 
 		/* 用户注销 */
 		$('.logoff').click(function() {
 		swal({
