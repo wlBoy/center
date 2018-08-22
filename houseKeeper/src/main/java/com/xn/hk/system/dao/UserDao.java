@@ -10,7 +10,6 @@ import com.xn.hk.system.model.User;
  * @Title: UserDao
  * @Package: com.xn.ad.system.dao
  * @Description: 处理账户的dao数据访问层
- * @Company: 杭州讯牛
  * @Author: wanlei
  * @Date: 2017-11-28 下午03:31:47
  */

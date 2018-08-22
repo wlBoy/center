@@ -8,7 +8,6 @@ import com.xn.hk.common.service.BaseService;
  * @Title: MoneyService
  * @Package: com.xn.hk.account.service
  * @Description: 处理资产的service层
- * @Company: 杭州讯牛
  * @Author: wanlei
  * @Date: 2018年1月4日 下午1:35:19
  */

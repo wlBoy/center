@@ -12,7 +12,6 @@ import com.xn.hk.system.model.Module;
  * @Title: ModuleDao
  * @Package: com.xn.ad.system.dao
  * @Description: 处理模块的dao数据访问层
- * @Company: 杭州讯牛
  * @Author: wanlei
  * @Date: 2017-11-28 下午04:25:04
  */

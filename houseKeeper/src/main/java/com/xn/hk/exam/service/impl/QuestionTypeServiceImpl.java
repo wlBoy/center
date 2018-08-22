@@ -13,7 +13,6 @@ import com.xn.hk.exam.service.QuestionTypeService;
  * @Title: QuestionTypeServiceImpl
  * @Package: com.xn.hk.exam.service.impl
  * @Description: 处理题型的service实现层
- * @Company: 杭州讯牛 
  * @Author: wanlei
  * @Date: 2018年1月8日 上午10:39:20
  */

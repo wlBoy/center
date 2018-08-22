@@ -7,7 +7,6 @@ import com.xn.hk.exam.model.QuestionType;
  * @Title: QuestionTypeDao
  * @Package: com.xn.hk.exam.dao
  * @Description: 处理题型的dao层
- * @Company: 杭州讯牛 
  * @Author: wanlei
  * @Date: 2018年1月8日 上午10:35:17
  */

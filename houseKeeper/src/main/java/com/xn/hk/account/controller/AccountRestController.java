@@ -19,7 +19,6 @@ import com.xn.hk.system.model.User;
  * @Title: AccountRestController
  * @Package: com.xn.hk.account.controller
  * @Description: 处理账务管理中的所有ajax请求
- * @Company: 杭州讯牛
  * @Author: wanlei
  * @Date: 2018年1月8日 上午9:17:36
  */

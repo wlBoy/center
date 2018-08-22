@@ -9,7 +9,6 @@ import org.apache.poi.xssf.usermodel.XSSFCellStyle;
  * @Title: ExcelBean
  * @Package: com.xn.ad.common.utils
  * @Description: excel实体类(用来生成EXCEL时用)
- * @Company: 杭州讯牛
  * @Author: wanlei
  * @Date: 2018-1-20 上午11:19:19
  */

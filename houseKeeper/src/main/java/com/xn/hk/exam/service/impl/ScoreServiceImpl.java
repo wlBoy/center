@@ -17,7 +17,6 @@ import com.xn.hk.exam.service.ScoreService;
  * @Title: ScoreServiceImpl
  * @Package: com.xn.hk.exam.service.impl
  * @Description: 处理分数的service实现层
- * @Company: 杭州讯牛
  * @Author: wanlei
  * @Date: 2018年1月11日 下午4:04:12
  */

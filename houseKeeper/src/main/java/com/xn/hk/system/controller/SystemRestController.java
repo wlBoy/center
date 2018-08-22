@@ -18,7 +18,6 @@ import com.xn.hk.system.service.UserService;
  * @Title: RestController
  * @Package: com.xn.ad.system.controller
  * @Description: 处理系统管理中的所有ajax请求
- * @Company: 杭州讯牛
  * @Author: wanlei
  * @Date: 2017-11-30 下午01:12:25
  */
@@ -46,7 +45,7 @@ public class SystemRestController {
 	@RequestMapping(value = "/findByUserId.do", method = RequestMethod.GET)
 	public User findByUserId(Integer userId) {
 		User u = us.findById(userId);
-		log.info("该用户的信息为:" + u);
+		log.info("用户的信息为:" + u);
 		return u;
 	}
 

@@ -9,15 +9,11 @@ import com.xn.hk.common.service.impl.BaseServiceImpl;
 import com.xn.hk.system.dao.LogDao;
 import com.xn.hk.system.model.Log;
 import com.xn.hk.system.service.LogService;
-
-
-
 /**
  * 
  * @Title: LogServiceImpl
  * @Package: com.xn.hk.system.service.impl
  * @Description:
- * @Company: 杭州讯牛
  * @Author: wanlei
  * @Date: 2018年1月23日 下午3:58:41
  */

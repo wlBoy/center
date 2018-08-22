@@ -18,7 +18,6 @@ import redis.clients.jedis.exceptions.JedisConnectionException;
  * @Title: RedisCache
  * @Package: com.xn.hk.common.utils
  * @Description: 使用第三方内存数据库Redis作为二级缓存
- * @Company: 杭州讯牛
  * @Author: wanlei
  * @Date: 2018年1月12日 下午12:20:03
  */

@@ -7,7 +7,6 @@ import java.io.Serializable;
  * @Title: Score
  * @Package: com.xn.hk.exam.model
  * @Description: 分数实体类(用户答题时)
- * @Company: 杭州讯牛
  * @Author: wanlei
  * @Date: 2018年1月18日 下午2:41:27
  */

@@ -19,7 +19,6 @@ import com.xn.hk.system.model.User;
  * @Title: LogAspect
  * @Package: com.xn.hk.common.utils
  * @Description: 记录系统日志的AOP切面类
- * @Company: 杭州讯牛
  * @Author: wanlei
  * @Date: 2018年1月23日 下午4:04:48
  */

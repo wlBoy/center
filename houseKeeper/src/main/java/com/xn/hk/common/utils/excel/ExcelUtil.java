@@ -34,7 +34,6 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
  * @Title: ExcelUtil
  * @Package: com.xn.ad.common.utils
  * @Description: 操作EXCEL导入和导出的工具类
- * @Company: 杭州讯牛
  * @Author: wanlei
  * @Date: 2018-1-20 上午11:28:00
  */

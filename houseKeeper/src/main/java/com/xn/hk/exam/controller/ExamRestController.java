@@ -18,7 +18,6 @@ import com.xn.hk.exam.service.QuestionTypeService;
  * @Title: RestController
  * @Package: com.xn.ad.system.controller
  * @Description: 处理考试管理中的所有ajax请求
- * @Company: 杭州讯牛
  * @Author: wanlei
  * @Date: 2017-11-30 下午01:12:25
  */

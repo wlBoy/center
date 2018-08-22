@@ -6,7 +6,6 @@ import java.io.Serializable;
  * @Title: AccountType
  * @Package: com.xn.hk.account.model
  * @Description: 账务类别实体类
- * @Company: 杭州讯牛
  * @Author: wanlei
  * @Date: 2018年1月4日 下午1:19:03
  */

@@ -7,7 +7,6 @@ import java.security.MessageDigest;
  * @Title: MD5Util
  * @Package: com.xn.hk.common.utils
  * @Description: MD5操作工具类
- * @Company: 杭州讯牛
  * @Author: wanlei
  * @Date: 2018年1月8日 下午4:44:15
  */

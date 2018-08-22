@@ -8,7 +8,6 @@ import com.xn.hk.system.model.User;
  * @Title: UserService
  * @Package: com.xn.ad.system.service
  * @Description: 处理账户的service接口层
- * @Company: 杭州讯牛
  * @Author: wanlei
  * @Date: 2017-11-28 下午03:24:36
  */

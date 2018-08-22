@@ -9,7 +9,6 @@ import java.util.List;
  * @Title: Role
  * @Package: com.xn.ad.system.model
  * @Description: 角色实体类
- * @Company: 杭州讯牛
  * @Author: wanlei
  * @Date: 2017-11-28 下午03:11:15
  */

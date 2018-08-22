@@ -9,7 +9,6 @@ import java.util.Arrays;
  * @Package: com.xn.hk.exam.model
  * @Description: 试卷实体类
  * @Company: 杭州讯牛
- * @Author: wanlei
  * @Date: 2018年1月8日 上午11:13:45
  */
 public class Paper implements Serializable {

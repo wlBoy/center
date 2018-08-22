@@ -9,7 +9,6 @@ import com.xn.hk.common.utils.page.BasePage;
  * @Title: BaseService
  * @Package: com.xn.ad.common.service
  * @Description: 业务接口基础类，所有service接口类的父类
- * @Company: 杭州讯牛
  * @Author: wanlei
  * @Date: 2017-11-28 下午03:47:05
  */

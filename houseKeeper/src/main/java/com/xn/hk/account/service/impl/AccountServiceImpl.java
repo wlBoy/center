@@ -20,7 +20,6 @@ import com.xn.hk.common.utils.page.BasePage;
  * @Title: AccountServiceImpl
  * @Package: com.xn.hk.account.service.impl
  * @Description: 处理账务的service实现层
- * @Company: 杭州讯牛
  * @Author: wanlei
  * @Date: 2018年1月4日 下午1:49:01
  */

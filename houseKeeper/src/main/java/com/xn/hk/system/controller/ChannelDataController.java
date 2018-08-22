@@ -27,7 +27,6 @@ import com.xn.hk.system.service.ChannelDataService;
  * @Title: ChannelDataController
  * @Package: com.xn.ad.data.controller
  * @Description: 处理渠道数据的service控制层
- * @Company: 杭州讯牛
  * @Author: wanlei
  * @Date: 2018-1-19 下午05:54:50
  */

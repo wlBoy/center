@@ -7,7 +7,6 @@ import java.io.Serializable;
  * @Title: ChannelData
  * @Package: com.xn.ad.data.model
  * @Description: 渠道数据实体类
- * @Company: 杭州讯牛
  * @Author: wanlei
  * @Date: 2018-1-19 下午05:42:48
  */

@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.xn.hk.exam.dao.QuestionTypeDao">
-	<!--使用redis作为mybatis的二级缓存,针对具体某条语句禁用缓存,useCache="false",这里的RedisCache是个别名-->
-	<cache eviction="LRU" type="RedisCache" />
+	<!--使用redis作为mybatis的二级缓存,针对具体某条语句禁用缓存,useCache="false",这里的RedisCache是个别名
+	<cache eviction="LRU" type="RedisCache" />-->
 	<!-- 题型映射 -->
 	<resultMap type="QuestionType" id="questionTypeMap">
 		<id property="typeId" column="type_id" />

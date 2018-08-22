@@ -7,7 +7,6 @@ import java.io.Serializable;
  * @Title: Question
  * @Package: com.xn.hk.exam.model
  * @Description: 题目的实体类
- * @Company: 杭州讯牛
  * @Author: wanlei
  * @Date: 2018年1月8日 上午11:07:07
  */

@@ -1,25 +1,17 @@
 package com.xn.hk.system.controller;
 
-import java.awt.Color;
-import java.awt.Font;
-import java.awt.Graphics2D;
-import java.awt.font.FontRenderContext;
-import java.awt.geom.Rectangle2D;
-import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
-import java.util.Random;
-import java.util.UUID;
 
-import javax.imageio.ImageIO;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -27,8 +19,10 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.xn.hk.common.constant.Constant;
+import com.xn.hk.common.utils.EnumStatus;
 import com.xn.hk.common.utils.encryption.MD5Util;
 import com.xn.hk.common.utils.page.BasePage;
+import com.xn.hk.common.utils.string.StringUtil;
 import com.xn.hk.system.model.Module;
 import com.xn.hk.system.model.Role;
 import com.xn.hk.system.model.User;
@@ -41,7 +35,6 @@ import com.xn.hk.system.service.UserService;
  * @Title: UserController
  * @Package: com.xn.ad.system.controller
  * @Description: 处理账户的控制层
- * @Company: 杭州讯牛
  * @Author: wanlei
  * @Date: 2017-11-28 下午03:22:28
  */
@@ -51,7 +44,13 @@ public class UserController {
 	/**
 	 * 记录日志
 	 */
-	private static final Logger log = Logger.getLogger(UserController.class);
+	private static final Logger logger = LoggerFactory.getLogger(UserController.class);
+	private static final ModelAndView USER_REDITRCT_ACTION = new ModelAndView("redirect:showAllUser.do");// 重定向分页所有用户的Action
+	private static final ModelAndView USER_REDITRCT_LOGIN_VIEW = new ModelAndView("redirect:/manager/login.jsp");// 重定向登录页面
+	private static final ModelAndView USER_REDITRCT_HOME_VIEW = new ModelAndView("redirect:/manager/home.jsp");// 重定向后台首页页面
+	/**
+	 * 注入service层
+	 */
 	@Autowired
 	private UserService us;
 	@Autowired
@@ -75,77 +74,84 @@ public class UserController {
 	@RequestMapping(value = "/login.do")
 	public ModelAndView login(User user, String rememberMe, String verifyCodeInput, HttpSession session,
 			HttpServletResponse response) {
-		ModelAndView mv = new ModelAndView();
-		// 实现记住密码的功能
-		// 创建Cookie
-		Cookie nameCookie = new Cookie("userName", user.getUserName());
-		Cookie pswCookie = new Cookie("userPwd", user.getUserPwd());
-		log.info(user.getUserName() + "选择是否保存cookie:" + rememberMe);
-		// 获取是否保存Cookie
-		if (rememberMe == null) {
-			// 不保存Cookie
-			nameCookie.setMaxAge(0);
-			pswCookie.setMaxAge(0);
-		} else {
-			// 设置Cookie的父路径
-			nameCookie.setPath(session.getServletContext().getContextPath() + "/");
-			pswCookie.setPath(session.getServletContext().getContextPath() + "/");
-			// 保存Cookie的时间长度，单位为秒
-			nameCookie.setMaxAge(7 * 24 * 60 * 60);
-			pswCookie.setMaxAge(7 * 24 * 60 * 60);
-			// 加入Cookie到响应头
-			response.addCookie(nameCookie);
-			response.addCookie(pswCookie);
+		String userName = user.getUserName();
+		// 使用MD5加密(用户登录密码+登录密码key)存入数据库中,提高密码的加密程度
+		String userPwd = MD5Util.MD5(user.getUserPwd() + Constant.PASSWORD_KEY);
+		// 1.保存cookie实现记住密码功能
+		saveCookie(user, rememberMe, session, response);
+		// 2.取到用户输入的验证码和session中的验证码比较
+		String verifyCodeValue = (String) session.getAttribute(Constant.VERIFY_CODE_KEY);
+		if (!verifyCodeInput.equalsIgnoreCase(verifyCodeValue)) {
+			logger.error("验证码错误!");
+			session.setAttribute(Constant.TIP_KEY, StringUtil.genTipMsg("验证码错误!", "error"));
+			return USER_REDITRCT_LOGIN_VIEW;
 		}
-		// 通过用户名查找该用户是否存在
-		User u = us.findByName(user.getUserName());
+		// 3.通过用户名查找该用户是否存在
+		User u = us.findByName(userName);
 		if (u != null) {
-			// 账户存在
-			if (u.getUserState() == 1) {
-				// 账户被冻结
-				log.error("该账户已冻结，请联系管理员!");
-				session.setAttribute("msg",
-						"<script>$(function(){swal('OMG!', '该账户已冻结，请联系管理员!', 'error');});</script>");
-				mv.setViewName("redirect:/manager/login.jsp");
+			// 4.账户被冻结
+			if (u.getUserState().intValue() == EnumStatus.ISLOCKED.getCode().intValue()) {
+				logger.error("用户{}已冻结，请联系管理员!", user.getUserName());
+				session.setAttribute(Constant.TIP_KEY, StringUtil.genTipMsg("该账户已冻结，请联系管理员!", "error"));
+				return USER_REDITRCT_LOGIN_VIEW;
 			} else {
-				// 使用MD5加密(用户登录密码+登录密码key)存入数据库中,提高密码的加密程度
-				user.setUserPwd(MD5Util.MD5(user.getUserPwd() + Constant.PASSWORD_KEY));
-				// 正常通过，可以登录
-				user = us.login(user);
-				if (user != null) {
-					// 取到用户输入的验证码和session中的验证码比较
-					String verifyCodeValue = (String) session.getAttribute("verifyCodeValue");
-					if (verifyCodeInput.equalsIgnoreCase(verifyCodeValue)) {
-						// 根据已登录用户的角色查询可访问的一级模块数组
-						List<Module> oneModules = ms.findModuleByRoleId(1, user.getRole().getRoleId());
-						// 根据已登录用户的角色查询可访问的二级模块数组
-						List<Module> twoModules = ms.findModuleByRoleId(2, user.getRole().getRoleId());
-						// 保存该账户角色可访问的一级模块数组和所有的二级模块列表，以便页面遍历
-						session.setAttribute("oneModules", oneModules);
-						session.setAttribute("twoModules", twoModules);
-						log.info(user.getUserName() + "登录成功!");
-						// 将该用户保存至session中
-						session.setAttribute(Constant.LOGIN_SESSION_USER_KEY, user);
-						mv.setViewName("redirect:/manager/home.jsp");
-					} else {
-						log.error("验证码错误!");
-						session.setAttribute("msg",
-								"<script>$(function(){swal('OMG!', '验证码错误!', 'error');});</script>");
-						mv.setViewName("redirect:/manager/login.jsp");
-					}
+				// 5.正常通过，可以登录
+				if (userPwd.equals(u.getUserPwd())) {
+					// 根据已登录用户的角色查询可访问的一级模块数组
+					List<Module> oneModules = ms.findModuleByRoleId(Constant.ONE_MODULES_VALUE,
+							user.getRole().getRoleId());
+					// 根据已登录用户的角色查询可访问的二级模块数组
+					List<Module> twoModules = ms.findModuleByRoleId(Constant.TWO_MODULES_VALUE,
+							user.getRole().getRoleId());
+					// 保存该账户角色可访问的一级模块数组和所有的二级模块列表，以便页面遍历
+					session.setAttribute(Constant.ONE_MODULES_KEY, oneModules);
+					session.setAttribute(Constant.TWO_MODULES_KEY, twoModules);
+					logger.info("用户{}登录成功!", userName);
+					// 将该用户保存至session中
+					session.setAttribute(Constant.LOGIN_SESSION_USER_KEY, user);
+					return USER_REDITRCT_HOME_VIEW;
 				} else {
-					log.error("登录密码错误!");
-					session.setAttribute("msg", "<script>$(function(){swal('OMG!', '登录密码错误!', 'error');});</script>");
-					mv.setViewName("redirect:/manager/login.jsp");
+					logger.error("用户{}登录,密码错误!", userName);
+					session.setAttribute(Constant.TIP_KEY, StringUtil.genTipMsg("登录密码错误!", "error"));
+					return USER_REDITRCT_LOGIN_VIEW;
 				}
 			}
 		} else {
 			// 账户不存在
-			log.error("该账户不存在!");
-			session.setAttribute("msg", "<script>$(function(){swal('OMG!', '该账户不存在!', 'error');});</script>");
-			mv.setViewName("redirect:/manager/login.jsp");
+			logger.error("用户{}不存在!", userName);
+			session.setAttribute(Constant.TIP_KEY, StringUtil.genTipMsg("该账户不存在!", "error"));
+			return USER_REDITRCT_LOGIN_VIEW;
 		}
-		return mv;
+	}
+
+	/**
+	 * 保存cookie实现记住密码功能
+	 * 
+	 * @param user
+	 * @param rememberMe
+	 * @param session
+	 * @param response
+	 */
+	private void saveCookie(User user, String rememberMe, HttpSession session, HttpServletResponse response) {
+		// 创建Cookie
+		Cookie nameCookie = new Cookie(Constant.USERNAME_KEY, user.getUserName());
+		Cookie pwdCookie = new Cookie(Constant.USERPWD_KEY, user.getUserPwd());
+		logger.info("{}选择{}保存cookie:", user.getUserName(), rememberMe);
+		if (rememberMe == null) {
+			// 不保存Cookie
+			nameCookie.setMaxAge(0);
+			pwdCookie.setMaxAge(0);
+		} else {
+			// 设置Cookie的父路径
+			nameCookie.setPath(session.getServletContext().getContextPath() + "/");
+			pwdCookie.setPath(session.getServletContext().getContextPath() + "/");
+			// 保存Cookie的时间长度，单位为秒
+			nameCookie.setMaxAge(7 * 24 * 60 * 60);
+			pwdCookie.setMaxAge(7 * 24 * 60 * 60);
+			// 加入Cookie到响应头
+			response.addCookie(nameCookie);
+			response.addCookie(pwdCookie);
+		}
 	}
 
 	/**
@@ -157,11 +163,12 @@ public class UserController {
 	 *            session
 	 */
 	@RequestMapping("/getVerifyCode.do")
-	public void generate(HttpServletResponse response, HttpSession session) {
+	public void getVerifyCode(HttpServletResponse response, HttpSession session) {
 		ByteArrayOutputStream output = new ByteArrayOutputStream();
-		String verifyCodeValue = drawImg(output);
+		// 获取验证码
+		String verifyCodeValue = StringUtil.drawImg(output);
 		// 将验证码放入session中,以便登录时校验
-		session.setAttribute("verifyCodeValue", verifyCodeValue);
+		session.setAttribute(Constant.VERIFY_CODE_KEY, verifyCodeValue);
 		try {
 			ServletOutputStream out = response.getOutputStream();
 			output.writeTo(out);
@@ -170,57 +177,7 @@ public class UserController {
 		}
 	}
 
-	/**
-	 * 绘画验证码
-	 * 
-	 * @param output
-	 *            ByteArrayOutputStream
-	 * @return 验证码字符串
-	 */
-	private String drawImg(ByteArrayOutputStream output) {
-		String code = "";
-		// 随机产生6个字符
-		for (int i = 0; i < 6; i++) {
-			code += randomChar();
-		}
-		// 设置验证码的宽高
-		int width = 100;
-		int height = 48;
-		BufferedImage bi = new BufferedImage(width, height, BufferedImage.TYPE_3BYTE_BGR);
-		Font font = new Font("Times New Roman", Font.PLAIN, 26);
-		// 调用Graphics2D绘画验证码
-		Graphics2D g = bi.createGraphics();
-		g.setFont(font);
-		Color color = new Color(66, 2, 82);
-		g.setColor(color);
-		g.setBackground(new Color(226, 226, 240));
-		g.clearRect(0, 0, width, height);
-		FontRenderContext context = g.getFontRenderContext();
-		Rectangle2D bounds = font.getStringBounds(code, context);
-		double x = (width - bounds.getWidth()) / 2;
-		double y = (height - bounds.getHeight()) / 2;
-		double ascent = bounds.getY();
-		double baseY = y - ascent;
-		g.drawString(code, (int) x, (int) baseY);
-		g.dispose();
-		try {
-			ImageIO.write(bi, "jpg", output);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		return code;
-	}
-
-	/**
-	 * 随机产生一个字符
-	 * 
-	 * @return 一个随机字符
-	 */
-	private char randomChar() {
-		Random r = new Random();
-		String s = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-		return s.charAt(r.nextInt(s.length()));
-	}
+	
 
 	/**
 	 * 账户注销
@@ -231,12 +188,11 @@ public class UserController {
 	 */
 	@RequestMapping(value = "/logoff.do")
 	public ModelAndView logoff(HttpSession session) {
-		ModelAndView mv = new ModelAndView("redirect:/manager/login.jsp");
 		// 销毁session中的user
 		session.removeAttribute(Constant.LOGIN_SESSION_USER_KEY);
-		log.info("注销成功!");
-		session.setAttribute("msg", "<script>$(function(){swal('Good!', '注销成功!', 'success');});</script>");
-		return mv;
+		logger.info("注销成功!");
+		session.setAttribute(Constant.TIP_KEY, "<script>$(function(){swal('Good!', '注销成功!', 'success');});</script>");
+		return USER_REDITRCT_LOGIN_VIEW;
 	}
 
 	/**
@@ -256,11 +212,11 @@ public class UserController {
 		List<User> users = us.pageList(pages);
 		// 将list封装到分页对象中
 		pages.setList(users);
-		mv.addObject("pages", pages);
+		mv.addObject(Constant.PAGE_KEY, pages);
 		// 查询所有的角色
 		List<Role> roles = rs.findAll();
-		mv.addObject("roles", roles);
-		log.info("所有角色个数为:" + roles.size());
+		mv.addObject(Constant.ROlE_KEY, roles);
+		logger.info("所有角色个数为:{}", roles.size());
 		return mv;
 	}
 
@@ -274,15 +230,14 @@ public class UserController {
 	 */
 	@RequestMapping(value = "/delete.do")
 	public ModelAndView deleteUser(Integer[] userIds, HttpSession session) {
-		ModelAndView mv = new ModelAndView("redirect:showAllUser.do");
 		int result = us.delete(userIds);
 		if (result == 0) {
-			log.error("删除失败,该数组不存在!");
+			logger.error("删除失败,该数组不存在!");
 		} else {
-			log.info("删除用户成功!");
-			session.setAttribute("msg", "<script>$(function(){swal('Good!', '删除用户成功!', 'success');});</script>");
+			logger.info("删除用户成功!");
+			session.setAttribute(Constant.TIP_KEY, StringUtil.genTipMsg("删除用户成功!", "success"));
 		}
-		return mv;
+		return USER_REDITRCT_ACTION;
 	}
 
 	/**
@@ -295,17 +250,16 @@ public class UserController {
 	 */
 	@RequestMapping(value = "/add.do")
 	public ModelAndView addUser(User user, HttpSession session) {
-		ModelAndView mv = new ModelAndView("redirect:showAllUser.do");
 		// 使用MD5加密(用户登录密码+登录密码key)存入数据库中,提高密码的加密程度
 		user.setUserPwd(MD5Util.MD5(user.getUserPwd() + Constant.PASSWORD_KEY));
 		int result = us.add(user);
 		if (result == 0) {
-			log.error("添加用户失败!");
+			logger.error("添加{}用户失败!", user.getUserName());
 		} else {
-			log.info("添加用户成功!");
-			session.setAttribute("msg", "<script>$(function(){swal('Good!', '添加用户成功!', 'success');});</script>");
+			logger.info("添加{}用户成功!", user.getUserName());
+			session.setAttribute(Constant.TIP_KEY, StringUtil.genTipMsg("添加用户成功!", "success"));
 		}
-		return mv;
+		return USER_REDITRCT_ACTION;
 	}
 
 	/**
@@ -318,17 +272,16 @@ public class UserController {
 	 */
 	@RequestMapping(value = "/update.do")
 	public ModelAndView updateUser(User user, HttpSession session) {
-		ModelAndView mv = new ModelAndView("redirect:showAllUser.do");
 		// 使用MD5加密(用户登录密码+登录密码key)存入数据库中,提高密码的加密程度
 		user.setUserPwd(MD5Util.MD5(user.getUserPwd() + Constant.PASSWORD_KEY));
 		int result = us.update(user);
 		if (result == 0) {
-			log.error("修改用户失败!");
+			logger.error("修改{}用户失败!", user.getUserName());
 		} else {
-			log.info("修改用户成功!");
-			session.setAttribute("msg", "<script>$(function(){swal('Good!', '修改用户成功!', 'success');});</script>");
+			logger.info("修改{}用户成功!", user.getUserName());
+			session.setAttribute(Constant.TIP_KEY, StringUtil.genTipMsg("修改用户成功!", "success"));
 		}
-		return mv;
+		return USER_REDITRCT_ACTION;
 	}
 
 	/**
@@ -340,10 +293,9 @@ public class UserController {
 	 */
 	@RequestMapping(value = "/changeState.do")
 	public ModelAndView changeState(Integer userId) {
-		ModelAndView mv = new ModelAndView("redirect:showAllUser.do");
 		us.changeState(userId);
-		log.info("切换用户状态成功!");
-		return mv;
+		logger.info("用户{}切换状态成功!", userId);
+		return USER_REDITRCT_ACTION;
 	}
 
 	/**
@@ -359,11 +311,9 @@ public class UserController {
 	 */
 	@RequestMapping(value = "/uploadFace.do")
 	public ModelAndView uploadFace(User user, MultipartFile file, HttpSession session) throws Exception {
-		ModelAndView mv = new ModelAndView("redirect:showAllUser.do");
 		// 获取上传文件的原名称来构建新文件名
 		String oldName = file.getOriginalFilename();
-		String newName = UUID.randomUUID().toString().replaceAll("-", "")
-				+ oldName.substring(oldName.lastIndexOf("."), oldName.length());
+		String newName = StringUtil.genUUIDString() + oldName.substring(oldName.lastIndexOf("."), oldName.length());
 		// 本地存储路径,此路径在server.xml中已配置图片虚拟路径对应
 		File dir = new File(Constant.USER_FACE_PATH, newName);
 		if (!dir.exists()) {
@@ -375,11 +325,11 @@ public class UserController {
 		// 更新用户信息
 		int result = us.uploadFace(user);
 		if (result == 0) {
-			log.error("上传头像失败!");
+			logger.error("用户{}上传头像失败!", user.getUserName());
 		} else {
-			log.info("上传头像成功!");
-			session.setAttribute("msg", "<script>$(function(){swal('Good!', '上传头像成功!', 'success');});</script>");
+			logger.info("用户{}上传头像成功!", user.getUserName());
+			session.setAttribute(Constant.TIP_KEY, StringUtil.genTipMsg("上传头像成功!", "success"));
 		}
-		return mv;
+		return USER_REDITRCT_ACTION;
 	}
 }

@@ -18,7 +18,6 @@ import com.xn.hk.system.service.UserService;
  * @Title: MoneyController
  * @Package: com.xn.hk.account.controller
  * @Description: 处理资产的控制层
- * @Company: 杭州讯牛 
  * @Author: wanlei
  * @Date: 2018年1月4日 下午1:51:27
  */

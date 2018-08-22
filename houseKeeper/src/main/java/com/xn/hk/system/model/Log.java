@@ -7,7 +7,6 @@ import java.io.Serializable;
  * @Title: Log
  * @Package: com.xn.hk.system.model
  * @Description: 系统管理的记录日志实体类
- * @Company: 杭州讯牛
  * @Author: wanlei
  * @Date: 2018年1月23日 下午3:47:38
  */

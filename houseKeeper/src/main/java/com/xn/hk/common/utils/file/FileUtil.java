@@ -1,4 +1,4 @@
-package com.xn.hk.common.utils;
+package com.xn.hk.common.utils.file;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -16,7 +16,6 @@ import java.util.UUID;
  * @Title: FileUtil
  * @Package: com.xn.hk.common.utils
  * @Description: 文件操作工具类
- * @Company: 杭州讯牛 
  * @Author: wanlei
  * @Date: 2018年1月8日 下午4:43:49
  */

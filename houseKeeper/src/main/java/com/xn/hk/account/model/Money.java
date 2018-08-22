@@ -6,7 +6,6 @@ import java.io.Serializable;
  * @Title: Money
  * @Package: com.xn.hk.account.model
  * @Description: 资产实体类
- * @Company: 杭州讯牛
  * @Author: wanlei
  * @Date: 2018年1月4日 下午1:12:22
  */

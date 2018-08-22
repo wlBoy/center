@@ -17,7 +17,6 @@ import com.xn.hk.system.service.RoleService;
  * @Title: UserServiceImpl
  * @Package: com.xn.ad.system.service.impl
  * @Description: 处理角色的service业务逻辑实现层
- * @Company: 杭州讯牛
  * @Author: wanlei
  * @Date: 2017-11-28 下午03:30:15
  */
@@ -51,7 +50,7 @@ public class RoleServiceImpl extends BaseServiceImpl<Role> implements RoleServic
 				rd.addModuleForRole(role.getRoleId(), models.get(i).getModuleId());
 			}
 		}
-		return 1;
+		return models.size() + 1;
 	}
 
 	/**
@@ -73,7 +72,7 @@ public class RoleServiceImpl extends BaseServiceImpl<Role> implements RoleServic
 				rd.addModuleForRole(role.getRoleId(), role.getModules().get(i).getModuleId());
 			}
 		}
-		return 1;
+		return role.getModules().size() + 1;
 	}
 
 	/**

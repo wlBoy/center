@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.xn.hk.common.dao.BaseDao;
 import com.xn.hk.common.service.impl.BaseServiceImpl;
+import com.xn.hk.common.utils.EnumStatus;
 import com.xn.hk.common.utils.page.BasePage;
 import com.xn.hk.system.dao.ModuleDao;
 import com.xn.hk.system.model.Module;
@@ -17,7 +18,6 @@ import com.xn.hk.system.service.ModuleService;
  * @Title: UserServiceImpl
  * @Package: com.xn.ad.system.service.impl
  * @Description: 处理模块的service业务逻辑实现层
- * @Company: 杭州讯牛
  * @Author: wanlei
  * @Date: 2017-11-28 下午03:30:15
  */
@@ -69,10 +69,10 @@ public class ModuleServiceImpl extends BaseServiceImpl<Module> implements Module
 	public int changeState(Integer moduleId) {
 		Integer moduleState = md.findById(moduleId).getIsAllowed();
 		// 拿到当前模块的状态，判断调用不同的方法切换模块状态
-		if (moduleState == 0) {
-			return md.changeState(1, moduleId);
+		if (moduleState.intValue() == EnumStatus.NORMAL.getCode().intValue()) {
+			return md.changeState(EnumStatus.ISLOCKED.getCode(), moduleId);
 		} else {
-			return md.changeState(0, moduleId);
+			return md.changeState(EnumStatus.NORMAL.getCode(), moduleId);
 		}
 	}
 

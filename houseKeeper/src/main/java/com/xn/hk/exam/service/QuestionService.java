@@ -10,7 +10,6 @@ import com.xn.hk.exam.model.Question;
  * @Title: QuestionService
  * @Package: com.xn.hk.exam.service
  * @Description: 处理题目的dao层
- * @Company: 杭州讯牛
  * @Author: wanlei
  * @Date: 2018年1月8日 上午10:35:17
  */

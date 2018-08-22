@@ -11,7 +11,6 @@ import com.xn.hk.common.utils.page.BasePage;
  * @Title: BaseServiceImpl
  * @Package: com.xn.ad.common.service.impl
  * @Description: 业务接口实现基础类,所有业务接口实现类的父类
- * @Company: 杭州讯牛
  * @Author: wanlei
  * @Date: 2017-11-28 下午03:50:38
  */

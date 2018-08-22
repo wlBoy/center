@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>xn</groupId>
@@ -25,6 +26,8 @@
 		<druid.version>1.0.29</druid.version>
 		<!--quartz版本号 -->
 		<quartz.version>2.3.0</quartz.version>
+		<!--httpclient版本号 -->
+		<httpclient.version>4.5.2</httpclient.version>
 	</properties>
 	<dependencies>
 		<!--Spring框架核心库 -->
@@ -186,6 +189,18 @@
 			<groupId>com.github.pagehelper</groupId>
 			<artifactId>pagehelper</artifactId>
 			<version>5.0.0</version>
+		</dependency>
+		<!-- httpclient -->
+		<dependency>
+			<groupId>org.apache.httpcomponents</groupId>
+			<artifactId>httpclient</artifactId>
+			<version>${httpclient.version}</version>
+		</dependency>
+		<!-- pinyin4j -->
+		<dependency>
+			<groupId>com.belerweb</groupId>
+			<artifactId>pinyin4j</artifactId>
+			<version>2.5.1</version>
 		</dependency>
 	</dependencies>
 	<build>

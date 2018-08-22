@@ -8,7 +8,6 @@ import java.util.List;
  * @Title: BasePage
  * @Package: com.xn.ad.common.utils
  * @Description: 处理分页的实体类,用泛型可以做成任意对象的分页
- * @Company: 杭州讯牛
  * @Author: wanlei
  * @Date: 2017-11-30 下午05:16:12
  */

@@ -12,7 +12,6 @@ import com.xn.hk.exam.model.Score;
  * @Title: PaperClientService
  * @Package: com.xn.hk.exam.service
  * @Description: 处理前台试卷的service层
- * @Company: 杭州讯牛
  * @Author: wanlei
  * @Date: 2018年1月17日 下午4:04:54
  */

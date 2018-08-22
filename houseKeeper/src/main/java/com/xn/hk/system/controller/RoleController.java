@@ -4,7 +4,8 @@ import java.util.List;
 
 import javax.servlet.http.HttpSession;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -12,7 +13,9 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.xn.hk.common.constant.Constant;
 import com.xn.hk.common.utils.page.BasePage;
+import com.xn.hk.common.utils.string.StringUtil;
 import com.xn.hk.system.model.Module;
 import com.xn.hk.system.model.Role;
 import com.xn.hk.system.service.ModuleService;
@@ -23,7 +26,6 @@ import com.xn.hk.system.service.RoleService;
  * @Title: RoleController
  * @Package: com.xn.ad.system.controller
  * @Description: 处理角色实体的控制层
- * @Company: 杭州讯牛
  * @Author: wanlei
  * @Date: 2017-11-30 下午03:14:19
  */
@@ -33,7 +35,11 @@ public class RoleController {
 	/**
 	 * 记录日志
 	 */
-	private static final Logger log = Logger.getLogger(RoleController.class);
+	private static final Logger logger = LoggerFactory.getLogger(RoleController.class);
+	private static final ModelAndView ROLE_REDITRCT_ACTION = new ModelAndView("redirect:showAllRole.do");// 重定向分页所有角色的Action
+	/**
+	 * 注入service层
+	 */
 	@Autowired
 	private RoleService rs;
 	@Autowired
@@ -59,16 +65,16 @@ public class RoleController {
 		PageInfo<Role> roles = new PageInfo<Role>(rs.pageAll(pages));
 		pages.setList(roles.getList());
 		pages.setCount((int) roles.getTotal());
-		mv.addObject("pages", pages);
+		mv.addObject(Constant.PAGE_KEY, pages);
 		// 查询所有的一级模块和二级模块和它们的个数,以便角色分配时模块联动
-		List<Module> oneMenus = ms.findModuleByLevel(1);
-		List<Module> twoMenus = ms.findModuleByLevel(2);
-		mv.addObject("oneMenus", oneMenus);
-		mv.addObject("oneMenuSize", oneMenus.size());
-		log.info("一级模块总个数:" + oneMenus.size());
-		mv.addObject("twoMenus", twoMenus);
-		mv.addObject("twoMenuSize", twoMenus.size());
-		log.info("二级模块总个数:" + oneMenus.size());
+		List<Module> oneMenus = ms.findModuleByLevel(Constant.ONE_MODULES_VALUE);
+		List<Module> twoMenus = ms.findModuleByLevel(Constant.TWO_MODULES_VALUE);
+		mv.addObject(Constant.ONE_MODULES_KEY, oneMenus);
+		mv.addObject(Constant.ONE_MODULES_SIZE, oneMenus.size());
+		logger.info("一级模块总个数:{}", oneMenus.size());
+		mv.addObject(Constant.TWO_MODULES_KEY, twoMenus);
+		mv.addObject(Constant.TWO_MODULES_KEY, twoMenus.size());
+		logger.info("二级模块总个数:{}", twoMenus.size());
 		return mv;
 	}
 
@@ -82,15 +88,14 @@ public class RoleController {
 	 */
 	@RequestMapping(value = "/add.do")
 	public ModelAndView add(Role role, HttpSession session) {
-		ModelAndView mv = new ModelAndView("redirect:showAllRole.do");
 		int result = rs.add(role);
 		if (result == 0) {
-			log.error("添加角色失败!");
+			logger.error("添加角色{}失败!", role.getRoleName());
 		} else {
-			log.info("添加角色成功!");
-			session.setAttribute("msg", "<script>$(function(){swal('Good!', '添加角色成功!', 'success');});</script>");
+			logger.info("添加角色{}成功!", role.getRoleName());
+			session.setAttribute(Constant.TIP_KEY, StringUtil.genTipMsg("添加角色成功!", "success"));
 		}
-		return mv;
+		return ROLE_REDITRCT_ACTION;
 	}
 
 	/**
@@ -103,15 +108,14 @@ public class RoleController {
 	 */
 	@RequestMapping(value = "/update.do")
 	public ModelAndView update(Role role, HttpSession session) {
-		ModelAndView mv = new ModelAndView("redirect:showAllRole.do");
 		int result = rs.update(role);
 		if (result == 0) {
-			log.error("修改角色失败!");
+			logger.error("修改角色{}失败!", role.getRoleName());
 		} else {
-			log.info("修改角色成功!");
-			session.setAttribute("msg", "<script>$(function(){swal('Good!', '修改角色成功!', 'success');});</script>");
+			logger.info("修改角色{}成功!", role.getRoleName());
+			session.setAttribute(Constant.TIP_KEY, StringUtil.genTipMsg("修改角色成功!", "success"));
 		}
-		return mv;
+		return ROLE_REDITRCT_ACTION;
 	}
 
 	/**
@@ -124,14 +128,13 @@ public class RoleController {
 	 */
 	@RequestMapping(value = "/delete.do")
 	public ModelAndView delete(Integer[] roleIds, HttpSession session) {
-		ModelAndView mv = new ModelAndView("redirect:showAllRole.do");
 		int result = rs.deleteRole(roleIds);
 		if (result == 0) {
-			log.error("删除失败,该角色ID不存在!");
+			logger.error("删除失败,该角色ID不存在!");
 		} else {
-			log.info("删除角色成功!");
-			session.setAttribute("msg", "<script>$(function(){swal('Good!', '删除角色成功!', 'success');});</script>");
+			logger.info("删除角色成功!");
+			session.setAttribute(Constant.TIP_KEY, StringUtil.genTipMsg("删除角色成功!", "success"));
 		}
-		return mv;
+		return ROLE_REDITRCT_ACTION;
 	}
 }

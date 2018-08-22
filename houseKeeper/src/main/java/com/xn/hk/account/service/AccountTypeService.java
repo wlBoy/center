@@ -11,7 +11,6 @@ import com.xn.hk.common.utils.page.BasePage;
  * @Title: AccountTypeService
  * @Package: com.xn.hk.account.service
  * @Description: 处理账务类别的service层
- * @Company: 杭州讯牛
  * @Author: wanlei
  * @Date: 2018年1月4日 下午1:35:19
  */

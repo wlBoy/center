@@ -9,7 +9,6 @@ import com.xn.hk.common.utils.page.BasePage;
  * @Title: BaseDao
  * @Package: com.xn.ad.common.dao
  * @Description: 数据库基本操作的dao工具类
- * @Company: 杭州讯牛
  * @Author: wanlei
  * @Date: 2017-11-28 下午03:37:07
  */

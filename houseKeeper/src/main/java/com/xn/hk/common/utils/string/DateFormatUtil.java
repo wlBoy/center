@@ -1,4 +1,4 @@
-package com.xn.hk.common.utils;
+package com.xn.hk.common.utils.string;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -9,12 +9,13 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Locale;
-
-
 /**
- * 日期格式处理、转换工具类
  * 
- * @author WuQiaoYun
+ * @ClassName: DateFormatUtil
+ * @Package: com.xn.hk.common.utils
+ * @Description: 日期格式处理、转换工具类
+ * @Author: wanlei
+ * @Date: 2018年8月22日 上午9:12:16
  */
 public final class DateFormatUtil {
 	/**

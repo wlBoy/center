@@ -17,7 +17,6 @@ import javax.servlet.http.HttpSession;
  * @Title: ManagerLoginFilter
  * @Package: com.xn.ad.common.utils
  * @Description: 登录过滤器工具类
- * @Company: 杭州讯牛 
  * @Author: wanlei
  * @Date: 2017-12-5 上午09:37:29
  */

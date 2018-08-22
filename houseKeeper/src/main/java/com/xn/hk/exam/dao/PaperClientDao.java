@@ -12,7 +12,6 @@ import com.xn.hk.exam.model.Paper;
  * @Title: PaperClientDao
  * @Package: com.xn.hk.exam.dao
  * @Description: 处理后台试卷的dao数据访问层
- * @Company: 杭州讯牛
  * @Author: wanlei
  * @Date: 2018年1月17日 下午4:07:27
  */

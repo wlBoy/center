@@ -24,7 +24,6 @@ import com.xn.hk.system.service.ChannelDataService;
  * @Title: ChannelDataServiceImpl
  * @Package: com.xn.ad.data.service.impl
  * @Description: 处理渠道数据的service实现层
- * @Company: 杭州讯牛
  * @Author: wanlei
  * @Date: 2018-1-19 下午05:52:51
  */

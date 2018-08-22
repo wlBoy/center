@@ -10,7 +10,6 @@ import com.xn.hk.system.model.Module;
  * @Title: ModuleService
  * @Package: com.xn.ad.system.service
  * @Description: 处理模块的service接口层
- * @Company: 杭州讯牛
  * @Author: wanlei
  * @Date: 2017-11-29 上午10:03:09
  */

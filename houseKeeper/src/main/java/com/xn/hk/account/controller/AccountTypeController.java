@@ -21,7 +21,6 @@ import com.xn.hk.system.model.User;
  * @Title: AccountTypeController
  * @Package: com.xn.hk.account.controller
  * @Description: 处理账务类别的控制层
- * @Company: 杭州讯牛
  * @Author: wanlei
  * @Date: 2018年1月8日 上午9:18:25
  */

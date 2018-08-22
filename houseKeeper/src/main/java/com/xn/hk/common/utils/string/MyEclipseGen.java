@@ -1,4 +1,4 @@
-package com.xn.hk.common.utils;
+package com.xn.hk.common.utils.string;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -16,7 +16,6 @@ import java.text.SimpleDateFormat;
  *               →MyEclipse→Subscription,在右侧点击“Enter
  *               Subscription”,在弹出框中Subscriber中输入刚破解的用户名,在Subscription
  *               Code中输入刚破解生成的序列号,完成破解
- * @Company: 杭州讯牛
  * @Author: wanlei
  * @Date: 2017-12-18 上午09:26:04
  */
