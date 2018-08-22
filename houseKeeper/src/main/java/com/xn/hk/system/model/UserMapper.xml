@@ -105,9 +105,11 @@
 	<select id="findByName" parameterType="java.lang.String"
 		resultMap="userMap">
 		SELECT
-		<include refid="Base_Column_List" />
-		FROM tb_xn_sys_user WHERE is_ok=0 AND user_name =
-		#{0}
+		*
+		FROM
+		tb_xn_sys_user u LEFT JOIN tb_xn_sys_role r ON u.role_id =
+		r.role_id
+		WHERE u.is_ok=0 AND u.user_name=#{0}
 	</select>
 	<!-- 切换用户状态 -->
 	<update id="changeState">
