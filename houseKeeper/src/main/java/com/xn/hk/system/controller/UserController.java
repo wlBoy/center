@@ -22,6 +22,7 @@ import com.xn.hk.common.constant.Constant;
 import com.xn.hk.common.utils.EnumStatus;
 import com.xn.hk.common.utils.encryption.MD5Util;
 import com.xn.hk.common.utils.page.BasePage;
+import com.xn.hk.common.utils.string.Pinyin4jUtil;
 import com.xn.hk.common.utils.string.StringUtil;
 import com.xn.hk.system.model.Module;
 import com.xn.hk.system.model.Role;
@@ -46,8 +47,9 @@ public class UserController {
 	 */
 	private static final Logger logger = LoggerFactory.getLogger(UserController.class);
 	private static final ModelAndView USER_REDITRCT_ACTION = new ModelAndView("redirect:showAllUser.do");// 重定向分页所有用户的Action
-	private static final ModelAndView USER_REDITRCT_LOGIN_VIEW = new ModelAndView("redirect:tologin.do");// 转发到登录页面
-	private static final ModelAndView USER_REDITRCT_HOME_VIEW = new ModelAndView("redirect:tohome.do");// 转发到后台首页页面
+	private static final ModelAndView USER_REDITRCT_LOGIN_VIEW = new ModelAndView("redirect:tologin.do");// 重定向到登录页面
+	private static final ModelAndView USER_REDITRCT_HOME_VIEW = new ModelAndView("redirect:tohome.do");// 重定向到后台首页页面
+	private static final ModelAndView USER_REDITRCT_UPDATEPWD_VIEW = new ModelAndView("redirect:toUpdatePwd.do");// 重定向到后台修改密码页面
 	/**
 	 * 注入service层
 	 */
@@ -86,6 +88,16 @@ public class UserController {
 	@RequestMapping(value = "/towelcome.do")
 	public String toWelcomeJsp() {
 		return "welcome";
+	}
+
+	/**
+	 * 转到WEB-INF下的修改密码页面
+	 * 
+	 * @return
+	 */
+	@RequestMapping(value = "/toUpdatePwd.do")
+	public String toUpdatePwdJsp() {
+		return "updatePwd";
 	}
 
 	/**
@@ -213,7 +225,7 @@ public class UserController {
 		// 销毁session中的user
 		session.removeAttribute(Constant.SESSION_USER_KEY);
 		logger.info("注销成功!");
-		session.setAttribute(Constant.TIP_KEY, "<script>$(function(){swal('Good!', '注销成功!', 'success');});</script>");
+		session.setAttribute(Constant.TIP_KEY, StringUtil.genTipMsg("注销成功!", "success"));
 		return USER_REDITRCT_LOGIN_VIEW;
 	}
 
@@ -272,8 +284,10 @@ public class UserController {
 	 */
 	@RequestMapping(value = "/add.do")
 	public ModelAndView addUser(User user, HttpSession session) {
-		// 使用MD5加密(用户登录密码+登录密码key)存入数据库中,提高密码的加密程度
-		user.setUserPwd(MD5Util.MD5(user.getUserPwd() + Constant.PASSWORD_KEY));
+		// 生成密码,规则:用户名的拼音，再使用MD5加密(用户登录密码+登录密码key)存入数据库中,提高密码的加密程度
+		String userPwd = Pinyin4jUtil.getPinYin(user.getUserName());
+		userPwd = MD5Util.MD5(userPwd + Constant.PASSWORD_KEY);
+		user.setUserPwd(userPwd);
 		int result = us.add(user);
 		if (result == 0) {
 			logger.error("添加{}用户失败!", user.getUserName());
@@ -294,8 +308,6 @@ public class UserController {
 	 */
 	@RequestMapping(value = "/update.do")
 	public ModelAndView updateUser(User user, HttpSession session) {
-		// 使用MD5加密(用户登录密码+登录密码key)存入数据库中,提高密码的加密程度
-		user.setUserPwd(MD5Util.MD5(user.getUserPwd() + Constant.PASSWORD_KEY));
 		int result = us.update(user);
 		if (result == 0) {
 			logger.error("修改{}用户失败!", user.getUserName());
@@ -318,6 +330,54 @@ public class UserController {
 		us.changeState(userId);
 		logger.info("用户{}切换状态成功!", userId);
 		return USER_REDITRCT_ACTION;
+	}
+
+	/**
+	 * 重置用户密码
+	 * 
+	 * @param userId
+	 *            用户ID
+	 * @return ModelAndView
+	 */
+	@RequestMapping(value = "/resetPwd.do")
+	public ModelAndView resetPwd(Integer userId, HttpSession session) {
+		User user = us.findById(userId);
+		// 生成密码,规则:用户名的拼音，再使用MD5加密(用户登录密码+登录密码key)存入数据库中,提高密码的加密程度
+		String userPwd = Pinyin4jUtil.getPinYin(user.getUserName());
+		userPwd = MD5Util.MD5(userPwd + Constant.PASSWORD_KEY);
+		user.setUserPwd(userPwd);
+		int result = us.update(user);
+		if (result == 0) {
+			logger.error("用户{}重置密码失败!", user.getUserName());
+		} else {
+			logger.info("用户{}重置密码成功!", user.getUserName());
+			session.setAttribute(Constant.TIP_KEY, StringUtil.genTipMsg("重置密码成功!", "success"));
+		}
+		return USER_REDITRCT_ACTION;
+	}
+
+	/**
+	 * 修改用户密码
+	 * 
+	 * @param userId
+	 *            用户ID
+	 * @param newpassword
+	 *            用户新密码
+	 * @return ModelAndView
+	 */
+	@RequestMapping(value = "/updatePwd.do")
+	public ModelAndView updatePwd(Integer userId, String newpassword, HttpSession session) {
+		User user = us.findById(userId);
+		// 使用MD5加密(用户登录密码+登录密码key)存入数据库中,提高密码的加密程度
+		user.setUserPwd(MD5Util.MD5(newpassword + Constant.PASSWORD_KEY));
+		int result = us.update(user);
+		if (result == 0) {
+			logger.error("用户{}修改密码失败!", user.getUserName());
+		} else {
+			logger.info("用户{}修改密码成功!", user.getUserName());
+			session.setAttribute(Constant.TIP_KEY, StringUtil.genTipMsg("修改密码成功,可以去登录了!", "success"));
+		}
+		return USER_REDITRCT_UPDATEPWD_VIEW;
 	}
 
 	/**

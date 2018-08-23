@@ -6,6 +6,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.xn.hk.common.constant.Constant;
+import com.xn.hk.common.utils.encryption.MD5Util;
 import com.xn.hk.system.model.Module;
 import com.xn.hk.system.model.Role;
 import com.xn.hk.system.model.User;
@@ -117,5 +119,23 @@ public class SystemRestController {
 		Module m = ms.findByName(moduleName);
 		log.info("该模块的信息为:" + m);
 		return m;
+	}
+	/**
+	 * 修改密码时检查新密码是否与旧密码一致
+	 * 
+	 * @param userId
+	 *            用户ID
+	 * @param newPwd
+	 *            新密码
+	 * @return 
+	 */
+	@RequestMapping(value = "/checkOldPwd.do", method = RequestMethod.GET)
+	public String checkOldPwd(Integer userId , String newPwd) {
+		User user = us.findById(userId);
+		String newpwd = MD5Util.MD5(newPwd + Constant.PASSWORD_KEY);//新密码加密
+		if(newpwd.equals(user.getUserPwd())) {
+			return "ok";
+		}
+		return "";
 	}
 }

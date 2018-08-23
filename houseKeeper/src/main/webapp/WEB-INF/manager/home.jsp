@@ -88,18 +88,20 @@
 								class="caret"></b>
 						</a>
 							<ul class="dropdown-menu">
-								<li><a href="javascript:;" class="logoff"> <i
+								<li><a href="${ctx}/system/user/toUpdatePwd.do" target="ifm"> <i
+										 class="icon-key"></i>修改密码
+								</a><a href="javascript:;" class="logoff"> <i
 										class="icon-signout"></i>注销
 								</a></li>
 							</ul></li>
 					</ul>
 				</div>
-				<div class="nav navbar-nav pull-left">管家婆后台管理系统</div>
+				<div class="nav navbar-nav pull-left" style="font-size:16px;">管家婆后台管理系统</div>
 			</div>
 			<div class="container-fluid main-nav clearfix">
 				<div class="nav-collapse">
 					<ul class="nav">
-						<li><a class="current" href="${ctx}/manager/index.jsp"
+						<li><a class="current" href="${ctx}/system/user/towelcome.do"
 							target="ifm"><span aria-hidden="true" class="se7en-home"></span>首页</a>
 						</li>
 						<!-- 一级菜单循环显示-->

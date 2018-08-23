@@ -57,7 +57,7 @@
 		<div class="login-wrapper">
 			<div class="login-container">
 				<h3 style="margin-top: 150px; margin-bottom: 30px;">
-					管家婆后台管理系统登录界面
+					管家婆系统-后台登录
 				</h3>
 				<form action="${ctx}/system/user/login.do" method="post"
 					onsubmit="return check();">
@@ -83,12 +83,11 @@
 							<img class="right" onclick="changeCode(this);" src="${ctx}/system/user/getVerifyCode.do">
 						</div>
 					</div>
-					<div class="form-group">
-						<a class="pull-right" href="#">忘记密码?</a>
+					<!-- <div class="form-group">
 				        <div class="text-left">
 				          <label class="checkbox"><input type="checkbox" name="rememberMe" id="rememberMe"><span>记住我</span></label>
 				        </div>
-			        </div>
+			        </div> -->
 					<input type="submit" class="btn btn-lg btn-primary btn-block"
 						value="登录">
 				</form>

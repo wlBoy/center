@@ -74,7 +74,6 @@ $(function(){
 		var uid = $(this).attr("value");
 		$.get("${ctx}/system/rest/findByUserId.do","userId="+uid,function(u){
 			$("#modal2 form :text[name=userName]").val(u.userName);
-			$("#modal2 form :text[name=userPwd]").val(u.userPwd).attr("disabled",true);
 			$("#modal2 form :text[name=remark]").val(u.remark);
 			$("<input type='hidden' name='userId' value='"+u.userId+"'>").appendTo($("#modal2 form"));
 			/*回显角色 */
@@ -133,13 +132,8 @@ function checkUserName(){
 // 弹出层表单非空校验
 function checkForm(){
 	var userName = $("#modal2 form :text[name=userName]").val();
-	var userPwd = $("#modal2 form :text[name=userPwd]").val();
 	if(userName==null||userName==''){
 		swal("OMG!", "用户名不能为空!", "error");
-		return false;
-	}
-	if(userPwd==null||userPwd==''){
-		swal("OMG!", "密码不能为空!", "error");
 		return false;
 	}
 	return true;
@@ -196,6 +190,20 @@ swal({
 	}, function() {
 		location = "${ctx}/system/user/delete.do?userIds="+uid;
 	});
+}
+/*重置用户密码*/
+function doResetPwd(uid){
+	swal({
+		title: "重置密码", 
+		text: "你确定重置密码?", 
+		type: "warning",
+		showCancelButton: true,
+		closeOnConfirm: false,
+		confirmButtonText: "确定",
+		confirmButtonColor: "#ec6c62"
+		}, function() {
+			location = "${ctx}/system/user/resetPwd.do?userId="+uid;
+		});
 }
 /*复选框联动*/
 function check(isChecked){
@@ -333,9 +341,10 @@ swal({
 								</c:if>
 							</td>
 							<td>
-								<a href="javascript:;" class="upload btn btn_5 btn-xs btn-info" value="${u.userId}">上传头像</a>
 								<a href="javascript:;" class="update btn btn_5 btn-xs btn-info" value="${u.userId}">修改</a>
 								<a href="javascript:;" class="btn btn_5 btn-xs btn-Danger" onclick="doDelete('${u.userId}');">删除</a>
+								<a href="javascript:;" class="upload btn btn_5 btn-xs btn-info" value="${u.userId}">上传头像</a>
+								<a href="javascript:;" class="btn btn_5 btn-xs btn-info" onclick="doResetPwd('${u.userId}');">重置密码</a>
 							</td>
 						</tr>
 					</c:forEach>
@@ -357,12 +366,6 @@ swal({
 	            <label class="control-label col-md-3">用户名称</label>
 	            <div class="col-md-8">
 	              <input class="form-control" name="userName" type="text">
-	            </div>
-            </div>
-			<div class="form-group">
-	            <label class="control-label col-md-3">用户密码</label>
-	            <div class="col-md-8">
-	              <input class="form-control" name="userPwd" type="text">
 	            </div>
             </div>
             <div class="form-group">

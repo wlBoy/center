@@ -1,8 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
-	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:context="http://www.springframework.org/schema/context"
-	xmlns:tx="http://www.springframework.org/schema/tx" xmlns:task="http://www.springframework.org/schema/task"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:task="http://www.springframework.org/schema/task"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans
         http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
         http://www.springframework.org/schema/context
@@ -17,30 +20,17 @@
 		<property name="locations">
 			<list>
 				<value>classpath:db.properties</value>
-				<!-- <value>classpath:redis.properties</value> -->
 			</list>
 		</property>
 	</bean>
 
-	<!-- 2. redis数据源
-	<bean id="poolConfig" class="redis.clients.jedis.JedisPoolConfig">
-		<property name="maxIdle" value="${redis.maxIdle}" />
-		<property name="maxTotal" value="${redis.maxActive}" />
-		<property name="maxWaitMillis" value="${redis.maxWait}" />
-		<property name="testOnBorrow" value="${redis.testOnBorrow}" />
-	</bean>
-	 Spring-redis连接池管理工厂 
-	<bean id="jedisConnectionFactory"
-		class="org.springframework.data.redis.connection.jedis.JedisConnectionFactory"
-		p:host-name="${redis.host}" p:port="${redis.port}" p:password="${redis.pass}"
-		p:pool-config-ref="poolConfig" />
-	 使用中间类解决RedisCache.jedisConnectionFactory的静态注入，从而使MyBatis实现第三方缓存 
-	<bean id="redisCacheTransfer" class="com.xn.hk.common.utils.redis.RedisCacheTransfer">
-		<property name="jedisConnectionFactory" ref="jedisConnectionFactory" />
-	</bean> -->
-	
+	<!--2.导入其他xml文件 <import resource="quartz.xml" /> <import resource="redis.xml" 
+		/> -->
+
+
 	<!--3. 配置Druid连接池 -->
-	<bean id="datasource" class="com.alibaba.druid.pool.DruidDataSource">
+	<bean id="datasource"
+		class="com.alibaba.druid.pool.DruidDataSource">
 		<!--数据库基本信息 -->
 		<property name="driverClassName" value="${mysql.driver}" />
 		<property name="url" value="${mysql.url}" />
@@ -71,19 +61,23 @@
 	</bean>
 
 	<!--4.整合mybatis,加载会话工厂sqlSessionFactoryBean -->
-	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+	<bean id="sqlSessionFactory"
+		class="org.mybatis.spring.SqlSessionFactoryBean">
 		<!-- mybatis配置文件路径 -->
 		<property name="configLocation" value="classpath:mybatis.xml" />
 		<!-- 数据源 -->
 		<property name="dataSource" ref="datasource" />
 		<!-- 实体映射文件路径 -->
-		<property name="mapperLocations" value="classpath:com/xn/hk/*/model/*Mapper.xml" />
+		<property name="mapperLocations"
+			value="classpath:com/xn/hk/*/model/*Mapper.xml" />
 	</bean>
 
 	<!--5.自动扫描对象关系映射,生成接口实现类 -->
-	<bean id="mapperScannerConfigurer" class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+	<bean id="mapperScannerConfigurer"
+		class="org.mybatis.spring.mapper.MapperScannerConfigurer">
 		<!--指定会话工厂，如果当前上下文中只定义了一个则该属性可省去 -->
-		<property name="sqlSessionFactoryBeanName" value="sqlSessionFactory" />
+		<property name="sqlSessionFactoryBeanName"
+			value="sqlSessionFactory" />
 		<!-- 指定要自动扫描接口的基础包，实现接口 -->
 		<property name="basePackage" value="com.xn.hk.*.dao" />
 	</bean>
@@ -96,7 +90,8 @@
 	<!-- 定义一个事务通知 -->
 	<tx:advice id="tx" transaction-manager="transactionManager">
 		<tx:attributes>
-			<tx:method isolation="DEFAULT" name="page*" propagation="REQUIRED" />
+			<tx:method isolation="DEFAULT" name="page*"
+				propagation="REQUIRED" />
 			<tx:method name="add*" propagation="REQUIRED" />
 			<tx:method name="update*" propagation="REQUIRED" />
 			<tx:method name="delete*" propagation="REQUIRED" />
@@ -113,7 +108,8 @@
 	<!--9.配置druid监控spring -->
 	<bean id="druid-stat-interceptor"
 		class="com.alibaba.druid.support.spring.stat.DruidStatInterceptor" />
-	<bean id="druid-stat-pointcut" class="org.springframework.aop.support.JdkRegexpMethodPointcut"
+	<bean id="druid-stat-pointcut"
+		class="org.springframework.aop.support.JdkRegexpMethodPointcut"
 		scope="prototype">
 		<property name="patterns">
 			<list>
@@ -137,4 +133,5 @@
 			<aop:around method="doLog" pointcut-ref="serviceImpl" />
 		</aop:aspect>
 	</aop:config>
+
 </beans>
