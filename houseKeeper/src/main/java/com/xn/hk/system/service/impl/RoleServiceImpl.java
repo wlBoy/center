@@ -42,7 +42,7 @@ public class RoleServiceImpl extends BaseServiceImpl<Role> implements RoleServic
 	public int add(Role role) {
 		List<Module> models = role.getModules();
 		// 添加角色基本信息
-		rd.add(role);
+		rd.insert(role);
 		// 为该角色分配模块
 		for (int i = 0; i < models.size(); i++) {
 			if (models.get(i).getModuleId() != null && models.get(i).getModuleId() != 0) {

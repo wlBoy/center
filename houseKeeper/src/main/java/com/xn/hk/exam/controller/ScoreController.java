@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.xn.hk.common.constant.Constant;
+import com.xn.hk.common.constant.View;
 import com.xn.hk.common.utils.page.BasePage;
 import com.xn.hk.common.utils.string.StringUtil;
 import com.xn.hk.exam.model.Score;
@@ -34,7 +35,7 @@ public class ScoreController {
 	 * 记录日志
 	 */
 	private static final Logger logger = LoggerFactory.getLogger(ScoreController.class);
-	private static final ModelAndView SCORE_REDITRCT_ACTION = new ModelAndView("redirect:showAllScore.do");// 重定向分页所有分数的Action
+
 	/**
 	 * 注入service层
 	 */
@@ -115,6 +116,6 @@ public class ScoreController {
 		// 根据试卷ID和用户ID给该试卷主观题打分
 		ss.updateScore(paperId, userId, sum);
 		session.setAttribute(Constant.TIP_KEY, StringUtil.genTipMsg("批阅试卷成功!", "success"));
-		return SCORE_REDITRCT_ACTION;
+		return View.SCORE_REDITRCT_ACTION;
 	}
 }

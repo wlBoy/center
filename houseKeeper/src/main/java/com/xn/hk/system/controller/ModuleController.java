@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.xn.hk.common.constant.Constant;
+import com.xn.hk.common.constant.View;
 import com.xn.hk.common.utils.page.BasePage;
 import com.xn.hk.common.utils.string.StringUtil;
 import com.xn.hk.system.model.Module;
@@ -32,7 +33,7 @@ public class ModuleController {
 	 * 记录日志
 	 */
 	private static final Logger logger = LoggerFactory.getLogger(ModuleController.class);
-	private static final ModelAndView MODULE_REDITRCT_ACTION = new ModelAndView("redirect:showAllModule.do");// 重定向分页所有模块的Action
+
 	/**
 	 * 注入service层
 	 */
@@ -74,14 +75,14 @@ public class ModuleController {
 	 */
 	@RequestMapping(value = "/add.do")
 	public ModelAndView addModule(Module module, HttpSession session) {
-		int result = ms.add(module);
+		int result = ms.insert(module);
 		if (result == 0) {
 			logger.error("添加模块{}失败!", module.getModuleName());
 		} else {
 			logger.info("添加模块{}成功!", module.getModuleName());
 			session.setAttribute(Constant.TIP_KEY, StringUtil.genTipMsg("添加模块成功!", "success"));
 		}
-		return MODULE_REDITRCT_ACTION;
+		return View.MODULE_REDITRCT_ACTION;
 	}
 
 	/**
@@ -100,7 +101,7 @@ public class ModuleController {
 			logger.info("修改模块{}成功!", module.getModuleName());
 			session.setAttribute(Constant.TIP_KEY, StringUtil.genTipMsg("修改模块成功!", "success"));
 		}
-		return MODULE_REDITRCT_ACTION;
+		return View.MODULE_REDITRCT_ACTION;
 	}
 
 	/**
@@ -113,14 +114,14 @@ public class ModuleController {
 	 */
 	@RequestMapping(value = "/delete.do")
 	public ModelAndView deleteModule(Integer[] moduleIds, HttpSession session) {
-		int result = ms.delete(moduleIds);
+		int result = ms.batchDelete(moduleIds);
 		if (result == 0) {
 			logger.error("删除失败,该数组不存在!");
 		} else {
 			logger.info("删除模块成功!");
 			session.setAttribute(Constant.TIP_KEY, StringUtil.genTipMsg("删除模块成功!", "success"));
 		}
-		return MODULE_REDITRCT_ACTION;
+		return View.MODULE_REDITRCT_ACTION;
 	}
 
 	/**
@@ -134,6 +135,6 @@ public class ModuleController {
 	public ModelAndView changeState(Integer moduleId) {
 		ms.changeState(moduleId);
 		logger.info("模块{}切换状态成功!", moduleId);
-		return MODULE_REDITRCT_ACTION;
+		return View.MODULE_REDITRCT_ACTION;
 	}
 }

@@ -19,6 +19,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.xn.hk.common.constant.Constant;
+import com.xn.hk.common.constant.View;
 import com.xn.hk.common.utils.EnumStatus;
 import com.xn.hk.common.utils.encryption.MD5Util;
 import com.xn.hk.common.utils.page.BasePage;
@@ -46,10 +47,7 @@ public class UserController {
 	 * 记录日志
 	 */
 	private static final Logger logger = LoggerFactory.getLogger(UserController.class);
-	private static final ModelAndView USER_REDITRCT_ACTION = new ModelAndView("redirect:showAllUser.do");// 重定向分页所有用户的Action
-	private static final ModelAndView USER_REDITRCT_LOGIN_VIEW = new ModelAndView("redirect:tologin.do");// 重定向到登录页面
-	private static final ModelAndView USER_REDITRCT_HOME_VIEW = new ModelAndView("redirect:tohome.do");// 重定向到后台首页页面
-	private static final ModelAndView USER_REDITRCT_UPDATEPWD_VIEW = new ModelAndView("redirect:toUpdatePwd.do");// 重定向到后台修改密码页面
+
 	/**
 	 * 注入service层
 	 */
@@ -121,7 +119,7 @@ public class UserController {
 		if (!user.getVerifyCode().equalsIgnoreCase(verifyCodeValue)) {
 			logger.error("验证码错误!");
 			session.setAttribute(Constant.TIP_KEY, StringUtil.genTipMsg("验证码错误!", "error"));
-			return USER_REDITRCT_LOGIN_VIEW;
+			return View.USER_REDITRCT_LOGIN_VIEW;
 		}
 		// 3.通过用户名查找该用户是否存在
 		User u = us.findByName(userName);
@@ -130,7 +128,7 @@ public class UserController {
 			if (u.getUserState().intValue() == EnumStatus.ISLOCKED.getCode().intValue()) {
 				logger.error("用户{}已冻结，请联系管理员!", user.getUserName());
 				session.setAttribute(Constant.TIP_KEY, StringUtil.genTipMsg("该账户已冻结，请联系管理员!", "error"));
-				return USER_REDITRCT_LOGIN_VIEW;
+				return View.USER_REDITRCT_LOGIN_VIEW;
 			} else {
 				// 5.正常通过，可以登录
 				if (userPwd.equals(u.getUserPwd())) {
@@ -146,18 +144,18 @@ public class UserController {
 					logger.info("用户{}登录成功!", userName);
 					// 将该用户保存至session中
 					session.setAttribute(Constant.SESSION_USER_KEY, u);
-					return USER_REDITRCT_HOME_VIEW;
+					return View.USER_REDITRCT_HOME_VIEW;
 				} else {
 					logger.error("用户{}登录,密码错误!", userName);
 					session.setAttribute(Constant.TIP_KEY, StringUtil.genTipMsg("登录密码错误!", "error"));
-					return USER_REDITRCT_LOGIN_VIEW;
+					return View.USER_REDITRCT_LOGIN_VIEW;
 				}
 			}
 		} else {
 			// 账户不存在
 			logger.error("用户{}不存在!", userName);
 			session.setAttribute(Constant.TIP_KEY, StringUtil.genTipMsg("该账户不存在!", "error"));
-			return USER_REDITRCT_LOGIN_VIEW;
+			return View.USER_REDITRCT_LOGIN_VIEW;
 		}
 	}
 
@@ -226,7 +224,7 @@ public class UserController {
 		session.removeAttribute(Constant.SESSION_USER_KEY);
 		logger.info("注销成功!");
 		session.setAttribute(Constant.TIP_KEY, StringUtil.genTipMsg("注销成功!", "success"));
-		return USER_REDITRCT_LOGIN_VIEW;
+		return View.USER_REDITRCT_LOGIN_VIEW;
 	}
 
 	/**
@@ -264,14 +262,14 @@ public class UserController {
 	 */
 	@RequestMapping(value = "/delete.do")
 	public ModelAndView deleteUser(Integer[] userIds, HttpSession session) {
-		int result = us.delete(userIds);
+		int result = us.batchDelete(userIds);
 		if (result == 0) {
 			logger.error("删除失败,该数组不存在!");
 		} else {
 			logger.info("删除用户成功!");
 			session.setAttribute(Constant.TIP_KEY, StringUtil.genTipMsg("删除用户成功!", "success"));
 		}
-		return USER_REDITRCT_ACTION;
+		return View.USER_REDITRCT_ACTION;
 	}
 
 	/**
@@ -288,14 +286,14 @@ public class UserController {
 		String userPwd = Pinyin4jUtil.getPinYin(user.getUserName());
 		userPwd = MD5Util.MD5(userPwd + Constant.PASSWORD_KEY);
 		user.setUserPwd(userPwd);
-		int result = us.add(user);
+		int result = us.insert(user);
 		if (result == 0) {
 			logger.error("添加{}用户失败!", user.getUserName());
 		} else {
 			logger.info("添加{}用户成功!", user.getUserName());
 			session.setAttribute(Constant.TIP_KEY, StringUtil.genTipMsg("添加用户成功!", "success"));
 		}
-		return USER_REDITRCT_ACTION;
+		return View.USER_REDITRCT_ACTION;
 	}
 
 	/**
@@ -315,7 +313,7 @@ public class UserController {
 			logger.info("修改{}用户成功!", user.getUserName());
 			session.setAttribute(Constant.TIP_KEY, StringUtil.genTipMsg("修改用户成功!", "success"));
 		}
-		return USER_REDITRCT_ACTION;
+		return View.USER_REDITRCT_ACTION;
 	}
 
 	/**
@@ -329,7 +327,7 @@ public class UserController {
 	public ModelAndView changeState(Integer userId) {
 		us.changeState(userId);
 		logger.info("用户{}切换状态成功!", userId);
-		return USER_REDITRCT_ACTION;
+		return View.USER_REDITRCT_ACTION;
 	}
 
 	/**
@@ -353,7 +351,7 @@ public class UserController {
 			logger.info("用户{}重置密码成功!", user.getUserName());
 			session.setAttribute(Constant.TIP_KEY, StringUtil.genTipMsg("重置密码成功!", "success"));
 		}
-		return USER_REDITRCT_ACTION;
+		return View.USER_REDITRCT_ACTION;
 	}
 
 	/**
@@ -377,7 +375,7 @@ public class UserController {
 			logger.info("用户{}修改密码成功!", user.getUserName());
 			session.setAttribute(Constant.TIP_KEY, StringUtil.genTipMsg("修改密码成功,可以去登录了!", "success"));
 		}
-		return USER_REDITRCT_UPDATEPWD_VIEW;
+		return View.USER_REDITRCT_UPDATE_PWD_VIEW;
 	}
 
 	/**
@@ -410,11 +408,11 @@ public class UserController {
 			// 更新用户信息
 			us.uploadFace(user);
 			session.setAttribute(Constant.TIP_KEY, StringUtil.genTipMsg("上传头像成功!", "success"));
-			return USER_REDITRCT_ACTION;
+			return View.USER_REDITRCT_ACTION;
 		} catch (Exception e) {
 			logger.error("用户{}上传头像失败,原因是:{}", user.getUserName(), e.getMessage());
 			session.setAttribute(Constant.TIP_KEY, StringUtil.genTipMsg("上传头像失败!", "error"));
-			return USER_REDITRCT_ACTION;
+			return View.USER_REDITRCT_ACTION;
 		}
 	}
 }

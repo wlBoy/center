@@ -20,6 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.xn.hk.common.constant.Constant;
+import com.xn.hk.common.constant.View;
 import com.xn.hk.common.utils.page.BasePage;
 import com.xn.hk.common.utils.string.StringUtil;
 import com.xn.hk.system.model.ChannelData;
@@ -40,7 +41,7 @@ public class ChannelDataController {
 	 * 记录日志
 	 */
 	private static final Logger logger = LoggerFactory.getLogger(ChannelDataController.class);
-	private static final ModelAndView CHANNEL_REDITRCT_ACTION = new ModelAndView("redirect:showAllChannelData.do");// 重定向分页所有渠道的Action
+	
 	@Autowired
 	private ChannelDataService cds;
 
@@ -65,7 +66,7 @@ public class ChannelDataController {
 			session.setAttribute(Constant.TIP_KEY, StringUtil.genTipMsg("导入Excel数据成功!", "success"));
 		}
 		in.close();
-		return CHANNEL_REDITRCT_ACTION;
+		return View.CHANNEL_REDITRCT_ACTION;
 	}
 
 	/**

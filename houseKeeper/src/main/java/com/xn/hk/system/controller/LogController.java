@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.xn.hk.common.constant.Constant;
+import com.xn.hk.common.constant.View;
 import com.xn.hk.common.utils.page.BasePage;
 import com.xn.hk.common.utils.string.StringUtil;
 import com.xn.hk.system.model.Log;
@@ -34,7 +35,7 @@ public class LogController {
 	 * 记录日志
 	 */
 	private static final Logger logger = LoggerFactory.getLogger(LogController.class);
-	private static final ModelAndView LOG_REDITRCT_ACTION = new ModelAndView("redirect:showAllLog.do");// 重定向分页所有日志的Action
+
 	/**
 	 * 注入service层
 	 */
@@ -78,13 +79,13 @@ public class LogController {
 	 */
 	@RequestMapping(value = "/delete.do")
 	public ModelAndView deleteLog(String[] logIds, HttpSession session) {
-		int result = ls.delete(logIds);
+		int result = ls.batchDelete(logIds);
 		if (result == 0) {
 			logger.error("删除失败,该数组不存在!");
 		} else {
 			logger.info("删除日志成功!");
 			session.setAttribute(Constant.TIP_KEY, StringUtil.genTipMsg("删除日志成功!", "success"));
 		}
-		return LOG_REDITRCT_ACTION;
+		return View.LOG_REDITRCT_ACTION;
 	}
 }

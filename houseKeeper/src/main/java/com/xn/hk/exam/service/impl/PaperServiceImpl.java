@@ -61,7 +61,7 @@ public class PaperServiceImpl extends BaseServiceImpl<Paper> implements PaperSer
 	 */
 	public int addPaper(Paper paper) {
 		// 添加试卷的基本信息
-		pd.add(paper);
+		pd.insert(paper);
 		// 添加配置表的信息
 		for (int i = 0; i < paper.getTypeIds().length; i++) {
 			pd.configPaper(paper.getPaperId(), paper.getTypeIds()[i], paper.getTypeNums()[i], paper.getTypeScores()[i]);

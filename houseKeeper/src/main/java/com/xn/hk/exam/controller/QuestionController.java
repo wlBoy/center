@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.xn.hk.common.constant.Constant;
+import com.xn.hk.common.constant.View;
 import com.xn.hk.common.utils.page.BasePage;
 import com.xn.hk.common.utils.string.StringUtil;
 import com.xn.hk.exam.model.Question;
@@ -34,7 +35,7 @@ public class QuestionController {
 	 * 记录日志
 	 */
 	private static final Logger logger = LoggerFactory.getLogger(QuestionController.class);
-	private static final ModelAndView QUESTION_REDITRCT_ACTION = new ModelAndView("redirect:showAllQuestion.do");// 重定向分页所有题目的Action
+	
 	/**
 	 * 注入service层
 	 */
@@ -79,14 +80,14 @@ public class QuestionController {
 	 */
 	@RequestMapping(value = "/add.do")
 	public ModelAndView addQuestion(Question question, HttpSession session) {
-		int result = qs.add(question);
+		int result = qs.insert(question);
 		if (result == 0) {
 			logger.error("添加题目{}失败!", question.getQuestionTitle());
 		} else {
 			logger.info("添加题目{}成功!", question.getQuestionTitle());
 			session.setAttribute(Constant.TIP_KEY, StringUtil.genTipMsg("添加题目成功!", "success"));
 		}
-		return QUESTION_REDITRCT_ACTION;
+		return View.QUESTION_REDITRCT_ACTION;
 	}
 
 	/**
@@ -106,7 +107,7 @@ public class QuestionController {
 			logger.info("修改题目{}成功!", question.getQuestionTitle());
 			session.setAttribute(Constant.TIP_KEY, StringUtil.genTipMsg("修改题目成功!", "success"));
 		}
-		return QUESTION_REDITRCT_ACTION;
+		return View.QUESTION_REDITRCT_ACTION;
 	}
 
 	/**
@@ -119,14 +120,14 @@ public class QuestionController {
 	 */
 	@RequestMapping(value = "/delete.do")
 	public ModelAndView deleteQuestion(Integer[] questionIds, HttpSession session) {
-		int result = qs.delete(questionIds);
+		int result = qs.batchDelete(questionIds);
 		if (result == 0) {
 			logger.error("删除失败,该数组不存在!");
 		} else {
 			logger.info("删除题目成功!");
 			session.setAttribute(Constant.TIP_KEY, StringUtil.genTipMsg("删除题目成功!", "success"));
 		}
-		return QUESTION_REDITRCT_ACTION;
+		return View.QUESTION_REDITRCT_ACTION;
 	}
 
 	/**
@@ -140,6 +141,6 @@ public class QuestionController {
 	public ModelAndView changeState(Integer questionId) {
 		qs.changeState(questionId);
 		logger.info("题目{}切换状态成功!", questionId);
-		return QUESTION_REDITRCT_ACTION;
+		return View.QUESTION_REDITRCT_ACTION;
 	}
 }

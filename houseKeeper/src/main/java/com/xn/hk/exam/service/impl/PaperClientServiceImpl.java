@@ -54,7 +54,7 @@ public class PaperClientServiceImpl extends BaseServiceImpl<Paper> implements Pa
 					userList.get(i));
 		}
 		// 将用户的客观题的分数保存到分数表中
-		sd.add(score);
+		sd.insert(score);
 		return qlist.size() + 1;
 	}
 

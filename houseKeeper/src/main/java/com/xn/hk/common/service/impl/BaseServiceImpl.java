@@ -29,9 +29,27 @@ public abstract class BaseServiceImpl<T> implements BaseService<T> {
 	 *            实体对象
 	 * @return 返回影响条数
 	 */
-	public int add(T t) {
-		return getDao().add(t);
+	public int insert(T t) {
+		return getDao().insert(t);
 	}
+
+	/**
+	 * 批量添加实体
+	 * 
+	 * @param List<T>
+	 *            实体对象列表
+	 * @return 返回影响条数
+	 */
+	public int batchInsert(List<T> list) {
+		if (list == null || list.size() == 0) {
+			return -1;
+		}
+		// 循环调用插入方法，次数为list的size
+		for (T t : list) {
+			getDao().insert(t);
+		}
+		return list.size();
+	};
 
 	/**
 	 * 更新实体
@@ -45,13 +63,24 @@ public abstract class BaseServiceImpl<T> implements BaseService<T> {
 	}
 
 	/**
-	 * 删除实体(支持批量删除)
+	 * 删除实体
+	 * 
+	 * @param id
+	 *            实体ID
+	 * @return 返回影响条数
+	 */
+	public int delete(Object id) {
+		return getDao().delete(id);
+	};
+
+	/**
+	 * 批量删除实体
 	 * 
 	 * @param ids
 	 *            实体ID数组
 	 * @return 返回影响条数
 	 */
-	public int delete(Object[] ids) {
+	public int batchDelete(Object[] ids) {
 		if (ids == null || ids.length < 1) {
 			return -1;
 		}
@@ -117,4 +146,36 @@ public abstract class BaseServiceImpl<T> implements BaseService<T> {
 	public T findByName(Object name) {
 		return getDao().findByName(name);
 	}
+	/**
+	 * 根据自定义条件查找该实体
+	 * 
+	 * @param cond
+	 *            自定义条件
+	 * @return 实体对象
+	 */
+	public T findByCond(Object cond) {
+		return getDao().findByCond(cond);
+	};
+
+	/**
+	 * 根据自定义条件查找实体列表
+	 * 
+	 * @param cond
+	 *            自定义条件
+	 * @return 实体列表
+	 */
+	public List<T> findListByCond(Object cond){
+		return getDao().findListByCond(cond);
+	};
+
+	/**
+	 * 根据自定义条件查找结果总数
+	 * 
+	 * @param cond
+	 *            自定义条件
+	 * @return 结果总数
+	 */
+	public int findCountByCond(Object cond) {
+		return getDao().findCountByCond(cond);
+	};
 }

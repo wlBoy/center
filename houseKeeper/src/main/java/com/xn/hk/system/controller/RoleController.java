@@ -14,6 +14,7 @@ import org.springframework.web.servlet.ModelAndView;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.xn.hk.common.constant.Constant;
+import com.xn.hk.common.constant.View;
 import com.xn.hk.common.utils.page.BasePage;
 import com.xn.hk.common.utils.string.StringUtil;
 import com.xn.hk.system.model.Module;
@@ -36,7 +37,7 @@ public class RoleController {
 	 * 记录日志
 	 */
 	private static final Logger logger = LoggerFactory.getLogger(RoleController.class);
-	private static final ModelAndView ROLE_REDITRCT_ACTION = new ModelAndView("redirect:showAllRole.do");// 重定向分页所有角色的Action
+	
 	/**
 	 * 注入service层
 	 */
@@ -88,14 +89,14 @@ public class RoleController {
 	 */
 	@RequestMapping(value = "/add.do")
 	public ModelAndView add(Role role, HttpSession session) {
-		int result = rs.add(role);
+		int result = rs.insert(role);
 		if (result == 0) {
 			logger.error("添加角色{}失败!", role.getRoleName());
 		} else {
 			logger.info("添加角色{}成功!", role.getRoleName());
 			session.setAttribute(Constant.TIP_KEY, StringUtil.genTipMsg("添加角色成功!", "success"));
 		}
-		return ROLE_REDITRCT_ACTION;
+		return View.ROLE_REDITRCT_ACTION;
 	}
 
 	/**
@@ -115,7 +116,7 @@ public class RoleController {
 			logger.info("修改角色{}成功!", role.getRoleName());
 			session.setAttribute(Constant.TIP_KEY, StringUtil.genTipMsg("修改角色成功!", "success"));
 		}
-		return ROLE_REDITRCT_ACTION;
+		return View.ROLE_REDITRCT_ACTION;
 	}
 
 	/**
@@ -135,6 +136,6 @@ public class RoleController {
 			logger.info("删除角色成功!");
 			session.setAttribute(Constant.TIP_KEY, StringUtil.genTipMsg("删除角色成功!", "success"));
 		}
-		return ROLE_REDITRCT_ACTION;
+		return View.ROLE_REDITRCT_ACTION;
 	}
 }

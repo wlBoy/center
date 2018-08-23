@@ -16,6 +16,7 @@ import com.xn.hk.account.model.AccountType;
 import com.xn.hk.account.service.AccountService;
 import com.xn.hk.account.service.AccountTypeService;
 import com.xn.hk.common.constant.Constant;
+import com.xn.hk.common.constant.View;
 import com.xn.hk.common.utils.page.BasePage;
 import com.xn.hk.common.utils.string.StringUtil;
 import com.xn.hk.system.model.User;
@@ -36,8 +37,7 @@ public class AccountController {
 	 * 记录日志
 	 */
 	private static final Logger logger = LoggerFactory.getLogger(AccountController.class);
-	private static final ModelAndView PERSONAL_ACCOUNT_REDITRCT_ACTION = new ModelAndView(
-			"redirect:showPersonalAccount.do");// 重定向分页所有账务的Action
+	
 	/**
 	 * 注入service层
 	 */
@@ -126,7 +126,7 @@ public class AccountController {
 			logger.info("添加个人账务{}成功!", account.getAccountTitle());
 			session.setAttribute(Constant.TIP_KEY, StringUtil.genTipMsg("添加个人账务成功!", "success"));
 		}
-		return PERSONAL_ACCOUNT_REDITRCT_ACTION;
+		return View.PERSONAL_ACCOUNT_REDITRCT_ACTION;
 	}
 
 	/**
@@ -146,7 +146,7 @@ public class AccountController {
 			logger.info("修改个人账务{}成功!", account.getAccountTitle());
 			session.setAttribute(Constant.TIP_KEY, StringUtil.genTipMsg("修改个人账务成功!", "success"));
 		}
-		return PERSONAL_ACCOUNT_REDITRCT_ACTION;
+		return View.PERSONAL_ACCOUNT_REDITRCT_ACTION;
 	}
 
 	/**
@@ -166,7 +166,7 @@ public class AccountController {
 			logger.info("删除个人账务成功!");
 			session.setAttribute(Constant.TIP_KEY, StringUtil.genTipMsg("删除个人账务成功!", "success"));
 		}
-		return PERSONAL_ACCOUNT_REDITRCT_ACTION;
+		return View.PERSONAL_ACCOUNT_REDITRCT_ACTION;
 	}
 
 }

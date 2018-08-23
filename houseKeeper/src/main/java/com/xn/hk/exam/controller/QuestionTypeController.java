@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.xn.hk.common.constant.Constant;
+import com.xn.hk.common.constant.View;
 import com.xn.hk.common.utils.string.StringUtil;
 import com.xn.hk.exam.model.QuestionType;
 import com.xn.hk.exam.service.QuestionTypeService;
@@ -31,7 +32,7 @@ public class QuestionTypeController {
 	 * 记录日志
 	 */
 	private static final Logger logger = LoggerFactory.getLogger(QuestionTypeController.class);
-	private static final ModelAndView QUESTION_TYPE_REDITRCT_ACTION = new ModelAndView("redirect:showAllType.do");// 重定向分页所有题型的Action
+
 	/**
 	 * 注入service层
 	 */
@@ -62,14 +63,14 @@ public class QuestionTypeController {
 	 */
 	@RequestMapping(value = "/add.do")
 	public ModelAndView add(QuestionType type, HttpSession session) {
-		int result = qts.add(type);
+		int result = qts.insert(type);
 		if (result == 0) {
 			logger.error("添加题型{}失败!", type.getTypeName());
 		} else {
 			logger.info("添加题型{}成功!", type.getTypeName());
 			session.setAttribute(Constant.TIP_KEY, StringUtil.genTipMsg("添加题型成功!", "success"));
 		}
-		return QUESTION_TYPE_REDITRCT_ACTION;
+		return View.QUESTION_TYPE_REDITRCT_ACTION;
 	}
 
 	/**
@@ -89,7 +90,7 @@ public class QuestionTypeController {
 			logger.info("修改题型{}成功!", type.getTypeName());
 			session.setAttribute(Constant.TIP_KEY, StringUtil.genTipMsg("修改题型成功!", "success"));
 		}
-		return QUESTION_TYPE_REDITRCT_ACTION;
+		return View.QUESTION_TYPE_REDITRCT_ACTION;
 	}
 
 	/**
@@ -102,13 +103,13 @@ public class QuestionTypeController {
 	 */
 	@RequestMapping(value = "/delete.do")
 	public ModelAndView delete(Integer[] typeIds, HttpSession session) {
-		int result = qts.delete(typeIds);
+		int result = qts.batchDelete(typeIds);
 		if (result == 0) {
 			logger.error("删除失败,该题型ID不存在!");
 		} else {
 			logger.info("删除题型成功!");
 			session.setAttribute(Constant.TIP_KEY, StringUtil.genTipMsg("删除题型成功!", "success"));
 		}
-		return QUESTION_TYPE_REDITRCT_ACTION;
+		return View.QUESTION_TYPE_REDITRCT_ACTION;
 	}
 }

@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.xn.hk.common.constant.Constant;
+import com.xn.hk.common.constant.View;
 import com.xn.hk.common.utils.page.BasePage;
 import com.xn.hk.common.utils.string.StringUtil;
 import com.xn.hk.exam.model.Paper;
@@ -116,7 +117,6 @@ public class PaperClientController {
 	@SuppressWarnings("unchecked")
 	@RequestMapping(value = "/submitPaper.do")
 	public ModelAndView submitPaper(Integer paperId, HttpServletRequest request, HttpSession session) {
-		ModelAndView mv = new ModelAndView("redirect:showAllClientPaper.do");
 		// 从session中拿出当前用户信息
 		User user = (User) session.getAttribute(Constant.SESSION_USER_KEY);
 		// 从session中拿出试卷所有题目信息
@@ -162,7 +162,7 @@ public class PaperClientController {
 		// 添加分数和用户答案
 		pcs.addScoreAndSolution(score, qlist, userList);
 		session.setAttribute(Constant.TIP_KEY, StringUtil.genTipMsg("交卷成功!", "success"));
-		return mv;
+		return View.CLIENT_PAPER_REDITRCT_ACTION;
 	}
 
 	/**

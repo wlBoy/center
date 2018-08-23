@@ -64,7 +64,7 @@ public class LogAspect {
 			log.setRequestIp(request.getRemoteAddr());
 		}
 		// 添加日志至数据库
-		ld.add(log);
+		ld.insert(log);
 		return value;
 	}
 }

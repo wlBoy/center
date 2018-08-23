@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.xn.hk.common.constant.Constant;
+import com.xn.hk.common.constant.View;
 import com.xn.hk.common.utils.page.BasePage;
 import com.xn.hk.common.utils.string.StringUtil;
 import com.xn.hk.exam.model.Paper;
@@ -38,7 +39,7 @@ public class PaperController {
 	 * 记录日志
 	 */
 	private static final Logger logger = LoggerFactory.getLogger(PaperController.class);
-	private static final ModelAndView PAPER_REDITRCT_ACTION = new ModelAndView("redirect:showAllPaper.do");// 重定向分页所有试卷的Action
+	
 	/**
 	 * 注入service层
 	 */
@@ -101,7 +102,7 @@ public class PaperController {
 			logger.info("添加试卷{}成功!", paper.getPaperName());
 			session.setAttribute(Constant.TIP_KEY, StringUtil.genTipMsg("添加试卷成功!", "success"));
 		}
-		return PAPER_REDITRCT_ACTION;
+		return View.PAPER_REDITRCT_ACTION;
 	}
 
 	/**
@@ -121,7 +122,7 @@ public class PaperController {
 			logger.info("修改试卷{}成功!", paper.getPaperName());
 			session.setAttribute(Constant.TIP_KEY, StringUtil.genTipMsg("修改试卷成功!", "success"));
 		}
-		return PAPER_REDITRCT_ACTION;
+		return View.PAPER_REDITRCT_ACTION;
 	}
 
 	/**
@@ -141,7 +142,7 @@ public class PaperController {
 			logger.info("删除试卷成功!");
 			session.setAttribute(Constant.TIP_KEY, StringUtil.genTipMsg("删除试卷成功!", "success"));
 		}
-		return PAPER_REDITRCT_ACTION;
+		return View.PAPER_REDITRCT_ACTION;
 	}
 
 	/**
@@ -155,7 +156,7 @@ public class PaperController {
 	public ModelAndView changeState(Integer paperId) {
 		ps.changeState(paperId);
 		logger.info("试卷{}切换状态成功!", paperId);
-		return PAPER_REDITRCT_ACTION;
+		return View.PAPER_REDITRCT_ACTION;
 	}
 
 	/**

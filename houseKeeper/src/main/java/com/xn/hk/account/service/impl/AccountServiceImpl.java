@@ -77,7 +77,7 @@ public class AccountServiceImpl extends BaseServiceImpl<Account> implements Acco
 	 */
 	public int addAccount(Account account) {
 		// 添加账务信息
-		ad.add(account);
+		ad.insert(account);
 		// 查找刚添加的账务全部信息
 		account = ad.findById(account.getAccountId());
 		// 添加资产表信息
@@ -142,7 +142,7 @@ public class AccountServiceImpl extends BaseServiceImpl<Account> implements Acco
 			} else {
 				m.setOutFee(account.getAccountFee());
 			}
-			return md.add(m);
+			return md.insert(m);
 		} else {
 			// 存在,执行更新操作
 			logger.info("更新前-->总收入为:{},总支出为:{}", result.getInFee(), result.getOutFee());

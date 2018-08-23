@@ -1,5 +1,4 @@
 package com.xn.hk.common.constant;
-
 /**
  * 
  * @Title: Contant
@@ -125,7 +124,7 @@ public class Constant {
 	 * 试卷IDkey
 	 */
 	public final static String PAPERID_KEY = "paperId";
-	
+	/*-------------------------------------------------------------------*/
 	
 
 }

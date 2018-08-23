@@ -20,7 +20,7 @@ public interface BaseDao<T> {
 	 *            实体对象
 	 * @return 返回影响条数
 	 */
-	public int add(T t);
+	public int insert(T t);
 
 	/**
 	 * 更新实体
@@ -91,4 +91,31 @@ public interface BaseDao<T> {
 	 * @return 实体对象
 	 */
 	public T findByName(Object name);
+
+	/**
+	 * 根据自定义条件查找该实体
+	 * 
+	 * @param cond
+	 *            自定义条件
+	 * @return 实体对象
+	 */
+	public T findByCond(Object cond);
+
+	/**
+	 * 根据自定义条件查找实体列表
+	 * 
+	 * @param cond
+	 *            自定义条件
+	 * @return 实体列表
+	 */
+	public List<T> findListByCond(Object cond);
+
+	/**
+	 * 根据自定义条件查找结果总数
+	 * 
+	 * @param cond
+	 *            自定义条件
+	 * @return 结果总数
+	 */
+	public int findCountByCond(Object cond);
 }

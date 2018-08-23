@@ -14,6 +14,7 @@ import org.springframework.web.servlet.ModelAndView;
 import com.xn.hk.account.model.AccountType;
 import com.xn.hk.account.service.AccountTypeService;
 import com.xn.hk.common.constant.Constant;
+import com.xn.hk.common.constant.View;
 import com.xn.hk.common.utils.page.BasePage;
 import com.xn.hk.common.utils.string.StringUtil;
 import com.xn.hk.system.model.User;
@@ -33,7 +34,7 @@ public class AccountTypeController {
 	 * 记录日志
 	 */
 	private static final Logger logger = LoggerFactory.getLogger(AccountTypeController.class);
-	private static final ModelAndView ACCOUNT_TYPE_REDITRCT_ACTION = new ModelAndView("redirect:showPersonalType.do");// 重定向分页所有账务类别的Action
+
 	/**
 	 * 注入service层
 	 */
@@ -77,14 +78,14 @@ public class AccountTypeController {
 		// 从session中拿出当前用户信息,将它塞入对象中去
 		User user = (User) session.getAttribute(Constant.SESSION_USER_KEY);
 		type.setUserId(user.getUserId());
-		int result = ats.add(type);
+		int result = ats.insert(type);
 		if (result == 0) {
 			logger.error("添加个人账务类别{}失败!", type.getTypeName());
 		} else {
 			logger.error("添加个人账务类别{}成功!", type.getTypeName());
 			session.setAttribute(Constant.TIP_KEY, StringUtil.genTipMsg("添加个人账务类别成功!", "success"));
 		}
-		return ACCOUNT_TYPE_REDITRCT_ACTION;
+		return View.ACCOUNT_TYPE_REDITRCT_ACTION;
 	}
 
 	/**
@@ -104,7 +105,7 @@ public class AccountTypeController {
 			logger.error("修改个人账务类别{}成功!", type.getTypeName());
 			session.setAttribute(Constant.TIP_KEY, StringUtil.genTipMsg("修改个人账务类别成功!", "success"));
 		}
-		return ACCOUNT_TYPE_REDITRCT_ACTION;
+		return View.ACCOUNT_TYPE_REDITRCT_ACTION;
 	}
 
 	/**
@@ -117,13 +118,13 @@ public class AccountTypeController {
 	 */
 	@RequestMapping(value = "/delete.do")
 	public ModelAndView deleteType(Integer[] typeIds, HttpSession session) {
-		int result = ats.delete(typeIds);
+		int result = ats.batchDelete(typeIds);
 		if (result == 0) {
 			logger.error("删除失败,该数组不存在!");
 		} else {
 			logger.error("删除个人账务类别成功!");
 			session.setAttribute(Constant.TIP_KEY, StringUtil.genTipMsg("删除个人账务类别成功!", "success"));
 		}
-		return ACCOUNT_TYPE_REDITRCT_ACTION;
+		return View.ACCOUNT_TYPE_REDITRCT_ACTION;
 	}
 }

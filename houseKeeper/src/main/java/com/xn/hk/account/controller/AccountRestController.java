@@ -31,6 +31,7 @@ public class AccountRestController {
 	 * 记录日志
 	 */
 	private static final Logger logger = LoggerFactory.getLogger(AccountRestController.class);
+	
 	@Autowired
 	private AccountTypeService ats;
 	@Autowired
