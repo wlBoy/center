@@ -1,7 +1,5 @@
 package com.xn.hk.exam.controller;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -26,18 +24,14 @@ import com.xn.hk.exam.service.QuestionTypeService;
 @RequestMapping("/exam/rest")
 public class ExamRestController {
 	/**
-	 * 记录日志
-	 */
-	private static final Logger logger = LoggerFactory.getLogger(ExamRestController.class);
-	/**
 	 * 注入service层
 	 */
 	@Autowired
-	private QuestionTypeService qts;
+	private QuestionTypeService questionTypeService;
 	@Autowired
-	private QuestionService qs;
+	private QuestionService questionService;
 	@Autowired
-	private PaperService ps;
+	private PaperService paperService;
 
 	/**
 	 * 根据题型Id查询该题型
@@ -48,9 +42,7 @@ public class ExamRestController {
 	 */
 	@RequestMapping(value = "/findByTypeId.do", method = RequestMethod.GET)
 	public QuestionType findByTypeId(Integer typeId) {
-		QuestionType t = qts.findById(typeId);
-		logger.info("该题型的信息为:{}", t);
-		return t;
+		return questionTypeService.findById(typeId);
 	}
 
 	/**
@@ -62,9 +54,7 @@ public class ExamRestController {
 	 */
 	@RequestMapping(value = "/findByTypeName.do", method = RequestMethod.GET)
 	public QuestionType findByTypeName(String typeName) {
-		QuestionType t = qts.findByName(typeName);
-		logger.info("该题型的信息为:{}", t);
-		return t;
+		return questionTypeService.findByName(typeName);
 	}
 
 	/**
@@ -76,9 +66,7 @@ public class ExamRestController {
 	 */
 	@RequestMapping(value = "/findByQuestionId.do", method = RequestMethod.GET)
 	public Question findByQuestionId(Integer questionId) {
-		Question q = qs.findById(questionId);
-		logger.info("该题目的信息为:{}", q);
-		return q;
+		return questionService.findById(questionId);
 	}
 
 	/**
@@ -90,8 +78,6 @@ public class ExamRestController {
 	 */
 	@RequestMapping(value = "/findByPaperId.do", method = RequestMethod.GET)
 	public Paper findByPaperId(Integer paperId) {
-		Paper p = ps.findById(paperId);
-		logger.info("该试卷的信息为:{}", p);
-		return p;
+		return paperService.findById(paperId);
 	}
 }

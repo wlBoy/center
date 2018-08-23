@@ -1,4 +1,4 @@
-package com.xn.hk.common.utils;
+package com.xn.hk.common.constant;
 
 /**
  * 
@@ -8,11 +8,11 @@ package com.xn.hk.common.utils;
  * @Author: wanlei
  * @Date: 2018年8月22日 上午9:14:11
  */
-public enum EnumStatus {
+public enum StatusEnum {
 
 	NORMAL(0, "正常状态"), ISLOCKED(1, "冻结状态");
 
-	private EnumStatus(Integer code, String desc) {
+	private StatusEnum(Integer code, String desc) {
 		this.code = code;
 		this.desc = desc;
 	}

@@ -61,7 +61,6 @@ public class ModuleController {
 		// 查询所有的一级模块
 		List<Module> oneMenus = ms.findModuleByLevel(Constant.ONE_MODULES_VALUE);
 		mv.addObject(Constant.ONE_MODULES_KEY, oneMenus);
-		logger.info("一级模块总个数{}", oneMenus.size());
 		return mv;
 	}
 
@@ -76,11 +75,11 @@ public class ModuleController {
 	@RequestMapping(value = "/add.do")
 	public ModelAndView addModule(Module module, HttpSession session) {
 		int result = ms.insert(module);
-		if (result == 0) {
+		if (result == Constant.ZERO_VALUE) {
 			logger.error("添加模块{}失败!", module.getModuleName());
 		} else {
 			logger.info("添加模块{}成功!", module.getModuleName());
-			session.setAttribute(Constant.TIP_KEY, StringUtil.genTipMsg("添加模块成功!", "success"));
+			session.setAttribute(Constant.TIP_KEY, StringUtil.genTipMsg("添加模块成功!", Constant.SUCCESS_TIP_KEY));
 		}
 		return View.MODULE_REDITRCT_ACTION;
 	}
@@ -95,11 +94,11 @@ public class ModuleController {
 	@RequestMapping(value = "/update.do")
 	public ModelAndView updateModule(Module module, HttpSession session) {
 		int result = ms.update(module);
-		if (result == 0) {
+		if (result == Constant.ZERO_VALUE) {
 			logger.error("修改模块{}失败!", module.getModuleName());
 		} else {
 			logger.info("修改模块{}成功!", module.getModuleName());
-			session.setAttribute(Constant.TIP_KEY, StringUtil.genTipMsg("修改模块成功!", "success"));
+			session.setAttribute(Constant.TIP_KEY, StringUtil.genTipMsg("修改模块成功!", Constant.SUCCESS_TIP_KEY));
 		}
 		return View.MODULE_REDITRCT_ACTION;
 	}
@@ -115,11 +114,11 @@ public class ModuleController {
 	@RequestMapping(value = "/delete.do")
 	public ModelAndView deleteModule(Integer[] moduleIds, HttpSession session) {
 		int result = ms.batchDelete(moduleIds);
-		if (result == 0) {
+		if (result == Constant.ZERO_VALUE) {
 			logger.error("删除失败,该数组不存在!");
 		} else {
 			logger.info("删除模块成功!");
-			session.setAttribute(Constant.TIP_KEY, StringUtil.genTipMsg("删除模块成功!", "success"));
+			session.setAttribute(Constant.TIP_KEY, StringUtil.genTipMsg("删除模块成功!", Constant.SUCCESS_TIP_KEY));
 		}
 		return View.MODULE_REDITRCT_ACTION;
 	}
@@ -133,8 +132,12 @@ public class ModuleController {
 	 */
 	@RequestMapping(value = "/changeState.do")
 	public ModelAndView changeState(Integer moduleId) {
-		ms.changeState(moduleId);
-		logger.info("模块{}切换状态成功!", moduleId);
+		int result = ms.changeState(moduleId);
+		if (result == Constant.ZERO_VALUE) {
+			logger.error("模块{}切换状态失败!", moduleId);
+		} else {
+			logger.info("模块{}切换状态成功!", moduleId);
+		}
 		return View.MODULE_REDITRCT_ACTION;
 	}
 }

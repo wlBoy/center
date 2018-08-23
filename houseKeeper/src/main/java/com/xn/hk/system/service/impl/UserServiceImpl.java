@@ -3,9 +3,9 @@ package com.xn.hk.system.service.impl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.xn.hk.common.constant.StatusEnum;
 import com.xn.hk.common.dao.BaseDao;
 import com.xn.hk.common.service.impl.BaseServiceImpl;
-import com.xn.hk.common.utils.EnumStatus;
 import com.xn.hk.system.dao.UserDao;
 import com.xn.hk.system.model.User;
 import com.xn.hk.system.service.UserService;
@@ -51,10 +51,10 @@ public class UserServiceImpl extends BaseServiceImpl<User> implements UserServic
 	public int changeState(Integer userId) {
 		Integer userState = ud.findById(userId).getUserState();
 		// 拿到当前用户的状态，判断调用不同的方法切换用户状态
-		if (userState.intValue() == EnumStatus.NORMAL.getCode().intValue()) {
-			return ud.changeState(EnumStatus.ISLOCKED.getCode(), userId);
+		if (userState.intValue() == StatusEnum.NORMAL.getCode().intValue()) {
+			return ud.changeState(StatusEnum.ISLOCKED.getCode(), userId);
 		} else {
-			return ud.changeState(EnumStatus.NORMAL.getCode(), userId);
+			return ud.changeState(StatusEnum.NORMAL.getCode(), userId);
 		}
 	}
 

@@ -35,14 +35,14 @@ public class QuestionController {
 	 * 记录日志
 	 */
 	private static final Logger logger = LoggerFactory.getLogger(QuestionController.class);
-	
+
 	/**
 	 * 注入service层
 	 */
 	@Autowired
-	private QuestionService qs;
+	private QuestionService questionService;
 	@Autowired
-	private QuestionTypeService qts;
+	private QuestionTypeService questionTypeService;
 
 	/**
 	 * 实现题目分页
@@ -59,14 +59,13 @@ public class QuestionController {
 		// 封装查询条件
 		pages.setBean(question);
 		// 题目分页
-		List<Question> questions = qs.pageList(pages);
+		List<Question> questions = questionService.pageList(pages);
 		// 将list封装到分页对象中
 		pages.setList(questions);
 		mv.addObject(Constant.PAGE_KEY, pages);
 		// 查询所有的题型
-		List<QuestionType> types = qts.findAll();
+		List<QuestionType> types = questionTypeService.findAll();
 		mv.addObject(Constant.TYPES_KEY, types);
-		logger.info("所有的题型个数为:{}", types.size());
 		return mv;
 	}
 
@@ -80,12 +79,12 @@ public class QuestionController {
 	 */
 	@RequestMapping(value = "/add.do")
 	public ModelAndView addQuestion(Question question, HttpSession session) {
-		int result = qs.insert(question);
-		if (result == 0) {
+		int result = questionService.insert(question);
+		if (result == Constant.ZERO_VALUE) {
 			logger.error("添加题目{}失败!", question.getQuestionTitle());
 		} else {
 			logger.info("添加题目{}成功!", question.getQuestionTitle());
-			session.setAttribute(Constant.TIP_KEY, StringUtil.genTipMsg("添加题目成功!", "success"));
+			session.setAttribute(Constant.TIP_KEY, StringUtil.genTipMsg("添加题目成功!", Constant.SUCCESS_TIP_KEY));
 		}
 		return View.QUESTION_REDITRCT_ACTION;
 	}
@@ -100,12 +99,12 @@ public class QuestionController {
 	 */
 	@RequestMapping(value = "/update.do")
 	public ModelAndView updateQuestion(Question question, HttpSession session) {
-		int result = qs.update(question);
-		if (result == 0) {
+		int result = questionService.update(question);
+		if (result == Constant.ZERO_VALUE) {
 			logger.error("修改题目{}失败!", question.getQuestionTitle());
 		} else {
 			logger.info("修改题目{}成功!", question.getQuestionTitle());
-			session.setAttribute(Constant.TIP_KEY, StringUtil.genTipMsg("修改题目成功!", "success"));
+			session.setAttribute(Constant.TIP_KEY, StringUtil.genTipMsg("修改题目成功!", Constant.SUCCESS_TIP_KEY));
 		}
 		return View.QUESTION_REDITRCT_ACTION;
 	}
@@ -120,12 +119,12 @@ public class QuestionController {
 	 */
 	@RequestMapping(value = "/delete.do")
 	public ModelAndView deleteQuestion(Integer[] questionIds, HttpSession session) {
-		int result = qs.batchDelete(questionIds);
-		if (result == 0) {
+		int result = questionService.batchDelete(questionIds);
+		if (result == Constant.ZERO_VALUE) {
 			logger.error("删除失败,该数组不存在!");
 		} else {
 			logger.info("删除题目成功!");
-			session.setAttribute(Constant.TIP_KEY, StringUtil.genTipMsg("删除题目成功!", "success"));
+			session.setAttribute(Constant.TIP_KEY, StringUtil.genTipMsg("删除题目成功!", Constant.SUCCESS_TIP_KEY));
 		}
 		return View.QUESTION_REDITRCT_ACTION;
 	}
@@ -139,8 +138,12 @@ public class QuestionController {
 	 */
 	@RequestMapping(value = "/changeState.do")
 	public ModelAndView changeState(Integer questionId) {
-		qs.changeState(questionId);
-		logger.info("题目{}切换状态成功!", questionId);
+		int result = questionService.changeState(questionId);
+		if (result == Constant.ZERO_VALUE) {
+			logger.error("题目{}切换状态失败!", questionId);
+		} else {
+			logger.info("题目{}切换状态成功!", questionId);
+		}
 		return View.QUESTION_REDITRCT_ACTION;
 	}
 }

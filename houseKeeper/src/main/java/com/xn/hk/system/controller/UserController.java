@@ -19,8 +19,8 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.xn.hk.common.constant.Constant;
+import com.xn.hk.common.constant.StatusEnum;
 import com.xn.hk.common.constant.View;
-import com.xn.hk.common.utils.EnumStatus;
 import com.xn.hk.common.utils.encryption.MD5Util;
 import com.xn.hk.common.utils.page.BasePage;
 import com.xn.hk.common.utils.string.Pinyin4jUtil;
@@ -52,11 +52,11 @@ public class UserController {
 	 * 注入service层
 	 */
 	@Autowired
-	private UserService us;
+	private UserService userService;
 	@Autowired
-	private RoleService rs;
+	private RoleService roleService;
 	@Autowired
-	private ModuleService ms;
+	private ModuleService moduleService;
 
 	/**
 	 * 转到WEB-INF下的登录页面
@@ -118,25 +118,25 @@ public class UserController {
 		String verifyCodeValue = (String) session.getAttribute(Constant.VERIFY_CODE_KEY);
 		if (!user.getVerifyCode().equalsIgnoreCase(verifyCodeValue)) {
 			logger.error("验证码错误!");
-			session.setAttribute(Constant.TIP_KEY, StringUtil.genTipMsg("验证码错误!", "error"));
+			session.setAttribute(Constant.TIP_KEY, StringUtil.genTipMsg("验证码错误!", Constant.ERROR_TIP_KEY));
 			return View.USER_REDITRCT_LOGIN_VIEW;
 		}
 		// 3.通过用户名查找该用户是否存在
-		User u = us.findByName(userName);
+		User u = userService.findByName(userName);
 		if (u != null) {
 			// 4.账户被冻结
-			if (u.getUserState().intValue() == EnumStatus.ISLOCKED.getCode().intValue()) {
+			if (u.getUserState().intValue() == StatusEnum.ISLOCKED.getCode().intValue()) {
 				logger.error("用户{}已冻结，请联系管理员!", user.getUserName());
-				session.setAttribute(Constant.TIP_KEY, StringUtil.genTipMsg("该账户已冻结，请联系管理员!", "error"));
+				session.setAttribute(Constant.TIP_KEY, StringUtil.genTipMsg("该账户已冻结，请联系管理员!", Constant.ERROR_TIP_KEY));
 				return View.USER_REDITRCT_LOGIN_VIEW;
 			} else {
 				// 5.正常通过，可以登录
 				if (userPwd.equals(u.getUserPwd())) {
 					// 根据已登录用户的角色查询可访问的一级模块数组
-					List<Module> oneModules = ms.findModuleByRoleId(Constant.ONE_MODULES_VALUE,
+					List<Module> oneModules = moduleService.findModuleByRoleId(Constant.ONE_MODULES_VALUE,
 							u.getRole().getRoleId());
 					// 根据已登录用户的角色查询可访问的二级模块数组
-					List<Module> twoModules = ms.findModuleByRoleId(Constant.TWO_MODULES_VALUE,
+					List<Module> twoModules = moduleService.findModuleByRoleId(Constant.TWO_MODULES_VALUE,
 							u.getRole().getRoleId());
 					// 保存该账户角色可访问的一级模块数组和所有的二级模块列表，以便页面遍历
 					session.setAttribute(Constant.ONE_MODULES_KEY, oneModules);
@@ -147,14 +147,14 @@ public class UserController {
 					return View.USER_REDITRCT_HOME_VIEW;
 				} else {
 					logger.error("用户{}登录,密码错误!", userName);
-					session.setAttribute(Constant.TIP_KEY, StringUtil.genTipMsg("登录密码错误!", "error"));
+					session.setAttribute(Constant.TIP_KEY, StringUtil.genTipMsg("登录密码错误!", Constant.ERROR_TIP_KEY));
 					return View.USER_REDITRCT_LOGIN_VIEW;
 				}
 			}
 		} else {
 			// 账户不存在
 			logger.error("用户{}不存在!", userName);
-			session.setAttribute(Constant.TIP_KEY, StringUtil.genTipMsg("该账户不存在!", "error"));
+			session.setAttribute(Constant.TIP_KEY, StringUtil.genTipMsg("该账户不存在!", Constant.ERROR_TIP_KEY));
 			return View.USER_REDITRCT_LOGIN_VIEW;
 		}
 	}
@@ -177,8 +177,8 @@ public class UserController {
 			pwdCookie.setMaxAge(0);
 		} else {
 			// rememberMe的值为on时，代表选中，设置Cookie的父路径
-			nameCookie.setPath(session.getServletContext().getContextPath() + "/");
-			pwdCookie.setPath(session.getServletContext().getContextPath() + "/");
+			nameCookie.setPath(session.getServletContext().getContextPath() + File.separator);
+			pwdCookie.setPath(session.getServletContext().getContextPath() + File.separator);
 			// 保存Cookie的时间长度，单位为秒
 			nameCookie.setMaxAge(7 * 24 * 60 * 60);
 			pwdCookie.setMaxAge(7 * 24 * 60 * 60);
@@ -222,8 +222,7 @@ public class UserController {
 	public ModelAndView logoff(HttpSession session) {
 		// 销毁session中的user
 		session.removeAttribute(Constant.SESSION_USER_KEY);
-		logger.info("注销成功!");
-		session.setAttribute(Constant.TIP_KEY, StringUtil.genTipMsg("注销成功!", "success"));
+		session.setAttribute(Constant.TIP_KEY, StringUtil.genTipMsg("用户注销成功!", Constant.SUCCESS_TIP_KEY));
 		return View.USER_REDITRCT_LOGIN_VIEW;
 	}
 
@@ -241,14 +240,13 @@ public class UserController {
 		ModelAndView mv = new ModelAndView("system/showAllUser");
 		// 封装查询条件
 		pages.setBean(user);
-		List<User> users = us.pageList(pages);
+		List<User> users = userService.pageList(pages);
 		// 将list封装到分页对象中
 		pages.setList(users);
 		mv.addObject(Constant.PAGE_KEY, pages);
 		// 查询所有的角色
-		List<Role> roles = rs.findAll();
+		List<Role> roles = roleService.findAll();
 		mv.addObject(Constant.ROlE_KEY, roles);
-		logger.info("所有角色个数为:{}", roles.size());
 		return mv;
 	}
 
@@ -262,12 +260,12 @@ public class UserController {
 	 */
 	@RequestMapping(value = "/delete.do")
 	public ModelAndView deleteUser(Integer[] userIds, HttpSession session) {
-		int result = us.batchDelete(userIds);
-		if (result == 0) {
+		int result = userService.batchDelete(userIds);
+		if (result == Constant.ZERO_VALUE) {
 			logger.error("删除失败,该数组不存在!");
 		} else {
 			logger.info("删除用户成功!");
-			session.setAttribute(Constant.TIP_KEY, StringUtil.genTipMsg("删除用户成功!", "success"));
+			session.setAttribute(Constant.TIP_KEY, StringUtil.genTipMsg("删除用户成功!", Constant.SUCCESS_TIP_KEY));
 		}
 		return View.USER_REDITRCT_ACTION;
 	}
@@ -286,12 +284,12 @@ public class UserController {
 		String userPwd = Pinyin4jUtil.getPinYin(user.getUserName());
 		userPwd = MD5Util.MD5(userPwd + Constant.PASSWORD_KEY);
 		user.setUserPwd(userPwd);
-		int result = us.insert(user);
-		if (result == 0) {
+		int result = userService.insert(user);
+		if (result == Constant.ZERO_VALUE) {
 			logger.error("添加{}用户失败!", user.getUserName());
 		} else {
 			logger.info("添加{}用户成功!", user.getUserName());
-			session.setAttribute(Constant.TIP_KEY, StringUtil.genTipMsg("添加用户成功!", "success"));
+			session.setAttribute(Constant.TIP_KEY, StringUtil.genTipMsg("添加用户成功!", Constant.SUCCESS_TIP_KEY));
 		}
 		return View.USER_REDITRCT_ACTION;
 	}
@@ -306,12 +304,12 @@ public class UserController {
 	 */
 	@RequestMapping(value = "/update.do")
 	public ModelAndView updateUser(User user, HttpSession session) {
-		int result = us.update(user);
-		if (result == 0) {
+		int result = userService.update(user);
+		if (result == Constant.ZERO_VALUE) {
 			logger.error("修改{}用户失败!", user.getUserName());
 		} else {
 			logger.info("修改{}用户成功!", user.getUserName());
-			session.setAttribute(Constant.TIP_KEY, StringUtil.genTipMsg("修改用户成功!", "success"));
+			session.setAttribute(Constant.TIP_KEY, StringUtil.genTipMsg("修改用户成功!", Constant.SUCCESS_TIP_KEY));
 		}
 		return View.USER_REDITRCT_ACTION;
 	}
@@ -325,8 +323,12 @@ public class UserController {
 	 */
 	@RequestMapping(value = "/changeState.do")
 	public ModelAndView changeState(Integer userId) {
-		us.changeState(userId);
-		logger.info("用户{}切换状态成功!", userId);
+		int result = userService.changeState(userId);
+		if (result == Constant.ZERO_VALUE) {
+			logger.error("用户{}切换状态失败!", userId);
+		} else {
+			logger.info("用户{}切换状态成功!", userId);
+		}
 		return View.USER_REDITRCT_ACTION;
 	}
 
@@ -339,17 +341,17 @@ public class UserController {
 	 */
 	@RequestMapping(value = "/resetPwd.do")
 	public ModelAndView resetPwd(Integer userId, HttpSession session) {
-		User user = us.findById(userId);
+		User user = userService.findById(userId);
 		// 生成密码,规则:用户名的拼音，再使用MD5加密(用户登录密码+登录密码key)存入数据库中,提高密码的加密程度
 		String userPwd = Pinyin4jUtil.getPinYin(user.getUserName());
 		userPwd = MD5Util.MD5(userPwd + Constant.PASSWORD_KEY);
 		user.setUserPwd(userPwd);
-		int result = us.update(user);
-		if (result == 0) {
+		int result = userService.update(user);
+		if (result == Constant.ZERO_VALUE) {
 			logger.error("用户{}重置密码失败!", user.getUserName());
 		} else {
 			logger.info("用户{}重置密码成功!", user.getUserName());
-			session.setAttribute(Constant.TIP_KEY, StringUtil.genTipMsg("重置密码成功!", "success"));
+			session.setAttribute(Constant.TIP_KEY, StringUtil.genTipMsg("重置密码成功!", Constant.SUCCESS_TIP_KEY));
 		}
 		return View.USER_REDITRCT_ACTION;
 	}
@@ -365,15 +367,15 @@ public class UserController {
 	 */
 	@RequestMapping(value = "/updatePwd.do")
 	public ModelAndView updatePwd(Integer userId, String newpassword, HttpSession session) {
-		User user = us.findById(userId);
+		User user = userService.findById(userId);
 		// 使用MD5加密(用户登录密码+登录密码key)存入数据库中,提高密码的加密程度
 		user.setUserPwd(MD5Util.MD5(newpassword + Constant.PASSWORD_KEY));
-		int result = us.update(user);
-		if (result == 0) {
+		int result = userService.update(user);
+		if (result == Constant.ZERO_VALUE) {
 			logger.error("用户{}修改密码失败!", user.getUserName());
 		} else {
 			logger.info("用户{}修改密码成功!", user.getUserName());
-			session.setAttribute(Constant.TIP_KEY, StringUtil.genTipMsg("修改密码成功,可以去登录了!", "success"));
+			session.setAttribute(Constant.TIP_KEY, StringUtil.genTipMsg("修改密码成功,可以去登录了!", Constant.SUCCESS_TIP_KEY));
 		}
 		return View.USER_REDITRCT_UPDATE_PWD_VIEW;
 	}
@@ -406,12 +408,12 @@ public class UserController {
 			file.transferTo(dir);
 			user.setUserFace(newName);
 			// 更新用户信息
-			us.uploadFace(user);
-			session.setAttribute(Constant.TIP_KEY, StringUtil.genTipMsg("上传头像成功!", "success"));
+			userService.uploadFace(user);
+			session.setAttribute(Constant.TIP_KEY, StringUtil.genTipMsg("上传头像成功!", Constant.SUCCESS_TIP_KEY));
 			return View.USER_REDITRCT_ACTION;
 		} catch (Exception e) {
 			logger.error("用户{}上传头像失败,原因是:{}", user.getUserName(), e.getMessage());
-			session.setAttribute(Constant.TIP_KEY, StringUtil.genTipMsg("上传头像失败!", "error"));
+			session.setAttribute(Constant.TIP_KEY, StringUtil.genTipMsg("上传头像失败!", Constant.ERROR_TIP_KEY));
 			return View.USER_REDITRCT_ACTION;
 		}
 	}

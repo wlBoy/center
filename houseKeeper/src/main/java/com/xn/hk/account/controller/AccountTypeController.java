@@ -39,7 +39,7 @@ public class AccountTypeController {
 	 * 注入service层
 	 */
 	@Autowired
-	private AccountTypeService ats;
+	private AccountTypeService accountTypeService;
 
 	/**
 	 * 实现个人账务类别分页
@@ -58,7 +58,7 @@ public class AccountTypeController {
 		type.setUserId(user.getUserId());
 		// 封装查询条件
 		pages.setBean(type);
-		List<AccountType> types = ats.pagePersonalList(pages);
+		List<AccountType> types = accountTypeService.pagePersonalList(pages);
 		// 将list封装到分页对象中
 		pages.setList(types);
 		mv.addObject(Constant.PAGE_KEY, pages);
@@ -78,12 +78,12 @@ public class AccountTypeController {
 		// 从session中拿出当前用户信息,将它塞入对象中去
 		User user = (User) session.getAttribute(Constant.SESSION_USER_KEY);
 		type.setUserId(user.getUserId());
-		int result = ats.insert(type);
-		if (result == 0) {
+		int result = accountTypeService.insert(type);
+		if (result == Constant.ZERO_VALUE) {
 			logger.error("添加个人账务类别{}失败!", type.getTypeName());
 		} else {
-			logger.error("添加个人账务类别{}成功!", type.getTypeName());
-			session.setAttribute(Constant.TIP_KEY, StringUtil.genTipMsg("添加个人账务类别成功!", "success"));
+			logger.info("添加个人账务类别{}成功!", type.getTypeName());
+			session.setAttribute(Constant.TIP_KEY, StringUtil.genTipMsg("添加个人账务类别成功!", Constant.SUCCESS_TIP_KEY));
 		}
 		return View.ACCOUNT_TYPE_REDITRCT_ACTION;
 	}
@@ -98,12 +98,12 @@ public class AccountTypeController {
 	 */
 	@RequestMapping(value = "/update.do")
 	public ModelAndView updateType(AccountType type, HttpSession session) {
-		int result = ats.update(type);
-		if (result == 0) {
+		int result = accountTypeService.update(type);
+		if (result == Constant.ZERO_VALUE) {
 			logger.error("修改个人账务类别{}失败!", type.getTypeName());
 		} else {
-			logger.error("修改个人账务类别{}成功!", type.getTypeName());
-			session.setAttribute(Constant.TIP_KEY, StringUtil.genTipMsg("修改个人账务类别成功!", "success"));
+			logger.info("修改个人账务类别{}成功!", type.getTypeName());
+			session.setAttribute(Constant.TIP_KEY, StringUtil.genTipMsg("修改个人账务类别成功!", Constant.SUCCESS_TIP_KEY));
 		}
 		return View.ACCOUNT_TYPE_REDITRCT_ACTION;
 	}
@@ -118,12 +118,12 @@ public class AccountTypeController {
 	 */
 	@RequestMapping(value = "/delete.do")
 	public ModelAndView deleteType(Integer[] typeIds, HttpSession session) {
-		int result = ats.batchDelete(typeIds);
-		if (result == 0) {
+		int result = accountTypeService.batchDelete(typeIds);
+		if (result == Constant.ZERO_VALUE) {
 			logger.error("删除失败,该数组不存在!");
 		} else {
-			logger.error("删除个人账务类别成功!");
-			session.setAttribute(Constant.TIP_KEY, StringUtil.genTipMsg("删除个人账务类别成功!", "success"));
+			logger.info("删除个人账务类别成功!");
+			session.setAttribute(Constant.TIP_KEY, StringUtil.genTipMsg("删除个人账务类别成功!", Constant.SUCCESS_TIP_KEY));
 		}
 		return View.ACCOUNT_TYPE_REDITRCT_ACTION;
 	}

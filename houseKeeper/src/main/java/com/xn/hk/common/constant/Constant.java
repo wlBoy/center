@@ -1,4 +1,5 @@
 package com.xn.hk.common.constant;
+
 /**
  * 
  * @Title: Contant
@@ -10,9 +11,21 @@ package com.xn.hk.common.constant;
 public class Constant {
 	/*----------------------------------common---------------------------------*/
 	/**
+	 * 影响条数0
+	 */
+	public final static int ZERO_VALUE = 0;
+	/**
 	 * 提示信息key
 	 */
 	public final static String TIP_KEY = "msg";
+	/**
+	 * 提示信息-成功状态key
+	 */
+	public final static String SUCCESS_TIP_KEY = "success";
+	/**
+	 * 提示信息-错误状态key
+	 */
+	public final static String ERROR_TIP_KEY = "error";
 	/**
 	 * 分页信息的key
 	 */
@@ -21,7 +34,7 @@ public class Constant {
 	 * 类别value
 	 */
 	public final static String TYPES_KEY = "types";
-	
+
 	/*----------------------------------用户管理---------------------------------*/
 	/**
 	 * session中已登录用户key
@@ -55,7 +68,7 @@ public class Constant {
 	 * 验证码key
 	 */
 	public final static String VERIFY_CODE_KEY = "verifyCodeValue";
-	
+
 	/*----------------------------------角色管理---------------------------------*/
 	/**
 	 * 所有角色的key
@@ -81,11 +94,11 @@ public class Constant {
 	/**
 	 * 一级模块value
 	 */
-	public final static Integer ONE_MODULES_VALUE = 1;
+	public final static int ONE_MODULES_VALUE = 1;
 	/**
 	 * 二级模块value
 	 */
-	public final static Integer TWO_MODULES_VALUE = 2;
+	public final static int TWO_MODULES_VALUE = 2;
 	/*----------------------------------账务管理---------------------------------*/
 	/**
 	 * 账务父类别-支出
@@ -124,7 +137,10 @@ public class Constant {
 	 * 试卷IDkey
 	 */
 	public final static String PAPERID_KEY = "paperId";
+	/**
+	 * 试卷正确答案key
+	 */
+	public final static String ANSWER_KEY = "answer";
 	/*-------------------------------------------------------------------*/
-	
 
 }

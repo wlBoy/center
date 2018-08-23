@@ -41,9 +41,11 @@ public class ChannelDataController {
 	 * 记录日志
 	 */
 	private static final Logger logger = LoggerFactory.getLogger(ChannelDataController.class);
-	
+	/**
+	 * 注入service层
+	 */
 	@Autowired
-	private ChannelDataService cds;
+	private ChannelDataService channelDataService;
 
 	/**
 	 * EXCEL表格数据导入
@@ -60,8 +62,10 @@ public class ChannelDataController {
 		// 获取上传的文件的文件名
 		String fileName = upfile.getOriginalFilename();
 		// 数据导入
-		int result = cds.importExcelInfo(in, fileName);
-		if (result > 0) {
+		int result = channelDataService.importExcelInfo(in, fileName);
+		if (result == Constant.ZERO_VALUE) {
+			logger.error("导入Excel数据失败!");
+		} else {
 			logger.info("导入Excel数据成功!");
 			session.setAttribute(Constant.TIP_KEY, StringUtil.genTipMsg("导入Excel数据成功!", "success"));
 		}
@@ -88,7 +92,7 @@ public class ChannelDataController {
 		response.setContentType("application/vnd.ms-excel;charset=UTF-8");
 		XSSFWorkbook workbook = null;
 		// 导出Excel文件
-		workbook = cds.exportAll();
+		workbook = channelDataService.exportAll();
 		OutputStream output;
 		try {
 			output = response.getOutputStream();
@@ -96,7 +100,7 @@ public class ChannelDataController {
 			bot.flush();
 			workbook.write(bot);
 			bot.close();
-			logger.info("导出EXCEL成功!");
+			logger.info("导出EXCEL数据成功!");
 		} catch (IOException e) {
 			logger.error(e.getMessage());
 		}
@@ -116,11 +120,10 @@ public class ChannelDataController {
 		ModelAndView mv = new ModelAndView("system/showAllChannelData");
 		// 封装查询条件
 		pages.setBean(cd);
-		List<ChannelData> list = cds.pageList(pages);
+		List<ChannelData> list = channelDataService.pageList(pages);
 		// 将list封装到分页对象中
 		pages.setList(list);
 		mv.addObject(Constant.PAGE_KEY, pages);
-		logger.info("分页大小为:{}", list.size());
 		return mv;
 	}
 

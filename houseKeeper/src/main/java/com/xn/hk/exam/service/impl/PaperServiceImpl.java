@@ -5,9 +5,9 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.xn.hk.common.constant.StatusEnum;
 import com.xn.hk.common.dao.BaseDao;
 import com.xn.hk.common.service.impl.BaseServiceImpl;
-import com.xn.hk.common.utils.EnumStatus;
 import com.xn.hk.common.utils.page.BasePage;
 import com.xn.hk.exam.dao.PaperDao;
 import com.xn.hk.exam.dao.QuestionDao;
@@ -45,10 +45,10 @@ public class PaperServiceImpl extends BaseServiceImpl<Paper> implements PaperSer
 	 */
 	public int changeState(Integer paperId) {
 		Paper p = pd.findById(paperId);
-		if (p.getIsAllowed().intValue() == EnumStatus.NORMAL.getCode().intValue()) {
-			return pd.changeState(EnumStatus.ISLOCKED.getCode(), paperId);
+		if (p.getIsAllowed().intValue() == StatusEnum.NORMAL.getCode().intValue()) {
+			return pd.changeState(StatusEnum.ISLOCKED.getCode(), paperId);
 		} else {
-			return pd.changeState(EnumStatus.NORMAL.getCode(), paperId);
+			return pd.changeState(StatusEnum.NORMAL.getCode(), paperId);
 		}
 	}
 

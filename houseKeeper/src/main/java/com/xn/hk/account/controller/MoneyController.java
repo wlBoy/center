@@ -30,14 +30,15 @@ public class MoneyController {
 	/**
 	 * 记录日志
 	 */
+	@SuppressWarnings("unused")
 	private static final Logger logger = LoggerFactory.getLogger(MoneyController.class);
 	/**
 	 * 注入service层
 	 */
 	@Autowired
-	private MoneyService ms;
+	private MoneyService moneyService;
 	@Autowired
-	private UserService us;
+	private UserService userService;
 
 	/**
 	 * 实现总资产分页
@@ -53,14 +54,13 @@ public class MoneyController {
 		ModelAndView mv = new ModelAndView("account/showAllMoney");
 		// 封装查询条件
 		pages.setBean(m);
-		List<Money> moneys = ms.pageList(pages);
+		List<Money> moneys = moneyService.pageList(pages);
 		// 将list封装到分页对象中
 		pages.setList(moneys);
 		mv.addObject(Constant.PAGE_KEY, pages);
 		// 查询所有用户信息，供下拉框显示
-		List<User> users = us.findAll();
+		List<User> users = userService.findAll();
 		mv.addObject(Constant.USER_KEY, users);
-		logger.info("所有用户个数为:{}", users.size());
 		return mv;
 	}
 

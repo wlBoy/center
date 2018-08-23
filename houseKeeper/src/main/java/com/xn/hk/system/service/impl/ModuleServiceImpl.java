@@ -5,9 +5,9 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.xn.hk.common.constant.StatusEnum;
 import com.xn.hk.common.dao.BaseDao;
 import com.xn.hk.common.service.impl.BaseServiceImpl;
-import com.xn.hk.common.utils.EnumStatus;
 import com.xn.hk.common.utils.page.BasePage;
 import com.xn.hk.system.dao.ModuleDao;
 import com.xn.hk.system.model.Module;
@@ -69,10 +69,10 @@ public class ModuleServiceImpl extends BaseServiceImpl<Module> implements Module
 	public int changeState(Integer moduleId) {
 		Integer moduleState = md.findById(moduleId).getIsAllowed();
 		// 拿到当前模块的状态，判断调用不同的方法切换模块状态
-		if (moduleState.intValue() == EnumStatus.NORMAL.getCode().intValue()) {
-			return md.changeState(EnumStatus.ISLOCKED.getCode(), moduleId);
+		if (moduleState.intValue() == StatusEnum.NORMAL.getCode().intValue()) {
+			return md.changeState(StatusEnum.ISLOCKED.getCode(), moduleId);
 		} else {
-			return md.changeState(EnumStatus.NORMAL.getCode(), moduleId);
+			return md.changeState(StatusEnum.NORMAL.getCode(), moduleId);
 		}
 	}
 

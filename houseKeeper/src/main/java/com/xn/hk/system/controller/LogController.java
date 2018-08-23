@@ -40,9 +40,9 @@ public class LogController {
 	 * 注入service层
 	 */
 	@Autowired
-	private LogService ls;
+	private LogService logService;
 	@Autowired
-	private UserService us;
+	private UserService userService;
 
 	/**
 	 * 分页显示所有的日志
@@ -58,14 +58,13 @@ public class LogController {
 		ModelAndView mv = new ModelAndView("system/showAllLog");
 		// 封装查询条件
 		pages.setBean(log);
-		List<Log> logs = ls.pageList(pages);
+		List<Log> logs = logService.pageList(pages);
 		// 将list封装到分页对象中
 		pages.setList(logs);
 		mv.addObject(Constant.PAGE_KEY, pages);
 		// 查询所有的用户
-		List<User> users = us.findAll();
+		List<User> users = userService.findAll();
 		mv.addObject(Constant.USER_KEY, users);
-		logger.info("用户的个数为:{}", users.size());
 		return mv;
 	}
 
@@ -79,12 +78,12 @@ public class LogController {
 	 */
 	@RequestMapping(value = "/delete.do")
 	public ModelAndView deleteLog(String[] logIds, HttpSession session) {
-		int result = ls.batchDelete(logIds);
-		if (result == 0) {
+		int result = logService.batchDelete(logIds);
+		if (result == Constant.ZERO_VALUE) {
 			logger.error("删除失败,该数组不存在!");
 		} else {
 			logger.info("删除日志成功!");
-			session.setAttribute(Constant.TIP_KEY, StringUtil.genTipMsg("删除日志成功!", "success"));
+			session.setAttribute(Constant.TIP_KEY, StringUtil.genTipMsg("删除日志成功!", Constant.SUCCESS_TIP_KEY));
 		}
 		return View.LOG_REDITRCT_ACTION;
 	}

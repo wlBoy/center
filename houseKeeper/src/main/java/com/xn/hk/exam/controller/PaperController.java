@@ -39,18 +39,18 @@ public class PaperController {
 	 * 记录日志
 	 */
 	private static final Logger logger = LoggerFactory.getLogger(PaperController.class);
-	
+
 	/**
 	 * 注入service层
 	 */
 	@Autowired
-	private PaperService ps;
+	private PaperService paperService;
 	@Autowired
-	private QuestionTypeService qts;
+	private QuestionTypeService questionTypeService;
 	@Autowired
-	private QuestionService qs;
+	private QuestionService questionService;
 	@Autowired
-	private UserService us;
+	private UserService userService;
 
 	/**
 	 * 后台实现试卷分页
@@ -67,18 +67,16 @@ public class PaperController {
 		// 封装查询条件
 		pages.setBean(paper);
 		// 试卷分页
-		List<Paper> papers = ps.pageList(pages);
+		List<Paper> papers = paperService.pageList(pages);
 		// 将list封装到分页对象中
 		pages.setList(papers);
 		mv.addObject(Constant.PAGE_KEY, pages);
 		// 查询所有的题型,供添加试卷时使用
-		List<QuestionType> types = qts.findAll();
+		List<QuestionType> types = questionTypeService.findAll();
 		mv.addObject(Constant.TYPES_KEY, types);
-		logger.info("所有的题型个数为:{}" + types.size());
 		// 查询所有用户信息，供下拉框显示
-		List<User> users = us.findAll();
+		List<User> users = userService.findAll();
 		mv.addObject(Constant.USER_KEY, users);
-		logger.info("用户的个数为:{}" + users.size());
 		return mv;
 	}
 
@@ -95,12 +93,12 @@ public class PaperController {
 		// 从session中取出当前用户
 		User user = (User) session.getAttribute(Constant.SESSION_USER_KEY);
 		paper.setCreatePaperId(user.getUserId());
-		int result = ps.addPaper(paper);
-		if (result == 0) {
+		int result = paperService.addPaper(paper);
+		if (result == Constant.ZERO_VALUE) {
 			logger.error("添加试卷{}失败!", paper.getPaperName());
 		} else {
 			logger.info("添加试卷{}成功!", paper.getPaperName());
-			session.setAttribute(Constant.TIP_KEY, StringUtil.genTipMsg("添加试卷成功!", "success"));
+			session.setAttribute(Constant.TIP_KEY, StringUtil.genTipMsg("添加试卷成功!", Constant.SUCCESS_TIP_KEY));
 		}
 		return View.PAPER_REDITRCT_ACTION;
 	}
@@ -115,12 +113,12 @@ public class PaperController {
 	 */
 	@RequestMapping(value = "/update.do")
 	public ModelAndView updateQuestion(Paper paper, HttpSession session) {
-		int result = ps.update(paper);
-		if (result == 0) {
+		int result = paperService.update(paper);
+		if (result == Constant.ZERO_VALUE) {
 			logger.error("修改试卷{}失败!", paper.getPaperName());
 		} else {
 			logger.info("修改试卷{}成功!", paper.getPaperName());
-			session.setAttribute(Constant.TIP_KEY, StringUtil.genTipMsg("修改试卷成功!", "success"));
+			session.setAttribute(Constant.TIP_KEY, StringUtil.genTipMsg("修改试卷成功!", Constant.SUCCESS_TIP_KEY));
 		}
 		return View.PAPER_REDITRCT_ACTION;
 	}
@@ -135,12 +133,12 @@ public class PaperController {
 	 */
 	@RequestMapping(value = "/delete.do")
 	public ModelAndView deleteQuestion(Integer[] paperIds, HttpSession session) {
-		int result = ps.deletePaper(paperIds);
-		if (result == 0) {
+		int result = paperService.deletePaper(paperIds);
+		if (result == Constant.ZERO_VALUE) {
 			logger.error("删除失败,该数组不存在!");
 		} else {
 			logger.info("删除试卷成功!");
-			session.setAttribute(Constant.TIP_KEY, StringUtil.genTipMsg("删除试卷成功!", "success"));
+			session.setAttribute(Constant.TIP_KEY, StringUtil.genTipMsg("删除试卷成功!", Constant.SUCCESS_TIP_KEY));
 		}
 		return View.PAPER_REDITRCT_ACTION;
 	}
@@ -154,8 +152,12 @@ public class PaperController {
 	 */
 	@RequestMapping(value = "/changeState.do")
 	public ModelAndView changeState(Integer paperId) {
-		ps.changeState(paperId);
-		logger.info("试卷{}切换状态成功!", paperId);
+		int result = paperService.changeState(paperId);
+		if (result == Constant.ZERO_VALUE) {
+			logger.error("试卷{}切换状态失败!", paperId);
+		} else {
+			logger.info("试卷{}切换状态成功!", paperId);
+		}
 		return View.PAPER_REDITRCT_ACTION;
 	}
 
@@ -172,9 +174,9 @@ public class PaperController {
 	public ModelAndView readPaper(Integer paperId, Integer userId) {
 		ModelAndView mv = new ModelAndView("exam/readPaper");
 		// 根据试卷ID和用户ID查询学生简答题答案和正确答案信息(只要简答题的信息)
-		List<Question> qList = qs.findAnswerByPaperIdAndUserId(paperId, userId);
+		List<Question> qList = questionService.findAnswerByPaperIdAndUserId(paperId, userId);
 		// 在试卷配置表中根据试卷ID查询该试卷简答题的分数(即每到简答题分数)
-		Integer score = ps.findScoreByPaperId(paperId);
+		Integer score = paperService.findScoreByPaperId(paperId);
 		mv.addObject(Constant.SCORE_VALUES, score);
 		mv.addObject(Constant.PAPERID_KEY, paperId);
 		mv.addObject(Constant.USERID_KEY, userId);

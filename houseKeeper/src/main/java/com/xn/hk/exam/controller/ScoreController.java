@@ -40,9 +40,9 @@ public class ScoreController {
 	 * 注入service层
 	 */
 	@Autowired
-	private ScoreService ss;
+	private ScoreService scoreService;
 	@Autowired
-	private UserService us;
+	private UserService userService;
 
 	/**
 	 * 前台显示用户个人的分数列表(即用户个人所有的已考试卷)
@@ -62,14 +62,13 @@ public class ScoreController {
 		// 封装查询条件
 		pages.setBean(score);
 		// 试卷分页
-		List<Score> scores = ss.showPersonalList(pages);
+		List<Score> scores = scoreService.showPersonalList(pages);
 		// 将list封装到分页对象中
 		pages.setList(scores);
 		mv.addObject(Constant.PAGE_KEY, pages);
 		// 查询所有用户信息，供下拉框显示
-		List<User> users = us.findAll();
+		List<User> users = userService.findAll();
 		mv.addObject(Constant.USER_KEY, users);
-		logger.info("用户的个数为:{}", users.size());
 		return mv;
 	}
 
@@ -88,14 +87,13 @@ public class ScoreController {
 		// 封装查询条件
 		pages.setBean(score);
 		// 试卷分页
-		List<Score> scores = ss.pageList(pages);
+		List<Score> scores = scoreService.pageList(pages);
 		// 将list封装到分页对象中
 		pages.setList(scores);
 		mv.addObject(Constant.PAGE_KEY, pages);
 		// 查询所有用户信息，供下拉框显示
-		List<User> users = us.findAll();
+		List<User> users = userService.findAll();
 		mv.addObject(Constant.USER_KEY, users);
-		logger.info("用户的个数为:{}", users.size());
 		return mv;
 	}
 
@@ -109,13 +107,14 @@ public class ScoreController {
 	@RequestMapping(value = "/updateScore.do")
 	public ModelAndView updateScore(Integer paperId, Integer userId, Integer[] scores, HttpSession session) {
 		// 计算简单题总分
-		Integer sum = 0;
-		for (Integer s : scores) {
+		int sum = Constant.ZERO_VALUE;
+		for (int s : scores) {
 			sum += s;
 		}
+		logger.info("用户{}试卷{}简答题总分为:{}", userId, paperId, sum);
 		// 根据试卷ID和用户ID给该试卷主观题打分
-		ss.updateScore(paperId, userId, sum);
-		session.setAttribute(Constant.TIP_KEY, StringUtil.genTipMsg("批阅试卷成功!", "success"));
+		scoreService.updateScore(paperId, userId, sum);
+		session.setAttribute(Constant.TIP_KEY, StringUtil.genTipMsg("批阅试卷成功!", Constant.SUCCESS_TIP_KEY));
 		return View.SCORE_REDITRCT_ACTION;
 	}
 }

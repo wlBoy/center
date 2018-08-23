@@ -2,8 +2,6 @@ package com.xn.hk.account.controller;
 
 import javax.servlet.http.HttpSession;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -28,14 +26,12 @@ import com.xn.hk.system.model.User;
 @RequestMapping("/account/rest")
 public class AccountRestController {
 	/**
-	 * 记录日志
+	 * 注入service层
 	 */
-	private static final Logger logger = LoggerFactory.getLogger(AccountRestController.class);
-	
 	@Autowired
-	private AccountTypeService ats;
+	private AccountTypeService accountTypeService;
 	@Autowired
-	private AccountService as;
+	private AccountService accountService;
 
 	/**
 	 * 根据账务类别Id和用户ID查询该用户的个人账务类别
@@ -46,9 +42,7 @@ public class AccountRestController {
 	 */
 	@RequestMapping(value = "/findByTypeId.do", method = RequestMethod.GET)
 	public AccountType findByTypeId(Integer typeId) {
-		AccountType type = ats.findById(typeId);
-		logger.info("该账务类别的信息为:" + type);
-		return type;
+		return accountTypeService.findById(typeId);
 	}
 
 	/**
@@ -62,9 +56,7 @@ public class AccountRestController {
 	public AccountType findByTypeName(String typeName, HttpSession session) {
 		// 从session中拿出当前用户信息
 		User user = (User) session.getAttribute(Constant.SESSION_USER_KEY);
-		AccountType type = ats.findByNameAndUserId(typeName, user.getUserId());
-		logger.info("该账务类别的信息为:" + type);
-		return type;
+		return accountTypeService.findByNameAndUserId(typeName, user.getUserId());
 	}
 
 	/**
@@ -76,9 +68,7 @@ public class AccountRestController {
 	 */
 	@RequestMapping(value = "/findByAccountId.do", method = RequestMethod.GET)
 	public Account findByAccountId(Integer accountId) {
-		Account account = as.findById(accountId);
-		logger.info("该账务的信息为:" + account);
-		return account;
+		return accountService.findById(accountId);
 	}
 
 	/**
@@ -92,8 +82,6 @@ public class AccountRestController {
 	public Account findByAccountTitle(String accountTitle, HttpSession session) {
 		// 从session中拿出当前用户信息
 		User user = (User) session.getAttribute(Constant.SESSION_USER_KEY);
-		Account account = as.findByNameAndUserId(accountTitle, user.getUserId());
-		logger.info("该账务的信息为:" + account);
-		return account;
+		return accountService.findByNameAndUserId(accountTitle, user.getUserId());
 	}
 }

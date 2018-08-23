@@ -5,9 +5,9 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.xn.hk.common.constant.StatusEnum;
 import com.xn.hk.common.dao.BaseDao;
 import com.xn.hk.common.service.impl.BaseServiceImpl;
-import com.xn.hk.common.utils.EnumStatus;
 import com.xn.hk.exam.dao.QuestionDao;
 import com.xn.hk.exam.model.Question;
 import com.xn.hk.exam.service.QuestionService;
@@ -40,10 +40,10 @@ public class QuestionServiceImpl extends BaseServiceImpl<Question> implements Qu
 	 */
 	public int changeState(Integer questionId) {
 		Question q = qd.findById(questionId);
-		if (q.getQuestionStatus().intValue() == EnumStatus.NORMAL.getCode().intValue()) {
-			return qd.changeState(EnumStatus.ISLOCKED.getCode(), questionId);
+		if (q.getQuestionStatus().intValue() == StatusEnum.NORMAL.getCode().intValue()) {
+			return qd.changeState(StatusEnum.ISLOCKED.getCode(), questionId);
 		} else {
-			return qd.changeState(EnumStatus.NORMAL.getCode(), questionId);
+			return qd.changeState(StatusEnum.NORMAL.getCode(), questionId);
 		}
 	}
 

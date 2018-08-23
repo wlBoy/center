@@ -37,7 +37,7 @@ public class QuestionTypeController {
 	 * 注入service层
 	 */
 	@Autowired
-	private QuestionTypeService qts;
+	private QuestionTypeService qtQuestionTypeService;
 
 	/**
 	 * 显示所有题型
@@ -47,9 +47,8 @@ public class QuestionTypeController {
 	@RequestMapping(value = "/showAllType.do")
 	public ModelAndView showAllType() {
 		ModelAndView mv = new ModelAndView("exam/showAllType");
-		List<QuestionType> types = qts.findAll();
+		List<QuestionType> types = qtQuestionTypeService.findAll();
 		mv.addObject(Constant.TYPES_KEY, types);
-		logger.info("所有的题型个数为:{}", types.size());
 		return mv;
 	}
 
@@ -63,12 +62,12 @@ public class QuestionTypeController {
 	 */
 	@RequestMapping(value = "/add.do")
 	public ModelAndView add(QuestionType type, HttpSession session) {
-		int result = qts.insert(type);
-		if (result == 0) {
+		int result = qtQuestionTypeService.insert(type);
+		if (result == Constant.ZERO_VALUE) {
 			logger.error("添加题型{}失败!", type.getTypeName());
 		} else {
 			logger.info("添加题型{}成功!", type.getTypeName());
-			session.setAttribute(Constant.TIP_KEY, StringUtil.genTipMsg("添加题型成功!", "success"));
+			session.setAttribute(Constant.TIP_KEY, StringUtil.genTipMsg("添加题型成功!", Constant.SUCCESS_TIP_KEY));
 		}
 		return View.QUESTION_TYPE_REDITRCT_ACTION;
 	}
@@ -83,12 +82,12 @@ public class QuestionTypeController {
 	 */
 	@RequestMapping(value = "/update.do")
 	public ModelAndView update(QuestionType type, HttpSession session) {
-		int result = qts.update(type);
-		if (result == 0) {
+		int result = qtQuestionTypeService.update(type);
+		if (result == Constant.ZERO_VALUE) {
 			logger.error("修改题型{}失败!", type.getTypeName());
 		} else {
 			logger.info("修改题型{}成功!", type.getTypeName());
-			session.setAttribute(Constant.TIP_KEY, StringUtil.genTipMsg("修改题型成功!", "success"));
+			session.setAttribute(Constant.TIP_KEY, StringUtil.genTipMsg("修改题型成功!", Constant.SUCCESS_TIP_KEY));
 		}
 		return View.QUESTION_TYPE_REDITRCT_ACTION;
 	}
@@ -103,12 +102,12 @@ public class QuestionTypeController {
 	 */
 	@RequestMapping(value = "/delete.do")
 	public ModelAndView delete(Integer[] typeIds, HttpSession session) {
-		int result = qts.batchDelete(typeIds);
-		if (result == 0) {
+		int result = qtQuestionTypeService.batchDelete(typeIds);
+		if (result == Constant.ZERO_VALUE) {
 			logger.error("删除失败,该题型ID不存在!");
 		} else {
 			logger.info("删除题型成功!");
-			session.setAttribute(Constant.TIP_KEY, StringUtil.genTipMsg("删除题型成功!", "success"));
+			session.setAttribute(Constant.TIP_KEY, StringUtil.genTipMsg("删除题型成功!", Constant.SUCCESS_TIP_KEY));
 		}
 		return View.QUESTION_TYPE_REDITRCT_ACTION;
 	}

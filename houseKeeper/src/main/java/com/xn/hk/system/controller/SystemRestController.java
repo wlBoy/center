@@ -1,12 +1,14 @@
 package com.xn.hk.system.controller;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.xn.hk.common.constant.Constant;
+import com.xn.hk.common.constant.Result;
 import com.xn.hk.common.utils.encryption.MD5Util;
 import com.xn.hk.system.model.Module;
 import com.xn.hk.system.model.Role;
@@ -29,13 +31,13 @@ public class SystemRestController {
 	/**
 	 * 记录日志
 	 */
-	private static final Logger log = Logger.getLogger(SystemRestController.class);
+	private static final Logger logger = LoggerFactory.getLogger(SystemRestController.class);
 	@Autowired
-	private UserService us;
+	private UserService userService;
 	@Autowired
-	private RoleService rs;
+	private RoleService roleService;
 	@Autowired
-	private ModuleService ms;
+	private ModuleService moduleService;
 
 	/**
 	 * 根据用户Id查询该用户
@@ -46,9 +48,7 @@ public class SystemRestController {
 	 */
 	@RequestMapping(value = "/findByUserId.do", method = RequestMethod.GET)
 	public User findByUserId(Integer userId) {
-		User u = us.findById(userId);
-		log.info("用户的信息为:" + u);
-		return u;
+		return userService.findById(userId);
 	}
 
 	/**
@@ -60,9 +60,7 @@ public class SystemRestController {
 	 */
 	@RequestMapping(value = "/findByUserName.do", method = RequestMethod.GET)
 	public User findByUserName(String userName) {
-		User u = us.findByName(userName);
-		log.info("该用户的信息为:" + u);
-		return u;
+		return userService.findByName(userName);
 	}
 
 	/**
@@ -74,9 +72,7 @@ public class SystemRestController {
 	 */
 	@RequestMapping(value = "/findByRoleId.do", method = RequestMethod.GET)
 	public Role findByRoleId(Integer roleId) {
-		Role r = rs.findById(roleId);
-		log.info("该角色的信息为:" + r);
-		return r;
+		return roleService.findById(roleId);
 	}
 
 	/**
@@ -88,9 +84,7 @@ public class SystemRestController {
 	 */
 	@RequestMapping(value = "/findByRoleName.do", method = RequestMethod.GET)
 	public Role findByRoleName(String roleName) {
-		Role r = rs.findByName(roleName);
-		log.info("该角色的信息为:" + r);
-		return r;
+		return roleService.findByName(roleName);
 	}
 
 	/**
@@ -102,9 +96,7 @@ public class SystemRestController {
 	 */
 	@RequestMapping(value = "/findByModuleId.do", method = RequestMethod.GET)
 	public Module findByModuleId(Integer moduleId) {
-		Module m = ms.findById(moduleId);
-		log.info("该模块的信息为:" + m);
-		return m;
+		return moduleService.findById(moduleId);
 	}
 
 	/**
@@ -116,10 +108,9 @@ public class SystemRestController {
 	 */
 	@RequestMapping(value = "/findByModuleName.do", method = RequestMethod.GET)
 	public Module findByModuleName(String moduleName) {
-		Module m = ms.findByName(moduleName);
-		log.info("该模块的信息为:" + m);
-		return m;
+		return moduleService.findByName(moduleName);
 	}
+
 	/**
 	 * 修改密码时检查新密码是否与旧密码一致
 	 * 
@@ -127,15 +118,22 @@ public class SystemRestController {
 	 *            用户ID
 	 * @param newPwd
 	 *            新密码
-	 * @return 
+	 * @return
 	 */
 	@RequestMapping(value = "/checkOldPwd.do", method = RequestMethod.GET)
-	public String checkOldPwd(Integer userId , String newPwd) {
-		User user = us.findById(userId);
-		String newpwd = MD5Util.MD5(newPwd + Constant.PASSWORD_KEY);//新密码加密
-		if(newpwd.equals(user.getUserPwd())) {
-			return "ok";
+	public Result checkOldPwd(Integer userId, String newPwd) {
+		Result result = new Result();
+		User user = userService.findById(userId);
+		String userPwd = MD5Util.MD5(newPwd + Constant.PASSWORD_KEY);// 新密码加密
+		if (userPwd.equals(user.getUserPwd())) {
+			logger.info("新密码与旧密码一致!");
+			result.setCode(0);
+			result.setDesc("新密码与旧密码一致!");
+		} else {
+			logger.info("新密码与旧密码不一致!");
+			result.setCode(1);
+			result.setDesc("新密码与旧密码不一致!");
 		}
-		return "";
+		return result;
 	}
 }
