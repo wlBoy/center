@@ -38,7 +38,7 @@ public class ModuleController {
 	 * 注入service层
 	 */
 	@Autowired
-	private ModuleService ms;
+	private ModuleService moduleService;
 
 	/**
 	 * 实现模块分页
@@ -54,13 +54,13 @@ public class ModuleController {
 		ModelAndView mv = new ModelAndView("system/showAllModule");
 		// 封装查询条件
 		pages.setBean(module);
-		List<Module> modules = ms.pageList(pages);
+		List<Module> modules = moduleService.pageList(pages);
 		// 将list封装到分页对象中
 		pages.setList(modules);
 		mv.addObject(Constant.PAGE_KEY, pages);
 		// 查询所有的一级模块
-		List<Module> oneMenus = ms.findModuleByLevel(Constant.ONE_MODULES_VALUE);
-		mv.addObject(Constant.ONE_MODULES_KEY, oneMenus);
+		List<Module> oneModules = moduleService.findModuleByLevel(Constant.ONE_MODULES_VALUE);
+		mv.addObject(Constant.ONE_MODULES_KEY, oneModules);
 		return mv;
 	}
 
@@ -74,7 +74,7 @@ public class ModuleController {
 	 */
 	@RequestMapping(value = "/add.do")
 	public ModelAndView addModule(Module module, HttpSession session) {
-		int result = ms.insert(module);
+		int result = moduleService.insert(module);
 		if (result == Constant.ZERO_VALUE) {
 			logger.error("添加模块{}失败!", module.getModuleName());
 		} else {
@@ -93,7 +93,7 @@ public class ModuleController {
 	 */
 	@RequestMapping(value = "/update.do")
 	public ModelAndView updateModule(Module module, HttpSession session) {
-		int result = ms.update(module);
+		int result = moduleService.update(module);
 		if (result == Constant.ZERO_VALUE) {
 			logger.error("修改模块{}失败!", module.getModuleName());
 		} else {
@@ -113,7 +113,7 @@ public class ModuleController {
 	 */
 	@RequestMapping(value = "/delete.do")
 	public ModelAndView deleteModule(Integer[] moduleIds, HttpSession session) {
-		int result = ms.batchDelete(moduleIds);
+		int result = moduleService.batchDelete(moduleIds);
 		if (result == Constant.ZERO_VALUE) {
 			logger.error("删除失败,该数组不存在!");
 		} else {
@@ -132,7 +132,7 @@ public class ModuleController {
 	 */
 	@RequestMapping(value = "/changeState.do")
 	public ModelAndView changeState(Integer moduleId) {
-		int result = ms.changeState(moduleId);
+		int result = moduleService.changeState(moduleId);
 		if (result == Constant.ZERO_VALUE) {
 			logger.error("模块{}切换状态失败!", moduleId);
 		} else {

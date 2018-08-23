@@ -99,7 +99,6 @@ public class PaperClientController {
 		// 查找改试卷的基本信息
 		Paper paper = paperService.findById(paperId);
 		mv.addObject(Constant.PAPER_KEY, paper);
-		logger.info("该试卷的信息为:{}", paper);
 		// 查询该试卷的所有题目信息放至session中,供考试使用和评分使用
 		List<Question> qlist = questionService.findQuestionByPaperId(paperId);
 		session.setAttribute(Constant.QLIST_VALUES, qlist);

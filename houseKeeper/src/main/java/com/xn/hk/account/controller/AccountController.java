@@ -74,7 +74,7 @@ public class AccountController {
 		List<AccountType> comeInTypes = accountTypeService.findChildType(Constant.COMEIN_VALUE, user.getUserId());
 		mv.addObject(Constant.COMEIN_TYPES_KEY, comeInTypes);
 		// 查询父级别为"支出"的子账务类别,供页面下拉框显示
-		List<AccountType> comeOutTypes = accountTypeService.findChildType(Constant.COMEIN_VALUE, user.getUserId());
+		List<AccountType> comeOutTypes = accountTypeService.findChildType(Constant.COMEOUT_VALUE, user.getUserId());
 		mv.addObject(Constant.COMEOUT_TYPES_KEY, comeOutTypes);
 		return mv;
 	}

@@ -37,7 +37,7 @@ public class QuestionTypeController {
 	 * 注入service层
 	 */
 	@Autowired
-	private QuestionTypeService qtQuestionTypeService;
+	private QuestionTypeService questionTypeService;
 
 	/**
 	 * 显示所有题型
@@ -47,7 +47,7 @@ public class QuestionTypeController {
 	@RequestMapping(value = "/showAllType.do")
 	public ModelAndView showAllType() {
 		ModelAndView mv = new ModelAndView("exam/showAllType");
-		List<QuestionType> types = qtQuestionTypeService.findAll();
+		List<QuestionType> types = questionTypeService.findAll();
 		mv.addObject(Constant.TYPES_KEY, types);
 		return mv;
 	}
@@ -62,7 +62,7 @@ public class QuestionTypeController {
 	 */
 	@RequestMapping(value = "/add.do")
 	public ModelAndView add(QuestionType type, HttpSession session) {
-		int result = qtQuestionTypeService.insert(type);
+		int result = questionTypeService.insert(type);
 		if (result == Constant.ZERO_VALUE) {
 			logger.error("添加题型{}失败!", type.getTypeName());
 		} else {
@@ -82,7 +82,7 @@ public class QuestionTypeController {
 	 */
 	@RequestMapping(value = "/update.do")
 	public ModelAndView update(QuestionType type, HttpSession session) {
-		int result = qtQuestionTypeService.update(type);
+		int result = questionTypeService.update(type);
 		if (result == Constant.ZERO_VALUE) {
 			logger.error("修改题型{}失败!", type.getTypeName());
 		} else {
@@ -102,7 +102,7 @@ public class QuestionTypeController {
 	 */
 	@RequestMapping(value = "/delete.do")
 	public ModelAndView delete(Integer[] typeIds, HttpSession session) {
-		int result = qtQuestionTypeService.batchDelete(typeIds);
+		int result = questionTypeService.batchDelete(typeIds);
 		if (result == Constant.ZERO_VALUE) {
 			logger.error("删除失败,该题型ID不存在!");
 		} else {

@@ -333,31 +333,7 @@ public class UserController {
 	}
 
 	/**
-	 * 重置用户密码
-	 * 
-	 * @param userId
-	 *            用户ID
-	 * @return ModelAndView
-	 */
-	@RequestMapping(value = "/resetPwd.do")
-	public ModelAndView resetPwd(Integer userId, HttpSession session) {
-		User user = userService.findById(userId);
-		// 生成密码,规则:用户名的拼音，再使用MD5加密(用户登录密码+登录密码key)存入数据库中,提高密码的加密程度
-		String userPwd = Pinyin4jUtil.getPinYin(user.getUserName());
-		userPwd = MD5Util.MD5(userPwd + Constant.PASSWORD_KEY);
-		user.setUserPwd(userPwd);
-		int result = userService.update(user);
-		if (result == Constant.ZERO_VALUE) {
-			logger.error("用户{}重置密码失败!", user.getUserName());
-		} else {
-			logger.info("用户{}重置密码成功!", user.getUserName());
-			session.setAttribute(Constant.TIP_KEY, StringUtil.genTipMsg("重置密码成功!", Constant.SUCCESS_TIP_KEY));
-		}
-		return View.USER_REDITRCT_ACTION;
-	}
-
-	/**
-	 * 修改用户密码
+	 * 修改用户密码-重置密码
 	 * 
 	 * @param userId
 	 *            用户ID
@@ -367,17 +343,30 @@ public class UserController {
 	 */
 	@RequestMapping(value = "/updatePwd.do")
 	public ModelAndView updatePwd(Integer userId, String newpassword, HttpSession session) {
+		String userPwd = "";
+		ModelAndView mv = null;
 		User user = userService.findById(userId);
+		if (StringUtil.isNullValue(newpassword)) {
+			// 重置密码
+			// 生成密码,规则:用户名的拼音
+			userPwd = Pinyin4jUtil.getPinYin(user.getUserName());
+			session.setAttribute(Constant.TIP_KEY, StringUtil.genTipMsg("重置密码成功!", Constant.SUCCESS_TIP_KEY));
+			mv = View.USER_REDITRCT_ACTION;
+		} else {
+			// 修改密码
+			userPwd = newpassword;
+			session.setAttribute(Constant.TIP_KEY, StringUtil.genTipMsg("修改密码成功,可以去登录了!", Constant.SUCCESS_TIP_KEY));
+			mv = View.USER_REDITRCT_UPDATE_PWD_VIEW;
+		}
 		// 使用MD5加密(用户登录密码+登录密码key)存入数据库中,提高密码的加密程度
-		user.setUserPwd(MD5Util.MD5(newpassword + Constant.PASSWORD_KEY));
+		user.setUserPwd(MD5Util.MD5(userPwd + Constant.PASSWORD_KEY));
 		int result = userService.update(user);
 		if (result == Constant.ZERO_VALUE) {
 			logger.error("用户{}修改密码失败!", user.getUserName());
 		} else {
 			logger.info("用户{}修改密码成功!", user.getUserName());
-			session.setAttribute(Constant.TIP_KEY, StringUtil.genTipMsg("修改密码成功,可以去登录了!", Constant.SUCCESS_TIP_KEY));
 		}
-		return View.USER_REDITRCT_UPDATE_PWD_VIEW;
+		return mv;
 	}
 
 	/**

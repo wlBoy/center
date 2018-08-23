@@ -68,12 +68,12 @@ public class RoleController {
 		pages.setCount((int) roles.getTotal());
 		mv.addObject(Constant.PAGE_KEY, pages);
 		// 查询所有的一级模块和二级模块和它们的个数,以便角色分配时模块联动
-		List<Module> oneMenus = moduleService.findModuleByLevel(Constant.ONE_MODULES_VALUE);
-		List<Module> twoMenus = moduleService.findModuleByLevel(Constant.TWO_MODULES_VALUE);
-		mv.addObject(Constant.ONE_MODULES_KEY, oneMenus);
-		mv.addObject(Constant.TWO_MODULES_KEY, twoMenus);
-		mv.addObject(Constant.ONE_MODULES_SIZE, oneMenus.size());
-		mv.addObject(Constant.TWO_MODULES_SIZE, twoMenus.size());
+		List<Module> oneModules = moduleService.findModuleByLevel(Constant.ONE_MODULES_VALUE);
+		List<Module> twoModules = moduleService.findModuleByLevel(Constant.TWO_MODULES_VALUE);
+		mv.addObject(Constant.ONE_MODULES_KEY, oneModules);
+		mv.addObject(Constant.TWO_MODULES_KEY, twoModules);
+		mv.addObject(Constant.ONE_MODULES_SIZE, oneModules.size());
+		mv.addObject(Constant.TWO_MODULES_SIZE, twoModules.size());
 		return mv;
 	}
 

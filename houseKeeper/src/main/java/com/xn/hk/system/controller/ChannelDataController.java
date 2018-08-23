@@ -67,7 +67,7 @@ public class ChannelDataController {
 			logger.error("导入Excel数据失败!");
 		} else {
 			logger.info("导入Excel数据成功!");
-			session.setAttribute(Constant.TIP_KEY, StringUtil.genTipMsg("导入Excel数据成功!", "success"));
+			session.setAttribute(Constant.TIP_KEY, StringUtil.genTipMsg("导入Excel数据成功!", Constant.SUCCESS_TIP_KEY));
 		}
 		in.close();
 		return View.CHANNEL_REDITRCT_ACTION;

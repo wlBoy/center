@@ -2,8 +2,6 @@ package com.xn.hk.account.controller;
 
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -27,11 +25,6 @@ import com.xn.hk.system.service.UserService;
 @Controller
 @RequestMapping(value = "/account/money")
 public class MoneyController {
-	/**
-	 * 记录日志
-	 */
-	@SuppressWarnings("unused")
-	private static final Logger logger = LoggerFactory.getLogger(MoneyController.class);
 	/**
 	 * 注入service层
 	 */

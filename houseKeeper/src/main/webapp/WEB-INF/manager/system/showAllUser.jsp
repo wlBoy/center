@@ -202,7 +202,7 @@ function doResetPwd(uid){
 		confirmButtonText: "确定",
 		confirmButtonColor: "#ec6c62"
 		}, function() {
-			location = "${ctx}/system/user/resetPwd.do?userId="+uid;
+			location = "${ctx}/system/user/updatePwd.do?userId="+uid;
 		});
 }
 /*复选框联动*/
