@@ -81,7 +81,7 @@
 		is_ok = 1,update_time=now() where user_id=#{0}
 	</update>
 	<!-- 添加用户 -->
-	<insert id="add" parameterType="User">
+	<insert id="insert" parameterType="User">
 		INSERT INTO
 		tb_xn_sys_user(role_id,user_name,user_pwd,user_state,is_ok,create_time,update_time,remark)
 		VALUES(#{role.roleId},#{userName},#{userPwd},0,0,NOW(),NOW(),#{remark})

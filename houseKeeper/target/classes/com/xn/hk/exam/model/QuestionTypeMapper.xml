@@ -23,7 +23,7 @@
 		WHERE is_ok = 0 order by create_time desc
 	</select>
 	<!-- 添加题型 -->
-	<insert id="add" parameterType="QuestionType">
+	<insert id="insert" parameterType="QuestionType">
 		INSERT INTO
 		tb_xn_exam_type(type_name,create_time,update_time,remark)
 		VALUES(#{typeName},NOW(),NOW(),#{remark})

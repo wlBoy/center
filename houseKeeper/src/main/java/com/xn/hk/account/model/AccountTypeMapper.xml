@@ -55,7 +55,7 @@
 		1,update_time=now() where type_id=#{0}
 	</update>
 	<!-- 添加个人账务类别 -->
-	<insert id="add" parameterType="AccountType">
+	<insert id="insert" parameterType="AccountType">
 		INSERT INTO
 		tb_xn_account_type(user_id,parent_type,type_name,is_ok,create_time,update_time,remark)
 		VALUES(#{userId},#{parentType},#{typeName},0,NOW(),NOW(),#{remark})

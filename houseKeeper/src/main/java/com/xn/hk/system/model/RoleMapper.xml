@@ -63,7 +63,7 @@
 		DESC
 	</select>
 	<!-- 添加角色基本信息,获得刚插入的主键,设置keyProperty="roleId" useGeneratedKeys="true"即可,后面即可从实体中取出主键使用 -->
-	<insert id="add" keyProperty="roleId" useGeneratedKeys="true"
+	<insert id="insert" keyProperty="roleId" useGeneratedKeys="true"
 		parameterType="Role">
 		INSERT INTO
 		tb_xn_sys_role(role_name,is_ok,create_time,update_time,remark)

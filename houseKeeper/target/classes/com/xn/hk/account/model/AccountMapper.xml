@@ -154,7 +154,7 @@
 		</if>
 	</select>
 	<!-- 添加个人账务 -->
-	<insert id="add" keyProperty="accountId" useGeneratedKeys="true"
+	<insert id="insert" keyProperty="accountId" useGeneratedKeys="true"
 		parameterType="Account">
 		INSERT INTO
 		tb_xn_account_account(account_title,user_id,type_id,account_fee,account_type,is_ok,curmonth,curday,create_time,update_time,remark)

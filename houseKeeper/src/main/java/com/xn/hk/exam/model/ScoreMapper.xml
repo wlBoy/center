@@ -37,7 +37,7 @@
 	<sql id="Base_Column_List">score_id,exam_paper_id,paper_id,single_score,multiple_score,brief_score,curday,submit_time,paper_status,is_ok
 	</sql>
 	<!-- 将用户的答题分数添加至分数表 -->
-	<insert id="add" parameterType="Score">
+	<insert id="insert" parameterType="Score">
 		INSERT INTO
 		tb_xn_exam_score(exam_paper_id,paper_id,single_score,multiple_score,brief_score,curday,submit_time,paper_status,is_ok)
 		VALUES(#{examPaperId},#{paper.paperId},#{singleScore},#{multipleScore},#{briefScore},DATE_FORMAT(NOW(),'%Y%m%d'),NOW(),#{paperStatus},0)

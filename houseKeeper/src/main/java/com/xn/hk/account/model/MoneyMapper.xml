@@ -60,7 +60,7 @@
 		curday=#{curday}
 	</select>
 	<!-- 添加资产 -->
-	<insert id="add" parameterType="Money">
+	<insert id="insert" parameterType="Money">
 		INSERT INTO
 		tb_xn_account_money(user_id,in_fee,out_fee,total_fee,curmonth,curday,create_time,update_time,is_ok)
 		VALUES(#{userId},#{inFee},#{outFee},#{totalFee},#{curmonth},#{curday},NOW(),NOW(),0)

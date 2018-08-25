@@ -17,7 +17,7 @@
 	<sql id="Base_Column_List">log_id,user_id,request_ip,request_class,request_method,curday,create_time,is_ok
 	</sql>
 	<!-- 添加日志 -->
-	<insert id="add" parameterType="Log">
+	<insert id="insert" parameterType="Log">
 		INSERT INTO
 		tb_xn_sys_log(log_id,user_id,request_ip,request_class,request_method,curday,create_time,is_ok)
 		VALUES(#{logId},#{userId},#{requestIp},#{requestClass},#{requestMethod},DATE_FORMAT(NOW(),'%Y%m%d'),NOW(),0)

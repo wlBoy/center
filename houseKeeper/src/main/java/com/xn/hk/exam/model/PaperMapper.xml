@@ -74,7 +74,7 @@
 		</if>
 	</select>
 	<!-- 添加试卷基本信息 -->
-	<insert id="add" keyProperty="paperId" useGeneratedKeys="true"
+	<insert id="insert" keyProperty="paperId" useGeneratedKeys="true"
 		parameterType="Paper">
 		INSERT INTO
 		tb_xn_exam_paper(paper_name,create_paper_id,paper_score,total_time,start_time,end_time,curday,is_allowed,is_ok,create_time,update_time,remark)
