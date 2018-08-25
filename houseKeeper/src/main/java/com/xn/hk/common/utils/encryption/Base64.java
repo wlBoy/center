@@ -282,7 +282,7 @@ public final class Base64 {
 		System.out.println("Base64加密后为:" + encodeBase64("万磊".getBytes()));
 		System.out.println("Base64解码后为:" + new String(decodeBase64(encode("万磊".getBytes())), "UTF-8"));
 		System.out.println("-------------------------------------");
-		System.out.println("Base64加密后为:" + encode("李四".getBytes()));
-		System.out.println("Base64解码后为:" + new String(decode(encode("李四".getBytes())), "UTF-8"));
+		System.out.println("Base64加密后为:" + encode("万磊".getBytes()));
+		System.out.println("Base64解码后为:" + new String(decode(encode("万磊".getBytes())), "UTF-8"));
 	}
 }

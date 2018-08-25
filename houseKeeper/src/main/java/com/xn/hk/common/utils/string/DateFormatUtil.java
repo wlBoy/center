@@ -2,13 +2,17 @@ package com.xn.hk.common.utils.string;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Locale;
+import java.util.Random;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * 
  * @ClassName: DateFormatUtil
@@ -18,164 +22,60 @@ import java.util.Locale;
  * @Date: 2018年8月22日 上午9:12:16
  */
 public final class DateFormatUtil {
-	/**
-	 * 长日期型
-	 */
-	public static final int LONG = DateFormat.LONG;
+	private static final Logger logger = LoggerFactory.getLogger(DateFormatUtil.class);
 
-	/**
-	 * 中日期型
-	 */
-	public static final int MEDIUM = DateFormat.MEDIUM;
-
-	/**
-	 * 短日期型
-	 */
-	public static final int SHORT = DateFormat.SHORT;
-
-	public static final String PATTERN_YYMM = "yyMM";
-	public static final String PATTERN_yyyyMM = "yyyyMM";
-	public static final String PATTERN_MONTH = "yyyy-MM";
-	public static final String PATTERN_SHORT_DAY = "MM-dd";
 	public static final String PATTERN_DATE = "yyyy-MM-dd";
-	public static final String PATTERN_TIME = "HH:mm:ss";
 	public static final String PATTERN_DATE_TIME = "yyyy-MM-dd HH:mm:ss";
-	public static final String PATTERN_yyMMddHHmmss = "yyMMddHHmmss";
-	public static final String PATTERN_yyyyMMddHH = "yyyyMMddHH";
+	public static final String PATTERN_yyMMddHHmmssSSS = "yyMMddHHmmssSSS";
 	public static final String PATTERN_yyyyMMdd = "yyyyMMdd";
-
-	private static final String[] DAY_OF_WEEK = new String[] { "SUNDAY", "MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY", "SATURDAY" };
-
-	public static final String MONDAY = "MONDAY";
-	public static final String THURSDAY = "THURSDAY";
-	public static final String SATURDAY = "SATURDAY";
+	private static final String[] DAY_OF_WEEK = new String[] { "SUNDAY", "MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY",
+			"FRIDAY", "SATURDAY" };
 
 	/**
-	 * 按照给定的格式style将指定的日期值转换成字符串。
+	 * 把日期时间格式化为yyyy-MM-dd格式
 	 * 
-	 * @param date:
-	 *            待转换的日期
-	 * @param style:
-	 *            指定转化类型,style参数取静态常量LONG、MEDIUM和SHORT的值
-	 * @param loc：字符定义对象
-	 * @return 格式化后的日期字符串
-	 * @throws IllegalArgumentException:
-	 *             style模板不符合格式时报异常
-	 */
-	public static String formatDate(Date date, int style, Locale loc) {
-		String newDate = "";
-		if (loc == null) {
-			loc = Locale.getDefault();
-		}
-		if (date != null) {
-			DateFormat df = DateFormat.getDateInstance(style, loc);
-			newDate = df.format(date);
-		}
-		return newDate;
-	}
-
-	/**
-	 * 按照给定的格式模板将指定的日期值转换成字符串。
-	 * 
-	 * @param date:
-	 *            待转换的日期
-	 * @param pattern:
-	 *            指定转化格式字符串,例如：yyyy-MM-dd
-	 * @param loc:
-	 *            字符定义对象
-	 * @return 格式化后的日期字符串
-	 * @throws IllegalArgumentException:
-	 *             pattern模板不符合格式时报异常
-	 */
-	public static String formatDate(Date date, String pattern, Locale loc) {
-		String newDate = "";
-		if (loc == null) {
-			loc = Locale.getDefault();
-		}
-		if (date != null) {
-			SimpleDateFormat sdf = new SimpleDateFormat(pattern, loc);
-			newDate = sdf.format(date);
-		}
-		return newDate;
-	}
-
-	/**
-	 * 按照不同的日期格式和时间格式，将指定的日期时间值转换成字符串。
-	 * 
-	 * @param date:
-	 *            待转换的日期
-	 * @param dateStyle:
-	 *            指定的日期类型,style参数取静态常量LONG、MEDIUM和SHORT的值
-	 * @param timeStyle：指定的时间类型,style参数取静态常量LONG、MEDIUM和SHORT的值
-	 * @param loc：字符定义对象
 	 * @return 格式化后的日期时间字符串
-	 * @throws IllegalArgumentOfException:
-	 *             日期时间模板违反规定时
 	 */
-	public static String formatDateTime(Date date, int dateStyle, int timeStyle, Locale loc) {
-		String newDate = "";
-		if (loc == null) {
-			loc = Locale.getDefault();
-		}
-		if (date != null) {
-			DateFormat df = DateFormat.getDateTimeInstance(dateStyle, timeStyle, loc);
-			newDate = df.format(date);
-		}
-		return newDate;
-	}
-
-	/**
-	 * 按照不同的格式模板将指定的日期时间值转换成字符串。
-	 * 
-	 * @param date:
-	 *            待转换的日期
-	 * @param dateStr:
-	 *            指定日期转化格式字符串模板,例如:yyyy-MM-dd
-	 * @param timeStr:
-	 *            指定时间转化格式字符串模板,例如:hh:mm:ss
-	 * @param loc：字符定义对象
-	 * @return 格式化后的日期时间字符串
-	 * @throws IllegalArgumentException:
-	 *             pattern模板不符合格式时报异常
-	 */
-	public static String formatDateTime(Date date, String dateStr, String timeStr, Locale loc) {
-		String newDate = "";
-		if (loc == null) {
-			loc = Locale.getDefault();
-		}
-		if (date != null) {
-			String pattern = (dateStr == null ? "" : dateStr) + " " + (timeStr == null ? "" : timeStr);
-			SimpleDateFormat sdf = new SimpleDateFormat(pattern, loc);
-			newDate = sdf.format(date);
-		}
-		return newDate;
-	}
-
 	public static String formatDate() {
-		SimpleDateFormat dateStyle = new SimpleDateFormat(DateFormatUtil.PATTERN_DATE);
+		SimpleDateFormat dateStyle = new SimpleDateFormat(PATTERN_DATE);
 		return dateStyle.format(new Date());
 	}
 
+	/**
+	 * 把日期时间格式化为yyyy-MM-dd格式
+	 * 
+	 * @return 格式化后的日期时间字符串
+	 */
 	public static String formatDate(Date date) {
-		SimpleDateFormat dateStyle = new SimpleDateFormat(DateFormatUtil.PATTERN_DATE);
+		SimpleDateFormat dateStyle = new SimpleDateFormat(PATTERN_DATE);
 		return dateStyle.format(date);
+	}
+
+	/**
+	 * 当前系统时间生成唯一标识的字符串
+	 * 
+	 * @param date
+	 *            java.util.Date
+	 * @return 格式化后的日期时间字符串
+	 */
+	public static String genNo() {
+		SimpleDateFormat sdf = new SimpleDateFormat(PATTERN_yyMMddHHmmssSSS);
+		return (sdf.format(new Date(System.currentTimeMillis())) + Math.abs(new Random().nextInt(64)));
 	}
 
 	/**
 	 * 把日期时间格式化为yyyy-MM-dd HH:mm:ss格式
 	 * 
-	 * @param dt
+	 * @param date
 	 *            java.util.Date
 	 * @return 格式化后的日期时间字符串
 	 */
-	public static String formatDateTime(Date dt) {
-		String newDate = "";
-		if (dt != null) {
-			Locale locale = Locale.CHINESE;
-			SimpleDateFormat dateStyle = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", locale);
-			newDate = dateStyle.format(dt);
+	public static String formatDateTime(Date date) {
+		if (date != null) {
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CHINESE);
+			return sdf.format(date);
 		}
-		return newDate;
+		return "";
 	}
 
 	/**
@@ -186,7 +86,7 @@ public final class DateFormatUtil {
 	 * @return 格式化后的日期时间字符串
 	 */
 	public static String formatDateTime(String pattern) {
-		return DateFormatUtil.formatDateTime(new Date(), pattern);
+		return formatDateTime(new Date(), pattern);
 	}
 
 	/**
@@ -197,11 +97,11 @@ public final class DateFormatUtil {
 	 * @return 格式化后的日期时间字符串
 	 */
 	public static String formatDateTime(Date date, String pattern) {
-		String newDate = "";
-		Locale locale = Locale.CHINESE;
-		SimpleDateFormat dateStyle = new SimpleDateFormat(pattern, locale);
-		newDate = dateStyle.format(date);
-		return newDate;
+		if (date != null) {
+			SimpleDateFormat sdf = new SimpleDateFormat(pattern, Locale.CHINESE);
+			return sdf.format(date);
+		}
+		return "";
 	}
 
 	/**
@@ -212,11 +112,7 @@ public final class DateFormatUtil {
 	 * @return 格式化后的日期时间字符串
 	 */
 	public static String formatDateTime() {
-		String newDate = "";
-		Locale locale = Locale.CHINESE;
-		SimpleDateFormat dateStyle = new SimpleDateFormat(DateFormatUtil.PATTERN_DATE_TIME, locale);
-		newDate = dateStyle.format(new Date());
-		return newDate;
+		return formatDateTime(PATTERN_DATE_TIME);
 	}
 
 	/**
@@ -232,7 +128,7 @@ public final class DateFormatUtil {
 			SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd");
 			return sf.parse(dateStr);
 		} catch (ParseException e) {
-			e.printStackTrace();
+			logger.info(e.getMessage());
 			return null;
 		}
 	}
@@ -252,18 +148,9 @@ public final class DateFormatUtil {
 			SimpleDateFormat sdf = new SimpleDateFormat(pattern);
 			return sdf.parse(date);
 		} catch (ParseException e) {
-			e.printStackTrace();
+			logger.info(e.getMessage());
+			return null;
 		}
-		return null;
-	}
-
-	/**
-	 * 获得当前日期，时间位置为00:00:00
-	 * 
-	 * @return Date实例
-	 */
-	public static Date getCurrentDate() {
-		return new Date(System.currentTimeMillis());
 	}
 
 	/**
@@ -323,7 +210,7 @@ public final class DateFormatUtil {
 	 *            结束时间点
 	 * @return 具体的天数
 	 */
-	public static int getDays(java.util.Date date1, java.util.Date date2) {
+	public static int getDays(Date date1, Date date2) {
 		if (date1 == null || date2 == null)
 			return 0;
 		return (int) ((date2.getTime() - date1.getTime()) / (24 * 60 * 60 * 1000));
@@ -359,34 +246,6 @@ public final class DateFormatUtil {
 			return gtime;
 		gtime = (int) ((date2.getTime() - date1.getTime()) / (1000));
 		return gtime;
-	}
-
-	/**
-	 * 获取该时间字符串的Gmt时间差的秒数
-	 * 
-	 * @param dateStr
-	 *            格式为yyyy-MM-dd HH:mm:ss
-	 * @return
-	 */
-	public static int getGmtSecond(String dateStr) {
-		int gmtSecond = 0;
-		Date date = DateFormatUtil.parseStrToDate(dateStr, DateFormatUtil.PATTERN_DATE_TIME);
-		gmtSecond = (int) (date.getTime() / 1000);
-		return gmtSecond;
-	}
-
-	/**
-	 * 获取该时间字符串的Gmt时间差的秒数
-	 * 
-	 * @param dateStr
-	 *            格式为yyyy-MM-dd HH:mm:ss
-	 * @return
-	 */
-	public static int getGmtSecond(Date date) {
-		int gmtSecond = 0;
-		if (date != null)
-			gmtSecond = (int) (date.getTime() / 1000);
-		return gmtSecond;
 	}
 
 	/**
@@ -440,20 +299,6 @@ public final class DateFormatUtil {
 	}
 
 	/**
-	 * 返回每月最后一天的日期,格式为yyyy-MM-dd
-	 * 
-	 * @param month
-	 * @return
-	 */
-	public static String getLastDayOfMonth(Date date) {
-		Calendar cal = Calendar.getInstance();
-		cal.setTime(date);
-		int value = cal.getActualMaximum(Calendar.DAY_OF_MONTH);
-		cal.set(Calendar.DAY_OF_MONTH, value);
-		return DateFormatUtil.formatDate(cal.getTime());
-	}
-
-	/**
 	 * 返回每月第一天的日期,格式为yyyy-MM-dd
 	 * 
 	 * @param month
@@ -468,9 +313,8 @@ public final class DateFormatUtil {
 	}
 
 	/**
-	 * 返回每月第一天的日期,格式为yyyy-MM-dd
+	 * 返回当前时间月份第一天的日期,格式为yyyy-MM-dd
 	 * 
-	 * @param month
 	 * @return
 	 */
 	public static String getFirstDayOfMonth() {
@@ -493,7 +337,6 @@ public final class DateFormatUtil {
 	/**
 	 * 获取昨天的日期,格式为yyyy-MM-dd
 	 * 
-	 * @param pattern
 	 * @return
 	 */
 	public static String getYesterday() {
@@ -515,38 +358,55 @@ public final class DateFormatUtil {
 		return DateFormatUtil.DAY_OF_WEEK[dayOfWeek - 1];
 	}
 
+	/**
+	 * 返回当前时间是该月的几号
+	 * 
+	 * @return 1-31号的数字
+	 */
 	public static int getDayOfMonth() {
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(new Date());
 		return cal.get(Calendar.DAY_OF_MONTH);
 	}
 
+	/**
+	 * 将当前时间转换为格式为yyyyMMdd的日期数字返回
+	 * 
+	 * @return
+	 */
+	public static int getNumberDay() {
+		SimpleDateFormat sdf = new SimpleDateFormat(PATTERN_yyyyMMdd);
+		return Integer.parseInt(sdf.format(new Date()));
+	}
+
+	/**
+	 * 返回两个日期相差的月数
+	 * 
+	 * @param sDay
+	 *            起始日期，格式为yyyy-MM-dd
+	 * @param eDay
+	 *            结束日期，格式为yyyy-MM-dd
+	 * @return 两个日期相差的月数，结果为整数
+	 */
 	public static int getMonthsBetweenTowDays(String sDay, String eDay) {
 		Calendar sCal = Calendar.getInstance();
 		sCal.setTime(DateFormatUtil.parseStrToDate(sDay));
 		Calendar eCal = Calendar.getInstance();
 		eCal.setTime(DateFormatUtil.parseStrToDate(eDay));
 
-		return (eCal.get(Calendar.YEAR) - sCal.get(Calendar.YEAR)) * 12 + (eCal.get(Calendar.MONTH) - sCal.get(Calendar.MONTH));
+		return (eCal.get(Calendar.YEAR) - sCal.get(Calendar.YEAR)) * 12
+				+ (eCal.get(Calendar.MONTH) - sCal.get(Calendar.MONTH));
 	}
 
 	/**
-	 * 
-	 * @param day yyyy-MM-dd
-	 * @param pattern
-	 * @return
-	 */
-	public static String format(String day, String pattern) {
-		Date date = DateFormatUtil.parseStrToDate(day);
-		return DateFormatUtil.formatDateTime(date, pattern);
-	}
-
-	/**
-	 * 将特定格式字符串格式化为另一种特定格式
+	 * 将特定格式字符串时间格式化为另一种特定格式
 	 * 
 	 * @param dateTime
+	 *            时间
 	 * @param srcPattern
+	 *            原时间格式
 	 * @param destPattern
+	 *            新时间格式
 	 * @return
 	 */
 	public static String format(String dateTime, String srcPattern, String destPattern) {
@@ -555,67 +415,54 @@ public final class DateFormatUtil {
 	}
 
 	/**
-	 * 从字符串中得到月份
+	 * 从字符日期中得到月份
 	 * 
 	 * @param dateString
-	 *            2012-04-02 20:32:13
+	 *            格式为:yyyy-MM-dd
 	 * @return
 	 */
 	public static String getMonth(String dateString) {
-		return dateString.substring(2, 7).replace("-", "");
+		return dateString.substring(4, 7).replace("-", "");
 	}
+
 	/**
-     * 取得当前时间戳（精确到秒）
-     *
-     * @return nowTimeStamp
-     */
-    public static String getNowTimeStamp() {
-        long time = System.currentTimeMillis();
-        String nowTimeStamp = String.valueOf(time / 1000);
-        return nowTimeStamp ;
-    }
-    /**
-     * 取得当前时间戳（精确到毫秒）
-     *
-     * @return nowTimeStampStr
-     */
-    public static String getNowTimeStampStr() {
-        long time = System.currentTimeMillis();
-        String nowTimeStampStr = String.valueOf(time);
-        return nowTimeStampStr ;
-    }
-    /**
-     * 时间串获取(格式:yyyyMMddHHmmss)
-     * @param args
-     */
-    public static String getNowTimeStr(){
-    	DateFormat df = new SimpleDateFormat("yyyyMMddHHmmss");
-    	Calendar calendar = Calendar.getInstance();
-    	String dateName = df.format(calendar.getTime());
-    	return dateName;
-    }
-    /**
+	 * 取得当前时间戳（精确到秒）
+	 *
+	 * @return nowTimeStamp
+	 */
+	public static long getNowTimeStamp() {
+		return getNowTimeStampStr() / 1000;
+	}
+
+	/**
+	 * 取得当前时间戳（精确到毫秒）
+	 *
+	 * @return nowTimeStampStr
+	 */
+	public static long getNowTimeStampStr() {
+		return System.currentTimeMillis();
+	}
+
+	/**
 	 * 把当前日期时间格式化为yyyy-MM-dd HH:mm:ss格式并进行url编码
 	 * 
 	 * @param dt
 	 *            java.util.Date
 	 * @return 格式化后的日期时间字符串
-     * @throws UnsupportedEncodingException 
+	 * @throws UnsupportedEncodingException
 	 */
 	public static String formatDateTimeToUrl() {
-		String newDate = "";
-		Locale locale = Locale.CHINESE;
-		SimpleDateFormat dateStyle = new SimpleDateFormat(DateFormatUtil.PATTERN_DATE_TIME, locale);
-		newDate = dateStyle.format(new Date());
+		SimpleDateFormat dateStyle = new SimpleDateFormat(DateFormatUtil.PATTERN_DATE_TIME, Locale.CHINESE);
+		String newDate = dateStyle.format(new Date());
 		try {
 			newDate = URLEncoder.encode(newDate, "utf-8");
 		} catch (UnsupportedEncodingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.info(e.getMessage());
 		}
 		return newDate;
 	}
-    public static void main(String[] args) {		
-			System.out.println(formatDateTimeToUrl());
+
+	public static void main(String[] args) {
+		System.out.println(genNo());
 	}
 }

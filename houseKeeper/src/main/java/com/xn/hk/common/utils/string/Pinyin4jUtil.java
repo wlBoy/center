@@ -17,10 +17,11 @@ import net.sourceforge.pinyin4j.format.exception.BadHanyuPinyinOutputFormatCombi
  */
 public class Pinyin4jUtil {
 	/**
-	 * 将汉字转换为全拼
+	 * 将汉字转换为全拼，注意:不能区分多音字
 	 * 
 	 * @param src
-	 * @return String
+	 *            汉字
+	 * @return String 拼音
 	 */
 	public static String getPinYin(String src) {
 		char[] t1 = null;

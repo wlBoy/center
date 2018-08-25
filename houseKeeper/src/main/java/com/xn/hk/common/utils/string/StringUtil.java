@@ -9,6 +9,7 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.util.Random;
 import java.util.UUID;
@@ -18,7 +19,6 @@ import java.util.regex.Pattern;
 import javax.imageio.ImageIO;
 
 /**
- * 
  * @Title: StringUtil
  * @Package: com.xn.hk.common.utils
  * @Description: 字符串工具类
@@ -27,15 +27,13 @@ import javax.imageio.ImageIO;
  */
 public final class StringUtil {
 	/**
-	 * 字符数组
-	 */
-	private final static char[] charArray = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e',
-			'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z' };
-
-	/**
 	 * 数字字符数组
 	 */
 	private final static char[] digitArray = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' };
+	/**
+	 * 16进制数
+	 */
+	private static final String hexString = "0123456789ABCDEF";
 
 	/**
 	 * 随机生成指定长度的纯数字字符串
@@ -52,17 +50,19 @@ public final class StringUtil {
 	}
 
 	/**
-	 * 随机生成指定长度的字符串(数字字符混合)
+	 * 生成指定长度的字符串
 	 * 
-	 * @param length
+	 * @param len
 	 * @return
 	 */
-	public static String randomString(int length) {
-		char[] c = new char[length];
-		Random random = new Random();
-		for (int i = 0; i < length; i++)
-			c[i] = charArray[random.nextInt(charArray.length)];
-		return new String(c);
+	public static String randomString(int len) {
+		Random r = new Random();
+		StringBuffer sb = new StringBuffer();
+		String s = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+		for (int i = 0; i < len; i++) {
+			sb.append(s.charAt(r.nextInt(s.length())));
+		}
+		return sb.toString();
 	}
 
 	/**
@@ -71,15 +71,17 @@ public final class StringUtil {
 	 * @param value
 	 * @return
 	 */
-	public static boolean isNullValue(String value) {
+	public static boolean isEmpty(String value) {
 		return value == null || value.trim().equals("");
 	}
 
 	/**
-	 * 生成提示语
+	 * 生成提示语,供houseKeeper项目的提示框插件使用
 	 * 
 	 * @param tip
+	 *            提示语
 	 * @param status
+	 *            success 或 error
 	 * @return
 	 */
 	public static String genTipMsg(String tip, String status) {
@@ -104,7 +106,7 @@ public final class StringUtil {
 	 */
 	public static String drawImg(ByteArrayOutputStream output) {
 		// 随机产生4个字符
-		String code = genRandomString(4);
+		String code = randomString(4);
 		// 设置验证码的宽高
 		int width = 100;
 		int height = 48;
@@ -134,60 +136,14 @@ public final class StringUtil {
 	}
 
 	/**
-	 * 生成指定长度的字符串
-	 * 
-	 * @param len
-	 * @return
-	 */
-	public static String genRandomString(int len) {
-		Random r = new Random();
-		StringBuffer sb = new StringBuffer();
-		String s = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-		for (int i = 0; i < len; i++) {
-			sb.append(s.charAt(r.nextInt(s.length())));
-		}
-		return sb.toString();
-	}
-
-	/**
-	 * 向一个字符串最左边添加任意字符组成新固定长度的字符串
-	 * 
-	 * @param input
-	 * @param num
-	 *            新固定长度的字符串
-	 * @param chr
-	 * @return
-	 */
-	public static final String leftAppendStr(String input, int num, char chr) {
-		int size = num - input.length();
-		char[] c = new char[size];
-		for (int i = 0; i < size; i++) {
-			c[i] = chr;
-		}
-		return String.valueOf(c).concat(input);
-	}
-
-	/**
-	 * 向一个字符串最左边添加'0'组成新固定长度的字符串
-	 * 
-	 * @param input
-	 * @param num
-	 *            新固定长度的字符串
-	 * @param chr
-	 * @return
-	 */
-	public static final String leftAppendStr(String input, int num) {
-		return leftAppendStr(input, num, '0');
-	}
-
-	/**
 	 * 过滤一个字符串的非数字,即得到该字符串中的纯数字
 	 * 
 	 * @param str
-	 * @return
+	 *            待过滤字符串
+	 * @return 该字符串中的纯数字组合
 	 */
 	public static String filterUnNumber(String str) {
-		if (StringUtil.isNullValue(str))
+		if (StringUtil.isEmpty(str))
 			return "";
 		String regEx = "[^0-9]";
 		Pattern p = Pattern.compile(regEx);
@@ -199,6 +155,7 @@ public final class StringUtil {
 	 * 判断一个字符串是否为纯数字字符串
 	 * 
 	 * @param str
+	 *            字符串
 	 * @return
 	 */
 	public static boolean isDigit(String str) {
@@ -209,13 +166,14 @@ public final class StringUtil {
 	}
 
 	/**
-	 * 判断一个字符串是否为电话号码
+	 * 判断一个字符串是否为号码
 	 * 
 	 * @param number
+	 *            手机号码字符串
 	 * @return
 	 */
 	public static boolean isMobileNumber(String number) {
-		if (StringUtil.isNullValue(number))
+		if (StringUtil.isEmpty(number))
 			return false;
 		if (number.length() > 11)
 			number = number.substring(number.length() - 11);
@@ -225,30 +183,16 @@ public final class StringUtil {
 	}
 
 	/**
-	 * 判断一个字符串是否为有效电话号码
-	 * 
-	 * @param number
-	 * @return
-	 */
-	public final static boolean isValidMobileNumber(String number) {
-		if (StringUtil.isNullValue(number))
-			return false;
-		if (number.endsWith("00000000") || number.endsWith("13800138000"))
-			return false;
-		return StringUtil.isMobileNumber(number);
-	}
-
-	/**
-	 * url编码
+	 * 将一个字符串进行URL编码
 	 * 
 	 * @param url
+	 *            字符串
 	 * @return
 	 */
 	public final static String urlEncode(String url) {
-		if (isNullValue(url)) {
+		if (isEmpty(url)) {
 			return "";
 		}
-
 		try {
 			return URLEncoder.encode(url, "UTF-8");
 		} catch (UnsupportedEncodingException e) {
@@ -257,25 +201,33 @@ public final class StringUtil {
 		}
 	}
 
-	public static String getXMLValue(String srcXML, String element) {
-		String begElement = "<" + element + ">";
-		String endElement = "</" + element + ">";
-		int begPos = srcXML.indexOf(begElement);
-		int endPos = srcXML.indexOf(endElement);
-		if (begPos != -1 && endPos != -1) {
-			begPos += begElement.length();
-			return srcXML.substring(begPos, endPos);
-		} else {
+	/**
+	 * 将一个字符串进行URL解码
+	 * 
+	 * @param url
+	 *            字符串
+	 * @return
+	 */
+	public final static String urlDecode(String url) {
+		if (isEmpty(url)) {
+			return "";
+		}
+		try {
+			return URLDecoder.decode(url, "UTF-8");
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
 			return "";
 		}
 	}
 
-	private static String hexString = "0123456789ABCDEF";
-
-	/*
+	/**
 	 * 将字符串编码成16进制数字,适用于所有字符（包括中文）
+	 * 
+	 * @param str
+	 *            字符串（包括中文）
+	 * @return 16进制数字字符串
 	 */
-	public static String encode(String str) {
+	public static String encode2Binary(String str) {
 		// 根据默认编码获取字节数组
 		byte[] bytes = str.getBytes();
 		StringBuilder sb = new StringBuilder(bytes.length * 2);
@@ -287,10 +239,14 @@ public final class StringUtil {
 		return sb.toString();
 	}
 
-	/*
+	/**
 	 * 将16进制数字解码成字符串,适用于所有字符（包括中文）
+	 * 
+	 * @param bytes
+	 *            16进制数字字符串
+	 * @return 字符串（包括中文）
 	 */
-	public static String decode(String bytes) {
+	public static String decode2String(String bytes) {
 		ByteArrayOutputStream baos = new ByteArrayOutputStream(bytes.length() / 2);
 		// 将每2位16进制整数组装成一个字节
 		for (int i = 0; i < bytes.length(); i += 2)
@@ -299,6 +255,7 @@ public final class StringUtil {
 	}
 
 	public static void main(String[] args) {
-		
+		System.out.println(encode2Binary("111中啊法￥多少"));
+		System.out.println(decode2String("313131E4B8ADE5958AE6B395EFBFA5E5A49AE5B091"));
 	}
 }

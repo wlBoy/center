@@ -115,19 +115,12 @@ public class DesUtil {
 	}
 
 	public static void main(String[] args) {
-		String str = "123";
-
-		String enc = null;
-
+		String str = "admin123";
 		try {
-			enc = encryptAndBase64(str);
-
-			System.out.println(enc);
-
-			System.out.println(base64AndDecrypt(enc));
-
-			System.out.println(base64AndDecrypt("gY3xqREytLg="));
-
+			System.out.println(new String(encrypt(str.getBytes())));
+			System.out.println(new String(decrypt(encrypt(str.getBytes()))));
+			System.out.println(encryptAndBase64(str));
+			System.out.println(base64AndDecrypt("V2h5Sq2H9rS1SLCKaI02MA=="));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

@@ -346,7 +346,7 @@ public class UserController {
 		String userPwd = "";
 		ModelAndView mv = null;
 		User user = userService.findById(userId);
-		if (StringUtil.isNullValue(newpassword)) {
+		if (StringUtil.isEmpty(newpassword)) {
 			// 重置密码
 			// 生成密码,规则:用户名的拼音
 			userPwd = Pinyin4jUtil.getPinYin(user.getUserName());

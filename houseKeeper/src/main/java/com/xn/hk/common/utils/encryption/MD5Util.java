@@ -41,47 +41,12 @@ public class MD5Util {
 	}
 
 	/**
-	 * 可逆的加密算法(加密)
-	 * 
-	 * @param str
-	 *            加密前的字符串
-	 * @return 加密后的字符串
-	 */
-	public static String KL(String str) {
-		char[] a = str.toCharArray();
-		for (int i = 0; i < a.length; i++) {
-			a[i] = (char) (a[i] ^ 't');
-		}
-		String s = new String(a);
-		return s;
-	}
-
-	/**
-	 * 可逆的加密算法(加密后解密)
-	 * 
-	 * @param str
-	 *            加密前的字符串
-	 * @return 加密后的字符串
-	 */
-	public static String JM(String str) {
-		char[] a = str.toCharArray();
-		for (int i = 0; i < a.length; i++) {
-			a[i] = (char) (a[i] ^ 't');
-		}
-		String k = new String(a);
-		return k;
-	}
-
-	/**
 	 * 测试main方法
 	 * 
 	 * @param args
 	 */
 	public static void main(String args[]) {
 		String s = new String("admin");
-		System.out.println("原始：" + s);
 		System.out.println("MD5后：" + MD5(s));
-		System.out.println("MD5后再加密：" + KL(MD5(s)));
-		System.out.println("解密为MD5后的：" + JM(KL(MD5(s))));
 	}
 }
