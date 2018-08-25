@@ -29,7 +29,7 @@ function checkOldPwd(obj){
 			$(obj).select();
 			swal("OMG!", "新密码与旧密码一致，请更换!", "error");
 		}
-	},"text");  
+	},"json");  
 }
 $(function(){
 	$(".registerform").Validform({
