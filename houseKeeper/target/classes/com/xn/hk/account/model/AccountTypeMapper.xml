@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.xn.hk.account.dao.AccountTypeDao">
-	<!--使用redis作为mybatis的二级缓存,针对具体某条语句禁用缓存,useCache="false",这里的RedisCache是个别名
-	<cache eviction="LRU" type="RedisCache" />-->
+	<!--使用redis作为mybatis的二级缓存,针对具体某条语句禁用缓存,useCache="false",这里的RedisCache是个别名 
+		<cache eviction="LRU" type="RedisCache" /> -->
 	<!-- 账务类别映射 -->
 	<resultMap type="AccountType" id="accountTypeMap">
 		<id property="typeId" column="type_id" />
@@ -76,13 +76,12 @@
 		#{0}
 	</select>
 	<!-- 根据账务类别名和用户ID查询该用户的个人账务类别 -->
-	<select id="findByNameAndUserId" parameterType="java.lang.String"
-		resultMap="accountTypeMap">
+	<select id="findByNameAndUserId" resultMap="accountTypeMap">
 		SELECT *
-		FROM tb_xn_account_type WHERE is_ok=0 AND user_id =
+		FROM
+		tb_xn_account_type WHERE is_ok=0 AND user_id =
 		#{userId} AND type_name
-		=
-		#{typeName}
+		= #{typeName}
 	</select>
 	<!-- 根据父级类别查询该用户的账务类别 -->
 	<select id="findChildType" resultMap="accountTypeMap">

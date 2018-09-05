@@ -42,7 +42,7 @@ public class AccountRestController {
 	private AccountService accountService;
 
 	/**
-	 * 根据账务类别Id和用户ID查询该用户的个人账务类别
+	 * 根据账务类别Id查询该个人账务类别
 	 * 
 	 * @param typeId
 	 *            账务类别Id
@@ -71,7 +71,7 @@ public class AccountRestController {
 	}
 
 	/**
-	 * 根据个人账务类别ID和用户ID查找该用户的个人账务类别(需要用户ID)
+	 * 根据个人账务类别名称和用户ID查找该用户的个人账务类别(需要用户ID)
 	 * 
 	 * @param typeName
 	 *            账务类别名
@@ -85,12 +85,12 @@ public class AccountRestController {
 		if (userId == null) {
 			// 从session中拿出当前用户信息
 			User user = (User) session.getAttribute(Constant.SESSION_USER_KEY);
+			if (user == null) {
+				return Result.genNullValueTip(result, "userId");
+			}
 			userId = user.getUserId();
 		}
 		// 校验参数非空性
-		if (userId == null) {
-			return Result.genNullValueTip(result, "userId");
-		}
 		if (StringUtil.isEmpty(typeName)) {
 			return Result.genNullValueTip(result, "typeName");
 		}
@@ -153,12 +153,12 @@ public class AccountRestController {
 		if (userId == null) {
 			// 从session中拿出当前用户信息
 			User user = (User) session.getAttribute(Constant.SESSION_USER_KEY);
+			if (user == null) {
+				return Result.genNullValueTip(result, "userId");
+			}
 			userId = user.getUserId();
 		}
 		// 校验参数非空性
-		if (userId == null) {
-			return Result.genNullValueTip(result, "userId");
-		}
 		if (StringUtil.isEmpty(accountTitle)) {
 			return Result.genNullValueTip(result, "accountTitle");
 		}
