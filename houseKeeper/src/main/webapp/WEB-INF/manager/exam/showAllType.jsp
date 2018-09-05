@@ -56,10 +56,10 @@ $(function(){
 		modal.setWidth("400px");
 		//ajax请求为更新题型做数据回显准备
 		var tid = $(this).attr("value");
-		$.get("${ctx}/exam/rest/findByTypeId.do","typeId="+tid,function(t){
-			$("#modal2 form :text[name=typeName]").val(t.typeName);
-			$("#modal2 form :text[name=remark]").val(t.remark);
-			$("<input type='hidden' name='typeId' value='"+t.typeId+"'>").appendTo($("#modal2 form"));
+		$.post("${ctx}/exam/rest/findByTypeId.do","typeId="+tid,function(r){
+			$("#modal2 form :text[name=typeName]").val(r.data.typeName);
+			$("#modal2 form :text[name=remark]").val(r.data.remark);
+			$("<input type='hidden' name='typeId' value='"+r.data.typeId+"'>").appendTo($("#modal2 form"));
 		},"json"); 
 		checkUserName();
 	});
@@ -83,8 +83,8 @@ function checkUserName(){
 	var typeNameInput = $("#modal2 form :text[name=typeName]");
 	//ajax请求数据库是否存在该用户
 	typeNameInput.blur(function(){
-		$.get("${ctx}/exam/rest/findByTypeName.do","typeName="+typeNameInput.val(),function(t){
-			if(t.typeName != null){
+		$.post("${ctx}/exam/rest/findByTypeName.do","typeName="+typeNameInput.val(),function(r){
+			if(r.data != null){
 				typeNameInput.val("");
 				typeNameInput.select();
 				swal("OMG!", "该题型已存在，请更换一个!", "error");

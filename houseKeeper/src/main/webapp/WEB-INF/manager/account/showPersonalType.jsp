@@ -56,13 +56,13 @@ $(function(){
 		modal.setWidth("400px");
 		var tid = $(this).attr("value");
 		// 回显数据
-		$.get("${ctx}/account/rest/findByTypeId.do","typeId="+tid,function(t){
-			$("#modal2 form :text[name=typeName]").val(t.typeName);
-			$("#modal2 form :text[name=remark]").val(t.remark);
-			$("<input type='hidden' name='typeId' value='"+t.typeId+"'>").appendTo($("#modal2 form"));
+		$.post("${ctx}/account/rest/findByTypeId.do","typeId="+tid,function(r){
+			$("#modal2 form :text[name=typeName]").val(r.data.typeName);
+			$("#modal2 form :text[name=remark]").val(r.data.remark);
+			$("<input type='hidden' name='typeId' value='"+r.data.typeId+"'>").appendTo($("#modal2 form"));
 			/*回显父级别 */
 			$("#modal2 #parentType").find("option").each(function(index,obj){
-				if(t.parentType==$(obj).val()){
+				if(r.data.parentType==$(obj).val()){
 					$(obj).prop("selected",true);
 				}
 			});
@@ -82,8 +82,8 @@ $(function(){
 		//ajax请求数据库是否存在该账务类别
 		$("#modal2 form :text[name=typeName]").blur(function(){
 			var typeName = $("#modal2 form :text[name=typeName]").val();
-			$.get("${ctx}/account/rest/findByTypeName.do","typeName="+typeName,function(t){
-				if(t.typeName != null){
+			$.post("${ctx}/account/rest/findByTypeName.do","typeName="+typeName,function(r){
+				if(r.data != null){
 					swal("OMG!", "该账务类别已存在，请更换一个!", "error");
 				}
 			},"json");  

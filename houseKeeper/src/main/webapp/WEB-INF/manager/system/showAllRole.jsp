@@ -66,14 +66,14 @@ $(function(){
 		modal.setWidth("400px");
 		//ajax请求为更新角色做数据回显准备
 		var rid = $(this).attr("value");
-		$.get("${ctx}/system/rest/findByRoleId.do","roleId="+rid,function(r){
-			$("#modal2 form :text[name=roleName]").val(r.roleName);
-			$("#modal2 form :text[name=remark]").val(r.remark);
-			$("<input type='hidden' name='roleId' value='"+r.roleId+"'>").appendTo($("#modal2 form"));
+		$.post("${ctx}/system/rest/findByRoleId.do","roleId="+rid,function(r){
+			$("#modal2 form :text[name=roleName]").val(r.data.roleName);
+			$("#modal2 form :text[name=remark]").val(r.data.remark);
+			$("<input type='hidden' name='roleId' value='"+r.data.roleId+"'>").appendTo($("#modal2 form"));
 			/*回显模块 */
 			$("#modal2 #modules").find(":checkbox").each(function(index,obj){
-				for (var i = 0; i < r.modules.length; i++) {
-					if(r.modules[i].moduleId==$(obj).val()){
+				for (var i = 0; i < r.data.modules.length; i++) {
+					if(r.data.modules[i].moduleId==$(obj).val()){
 						$(obj).attr("checked",true);
 					}
 				} 
@@ -98,8 +98,8 @@ $(function(){
 		//ajax请求数据库是否存在该角色
 		$("#modal2 form :text[name=roleName]").blur(function(){
 			var roleName = $("#modal2 form :text[name=roleName]").val();
-			$.get("${ctx}/system/rest/findByRoleName.do","roleName="+roleName,function(r){
-				if(r.roleName != null){
+			$.post("${ctx}/system/rest/findByRoleName.do","roleName="+roleName,function(r){
+				if(r.data != null){
 					swal("OMG!", "该角色已存在，请更换一个!", "error");
 				} 
 			},"json");  

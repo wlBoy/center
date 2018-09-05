@@ -72,13 +72,13 @@ $(function(){
 		modal.setWidth("400px");
 		// 回显数据
 		var uid = $(this).attr("value");
-		$.get("${ctx}/system/rest/findByUserId.do","userId="+uid,function(u){
-			$("#modal2 form :text[name=userName]").val(u.userName);
-			$("#modal2 form :text[name=remark]").val(u.remark);
-			$("<input type='hidden' name='userId' value='"+u.userId+"'>").appendTo($("#modal2 form"));
+		$.post("${ctx}/system/rest/findByUserId.do","userId="+uid,function(r){
+			$("#modal2 form :text[name=userName]").val(r.data.userName);
+			$("#modal2 form :text[name=remark]").val(r.data.remark);
+			$("<input type='hidden' name='userId' value='"+r.data.userId+"'>").appendTo($("#modal2 form"));
 			/*回显角色 */
 			$("#modal2 #role").find("option").each(function(index,obj){
-				if(u.role.roleId==$(obj).val()){
+				if(r.data.role.roleId==$(obj).val()){
 					$(obj).prop("selected",true);
 				}
 			});
@@ -120,8 +120,8 @@ function checkUserName(){
 	var userNameInput = $("#modal2 form :text[name=userName]");
 	//ajax请求数据库是否存在该用户
 	userNameInput.blur(function(){
-		$.get("${ctx}/system/rest/findByUserName.do","userName="+userNameInput.val(),function(u){
-			if(u.userName != null){
+		$.post("${ctx}/system/rest/findByUserName.do","userName="+userNameInput.val(),function(r){
+			if(r.data != null){
 				userNameInput.val("");
 				userNameInput.select();
 				swal("OMG!", "该用户名已存在，请更换一个!", "error");

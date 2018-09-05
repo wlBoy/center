@@ -79,22 +79,22 @@ $(function(){
 		modal.setWidth("400px");
 		var mid = $(this).attr("value");
 		//回显数据
-		$.get("${ctx}/system/rest/findByModuleId.do","moduleId="+mid,function(m){
-			$("#modal2 form :text[name=moduleName]").val(m.moduleName);
-			$("#modal2 form :text[name=actionUrl]").val(m.actionUrl);
-			$("#modal2 form :text[name=remark]").val(m.remark);
-			$("<input type='hidden' name='moduleId' value='"+m.moduleId+"'>").appendTo($("#modal2 form"));
+		$.post("${ctx}/system/rest/findByModuleId.do","moduleId="+mid,function(r){
+			$("#modal2 form :text[name=moduleName]").val(r.data.moduleName);
+			$("#modal2 form :text[name=actionUrl]").val(r.data.actionUrl);
+			$("#modal2 form :text[name=remark]").val(r.data.remark);
+			$("<input type='hidden' name='moduleId' value='"+r.data.moduleId+"'>").appendTo($("#modal2 form"));
 			// 回显模块级别
 			$("#modal2 #moduleLevel").find("option").each(function(index,obj){
-				if(m.moduleLevel==$(obj).val()){
+				if(r.data.moduleLevel==$(obj).val()){
 					$(obj).prop("selected",true);
 				}
 			});
 			// 回显父模块模块
-			changeModule(m.moduleLevel,m.parentId);
+			changeModule(r.data.moduleLevel,r.data.parentId);
 			// 选择框切换模块级别时模块联动
 			$("#modal2 #moduleLevel").change(function(){
-				changeModule($(this).val(),m.parentId);
+				changeModule($(this).val(),r.data.parentId);
 			});
 		},"json"); 
 		checkModuleName();
@@ -124,8 +124,8 @@ function checkModuleName(){
 	var ModuleNameInput = $("#modal2 form :text[name=moduleName]");
 	//ajax请求数据库是否存在该模块
 	ModuleNameInput.blur(function(){
-		$.get("${ctx}/system/rest/findByModuleName.do","moduleName="+ModuleNameInput.val(),function(m){
-			if(m.moduleName != null){
+		$.post("${ctx}/system/rest/findByModuleName.do","moduleName="+ModuleNameInput.val(),function(r){
+			if(r.data != null){
 				ModuleNameInput.val("");
 				ModuleNameInput.select("");
 				swal("OMG!", "该模块名已存在，请更换一个!", "error");

@@ -95,23 +95,23 @@ $(function(){
 		modal.setWidth("600px");
 		var qid = $(this).attr("value");
 		// 回显数据
-		$.get("${ctx}/exam/rest/findByQuestionId.do","questionId="+qid,function(q){
-			$("#modal2 form :text[name=questionTitle]").val(q.questionTitle);
-			$("#modal2 form").find("textarea").html(q.answer);
-			$("#modal2 form :text[name=optionA]").val(q.optionA);
-			$("#modal2 form :text[name=optionB]").val(q.optionB);
-			$("#modal2 form :text[name=optionC]").val(q.optionC);
-			$("#modal2 form :text[name=optionD]").val(q.optionD);
-			$("#modal2 form :text[name=remark]").val(q.remark);
-			$("<input type='hidden' name='questionId' value='"+q.questionId+"'>").appendTo($("#modal2 form"));
+		$.post("${ctx}/exam/rest/findByQuestionId.do","questionId="+qid,function(r){
+			$("#modal2 form :text[name=questionTitle]").val(r.data.questionTitle);
+			$("#modal2 form").find("textarea").html(r.data.answer);
+			$("#modal2 form :text[name=optionA]").val(r.data.optionA);
+			$("#modal2 form :text[name=optionB]").val(r.data.optionB);
+			$("#modal2 form :text[name=optionC]").val(r.data.optionC);
+			$("#modal2 form :text[name=optionD]").val(r.data.optionD);
+			$("#modal2 form :text[name=remark]").val(r.data.remark);
+			$("<input type='hidden' name='questionId' value='"+r.data.questionId+"'>").appendTo($("#modal2 form"));
 			/*回显题型 */
 			$("#modal2 #typeId").find("option").each(function(index,obj){
-				if(q.type.typeId==$(obj).val()){
+				if(r.data.type.typeId==$(obj).val()){
 					$(obj).prop("selected",true);
 					
 				}
 			});
-			changeType(q.type.typeId);
+			changeType(r.data.type.typeId);
 			/*题型与选项联动*/
 			$("#modal2 #typeId").change(function(){
 				changeType($(this).val());

@@ -76,13 +76,13 @@ $(function(){
 		loadTime();
 		var pid = $(this).attr("value");
 		// 回显数据
-		$.get("${ctx}/exam/rest/findByPaperId.do","paperId="+pid,function(p){
-			$("#modal2 form :text[name=paperName]").val(p.paperName);
-			$("#modal2 form :text[name=totalTime]").val(p.totalTime);
-			$("#modal2 form :text[name=startTime]").val(p.startTime);
-			$("#modal2 form :text[name=endTime]").val(p.endTime);
-			$("#modal2 form :text[name=remark]").val(p.remark);
-			$("<input type='hidden' name='paperId' value='"+p.paperId+"'>").appendTo($("#modal2 form"));
+		$.post("${ctx}/exam/rest/findByPaperId.do","paperId="+pid,function(r){
+			$("#modal2 form :text[name=paperName]").val(r.data.paperName);
+			$("#modal2 form :text[name=totalTime]").val(r.data.totalTime);
+			$("#modal2 form :text[name=startTime]").val(r.data.startTime);
+			$("#modal2 form :text[name=endTime]").val(r.data.endTime);
+			$("#modal2 form :text[name=remark]").val(r.data.remark);
+			$("<input type='hidden' name='paperId' value='"+r.data.paperId+"'>").appendTo($("#modal2 form"));
 		},"json"); 
 	});
 	// 添加弹出层

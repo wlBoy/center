@@ -65,23 +65,23 @@ $(function(){
 		modal.setWidth("400px");
 		var aid = $(this).attr("value");
 		// 回显数据
-		$.get("${ctx}/account/rest/findByAccountId.do","accountId="+aid,function(a){
-			$("#modal2 form :text[name=accountTitle]").val(a.accountTitle);
-			$("#modal2 form :text[name=accountFee]").val(a.accountFee);
-			$("#modal2 form :text[name=accountType]").val(a.accountType);
-			$("#modal2 form :text[name=remark]").val(a.remark);
-			$("<input type='hidden' name='accountId' value='"+a.accountId+"'>").appendTo($("#modal2 form"));
+		$.post("${ctx}/account/rest/findByAccountId.do","accountId="+aid,function(r){
+			$("#modal2 form :text[name=accountTitle]").val(r.data.accountTitle);
+			$("#modal2 form :text[name=accountFee]").val(r.data.accountFee);
+			$("#modal2 form :text[name=accountType]").val(r.data.accountType);
+			$("#modal2 form :text[name=remark]").val(r.data.remark);
+			$("<input type='hidden' name='accountId' value='"+r.data.accountId+"'>").appendTo($("#modal2 form"));
 			/*回显父类别 */
 			$("#modal2 #parentType").find("option").each(function(index,obj){
-				if(a.type.parentType==$(obj).val()){
+				if(r.data.type.parentType==$(obj).val()){
 					$(obj).prop("selected",true);
 				}
 			});
 			/*显示并回显子类别 */
-			changeType(a.type.parentType,a.type.typeId);
+			changeType(r.data.type.parentType,r.data.type.typeId);
 			/*修改弹出层切换父级别并回显子类别*/
 			$("#modal2 #parentType").change(function(){
-				changeType($(this).val(),a.type.typeId);
+				changeType($(this).val(),r.data.type.typeId);
 			});
 		},"json"); 
 		checkAccountTitle();
@@ -110,8 +110,8 @@ function checkAccountTitle(){
 	var accountTitleInput = $("#modal2 form :text[name=accountTitle]");
 	//ajax请求数据库是否存在该用户
 	accountTitleInput.blur(function(){
-		$.get("${ctx}/account/rest/findByAccountTitle.do","accountTitle="+accountTitleInput.val(),function(a){
-			if(a.accountTitle != null){
+		$.post("${ctx}/account/rest/findByAccountTitle.do","accountTitle="+accountTitleInput.val(),function(r){
+			if(r.data != null){
 				accountTitleInput.val("");
 				accountTitleInput.select();
 				swal("OMG!", "该账务标题已存在，请更换一个!", "error");
