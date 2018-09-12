@@ -141,6 +141,32 @@ public class Constant {
 	 * 试卷正确答案key
 	 */
 	public final static String ANSWER_KEY = "answer";
+	/*----------------------------------邮件服务器的key---------------------------------*/
+	/**
+	 * 是否邮箱授权验证的key
+	 */
+	public final static String MAIL_VALIDATE_KEY = "mailValidate";
+	/**
+	 * 邮箱主机的key
+	 */
+	public final static String MAIL_HOST_KEY = "mailHost";
+	/**
+	 * 邮箱端口号的key
+	 */
+	public final static String MAIL_PORT_KEY = "mailPort";
+	/**
+	 * 邮件发送者的地址的key
+	 */
+	public final static String MAIL_FROM_KEY = "mailFrom";
+	/**
+	 * 授权邮箱的key
+	 */
+	public final static String MAIL_USERNAME_KEY = "mailUserName";
+	/**
+	 * 邮箱授权密码(如果开启了客户端授权码，则密码填授权码密码，没有开启，则账号登录密码)的key
+	 */
+	public final static String MAIL_PASSWORD_KEY = "mailPassword";
+
 	/*-------------------------------------------------------------------*/
 
 }

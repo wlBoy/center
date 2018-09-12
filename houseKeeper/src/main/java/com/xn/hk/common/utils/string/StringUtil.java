@@ -50,6 +50,22 @@ public final class StringUtil {
 	}
 
 	/**
+	 * 将String类型的true或者false转换为Boolean类型
+	 * 
+	 * @param value
+	 * @return Boolean类型
+	 */
+	public static boolean String2Boolean(String value) {
+		if (isEmpty(value)) {
+			return false;
+		}
+		if (value.equalsIgnoreCase("true")) {
+			return true;
+		}
+		return false;
+	}
+
+	/**
 	 * 生成指定长度的字符串
 	 * 
 	 * @param len
