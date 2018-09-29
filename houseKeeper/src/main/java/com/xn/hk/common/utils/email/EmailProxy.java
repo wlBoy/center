@@ -37,7 +37,9 @@ public class EmailProxy {
 	 * 记录日志
 	 */
 	private static final Logger logger = LoggerFactory.getLogger(EmailProxy.class);
-
+	private static final String MAIL_SMTP_HOST = "mail.smtp.host";//邮箱服务器(固定的)
+	private static final String MAIL_SMTP_PORT = "mail.smtp.port";//服务器端口号(固定的)
+	private static final String MAIL_SMTP_AUTH = "mail.smtp.auth";//是否需要授权验证(固定的)
 	private EmailProxy() {
 		super();
 	}
@@ -109,9 +111,9 @@ public class EmailProxy {
 		InputStream in = EmailProxy.class.getClassLoader().getResourceAsStream("email.properties");
 		prop.load(in);
 		// 设置snmp的主机，端口号和是否需要授权验证(这一步一定要有)
-		prop.put("mail.smtp.host", String.valueOf(prop.getProperty(Constant.MAIL_HOST_KEY)));
-		prop.put("mail.smtp.port", String.valueOf(prop.getProperty(Constant.MAIL_PORT_KEY)));
-		prop.put("mail.smtp.auth", String.valueOf(prop.getProperty(Constant.MAIL_VALIDATE_KEY)));
+		prop.put(MAIL_SMTP_HOST, String.valueOf(prop.getProperty(Constant.MAIL_HOST_KEY)));
+		prop.put(MAIL_SMTP_PORT, String.valueOf(prop.getProperty(Constant.MAIL_PORT_KEY)));
+		prop.put(MAIL_SMTP_AUTH, String.valueOf(prop.getProperty(Constant.MAIL_VALIDATE_KEY)));
 		return prop;
 	}
 

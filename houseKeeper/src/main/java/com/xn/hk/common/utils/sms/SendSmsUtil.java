@@ -44,13 +44,13 @@ public class SendSmsUtil {
 		}
 		return instance;
 	}
-
 	/**
 	 * 调用中国网建SMS短信通的SDK发送短信
-	 * 
+	 * @param smsText 发送短信的内容
 	 */
-	public void sendSms() {
+	public void sendSms(String smsText) {
 		if (!Boolean.valueOf(String.valueOf(InitSmsCfg.cfgMap.get(Constant.ENABLE_SMS)))) {
+			logger.error("请启用发送sms短信功能!");
 			return;
 		}
 		String smsMobile = String.valueOf(InitSmsCfg.cfgMap.get(Constant.SMS_MOBILE));
@@ -58,8 +58,6 @@ public class SendSmsUtil {
 			logger.error("{}电话号码不合法!",smsMobile);
 			return;
 		}
-		String code = StringUtil.randomDigit(6);// 随机生成6位验证码数字
-		String smsText = "您正在注册本站会员,本次验证码为:" + code + ",有效时间为5分钟!";
 		HttpClient client = new HttpClient();
 		PostMethod post = new PostMethod(String.valueOf(InitSmsCfg.cfgMap.get(Constant.SMS_URL)));
 		post.addRequestHeader(InitSmsCfg.CONTENT_TYPE, CONTENT_TYPE);// 在头文件中设置转码
@@ -90,7 +88,9 @@ public class SendSmsUtil {
 	}
 
 	public static void main(String[] args) {
+		String code = StringUtil.randomDigit(6);// 随机生成6位验证码数字
+		String smsText = "您正在注册本站会员,本次验证码为:" + code + ",有效时间为5分钟!";
 		// 调用该方法发送验证码短信
-		SendSmsUtil.getInstance().sendSms();
+		SendSmsUtil.getInstance().sendSms(smsText);
 	}
 }
