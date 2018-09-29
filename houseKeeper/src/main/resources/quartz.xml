@@ -1,8 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
-	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:context="http://www.springframework.org/schema/context"
-	xmlns:tx="http://www.springframework.org/schema/tx" xmlns:task="http://www.springframework.org/schema/task"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:task="http://www.springframework.org/schema/task"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans
         http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
         http://www.springframework.org/schema/context
@@ -11,7 +14,7 @@
         http://www.springframework.org/schema/aop/spring-aop-4.0.xsd
         http://www.springframework.org/schema/tx
         http://www.springframework.org/schema/tx/spring-tx-4.0.xsd">
-    <!--11. 定时任务start -->
+	<!--11. 定时任务start -->
 	<!-- 线程执行器配置，用于任务注册 -->
 	<bean id="executor"
 		class="org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor">
@@ -19,60 +22,38 @@
 		<property name="maxPoolSize" value="100" />
 		<property name="queueCapacity" value="500" />
 	</bean>
-	<!-- 业务对象,也可以使用注解@Component(quartzJob1)注入IOC容器 -->
-	<bean id="quartzJob1" class="com.xn.hk.quartz.test.QuartzJob1"></bean>
-	<bean id="quartzJob2" class="com.xn.hk.quartz.test.QuartzJob2"></bean>
+	<!-- 业务对象,也可以使用注解@Component(snmpJob)注入IOC容器 -->
+	<bean id="snmpJob" class="com.xn.hk.common.utils.snmp.SnmpTask">
+	</bean>
 	<!-- 配置调度业务 -->
-	<bean id="jobtask1"
+	<bean id="snmptask"
 		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
 		<!-- 调用的类 -->
-		<property name="targetObject" ref="quartzJob1" />
+		<property name="targetObject" ref="snmpJob" />
 		<!-- 调用类中的方法 -->
-		<property name="targetMethod" value="work" />
-		<!-- 是否允许任务并发执行。当值为false时，表示必须等到前一个线程处理完毕后才再启一个新的线程 -->
-		<property name="concurrent" value="false" />
-	</bean>
-	<bean id="jobtask2"
-		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
-		<!-- 调用的类 -->
-		<property name="targetObject" ref="quartzJob2" />
-		<!-- 调用类中的方法 -->
-		<property name="targetMethod" value="work" />
-	</bean>
-	<bean id="jobtask3"
-		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
-		<!-- 调用的类 -->
-		<property name="targetObject" ref="quartzJob1" />
-		<!-- 调用类中的方法 -->
-		<property name="targetMethod" value="say" />
+		<property name="targetMethod" value="moinitor" />
 	</bean>
 	<!-- 触发器配置,指定时间 -->
 	<!--第一种 SimpleTriggerBean，只支持按照一定频度调用任务，如每隔30分钟运行一次 -->
 	<bean id="simpleTrigger1"
 		class="org.springframework.scheduling.quartz.SimpleTriggerFactoryBean">
-		<property name="jobDetail" ref="jobtask3" />
+		<property name="jobDetail" ref="snmptask" />
 		<!-- 调度工厂实例化后，经过0秒开始执行调度 -->
 		<property name="startDelay" value="0" />
 		<!-- 每2秒调度一次 -->
 		<property name="repeatInterval" value="2000" />
 	</bean>
 	<!--第二种 CronTriggerBean，支持到指定时间运行一次，如每天23:00运行一次等 -->
-	<bean id="cronTrigger1"
+	<bean id="snmpTrigger"
 		class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
-		<property name="jobDetail" ref="jobtask1" />
+		<property name="jobDetail" ref="snmptask" />
 		<!-- cron表达式 -->
 		<!-- 每隔10秒执行一次 <value>0/10 * * * * ?</value> -->
 		<!-- 每天每隔10分钟执行一次 <value>0 0/10 * * * ?</value> -->
 		<!-- 每天上午8点执行一次 <value>0 0 8 * * ?</value> -->
 		<!-- 在每天下午16点到下午16:59期间的每1分钟触发 <value>0 * 16 * * ?</value> -->
 		<!-- 每天凌晨1点执行一次 -->
-		<property name="cronExpression" value="0 0 23 * * ?" />
-	</bean>
-	<bean id="cronTrigger2"
-		class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
-		<property name="jobDetail" ref="jobtask2" />
-		<!-- cron表达式 -->
-		<property name="cronExpression" value="0 0 23 * * ?" />
+		<property name="cronExpression" value="0/30 * * * * ?" />
 	</bean>
 	<!-- 总管理类 如果将lazy-init='false'那么容器启动就会执行调度程序 -->
 	<bean id="startQuartz" lazy-init="false" autowire="no"
@@ -80,8 +61,7 @@
 		<property name="triggers">
 			<list>
 				<!--触发器列表 -->
-				<ref bean="cronTrigger1" />
-				<ref bean="cronTrigger2" />
+				<ref bean="snmpTrigger" />
 				<!-- <ref bean="simpleTrigger1" /> -->
 			</list>
 		</property>

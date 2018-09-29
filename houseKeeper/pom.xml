@@ -28,6 +28,8 @@
 		<quartz.version>2.3.0</quartz.version>
 		<!--httpclient版本号 -->
 		<httpclient.version>4.5.2</httpclient.version>
+		<!--snmp版本号 -->
+		<snmp.version>2.6.2</snmp.version>
 	</properties>
 	<dependencies>
 		<!--Spring框架核心库 -->
@@ -207,6 +209,12 @@
 			<groupId>javax.mail</groupId>
 			<artifactId>mail</artifactId>
 			<version>1.4.7</version>
+		</dependency>
+		<!-- snmp4j -->
+		<dependency>
+			<groupId>org.snmp4j</groupId>
+			<artifactId>snmp4j</artifactId>
+			<version>${snmp.version}</version>
 		</dependency>
 	</dependencies>
 	<build>

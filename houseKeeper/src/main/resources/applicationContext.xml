@@ -133,5 +133,6 @@
 			<aop:around method="doLog" pointcut-ref="serviceImpl" />
 		</aop:aspect>
 	</aop:config>
-
+	<!--11. 定时任务start -->
+	<import resource="quartz.xml" />
 </beans>
