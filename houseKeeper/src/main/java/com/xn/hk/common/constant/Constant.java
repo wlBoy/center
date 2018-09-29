@@ -254,6 +254,10 @@ public class Constant {
 	 * 是否启用sms短信的key
 	 */
 	public final static String ENABLE_SMS = "enableSms";
+	/**
+	 * 短信编码的key
+	 */
+	public final static String SMS_CHARACTER_CODING = "smsCharacterCoding";
 
 	/*-------------------------------------------------------------------*/
 }

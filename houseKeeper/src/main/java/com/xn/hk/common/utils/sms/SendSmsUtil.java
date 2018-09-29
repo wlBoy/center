@@ -24,6 +24,8 @@ public class SendSmsUtil {
 	 * 记录日志
 	 */
 	private static final Logger logger = LoggerFactory.getLogger(SendSmsUtil.class);
+	private static final String CONTENT_TYPE = "application/x-www-form-urlencoded;charset="
+			+ InitSmsCfg.SMS_CHARACTER_CODING;
 	private static SendSmsUtil instance;
 
 	private SendSmsUtil() {
@@ -53,7 +55,7 @@ public class SendSmsUtil {
 		String smsText = "您正在注册本站会员,本次验证码为:" + code + ",有效时间为5分钟!";
 		HttpClient client = new HttpClient();
 		PostMethod post = new PostMethod(String.valueOf(InitSmsCfg.cfgMap.get(Constant.SMS_URL)));
-		post.addRequestHeader("Content-Type", "application/x-www-form-urlencoded;charset=gbk");// 在头文件中设置转码
+		post.addRequestHeader(InitSmsCfg.CONTENT_TYPE, CONTENT_TYPE);// 在头文件中设置转码
 		NameValuePair[] data = {
 				new NameValuePair(InitSmsCfg.UID, String.valueOf(InitSmsCfg.cfgMap.get(Constant.SMS_USERNAME))), // 登录的用户名
 				new NameValuePair(InitSmsCfg.KEY, String.valueOf(InitSmsCfg.cfgMap.get(Constant.SMS_PASSWORD))), // 接口安全密钥
@@ -68,7 +70,7 @@ public class SendSmsUtil {
 				for (Header h : headers) {
 					logger.info("响应头信息如下:" + h.toString());
 				}
-				String result = new String(post.getResponseBodyAsString().getBytes("gbk"));
+				String result = new String(post.getResponseBodyAsString().getBytes(InitSmsCfg.SMS_CHARACTER_CODING));
 				logger.info(result + "条短信发送成功!");
 			} else {
 				logger.error("返回状态码异常，状态码为:" + statusCode);
