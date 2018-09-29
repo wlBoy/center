@@ -21,10 +21,8 @@ import com.xn.hk.common.constant.Constant;
  */
 public class InitSmsCfg {
 	private static final Logger logger = LoggerFactory.getLogger(InitSmsCfg.class);
-	// 取出配置文件中sms编码
-	public static final String SMS_CHARACTER_CODING = String
-			.valueOf(InitSmsCfg.cfgMap.get(Constant.SMS_CHARACTER_CODING)).toLowerCase();
-	private static final String SMS_URL = "http://" + SMS_CHARACTER_CODING + ".sms.webchinese.cn";
+	private static final String GBK_URL = "http://gbk.api.smschinese.cn";
+	private static final String UTF8_URL = "http://utf8.api.smschinese.cn";
 	// 中国网建SMS短信通SDK中的key(官方固定的)
 	public static final String UID = "Uid";
 	public static final String KEY = "Key";
@@ -40,7 +38,11 @@ public class InitSmsCfg {
 		InputStream in = InitSmsCfg.class.getClassLoader().getResourceAsStream("sms.properties");
 		try {
 			prop.load(in);
-			cfgMap.put(Constant.SMS_URL, SMS_URL);
+			if("gbk".equalsIgnoreCase(String.valueOf(prop.getProperty(Constant.SMS_CHARACTER_CODING)))) {
+				cfgMap.put(Constant.SMS_URL, GBK_URL);
+			}else {
+				cfgMap.put(Constant.SMS_URL, UTF8_URL);
+			}
 			cfgMap.put(Constant.SMS_CHARACTER_CODING, prop.getProperty(Constant.SMS_CHARACTER_CODING));
 			cfgMap.put(Constant.SMS_MOBILE, prop.getProperty(Constant.SMS_MOBILE));
 			cfgMap.put(Constant.SMS_PASSWORD, prop.getProperty(Constant.SMS_PASSWORD));

@@ -189,11 +189,10 @@ public final class StringUtil {
 	 * @return
 	 */
 	public static boolean isMobileNumber(String number) {
-		if (StringUtil.isEmpty(number))
+		if (StringUtil.isEmpty(number)||number.length() != 11) {
 			return false;
-		if (number.length() > 11)
-			number = number.substring(number.length() - 11);
-		Pattern p = Pattern.compile("^((13[0-9])|(14[0-9])|(15[0-9])|(18[0-9]))\\d{8}$");
+		}
+		Pattern p = Pattern.compile("^((13[0-9])|(15[^4,\\\\D])|(18[0,5-9]))\\\\d{8}$");
 		Matcher m = p.matcher(number);
 		return m.matches();
 	}

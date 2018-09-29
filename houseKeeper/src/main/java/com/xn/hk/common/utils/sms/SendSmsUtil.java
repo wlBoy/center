@@ -24,8 +24,10 @@ public class SendSmsUtil {
 	 * 记录日志
 	 */
 	private static final Logger logger = LoggerFactory.getLogger(SendSmsUtil.class);
+	// 取出配置文件中sms编码
+	private static final String SMS_CHARACTER_CODING = String.valueOf(InitSmsCfg.cfgMap.get(Constant.SMS_CHARACTER_CODING)).toLowerCase();
 	private static final String CONTENT_TYPE = "application/x-www-form-urlencoded;charset="
-			+ InitSmsCfg.SMS_CHARACTER_CODING;
+			+ SMS_CHARACTER_CODING;
 	private static SendSmsUtil instance;
 
 	private SendSmsUtil() {
@@ -51,6 +53,11 @@ public class SendSmsUtil {
 		if (!Boolean.valueOf(String.valueOf(InitSmsCfg.cfgMap.get(Constant.ENABLE_SMS)))) {
 			return;
 		}
+		String smsMobile = String.valueOf(InitSmsCfg.cfgMap.get(Constant.SMS_MOBILE));
+		if(StringUtil.isMobileNumber(smsMobile)) {
+			logger.error("{}电话号码不合法!",smsMobile);
+			return;
+		}
 		String code = StringUtil.randomDigit(6);// 随机生成6位验证码数字
 		String smsText = "您正在注册本站会员,本次验证码为:" + code + ",有效时间为5分钟!";
 		HttpClient client = new HttpClient();
@@ -59,7 +66,7 @@ public class SendSmsUtil {
 		NameValuePair[] data = {
 				new NameValuePair(InitSmsCfg.UID, String.valueOf(InitSmsCfg.cfgMap.get(Constant.SMS_USERNAME))), // 登录的用户名
 				new NameValuePair(InitSmsCfg.KEY, String.valueOf(InitSmsCfg.cfgMap.get(Constant.SMS_PASSWORD))), // 接口安全密钥
-				new NameValuePair(InitSmsCfg.SMSMOB, String.valueOf(InitSmsCfg.cfgMap.get(Constant.SMS_MOBILE))), // 接受验证码的手机号
+				new NameValuePair(InitSmsCfg.SMSMOB, smsMobile), // 接受验证码的手机号
 				new NameValuePair(InitSmsCfg.SMSTEXT, smsText) };// 发送短信内容
 		post.setRequestBody(data);
 		try {
@@ -70,7 +77,7 @@ public class SendSmsUtil {
 				for (Header h : headers) {
 					logger.info("响应头信息如下:" + h.toString());
 				}
-				String result = new String(post.getResponseBodyAsString().getBytes(InitSmsCfg.SMS_CHARACTER_CODING));
+				String result = new String(post.getResponseBodyAsString().getBytes(SMS_CHARACTER_CODING));
 				logger.info(result + "条短信发送成功!");
 			} else {
 				logger.error("返回状态码异常，状态码为:" + statusCode);
