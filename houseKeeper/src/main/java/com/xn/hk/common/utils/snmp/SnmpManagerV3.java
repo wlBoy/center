@@ -43,7 +43,9 @@ import org.snmp4j.util.TreeUtils;
  * @Date: 2018年9月29日 下午4:50:26
  */
 public class SnmpManagerV3 {
-
+	/**
+	 * 记录日志
+	 */
 	private static final Logger logger = LoggerFactory.getLogger(SnmpManagerV3.class);
 
 	private Snmp snmp;

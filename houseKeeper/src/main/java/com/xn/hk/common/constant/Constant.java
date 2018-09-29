@@ -208,6 +208,31 @@ public class Constant {
 	 * 用户不能更改密码的key
 	 */
 	public final static String PASSWORD_CANT_CHANGE_KEY = "passwdCantChange";
+	/*----------------------------------snmp的key---------------------------------*/
+	/**
+	 * 是否监控处理器的key
+	 */
+	public final static String MONITOR_CPU = "monitorCpu";
+	/**
+	 * 是否监控硬盘的key
+	 */
+	public final static String MONITOR_DISK = "monitorDisk";
+	/**
+	 * 是否监控网络流量的key
+	 */
+	public final static String MONITOR_NETWORK_FLOW = "monitorNetworkFlow";
+	/**
+	 * 是否监控设备服务时间的key
+	 */
+	public final static String MONITOR_SERVICE_TIME = "monitorServiceTime";
+	/**
+	 * 是否监控内存的key
+	 */
+	public final static String MONITOR_MEMORY = "monitorMemory";
+	/**
+	 * 监听设备IP的key
+	 */
+	public final static String MONITOR_IP = "monitorIp";
 
 	/*-------------------------------------------------------------------*/
 }
