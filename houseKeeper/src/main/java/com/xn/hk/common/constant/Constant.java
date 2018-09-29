@@ -233,6 +233,27 @@ public class Constant {
 	 * 监听设备IP的key
 	 */
 	public final static String MONITOR_IP = "monitorIp";
+	/*----------------------------------sms的key---------------------------------*/
+	/**
+	 * SDK服务器地址(中国网建SMS短信通，固定的)的key
+	 */
+	public final static String SMS_URL = "smsUrl";
+	/**
+	 * 用户名(中国网建SMS短信通分配的登录名)的key
+	 */
+	public final static String SMS_USERNAME = "smsUserName";
+	/**
+	 * 接口安全密钥(中国网建SMS短信通分配的接口安全密钥)的key
+	 */
+	public final static String SMS_PASSWORD = "smsPassword";
+	/**
+	 * 接受短信的号码的key
+	 */
+	public final static String SMS_MOBILE = "smsMobile";
+	/**
+	 * 是否启用sms短信的key
+	 */
+	public final static String ENABLE_SMS = "enableSms";
 
 	/*-------------------------------------------------------------------*/
 }
