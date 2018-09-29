@@ -167,6 +167,47 @@ public class Constant {
 	 */
 	public final static String MAIL_PASSWORD_KEY = "mailPassword";
 
-	/*-------------------------------------------------------------------*/
+	/*----------------------------------LDAP服务器的key---------------------------------*/
+	/**
+	 * 开启用户自动推送的key
+	 */
+	public final static String START_AUTO_PUSH_KEY = "startAutoPush";
+	/**
+	 * 域用户名的key
+	 */
+	public final static String SECURITY_PRINCIPAL_KEY = "securityPrincipal";
+	/**
+	 * 域根节点的key
+	 */
+	public final static String BASE_DN_KEY = "baseDn";
+	/**
+	 * keyStore文件位置的key
+	 */
+	public final static String KEY_STORE_KEY = "keyStore";
+	/**
+	 * SSL域密码的key
+	 */
+	public final static String SSL_PASSWORD_KEY = "sslPassword";
+	/**
+	 * AD管理员域密码的key
+	 */
+	public final static String AD_PASSWORD_KEY = "adPassword";
+	/**
+	 * 域服务器 URL的key
+	 */
+	public final static String LDAP_URL_KEY = "ldapUrl";
+	/**
+	 * 使用加密通道的key
+	 */
+	public final static String USE_SSL_KEY = "useSsl";
+	/**
+	 * 开启推送密码的key
+	 */
+	public final static String PUSH_PASSWORD_KEY = "pushPassword";
+	/**
+	 * 用户不能更改密码的key
+	 */
+	public final static String PASSWORD_CANT_CHANGE_KEY = "passwdCantChange";
 
+	/*-------------------------------------------------------------------*/
 }

@@ -1,7 +1,6 @@
 package com.xn.hk.common.utils.email;
 
 import com.xn.hk.common.constant.Constant;
-import com.xn.hk.common.utils.string.StringUtil;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -67,10 +66,10 @@ public class EmailProxy {
 		// 判断是否需要身份认证
 		MyAuthenticator authenticator = null;
 		Properties prop = getProperties();
-		if (StringUtil.String2Boolean(prop.get(Constant.MAIL_VALIDATE_KEY).toString())) {
+		if (Boolean.valueOf(String.valueOf(prop.getProperty(Constant.MAIL_VALIDATE_KEY)))) {
 			// 如果需要身份认证，则创建一个密码验证器
-			authenticator = new MyAuthenticator(prop.getProperty(Constant.MAIL_USERNAME_KEY).toString(),
-					prop.getProperty(Constant.MAIL_PASSWORD_KEY).toString());
+			authenticator = new MyAuthenticator(String.valueOf(prop.getProperty(Constant.MAIL_USERNAME_KEY)),
+					String.valueOf(prop.getProperty(Constant.MAIL_PASSWORD_KEY).toString()));
 		}
 		// 根据邮件会话属性和密码验证器构造一个发送邮件的session
 		Session session = Session.getDefaultInstance(prop, authenticator);
@@ -78,7 +77,7 @@ public class EmailProxy {
 		// 根据session创建一个邮件消息
 		Message mailMessage = new MimeMessage(session);
 		// 创建邮件发送者地址
-		Address from = new InternetAddress(prop.getProperty(Constant.MAIL_FROM_KEY).toString());
+		Address from = new InternetAddress(String.valueOf(prop.getProperty(Constant.MAIL_FROM_KEY).toString()));
 		// 设置邮件消息的发送者
 		mailMessage.setFrom(from);
 		// 创建邮件的接收者地址，并设置到邮件消息中
@@ -110,9 +109,9 @@ public class EmailProxy {
 		InputStream in = EmailProxy.class.getClassLoader().getResourceAsStream("email.properties");
 		prop.load(in);
 		// 设置snmp的主机，端口号和是否需要授权验证(这一步一定要有)
-		prop.put("mail.smtp.host", prop.getProperty(Constant.MAIL_HOST_KEY).toString());
-		prop.put("mail.smtp.port", prop.getProperty(Constant.MAIL_PORT_KEY).toString());
-		prop.put("mail.smtp.auth", prop.getProperty(Constant.MAIL_VALIDATE_KEY) != null ? "true" : "false");
+		prop.put("mail.smtp.host", String.valueOf(prop.getProperty(Constant.MAIL_HOST_KEY)));
+		prop.put("mail.smtp.port", String.valueOf(prop.getProperty(Constant.MAIL_PORT_KEY)));
+		prop.put("mail.smtp.auth", String.valueOf(prop.getProperty(Constant.MAIL_VALIDATE_KEY)));
 		return prop;
 	}
 
@@ -156,16 +155,16 @@ public class EmailProxy {
 	public static void main(String[] args) {
 		// 这个类主要是设置邮件
 		Email mailInfo = new Email();
-		mailInfo.setToAddress(new String[] { "1354373900@qq.com", "1772878234@qq.com" });
+		mailInfo.setToAddress(new String[] { "1354373900@qq.com" });
 		mailInfo.setSubject("这是邮箱标题");
 		mailInfo.setContent("这是邮箱内容");
 		// 这个类主要来发送邮件
 		try {
 			sendTextMail(mailInfo);
 		} catch (MessagingException e) {
-			e.printStackTrace();
+			logger.error("邮件发送失败，原因为:" + e.getMessage());
 		} catch (IOException e) {
-			e.printStackTrace();
+			logger.error("邮件发送失败，原因为:" + e.getMessage());
 		}
 	}
 }
