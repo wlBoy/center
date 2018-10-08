@@ -8,7 +8,6 @@ import java.util.Properties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.xn.hk.common.constant.Constant;
 
 /**
  * 
@@ -23,6 +22,7 @@ public class SystemCfg {
 	 * 记录日志
 	 */
 	private static final Logger logger = LoggerFactory.getLogger(SystemCfg.class);
+	private static final String UTF8 = "UTF-8";
 	private static SystemCfg instance;
 
 	private SystemCfg() {
@@ -51,8 +51,8 @@ public class SystemCfg {
 		Properties prop = new Properties();
 		// 使用流加载配置文件
 		try {
-			in = new InputStreamReader(SystemCfg.class.getClassLoader().getResourceAsStream(Constant.SYSTEM_CFG_INI),
-					"UTF-8");
+			in = new InputStreamReader(SystemCfg.class.getClassLoader().getResourceAsStream(CfgConstant.SYSTEM_CFG_INI),
+					UTF8);
 			prop.load(in);
 		} catch (UnsupportedEncodingException e) {
 			logger.error("初始化系统配置文件失败，原因为:" + e.getMessage());
@@ -70,4 +70,8 @@ public class SystemCfg {
 		return prop;
 	}
 
+	public static void main(String[] args) {
+		Properties prop = SystemCfg.getInstance().loadCfg();
+		System.out.println(prop.getProperty("test"));
+	}
 }

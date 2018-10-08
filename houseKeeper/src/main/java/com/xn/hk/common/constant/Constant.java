@@ -34,10 +34,6 @@ public class Constant {
 	 * 类别value
 	 */
 	public final static String TYPES_KEY = "types";
-	/**
-	 * 系统配置文件名
-	 */
-	public final static String SYSTEM_CFG_INI = "systemCfg.ini";
 
 	/*----------------------------------用户管理---------------------------------*/
 	/**
@@ -145,123 +141,6 @@ public class Constant {
 	 * 试卷正确答案key
 	 */
 	public final static String ANSWER_KEY = "answer";
-	/*----------------------------------邮件服务器的key---------------------------------*/
-	/**
-	 * 是否邮箱授权验证的key
-	 */
-	public final static String MAIL_VALIDATE_KEY = "mailValidate";
-	/**
-	 * 邮箱主机的key
-	 */
-	public final static String MAIL_HOST_KEY = "mailHost";
-	/**
-	 * 邮箱端口号的key
-	 */
-	public final static String MAIL_PORT_KEY = "mailPort";
-	/**
-	 * 邮件发送者的地址的key
-	 */
-	public final static String MAIL_FROM_KEY = "mailFrom";
-	/**
-	 * 授权邮箱的key
-	 */
-	public final static String MAIL_USERNAME_KEY = "mailUserName";
-	/**
-	 * 邮箱授权密码(如果开启了客户端授权码，则密码填授权码密码，没有开启，则账号登录密码)的key
-	 */
-	public final static String MAIL_PASSWORD_KEY = "mailPassword";
+	
 
-	/*----------------------------------LDAP服务器的key---------------------------------*/
-	/**
-	 * 开启用户自动推送的key
-	 */
-	public final static String START_AUTO_PUSH_KEY = "startAutoPush";
-	/**
-	 * 域用户名的key
-	 */
-	public final static String SECURITY_PRINCIPAL_KEY = "securityPrincipal";
-	/**
-	 * 域根节点的key
-	 */
-	public final static String BASE_DN_KEY = "baseDn";
-	/**
-	 * keyStore文件位置的key
-	 */
-	public final static String KEY_STORE_KEY = "keyStore";
-	/**
-	 * SSL域密码的key
-	 */
-	public final static String SSL_PASSWORD_KEY = "sslPassword";
-	/**
-	 * AD管理员域密码的key
-	 */
-	public final static String AD_PASSWORD_KEY = "adPassword";
-	/**
-	 * 域服务器 URL的key
-	 */
-	public final static String LDAP_URL_KEY = "ldapUrl";
-	/**
-	 * 使用加密通道的key
-	 */
-	public final static String USE_SSL_KEY = "useSsl";
-	/**
-	 * 开启推送密码的key
-	 */
-	public final static String PUSH_PASSWORD_KEY = "pushPassword";
-	/**
-	 * 用户不能更改密码的key
-	 */
-	public final static String PASSWORD_CANT_CHANGE_KEY = "passwdCantChange";
-	/*----------------------------------snmp的key---------------------------------*/
-	/**
-	 * 是否监控处理器的key
-	 */
-	public final static String MONITOR_CPU = "monitorCpu";
-	/**
-	 * 是否监控硬盘的key
-	 */
-	public final static String MONITOR_DISK = "monitorDisk";
-	/**
-	 * 是否监控网络流量的key
-	 */
-	public final static String MONITOR_NETWORK_FLOW = "monitorNetworkFlow";
-	/**
-	 * 是否监控设备服务时间的key
-	 */
-	public final static String MONITOR_SERVICE_TIME = "monitorServiceTime";
-	/**
-	 * 是否监控内存的key
-	 */
-	public final static String MONITOR_MEMORY = "monitorMemory";
-	/**
-	 * 监听设备IP的key
-	 */
-	public final static String MONITOR_IP = "monitorIp";
-	/*----------------------------------sms的key---------------------------------*/
-	/**
-	 * SDK服务器地址(中国网建SMS短信通，固定的)的key
-	 */
-	public final static String SMS_URL = "smsUrl";
-	/**
-	 * 用户名(中国网建SMS短信通分配的登录名)的key
-	 */
-	public final static String SMS_USERNAME = "smsUserName";
-	/**
-	 * 接口安全密钥(中国网建SMS短信通分配的接口安全密钥)的key
-	 */
-	public final static String SMS_PASSWORD = "smsPassword";
-	/**
-	 * 接受短信的号码的key
-	 */
-	public final static String SMS_MOBILE = "smsMobile";
-	/**
-	 * 是否启用sms短信的key
-	 */
-	public final static String ENABLE_SMS = "enableSms";
-	/**
-	 * 短信编码的key
-	 */
-	public final static String SMS_CHARACTER_CODING = "smsCharacterCoding";
-
-	/*-------------------------------------------------------------------*/
 }
