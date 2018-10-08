@@ -35,7 +35,7 @@ public class InitSmsCfg {
 	static {
 		Properties prop = new Properties();
 		// 使用流加载配置文件
-		InputStream in = InitSmsCfg.class.getClassLoader().getResourceAsStream("sms.properties");
+		InputStream in = InitSmsCfg.class.getClassLoader().getResourceAsStream(Constant.SYSTEM_CFG_INI);
 		try {
 			prop.load(in);
 			if("gbk".equalsIgnoreCase(String.valueOf(prop.getProperty(Constant.SMS_CHARACTER_CODING)))) {

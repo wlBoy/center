@@ -21,14 +21,14 @@ import com.xn.hk.common.constant.Constant;
  * @Author: wanlei
  * @Date: 2018年9月29日 下午7:36:21
  */
-public class MonitorPolicy {
-	private static final Logger logger = LoggerFactory.getLogger(MonitorPolicy.class);
+public class MonitorPolicyCfg {
+	private static final Logger logger = LoggerFactory.getLogger(MonitorPolicyCfg.class);
 	// 存储snmp监控的所有配置
 	public static Map<String, Object> cfgMap = new HashMap<String, Object>();
 	static {
 		Properties prop = new Properties();
 		// 使用流加载配置文件
-		InputStream in = MonitorPolicy.class.getClassLoader().getResourceAsStream("snmp.properties");
+		InputStream in = MonitorPolicyCfg.class.getClassLoader().getResourceAsStream(Constant.SYSTEM_CFG_INI);
 		try {
 			prop.load(in);
 			cfgMap.put(Constant.MONITOR_CPU, prop.getProperty(Constant.MONITOR_CPU));

@@ -26,7 +26,7 @@ public class InitLdapCfg {
 	static {
 		Properties prop = new Properties();
 		// 使用流加载配置文件
-		InputStream in = LdapOpt.class.getClassLoader().getResourceAsStream("ldap.properties");
+		InputStream in = LdapOpt.class.getClassLoader().getResourceAsStream(Constant.SYSTEM_CFG_INI);
 		try {
 			prop.load(in);
 			cfgMap.put(Constant.SECURITY_PRINCIPAL_KEY, prop.getProperty(Constant.SECURITY_PRINCIPAL_KEY));

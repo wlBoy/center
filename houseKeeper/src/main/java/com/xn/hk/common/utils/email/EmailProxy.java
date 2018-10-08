@@ -108,7 +108,7 @@ public class EmailProxy {
 	private static Properties getProperties() throws IOException {
 		Properties prop = new Properties();
 		// 使用流加载配置文件
-		InputStream in = EmailProxy.class.getClassLoader().getResourceAsStream("email.properties");
+		InputStream in = EmailProxy.class.getClassLoader().getResourceAsStream(Constant.SYSTEM_CFG_INI);
 		prop.load(in);
 		// 设置snmp的主机，端口号和是否需要授权验证(这一步一定要有)
 		prop.put(MAIL_SMTP_HOST, String.valueOf(prop.getProperty(Constant.MAIL_HOST_KEY)));

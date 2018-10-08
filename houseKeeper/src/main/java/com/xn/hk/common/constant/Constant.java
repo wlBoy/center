@@ -34,6 +34,10 @@ public class Constant {
 	 * 类别value
 	 */
 	public final static String TYPES_KEY = "types";
+	/**
+	 * 系统配置文件名
+	 */
+	public final static String SYSTEM_CFG_INI = "systemCfg.ini";
 
 	/*----------------------------------用户管理---------------------------------*/
 	/**

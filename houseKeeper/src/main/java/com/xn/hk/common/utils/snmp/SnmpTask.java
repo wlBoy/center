@@ -16,7 +16,7 @@ import com.xn.hk.common.constant.Constant;
  */
 public class SnmpTask {
 	// 被监控设备(目前OID只支持linux,window的OID不一样)的IP地址，这里写死(以虚拟机中ubuntu18为例)，实际情况要从设备表中取出
-	private static String snmpAgentAdress = String.valueOf(MonitorPolicy.cfgMap.get(Constant.MONITOR_IP));
+	private static String snmpAgentAdress = String.valueOf(MonitorPolicyCfg.cfgMap.get(Constant.MONITOR_IP));
 	private static SnmpManager snmpManager = new SnmpManager();
 
 	/**
@@ -26,7 +26,7 @@ public class SnmpTask {
 	 */
 	public void moinitor() throws IOException {
 		// 读取配置文件加载监听策略项，将list转换为数组
-		List<EnumStatusItem> items = MonitorPolicy.getMonitorItems();
+		List<EnumStatusItem> items = MonitorPolicyCfg.getMonitorItems();
 		EnumStatusItem[] itemArray = items.toArray(new EnumStatusItem[items.size()]);
 		Map<EnumStatusItem, String> resMap = snmpManager.getStatusAsMapWithItems(snmpAgentAdress, itemArray);
 		System.out.println("监控设备信息如下:.....");
