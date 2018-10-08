@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.xn.hk.common.constant.Constant;
+import com.xn.hk.common.utils.cfg.SystemCfg;
 import com.xn.hk.common.utils.string.StringUtil;
 
 /**
@@ -24,9 +25,18 @@ public class SendSmsUtil {
 	 * 记录日志
 	 */
 	private static final Logger logger = LoggerFactory.getLogger(SendSmsUtil.class);
+	private static final String GBK_URL = "http://gbk.api.smschinese.cn";
+	private static final String UTF8_URL = "http://utf8.api.smschinese.cn";
+	// 中国网建SMS短信通SDK中的key(官方固定的)
+	private static final String UID = "Uid";
+	private static final String KEY = "Key";
+	private static final String SMSMOB = "smsMob";
+	private static final String SMSTEXT = "smsText";
+	private static final String CONTENT_TYPE_KEY = "Content-Type";
 	// 取出配置文件中sms编码
-	private static final String SMS_CHARACTER_CODING = String.valueOf(InitSmsCfg.cfgMap.get(Constant.SMS_CHARACTER_CODING)).toLowerCase();
-	private static final String CONTENT_TYPE = "application/x-www-form-urlencoded;charset="
+	private static final String SMS_CHARACTER_CODING = SystemCfg.getInstance().loadCfg()
+			.getProperty(Constant.SMS_CHARACTER_CODING).toLowerCase();
+	private static final String CONTENT_TYPE_VALUE = "application/x-www-form-urlencoded;charset="
 			+ SMS_CHARACTER_CODING;
 	private static SendSmsUtil instance;
 
@@ -44,28 +54,38 @@ public class SendSmsUtil {
 		}
 		return instance;
 	}
+
 	/**
 	 * 调用中国网建SMS短信通的SDK发送短信
-	 * @param smsText 发送短信的内容
+	 * 
+	 * @param smsText
+	 *            发送短信的内容
 	 */
 	public void sendSms(String smsText) {
-		if (!Boolean.valueOf(String.valueOf(InitSmsCfg.cfgMap.get(Constant.ENABLE_SMS)))) {
+		String smsUrl = "";
+		if (!Boolean.valueOf(SystemCfg.getInstance().loadCfg().getProperty(Constant.ENABLE_SMS))) {
 			logger.error("请启用发送sms短信功能!");
 			return;
 		}
-		String smsMobile = String.valueOf(InitSmsCfg.cfgMap.get(Constant.SMS_MOBILE));
-		if(StringUtil.isMobileNumber(smsMobile)) {
-			logger.error("{}电话号码不合法!",smsMobile);
+		String smsMobile = SystemCfg.getInstance().loadCfg().getProperty(Constant.SMS_MOBILE);
+		if (StringUtil.isMobileNumber(smsMobile)) {
+			logger.error("{}电话号码不合法!", smsMobile);
 			return;
 		}
+		// 根据配置文件中的SMS编码判断smsUrl发送地址
+		if ("gbk".equalsIgnoreCase(SMS_CHARACTER_CODING)) {
+			smsUrl = GBK_URL;
+		} else {
+			smsUrl = UTF8_URL;
+		}
 		HttpClient client = new HttpClient();
-		PostMethod post = new PostMethod(String.valueOf(InitSmsCfg.cfgMap.get(Constant.SMS_URL)));
-		post.addRequestHeader(InitSmsCfg.CONTENT_TYPE, CONTENT_TYPE);// 在头文件中设置转码
+		PostMethod post = new PostMethod(smsUrl);
+		post.addRequestHeader(CONTENT_TYPE_KEY, CONTENT_TYPE_VALUE);// 在头文件中设置转码
 		NameValuePair[] data = {
-				new NameValuePair(InitSmsCfg.UID, String.valueOf(InitSmsCfg.cfgMap.get(Constant.SMS_USERNAME))), // 登录的用户名
-				new NameValuePair(InitSmsCfg.KEY, String.valueOf(InitSmsCfg.cfgMap.get(Constant.SMS_PASSWORD))), // 接口安全密钥
-				new NameValuePair(InitSmsCfg.SMSMOB, smsMobile), // 接受验证码的手机号
-				new NameValuePair(InitSmsCfg.SMSTEXT, smsText) };// 发送短信内容
+				new NameValuePair(UID, SystemCfg.getInstance().loadCfg().getProperty(Constant.SMS_USERNAME)), // 登录的用户名
+				new NameValuePair(KEY, SystemCfg.getInstance().loadCfg().getProperty(Constant.SMS_PASSWORD)), // 接口安全密钥
+				new NameValuePair(SMSMOB, smsMobile), // 接受验证码的手机号
+				new NameValuePair(SMSTEXT, smsText) };// 发送短信内容
 		post.setRequestBody(data);
 		try {
 			client.executeMethod(post);// 执行POST请求

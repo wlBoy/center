@@ -1,10 +1,12 @@
 package com.xn.hk.common.utils.snmp;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import com.xn.hk.common.constant.Constant;
+import com.xn.hk.common.utils.cfg.SystemCfg;
 
 /**
  * 
@@ -16,7 +18,7 @@ import com.xn.hk.common.constant.Constant;
  */
 public class SnmpTask {
 	// 被监控设备(目前OID只支持linux,window的OID不一样)的IP地址，这里写死(以虚拟机中ubuntu18为例)，实际情况要从设备表中取出
-	private static String snmpAgentAdress = String.valueOf(MonitorPolicyCfg.cfgMap.get(Constant.MONITOR_IP));
+	private static String snmpAgentAdress = SystemCfg.getInstance().loadCfg().getProperty(Constant.MONITOR_IP);
 	private static SnmpManager snmpManager = new SnmpManager();
 
 	/**
@@ -26,7 +28,7 @@ public class SnmpTask {
 	 */
 	public void moinitor() throws IOException {
 		// 读取配置文件加载监听策略项，将list转换为数组
-		List<EnumStatusItem> items = MonitorPolicyCfg.getMonitorItems();
+		List<EnumStatusItem> items = getMonitorItems();
 		EnumStatusItem[] itemArray = items.toArray(new EnumStatusItem[items.size()]);
 		Map<EnumStatusItem, String> resMap = snmpManager.getStatusAsMapWithItems(snmpAgentAdress, itemArray);
 		System.out.println("监控设备信息如下:.....");
@@ -34,6 +36,33 @@ public class SnmpTask {
 			System.out.println(key.getDesc() + "-->" + resMap.get(key));
 		}
 		;
+	}
+
+	/**
+	 * 通过配置文件中的监听策略是否启动各信息的监控
+	 * 
+	 * @return
+	 */
+	private List<EnumStatusItem> getMonitorItems() {
+		List<EnumStatusItem> items = new ArrayList<EnumStatusItem>();
+		if (Boolean.valueOf(SystemCfg.getInstance().loadCfg().getProperty(Constant.MONITOR_CPU))) {// 开启监听CPU
+			items.add(EnumStatusItem.CPU);
+		}
+		if (Boolean.valueOf(SystemCfg.getInstance().loadCfg().getProperty(Constant.MONITOR_DISK))) {// 开启监听硬盘
+			items.add(EnumStatusItem.DISK);
+		}
+		if (Boolean.valueOf(SystemCfg.getInstance().loadCfg().getProperty(Constant.MONITOR_NETWORK_FLOW))) {// 开启监听网络流量
+			items.add(EnumStatusItem.NETWORKFLOW);
+		}
+		if (Boolean.valueOf(SystemCfg.getInstance().loadCfg().getProperty(Constant.MONITOR_SERVICE_TIME))) {// 开启监听设备服务时间
+			items.add(EnumStatusItem.SYSUPTIME);
+		}
+		if (Boolean.valueOf(SystemCfg.getInstance().loadCfg().getProperty(Constant.MONITOR_MEMORY))) {// 开启监听内存
+			items.add(EnumStatusItem.TOTALMEMORY);
+			items.add(EnumStatusItem.TOTALMEMORYFREE);
+			items.add(EnumStatusItem.TOTALMEMORYUSED);
+		}
+		return items;
 	}
 
 }

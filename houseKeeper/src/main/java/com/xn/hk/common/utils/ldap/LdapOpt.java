@@ -21,6 +21,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.xn.hk.common.constant.Constant;
+import com.xn.hk.common.utils.cfg.SystemCfg;
 
 /**
  * 
@@ -37,7 +38,7 @@ public class LdapOpt {
 	// 非加密通道端口
 	public static final String WITHOUT_SSL_LDAP_URL_Port = "389";
 	// 根节点
-	public static String BASE_DN = String.valueOf(InitLdapCfg.cfgMap.get(Constant.BASE_DN_KEY));
+	public static String BASE_DN = SystemCfg.getInstance().loadCfg().getProperty(Constant.BASE_DN_KEY);
 	// 不需要密码
 	public final static int UF_PASSWD_NOTREQD = 0x0020;
 	// 用户不能更改密码。可以读取此标志，但不能直接设置它。
@@ -57,17 +58,17 @@ public class LdapOpt {
 	 */
 	public static LdapContext getConn() throws NamingException {
 		// 登录名
-		String SECURITY_PRINCIPAL = String.valueOf(InitLdapCfg.cfgMap.get(Constant.SECURITY_PRINCIPAL_KEY));
+		String SECURITY_PRINCIPAL = SystemCfg.getInstance().loadCfg().getProperty(Constant.SECURITY_PRINCIPAL_KEY);
 		// keyStore的存储位置
-		String KEYSTORE = String.valueOf(InitLdapCfg.cfgMap.get(Constant.KEY_STORE_KEY));
+		String KEYSTORE = SystemCfg.getInstance().loadCfg().getProperty(Constant.KEY_STORE_KEY);
 		// SSL密码
-		String SSL_PASSWORD = String.valueOf(InitLdapCfg.cfgMap.get(Constant.SSL_PASSWORD_KEY));
+		String SSL_PASSWORD = SystemCfg.getInstance().loadCfg().getProperty(Constant.SSL_PASSWORD_KEY);
 		// AD域管理员密码
-		String AD_PASSWORD = String.valueOf(InitLdapCfg.cfgMap.get(Constant.AD_PASSWORD_KEY));
+		String AD_PASSWORD = SystemCfg.getInstance().loadCfg().getProperty(Constant.AD_PASSWORD_KEY);
 		// LDAP_URL
-		String LDAP_URL = String.valueOf(InitLdapCfg.cfgMap.get(Constant.LDAP_URL_KEY));
+		String LDAP_URL = SystemCfg.getInstance().loadCfg().getProperty(Constant.LDAP_URL_KEY);
 		String port = null;
-		if (Boolean.valueOf(String.valueOf(InitLdapCfg.cfgMap.get(Constant.USE_SSL_KEY)))) {
+		if (Boolean.valueOf(SystemCfg.getInstance().loadCfg().getProperty(Constant.USE_SSL_KEY))) {
 			port = SSL_LDAP_URL_Port;
 		} else {
 			port = WITHOUT_SSL_LDAP_URL_Port;
@@ -184,7 +185,7 @@ public class LdapOpt {
 				}
 				// required attributes
 				int userAccountControl = UF_NORMAL_ACCOUNT + UF_PASSWD_NOTREQD + UF_PASSWORD_EXPIRED;
-				if (Boolean.valueOf(String.valueOf(InitLdapCfg.cfgMap.get(Constant.PASSWORD_CANT_CHANGE_KEY)))) {
+				if (Boolean.valueOf(SystemCfg.getInstance().loadCfg().getProperty(Constant.PASSWORD_CANT_CHANGE_KEY))) {
 					userAccountControl += UF_PASSWD_CANT_CHANGE;
 				}
 				if (accountDisable) {
@@ -205,7 +206,7 @@ public class LdapOpt {
 					logger.error("User already exists, has been moved into the organization unit");
 				}
 			}
-			if (Boolean.valueOf(String.valueOf(InitLdapCfg.cfgMap.get(Constant.PUSH_PASSWORD_KEY)))
+			if (Boolean.valueOf(SystemCfg.getInstance().loadCfg().getProperty(Constant.PUSH_PASSWORD_KEY))
 					&& passWord != null) {
 				ModificationItem[] mods = new ModificationItem[2];
 				// format the password
@@ -214,7 +215,7 @@ public class LdapOpt {
 				mods[0] = new ModificationItem(DirContext.REPLACE_ATTRIBUTE,
 						new BasicAttribute("unicodePwd", newUnicodePassword));
 				int userAccountControl = UF_NORMAL_ACCOUNT + UF_PASSWD_NOTREQD + UF_PASSWORD_EXPIRED;
-				if (Boolean.valueOf(String.valueOf(InitLdapCfg.cfgMap.get(Constant.PASSWORD_CANT_CHANGE_KEY)))) {
+				if (Boolean.valueOf(SystemCfg.getInstance().loadCfg().getProperty(Constant.PASSWORD_CANT_CHANGE_KEY))) {
 					userAccountControl += UF_PASSWD_CANT_CHANGE;
 				}
 				if (accountDisable) {
@@ -516,7 +517,7 @@ public class LdapOpt {
 		// // 用户为user，OU为organizationalUnit
 		// // 新增用户
 		// 机构路径 用户名 密码 attrs 'users'
-		if (addUser("上海", "test1231", "123", attrs, "user", true)) {
+		if (addUser("上海", "test1", "123", attrs, "user", true)) {
 			System.out.println("添加成功！");
 		}
 		// // 新增OU

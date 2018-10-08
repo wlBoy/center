@@ -1,9 +1,9 @@
 package com.xn.hk.common.utils.email;
 
 import com.xn.hk.common.constant.Constant;
+import com.xn.hk.common.utils.cfg.SystemCfg;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.Date;
 import java.util.Properties;
 
@@ -37,9 +37,10 @@ public class EmailProxy {
 	 * 记录日志
 	 */
 	private static final Logger logger = LoggerFactory.getLogger(EmailProxy.class);
-	private static final String MAIL_SMTP_HOST = "mail.smtp.host";//邮箱服务器(固定的)
-	private static final String MAIL_SMTP_PORT = "mail.smtp.port";//服务器端口号(固定的)
-	private static final String MAIL_SMTP_AUTH = "mail.smtp.auth";//是否需要授权验证(固定的)
+	private static final String MAIL_SMTP_HOST = "mail.smtp.host";// 邮箱服务器(固定的)
+	private static final String MAIL_SMTP_PORT = "mail.smtp.port";// 服务器端口号(固定的)
+	private static final String MAIL_SMTP_AUTH = "mail.smtp.auth";// 是否需要授权验证(固定的)
+
 	private EmailProxy() {
 		super();
 	}
@@ -68,10 +69,10 @@ public class EmailProxy {
 		// 判断是否需要身份认证
 		MyAuthenticator authenticator = null;
 		Properties prop = getProperties();
-		if (Boolean.valueOf(String.valueOf(prop.getProperty(Constant.MAIL_VALIDATE_KEY)))) {
+		if (Boolean.valueOf(prop.getProperty(Constant.MAIL_VALIDATE_KEY))) {
 			// 如果需要身份认证，则创建一个密码验证器
-			authenticator = new MyAuthenticator(String.valueOf(prop.getProperty(Constant.MAIL_USERNAME_KEY)),
-					String.valueOf(prop.getProperty(Constant.MAIL_PASSWORD_KEY).toString()));
+			authenticator = new MyAuthenticator(prop.getProperty(Constant.MAIL_USERNAME_KEY),
+					prop.getProperty(Constant.MAIL_PASSWORD_KEY));
 		}
 		// 根据邮件会话属性和密码验证器构造一个发送邮件的session
 		Session session = Session.getDefaultInstance(prop, authenticator);
@@ -79,7 +80,7 @@ public class EmailProxy {
 		// 根据session创建一个邮件消息
 		Message mailMessage = new MimeMessage(session);
 		// 创建邮件发送者地址
-		Address from = new InternetAddress(String.valueOf(prop.getProperty(Constant.MAIL_FROM_KEY).toString()));
+		Address from = new InternetAddress(prop.getProperty(Constant.MAIL_FROM_KEY).toString());
 		// 设置邮件消息的发送者
 		mailMessage.setFrom(from);
 		// 创建邮件的接收者地址，并设置到邮件消息中
@@ -106,14 +107,11 @@ public class EmailProxy {
 	 * @throws IOException
 	 */
 	private static Properties getProperties() throws IOException {
-		Properties prop = new Properties();
-		// 使用流加载配置文件
-		InputStream in = EmailProxy.class.getClassLoader().getResourceAsStream(Constant.SYSTEM_CFG_INI);
-		prop.load(in);
+		Properties prop = SystemCfg.getInstance().loadCfg();
 		// 设置snmp的主机，端口号和是否需要授权验证(这一步一定要有)
-		prop.put(MAIL_SMTP_HOST, String.valueOf(prop.getProperty(Constant.MAIL_HOST_KEY)));
-		prop.put(MAIL_SMTP_PORT, String.valueOf(prop.getProperty(Constant.MAIL_PORT_KEY)));
-		prop.put(MAIL_SMTP_AUTH, String.valueOf(prop.getProperty(Constant.MAIL_VALIDATE_KEY)));
+		prop.put(MAIL_SMTP_HOST, prop.getProperty(Constant.MAIL_HOST_KEY));
+		prop.put(MAIL_SMTP_PORT, prop.getProperty(Constant.MAIL_PORT_KEY));
+		prop.put(MAIL_SMTP_AUTH, prop.getProperty(Constant.MAIL_VALIDATE_KEY));
 		return prop;
 	}
 
