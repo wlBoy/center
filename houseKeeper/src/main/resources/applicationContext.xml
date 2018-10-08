@@ -20,12 +20,14 @@
 		<property name="locations">
 			<list>
 				<value>classpath:db.properties</value>
+				<value>classpath:cron.properties</value>
 			</list>
 		</property>
 	</bean>
 
-	<!--2.导入其他xml文件 <import resource="quartz.xml" /> <import resource="redis.xml" 
-		/> -->
+	<!--2.导入redis配置文件 
+	 <import resource="redis.xml" />
+	-->
 
 
 	<!--3. 配置Druid连接池 -->
