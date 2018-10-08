@@ -10,9 +10,13 @@ package com.xn.hk.common.utils.cfg;
  */
 public class CfgConstant {
 	/**
-	 * 系统配置文件名
+	 * 系统配置文件名(原始的)
 	 */
-	public final static String SYSTEM_CFG_INI = "systemCfg.ini";
+	public final static String ORIGINAL_SYSTEM_CFG_INI = "originalSystemCfg.ini";
+	/**
+	 * 系统配置文件名(实时更新的)
+	 */
+	public final static String REALTIME_SYSTEM_CFG_INI = "realTimeSystemCfg.ini";
 
 	/*----------------------------------邮件服务器的key---------------------------------*/
 	/**
