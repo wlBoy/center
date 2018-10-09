@@ -66,7 +66,7 @@ public class DesUtil {
 		if (StringUtils.isEmpty(src)) {
 			return null;
 		}
-		String enc = new String(Base64.encode(DesUtil.encrypt(src.getBytes("utf-8"))));
+		String enc = new String(Base64Util.encode(DesUtil.encrypt(src.getBytes("utf-8"))));
 		return enc;
 	}
 
@@ -110,7 +110,7 @@ public class DesUtil {
 		if (StringUtils.isEmpty(src)) {
 			return null;
 		}
-		String dec = new String(decrypt(Base64.decode(src)));
+		String dec = new String(decrypt(Base64Util.decode(src)));
 		return dec;
 	}
 

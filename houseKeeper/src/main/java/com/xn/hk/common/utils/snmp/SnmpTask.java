@@ -28,7 +28,7 @@ public class SnmpTask {
 	 */
 	public void moinitor() throws IOException {
 		if (!Boolean.valueOf(SystemCfg.getInstance().loadCfg().getProperty(CfgConstant.ENABLE_MONITOR))) {
-			System.out.println("未启用snmp监控!");
+			System.out.println("请启用snmp监控功能!");
 			return;
 		}
 		// 读取配置文件加载监听策略项，将list转换为数组

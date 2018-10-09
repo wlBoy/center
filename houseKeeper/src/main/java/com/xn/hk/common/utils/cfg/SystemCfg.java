@@ -50,7 +50,7 @@ public class SystemCfg {
 	}
 
 	/**
-	 * 读取systemCfg.ini中所有的配置信息(支持中文)
+	 * 方式一:返回Properties实体,读取systemCfg.ini中所有的配置信息(支持中文)
 	 * 
 	 * @return 返回Properties实体
 	 */
@@ -80,12 +80,12 @@ public class SystemCfg {
 	}
 
 	/**
-	 * 读取systemCfg.ini中所有的配置信息(支持中文)
+	 * 方式二:返回配置信息map集合,读取systemCfg.ini中所有的配置信息(支持中文)
 	 * 
 	 * @return 返回配置信息map集合
 	 */
-	public Map<String, Object> loadCfgMap() {
-		Map<String, Object> cfgMap = new HashMap<String, Object>();
+	public Map<String, String> loadCfgMap() {
+		Map<String, String> cfgMap = new HashMap<String, String>();
 		Properties prop = loadCfg();
 		for (Object key : prop.stringPropertyNames()) {
 			cfgMap.put(String.valueOf(key), prop.getProperty(String.valueOf(key)));
@@ -139,7 +139,7 @@ public class SystemCfg {
 		cfgMap.put(CfgConstant.AD_PASSWORD, "test123.");
 		SystemCfg.getInstance().saveCfg(cfgMap);
 		System.out.println("-----测试读取配置文件方法-----");
-		Map<String, Object> cfgMap1 = SystemCfg.getInstance().loadCfgMap();
+		Map<String, String> cfgMap1 = SystemCfg.getInstance().loadCfgMap();
 		for (String key : cfgMap1.keySet()) {
 			System.out.println(key + "=" + cfgMap1.get(key));
 		}

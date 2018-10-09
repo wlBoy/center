@@ -14,7 +14,7 @@ import com.xn.hk.common.constant.Result;
  * 
  * @ClassName: JsonUtil
  * @Package: com.xn.hk.common.utils.string
- * @Description: 使用jackson操作json的工具类 1.对象转json字符串 2.字符串转化为对象 3.字符串转化为ArrayList对象
+ * @Description: 使用fastjson操作json的工具类 1.对象转json字符串 2.字符串转化为对象 3.字符串转化为ArrayList对象
  *               4.字符串转化为ArrayList的HashMap对象 5.HashMap对象转对象
  * @Author: wanlei
  * @Date: 2018年9月5日 上午11:38:01

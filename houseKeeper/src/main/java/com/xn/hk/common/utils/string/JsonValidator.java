@@ -2,6 +2,7 @@ package com.xn.hk.common.utils.string;
 
 import java.text.CharacterIterator;
 import java.text.StringCharacterIterator;
+
 /**
  * 
  * @Title: JsonValidator
@@ -11,11 +12,23 @@ import java.text.StringCharacterIterator;
  * @Date: 2018年1月8日 下午4:39:41
  */
 public class JsonValidator {
+	private static JsonValidator instance;
 	private CharacterIterator it;
 	private char c;
 	private int col;
 
-	public JsonValidator() {
+	private JsonValidator() {
+		super();
+	}
+	/**
+	 * 构造器私有化，单例模式获取实例(线程安全)
+	 * @return
+	 */
+	public static synchronized JsonValidator getInstance() {
+		if (instance == null) {
+			instance = new JsonValidator();
+		}
+		return instance;
 	}
 
 	/**
@@ -30,7 +43,7 @@ public class JsonValidator {
 		boolean ret = valid(input);
 		return ret;
 	}
-	
+
 	private boolean valid(String input) {
 		if ("".equals(input))
 			return true;
@@ -52,8 +65,7 @@ public class JsonValidator {
 	}
 
 	private boolean value() {
-		return literal("true") || literal("false") || literal("null")
-				|| string() || number() || object() || array();
+		return literal("true") || literal("false") || literal("null") || string() || number() || object() || array();
 	}
 
 	private boolean literal(String text) {
@@ -84,8 +96,7 @@ public class JsonValidator {
 		return aggregate('{', '}', true);
 	}
 
-	private boolean aggregate(char entryCharacter, char exitCharacter,
-			boolean prefix) {
+	private boolean aggregate(char entryCharacter, char exitCharacter, boolean prefix) {
 		if (c != entryCharacter)
 			return false;
 		nextCharacter();
@@ -188,13 +199,11 @@ public class JsonValidator {
 	private boolean escape() {
 		int start = col - 1;
 		if (" \\\"/bfnrtu".indexOf(c) < 0) {
-			return error(
-					"escape sequence  \\\",\\\\,\\/,\\b,\\f,\\n,\\r,\\t  or  \\uxxxx ",
-					start);
+			return error("escape sequence  \\\",\\\\,\\/,\\b,\\f,\\n,\\r,\\t  or  \\uxxxx ", start);
 		}
 		if (c == 'u') {
-			if (!ishex(nextCharacter()) || !ishex(nextCharacter())
-					|| !ishex(nextCharacter()) || !ishex(nextCharacter())) {
+			if (!ishex(nextCharacter()) || !ishex(nextCharacter()) || !ishex(nextCharacter())
+					|| !ishex(nextCharacter())) {
 				return error("unicode escape sequence  \\uxxxx ", start);
 			}
 		}
@@ -218,27 +227,20 @@ public class JsonValidator {
 	}
 
 	private boolean error(String type, int col) {
-		System.out.printf("type: %s, col: %s%s", type, col, System
-				.getProperty("line.separator"));
+		System.out.printf("type: %s, col: %s%s", type, col, System.getProperty("line.separator"));
 		return false;
 	}
 
 	public static void main(String[] args) {
 		String jsonStr = "{\"website\":\"oschina.net\",\"aaa\":\"fgds\"}";
-		/*
-		 * String jsonStr = "{" + " \"ccobjtypeid\": \"1001\"," +
-		 * " \"fromuser\": \"李四\"," + " \"touser\": \"张三\"," +
-		 * "  \"desc\": \"描述\"," + "  \"subject\": \"主题\"," +
-		 * "  \"attach\": \"3245,3456,4345,4553\"," + " \"data\": {" +
-		 * "    \"desc\": \"测试对象\"," + "     \"dataid\": \"22\"," +
-		 * "    \"billno\": \"TEST0001\"," + "    \"datarelation\":[" + " {" +
-		 * "  \"dataname\": \"关联对象1\"," + "  \"data\": [" + "      {" +
-		 * "    \"dataid\": \"22\"," + "          \"datalineid\": \"1\"," +
-		 * "          \"content1\": \"test1\"," +
-		 * "          \"content2\": \"test2\"" + "      }" + "  ]" + " }" + " ]"
-		 * + "  }" + " }";
-		 */
-		System.out.println(jsonStr + ":"
-				+ new JsonValidator().validate(jsonStr));
+		String jsonStr1 = "{" + " \"ccobjtypeid\": \"1001\"," + " \"fromuser\": \"李四\"," + " \"touser\": \"张三\","
+				+ " \"desc\": \"描述\"," + " \"subject\": \"主题\"," + " \"attach\": \"3245,3456,4345,4553\","
+				+ " \"data\": {" + " \"desc\": \"测试对象\"," + "\"dataid\": \"22\"," + " \"billno\": \"TEST0001\","
+				+ "\"datarelation\":[" + " {" + " \"dataname\": \"关联对象1\"," + " \"data\": [" + " {"
+				+ " \"dataid\": \"22\"," + " \"datalineid\": \"1\"," + " \"content1\": \"test1\","
+				+ "\"content2\": \"test2\"" + "}" + "]" + "}" + "]" + "}" + "}";
+
+		System.out.println(jsonStr + ":" + JsonValidator.getInstance().validate(jsonStr));
+		System.out.println(jsonStr1 + ":" + JsonValidator.getInstance().validate(jsonStr1));
 	}
 }

@@ -10,7 +10,7 @@ import java.lang.reflect.Method;
  * @Author: wanlei
  * @Date: 2018年1月8日 下午4:36:50
  */
-public final class Base64 {
+public final class Base64Util {
 
 	static private final int BASELENGTH = 128;
 	static private final int LOOKUPLENGTH = 64;

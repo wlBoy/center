@@ -65,7 +65,11 @@ public class EmailProxy {
 	 * @throws MessagingException
 	 * @throws IOException
 	 */
-	public static void sendTextMail(Email mailInfo) throws MessagingException, IOException {
+	public void sendTextMail(Email mailInfo) throws MessagingException, IOException {
+		if (!Boolean.valueOf(SystemCfg.getInstance().loadCfg().getProperty(CfgConstant.ENABLE_MAIL))) {
+			logger.error("请启用发送邮件功能!");
+			return;
+		}
 		// 判断是否需要身份认证
 		MyAuthenticator authenticator = null;
 		Properties prop = getProperties();
@@ -106,7 +110,7 @@ public class EmailProxy {
 	 * 
 	 * @throws IOException
 	 */
-	private static Properties getProperties() throws IOException {
+	private Properties getProperties() throws IOException {
 		Properties prop = SystemCfg.getInstance().loadCfg();
 		// 设置snmp的主机，端口号和是否需要授权验证(这一步一定要有)
 		prop.put(MAIL_SMTP_HOST, prop.getProperty(CfgConstant.MAIL_HOST));
@@ -122,7 +126,7 @@ public class EmailProxy {
 	 * @return
 	 * @throws AddressException
 	 */
-	private static InternetAddress[] getAddress(String[] toAddress) throws AddressException {
+	private InternetAddress[] getAddress(String[] toAddress) throws AddressException {
 		InternetAddress[] address = new InternetAddress[toAddress.length];
 		for (int i = 0; i < toAddress.length; i++) {
 			address[i] = new InternetAddress(toAddress[i]);
@@ -136,7 +140,7 @@ public class EmailProxy {
 	 * @param content
 	 * @return 邮件内容
 	 */
-	private static String getMailContent(String content) {
+	private String getMailContent(String content) {
 		StringBuffer contentBuffer = new StringBuffer("<html>");
 		contentBuffer.append("<head>");
 		contentBuffer.append("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=gb2312\">");
@@ -160,9 +164,7 @@ public class EmailProxy {
 		mailInfo.setContent("这是邮箱内容");
 		// 这个类主要来发送邮件
 		try {
-			if(Boolean.valueOf(SystemCfg.getInstance().loadCfg().getProperty(CfgConstant.ENABLE_MAIL))) {
-				sendTextMail(mailInfo);
-			}
+			EmailProxy.getInstance().sendTextMail(mailInfo);
 		} catch (MessagingException e) {
 			logger.error("邮件发送失败，原因为:" + e.getMessage());
 		} catch (IOException e) {
