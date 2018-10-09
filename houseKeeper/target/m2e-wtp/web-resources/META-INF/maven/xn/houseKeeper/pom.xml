@@ -222,6 +222,12 @@
 			<artifactId>snmp4j</artifactId>
 			<version>${snmp.version}</version>
 		</dependency>
+		<!-- commons-beanutils -->
+		<dependency>
+			<groupId>commons-beanutils</groupId>
+			<artifactId>commons-beanutils</artifactId>
+			<version>1.9.3</version>
+		</dependency>
 	</dependencies>
 	<build>
 		<finalName>houseKeeper</finalName>
