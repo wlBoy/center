@@ -27,6 +27,10 @@ public class SnmpTask {
 	 * @throws IOException
 	 */
 	public void moinitor() throws IOException {
+		if (!Boolean.valueOf(SystemCfg.getInstance().loadCfg().getProperty(CfgConstant.ENABLE_MONITOR))) {
+			System.out.println("未启用snmp监控!");
+			return;
+		}
 		// 读取配置文件加载监听策略项，将list转换为数组
 		List<EnumStatusItem> items = getMonitorItems();
 		EnumStatusItem[] itemArray = items.toArray(new EnumStatusItem[items.size()]);

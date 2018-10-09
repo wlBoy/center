@@ -20,6 +20,10 @@ public class CfgConstant {
 
 	/*----------------------------------邮件服务器的key---------------------------------*/
 	/**
+	 * 是否启用邮箱发送
+	 */
+	public final static String ENABLE_MAIL = "enableMail";
+	/**
 	 * 是否邮箱授权验证
 	 */
 	public final static String MAIL_VALIDATE = "mailValidate";
@@ -85,6 +89,10 @@ public class CfgConstant {
 	 */
 	public final static String PASSWORD_CANT_CHANGE = "passwdCantChange";
 	/*----------------------------------snmp的key---------------------------------*/
+	/**
+	 * 是否启用snmp监控
+	 */
+	public final static String ENABLE_MONITOR = "enableMonitor";
 	/**
 	 * 是否监控处理器
 	 */

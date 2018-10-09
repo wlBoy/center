@@ -160,7 +160,9 @@ public class EmailProxy {
 		mailInfo.setContent("这是邮箱内容");
 		// 这个类主要来发送邮件
 		try {
-			sendTextMail(mailInfo);
+			if(Boolean.valueOf(SystemCfg.getInstance().loadCfg().getProperty(CfgConstant.ENABLE_MAIL))) {
+				sendTextMail(mailInfo);
+			}
 		} catch (MessagingException e) {
 			logger.error("邮件发送失败，原因为:" + e.getMessage());
 		} catch (IOException e) {
