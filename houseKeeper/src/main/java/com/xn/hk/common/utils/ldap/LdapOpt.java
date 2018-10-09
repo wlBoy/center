@@ -34,9 +34,9 @@ import com.xn.hk.common.utils.cfg.SystemCfg;
 public class LdapOpt {
 	private static final Logger logger = LoggerFactory.getLogger(LdapOpt.class);
 	// 加密通道端口
-	public static final String SSL_LDAP_URL_Port = "636";
+	private static final String SSL_LDAP_URL_PORT = "636";
 	// 非加密通道端口
-	public static final String WITHOUT_SSL_LDAP_URL_Port = "389";
+	private static final String WITHOUT_SSL_LDAP_URL_PORT = "389";
 	// 根节点
 	public static String BASE_DN = SystemCfg.getInstance().loadCfg().getProperty(CfgConstant.BASE_DN);
 	// 不需要密码
@@ -69,11 +69,11 @@ public class LdapOpt {
 		String LDAP_URL = SystemCfg.getInstance().loadCfg().getProperty(CfgConstant.LDAP_URL);
 		String port = null;
 		if (Boolean.valueOf(SystemCfg.getInstance().loadCfg().getProperty(CfgConstant.USE_SSL))) {
-			port = SSL_LDAP_URL_Port;
+			port = SSL_LDAP_URL_PORT;
 		} else {
-			port = WITHOUT_SSL_LDAP_URL_Port;
+			port = WITHOUT_SSL_LDAP_URL_PORT;
 		}
-		return getConnectionFromFool(KEYSTORE, SSL_PASSWORD, SECURITY_PRINCIPAL, AD_PASSWORD, LDAP_URL, port);
+		return getConnection(KEYSTORE, SSL_PASSWORD, SECURITY_PRINCIPAL, AD_PASSWORD, LDAP_URL, port);
 	}
 
 	/**
@@ -87,10 +87,10 @@ public class LdapOpt {
 	 * @return
 	 * @throws NamingException
 	 */
-	public static LdapContext getConnectionFromFool(String keyStore, String sslPassWord, String userName,
-			String adPassWord, String ldapUrl, String port) throws NamingException {
+	public static LdapContext getConnection(String keyStore, String sslPassWord, String userName, String adPassWord,
+			String ldapUrl, String port) throws NamingException {
 		Properties env = new Properties();
-		if (SSL_LDAP_URL_Port.equals(port)) {
+		if (SSL_LDAP_URL_PORT.equals(port)) {
 			env.put(Context.SECURITY_PROTOCOL, "ssl");
 			env.put("java.naming.ldap.factory.socket",
 					"kl.pms.mods.syn.push.resourcePush.act.domain.LTSSSLSocketFactory");
@@ -118,8 +118,8 @@ public class LdapOpt {
 	 * @return
 	 * @throws NamingException
 	 */
-	public static LdapContext getConnectionFromFool(String keyStore, String sslPassWord, String userName,
-			String adPassWord, String ldapUrl) throws NamingException {
+	public static LdapContext getConnection(String keyStore, String sslPassWord, String userName, String adPassWord,
+			String ldapUrl) throws NamingException {
 		System.setProperty("javax.net.ssl.trustStore", keyStore);
 		System.setProperty("javax.net.ssl.trustStorePassword", sslPassWord);
 		Properties env = new Properties();

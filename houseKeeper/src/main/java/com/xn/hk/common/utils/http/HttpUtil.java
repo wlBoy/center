@@ -40,6 +40,7 @@ import com.alibaba.fastjson.JSONObject;
  */
 public class HttpUtil {
 	private static Logger logger = LoggerFactory.getLogger(HttpUtil.class);
+	private static final String UTF8 = "UTF-8";
 
 	/**
 	 * get请求，参数拼接在地址上
@@ -61,7 +62,7 @@ public class HttpUtil {
 			}
 			return result;
 		} catch (IOException e) {
-			e.printStackTrace();
+			logger.error(e.getMessage());
 		} finally {
 			try {
 				httpClient.close();
@@ -69,7 +70,7 @@ public class HttpUtil {
 					response.close();
 				}
 			} catch (IOException e) {
-				e.printStackTrace();
+				logger.error(e.getMessage());
 			}
 		}
 		return null;
@@ -97,17 +98,17 @@ public class HttpUtil {
 			builder.setParameters(pairs);
 			HttpGet get = new HttpGet(builder.build());
 			response = httpClient.execute(get);
-			if (response != null && response.getStatusLine().getStatusCode() == 200) {
+			if (response != null && response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
 				HttpEntity entity = response.getEntity();
 				result = entityToString(entity);
 			}
 			return result;
 		} catch (URISyntaxException e) {
-			e.printStackTrace();
+			logger.error(e.getMessage());
 		} catch (ClientProtocolException e) {
-			e.printStackTrace();
+			logger.error(e.getMessage());
 		} catch (IOException e) {
-			e.printStackTrace();
+			logger.error(e.getMessage());
 		} finally {
 			try {
 				httpClient.close();
@@ -115,7 +116,7 @@ public class HttpUtil {
 					response.close();
 				}
 			} catch (IOException e) {
-				e.printStackTrace();
+				logger.error(e.getMessage());
 			}
 		}
 
@@ -141,19 +142,19 @@ public class HttpUtil {
 		}
 		CloseableHttpResponse response = null;
 		try {
-			post.setEntity(new UrlEncodedFormEntity(pairs, "UTF-8"));
+			post.setEntity(new UrlEncodedFormEntity(pairs, UTF8));
 			response = httpClient.execute(post);
-			if (response != null && response.getStatusLine().getStatusCode() == 200) {
+			if (response != null && response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
 				HttpEntity entity = response.getEntity();
 				result = entityToString(entity);
 			}
 			return result;
 		} catch (UnsupportedEncodingException e) {
-			e.printStackTrace();
+			logger.error(e.getMessage());
 		} catch (ClientProtocolException e) {
-			e.printStackTrace();
+			logger.error(e.getMessage());
 		} catch (IOException e) {
-			e.printStackTrace();
+			logger.error(e.getMessage());
 		} finally {
 			try {
 				httpClient.close();
@@ -161,7 +162,7 @@ public class HttpUtil {
 					response.close();
 				}
 			} catch (IOException e) {
-				e.printStackTrace();
+				logger.error(e.getMessage());
 			}
 
 		}
@@ -183,19 +184,19 @@ public class HttpUtil {
 		HttpPost post = new HttpPost(url);
 		CloseableHttpResponse response = null;
 		try {
-			post.setEntity(new ByteArrayEntity(jsonString.getBytes("UTF-8")));
+			post.setEntity(new ByteArrayEntity(jsonString.getBytes(UTF8)));
 			response = httpClient.execute(post);
-			if (response != null && response.getStatusLine().getStatusCode() == 200) {
+			if (response != null && response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
 				HttpEntity entity = response.getEntity();
 				result = entityToString(entity);
 			}
 			return result;
 		} catch (UnsupportedEncodingException e) {
-			e.printStackTrace();
+			logger.error(e.getMessage());
 		} catch (ClientProtocolException e) {
-			e.printStackTrace();
+			logger.error(e.getMessage());
 		} catch (IOException e) {
-			e.printStackTrace();
+			logger.error(e.getMessage());
 		} finally {
 			try {
 				httpClient.close();
@@ -203,7 +204,7 @@ public class HttpUtil {
 					response.close();
 				}
 			} catch (IOException e) {
-				e.printStackTrace();
+				logger.error(e.getMessage());
 			}
 		}
 		return null;
@@ -214,9 +215,9 @@ public class HttpUtil {
 		if (entity != null) {
 			long lenth = entity.getContentLength();
 			if (lenth != -1 && lenth < 2048) {
-				result = EntityUtils.toString(entity, "UTF-8");
+				result = EntityUtils.toString(entity, UTF8);
 			} else {
-				InputStreamReader reader1 = new InputStreamReader(entity.getContent(), "UTF-8");
+				InputStreamReader reader1 = new InputStreamReader(entity.getContent(), UTF8);
 				CharArrayBuffer buffer = new CharArrayBuffer(2048);
 				char[] tmp = new char[1024];
 				int l;
@@ -230,7 +231,7 @@ public class HttpUtil {
 	}
 
 	/**
-	 * 发送get请求
+	 * 发送get请求,返回JSONObject对象
 	 * 
 	 * @param url
 	 *            路径
@@ -250,7 +251,7 @@ public class HttpUtil {
 				String strResult = EntityUtils.toString(response.getEntity());
 				/** 把json字符串转换成json对象 **/
 				jsonResult = JSONObject.parseObject(strResult);
-				url = URLDecoder.decode(url, "UTF-8");
+				url = URLDecoder.decode(url, UTF8);
 			} else {
 				logger.error("get请求提交失败:" + url);
 			}
@@ -261,12 +262,12 @@ public class HttpUtil {
 	}
 
 	/**
-	 * httpPost
+	 * 发送post请求,返回JSONObject对象
 	 * 
 	 * @param url
 	 *            路径
 	 * @param jsonParam
-	 *            参数
+	 *            json字符串参数
 	 * @return
 	 */
 	public static JSONObject httpPost(String url, JSONObject jsonParam) {
@@ -274,14 +275,14 @@ public class HttpUtil {
 	}
 
 	/**
-	 * post请求
+	 * 发送post请求,返回JSONObject对象或null
 	 * 
 	 * @param url
 	 *            url地址
 	 * @param jsonParam
-	 *            参数
+	 *            json字符串参数
 	 * @param noNeedResponse
-	 *            不需要返回结果
+	 *            不需要返回结果，true则返回null，false返回JSONObject对象
 	 * @return
 	 */
 	public static JSONObject httpPost(String url, JSONObject jsonParam, boolean noNeedResponse) {
@@ -292,15 +293,15 @@ public class HttpUtil {
 		try {
 			if (null != jsonParam) {
 				// 解决中文乱码问题
-				StringEntity entity = new StringEntity(jsonParam.toString(), "utf-8");
-				entity.setContentEncoding("UTF-8");
+				StringEntity entity = new StringEntity(jsonParam.toString(), UTF8);
+				entity.setContentEncoding(UTF8);
 				entity.setContentType("application/json");
 				method.setEntity(entity);
 			}
 			HttpResponse result = client.execute(method);
-			url = URLDecoder.decode(url, "UTF-8");
+			url = URLDecoder.decode(url, UTF8);
 			/** 请求发送成功，并得到响应 **/
-			if (result.getStatusLine().getStatusCode() == 200) {
+			if (result.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
 				String str = "";
 				try {
 					/** 读取服务器返回过来的json字符串数据 **/

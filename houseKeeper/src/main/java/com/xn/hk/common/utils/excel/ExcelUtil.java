@@ -6,11 +6,9 @@ import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
 import org.apache.poi.hssf.usermodel.HSSFFormulaEvaluator;
@@ -28,6 +26,8 @@ import org.apache.poi.xssf.usermodel.XSSFFormulaEvaluator;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+
+import com.xn.hk.common.utils.string.DateFormatUtil;
 
 /**
  * 
@@ -332,7 +332,7 @@ public class ExcelUtil {
 				// 如果是日期类型 进行 转换
 				if (rtn != null) {
 					if (rtn instanceof Date) {
-						value = dateToString((Date) rtn, "yyyy-MM-dd");
+						value = DateFormatUtil.formatDateTime((Date) rtn, "yyyy-MM-dd");
 					} else if (rtn instanceof BigDecimal) {
 						NumberFormat nf = new DecimalFormat("#,##0.00");
 						value = nf.format((BigDecimal) rtn).toString();
@@ -367,21 +367,6 @@ public class ExcelUtil {
 			width = width > 10000 ? 10000 + 300 : width + 300;
 			sheet.setColumnWidth(index, width);
 		}
-	}
-
-	/**
-	 * 把日期时间格式化为指定格式
-	 * 
-	 * @param dt
-	 *            java.util.Date
-	 * @return 格式化后的日期时间字符串
-	 */
-	public static String dateToString(Date date, String pattern) {
-		String newDate = "";
-		Locale locale = Locale.CHINESE;
-		SimpleDateFormat dateStyle = new SimpleDateFormat(pattern, locale);
-		newDate = dateStyle.format(date);
-		return newDate;
 	}
 
 }

@@ -14,10 +14,12 @@ import javax.crypto.spec.SecretKeySpec;
 import org.apache.commons.lang3.StringUtils;
 
 /**
- * des加密工具
  * 
- * @author yzf
- *
+ * @ClassName: DesUtil
+ * @Package: com.xn.hk.common.utils.encryption
+ * @Description: des算法加密工具类
+ * @Author: wanlei
+ * @Date: 2018年10月9日 下午1:49:34
  */
 public class DesUtil {
 	// 定义 加密算法,可用 DES,DESede,Blowfish
