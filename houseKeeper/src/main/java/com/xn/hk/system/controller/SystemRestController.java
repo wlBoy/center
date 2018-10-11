@@ -7,8 +7,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.xn.hk.common.constant.Constant;
 import com.xn.hk.common.constant.Result;
+import com.xn.hk.common.utils.cfg.CfgConstant;
 import com.xn.hk.common.utils.encryption.MD5Util;
 import com.xn.hk.common.utils.string.StringUtil;
 import com.xn.hk.system.model.Module;
@@ -234,7 +234,7 @@ public class SystemRestController {
 			return Result.genNullValueTip(result, "newPwd");
 		}
 		User user = userService.findById(userId);
-		String userPwd = MD5Util.MD5(newPwd + Constant.PASSWORD_KEY);// 新密码加密
+		String userPwd = MD5Util.MD5(newPwd + CfgConstant.USER_PWD_KEY);// 新密码加密
 		if (userPwd.equals(user.getUserPwd())) {
 			logger.info("新密码与旧密码一致!");
 			result.setCode(Result.FAILURE_CODE);

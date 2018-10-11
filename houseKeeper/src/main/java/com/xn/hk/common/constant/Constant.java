@@ -57,14 +57,6 @@ public class Constant {
 	 */
 	public final static String USERID_KEY = "userId";
 	/**
-	 * 用户头像上传的本地硬盘路径
-	 */
-	public final static String USER_FACE_PATH = "D:/houseKeeper/faces";
-	/**
-	 * 登录密码key
-	 */
-	public final static String PASSWORD_KEY = "@#$%^&*()OPG#$%^&*(HG";
-	/**
 	 * 验证码key
 	 */
 	public final static String VERIFY_CODE_KEY = "verifyCodeValue";

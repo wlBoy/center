@@ -21,6 +21,8 @@ import org.springframework.web.servlet.ModelAndView;
 import com.xn.hk.common.constant.Constant;
 import com.xn.hk.common.constant.StatusEnum;
 import com.xn.hk.common.constant.View;
+import com.xn.hk.common.utils.cfg.CfgConstant;
+import com.xn.hk.common.utils.cfg.SystemCfg;
 import com.xn.hk.common.utils.encryption.MD5Util;
 import com.xn.hk.common.utils.page.BasePage;
 import com.xn.hk.common.utils.string.Pinyin4jUtil;
@@ -47,7 +49,6 @@ public class UserController {
 	 * 记录日志
 	 */
 	private static final Logger logger = LoggerFactory.getLogger(UserController.class);
-
 	/**
 	 * 注入service层
 	 */
@@ -111,7 +112,7 @@ public class UserController {
 	public ModelAndView login(User user, HttpSession session, HttpServletResponse response) {
 		String userName = user.getUserName();
 		// 使用MD5加密(用户登录密码+登录密码key)存入数据库中,提高密码的加密程度
-		String userPwd = MD5Util.MD5(user.getUserPwd() + Constant.PASSWORD_KEY);
+		String userPwd = MD5Util.MD5(user.getUserPwd() + CfgConstant.USER_PWD_KEY);
 		// 1.保存cookie实现记住密码功能
 		saveCookie(user, session, response);
 		// 2.取到用户输入的验证码和session中的验证码比较
@@ -199,8 +200,16 @@ public class UserController {
 	@RequestMapping("/getVerifyCode.do")
 	public void getVerifyCode(HttpServletResponse response, HttpSession session) {
 		ByteArrayOutputStream output = new ByteArrayOutputStream();
+		// 获取配置文件中的验证码长度,不设置默认为4
+		String verifyCodeLength = SystemCfg.getInstance().loadCfg().getProperty(CfgConstant.VERIFY_CODE_LENGTH);
+		Integer length = null;
+		if (StringUtil.isEmpty(verifyCodeLength)) {
+			length = 4;
+		} else {
+			length = Integer.parseInt(verifyCodeLength);
+		}
 		// 获取验证码
-		String verifyCodeValue = StringUtil.drawImg(output);
+		String verifyCodeValue = StringUtil.drawImg(output, length.intValue());
 		// 将验证码放入session中,以便登录时校验
 		session.setAttribute(Constant.VERIFY_CODE_KEY, verifyCodeValue);
 		try {
@@ -280,9 +289,8 @@ public class UserController {
 	 */
 	@RequestMapping(value = "/add.do")
 	public ModelAndView addUser(User user, HttpSession session) {
-		// 生成密码,规则:用户名的拼音，再使用MD5加密(用户登录密码+登录密码key)存入数据库中,提高密码的加密程度
-		String userPwd = Pinyin4jUtil.getPinYin(user.getUserName());
-		userPwd = MD5Util.MD5(userPwd + Constant.PASSWORD_KEY);
+		// 使用MD5加密(用户登录密码+登录密码key)存入数据库中,提高密码的加密程度
+		String userPwd = MD5Util.MD5(genUserPwd(user) + CfgConstant.USER_PWD_KEY);
 		user.setUserPwd(userPwd);
 		int result = userService.insert(user);
 		if (result == Constant.ZERO_VALUE) {
@@ -292,6 +300,26 @@ public class UserController {
 			session.setAttribute(Constant.TIP_KEY, StringUtil.genTipMsg("添加用户成功!", Constant.SUCCESS_TIP_KEY));
 		}
 		return View.USER_REDITRCT_ACTION;
+	}
+
+	/**
+	 * 根据配置文件的配置，有默认密码就使用默认密码，没有就使用密码生成规则自动生成密码，规则为:用户名的拼音
+	 * 
+	 * @param user
+	 *            用户实体
+	 * @return 返回用户密码
+	 */
+	private String genUserPwd(User user) {
+		String userPwd = null;
+		// 获取配置文件中的默认密码
+		String defaultUserPwd = SystemCfg.getInstance().loadCfg().getProperty(CfgConstant.DEFAULT_USER_PWD);
+		if (StringUtil.isEmpty(defaultUserPwd)) {
+			// 生成密码,规则为:用户名的拼音
+			userPwd = Pinyin4jUtil.getPinYin(user.getUserName());
+		} else {
+			userPwd = defaultUserPwd;
+		}
+		return userPwd;
 	}
 
 	/**
@@ -348,8 +376,7 @@ public class UserController {
 		User user = userService.findById(userId);
 		if (StringUtil.isEmpty(newpassword)) {
 			// 重置密码
-			// 生成密码,规则:用户名的拼音
-			userPwd = Pinyin4jUtil.getPinYin(user.getUserName());
+			userPwd = genUserPwd(user);
 			session.setAttribute(Constant.TIP_KEY, StringUtil.genTipMsg("重置密码成功!", Constant.SUCCESS_TIP_KEY));
 			mv = View.USER_REDITRCT_ACTION;
 		} else {
@@ -359,7 +386,7 @@ public class UserController {
 			mv = View.USER_REDITRCT_UPDATE_PWD_VIEW;
 		}
 		// 使用MD5加密(用户登录密码+登录密码key)存入数据库中,提高密码的加密程度
-		user.setUserPwd(MD5Util.MD5(userPwd + Constant.PASSWORD_KEY));
+		user.setUserPwd(MD5Util.MD5(userPwd + CfgConstant.USER_PWD_KEY));
 		int result = userService.update(user);
 		if (result == Constant.ZERO_VALUE) {
 			logger.error("用户{}修改密码失败!", user.getUserName());
@@ -388,7 +415,8 @@ public class UserController {
 		String suffix = oldName.substring(oldName.lastIndexOf("."), oldName.length());
 		String newName = StringUtil.genUUIDString() + suffix;
 		// 本地存储路径,此路径在server.xml中已配置图片虚拟路径对应
-		File dir = new File(Constant.USER_FACE_PATH, newName);
+		String userFacePath = SystemCfg.getInstance().loadCfg().getProperty(CfgConstant.USER_PHOTO_PATH);
+		File dir = new File(userFacePath, newName);
 		if (!dir.exists()) {
 			dir.mkdirs();
 		}

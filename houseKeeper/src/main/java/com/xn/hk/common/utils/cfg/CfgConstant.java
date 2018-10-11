@@ -17,8 +17,25 @@ public class CfgConstant {
 	 * 系统配置文件名(实时更新的)
 	 */
 	public final static String REALTIME_SYSTEM_CFG_INI = "realTimeSystemCfg.ini";
+	/*----------------------------------系统配置---------------------------------*/
+	/**
+	 * 用户默认密码
+	 */
+	public final static String DEFAULT_USER_PWD = "defaultUserPwd";
+	/**
+	 * 登录密码加密的key
+	 */
+	public final static String USER_PWD_KEY = SystemCfg.getInstance().loadCfg().getProperty("userPwdKey");
+	/**
+	 * 验证码长度
+	 */
+	public final static String VERIFY_CODE_LENGTH = "verifyCodeLength";
+	/**
+	 * 用户头像存放位置
+	 */
+	public final static String USER_PHOTO_PATH = "userPhotoPath";
 
-	/*----------------------------------邮件服务器的key---------------------------------*/
+	/*----------------------------------邮件服务器---------------------------------*/
 	/**
 	 * 是否启用邮箱发送
 	 */
@@ -47,7 +64,7 @@ public class CfgConstant {
 	 * 邮箱授权密码(如果开启了客户端授权码，则密码填授权码密码，没有开启，则账号登录密码)的key
 	 */
 	public final static String MAIL_PASSWORD = "mailPassword";
-	/*----------------------------------LDAP服务器的key---------------------------------*/
+	/*----------------------------------LDAP服务器---------------------------------*/
 	/**
 	 * 开启用户自动推送
 	 */
@@ -88,7 +105,7 @@ public class CfgConstant {
 	 * 用户不能更改密码
 	 */
 	public final static String PASSWORD_CANT_CHANGE = "passwdCantChange";
-	/*----------------------------------snmp的key---------------------------------*/
+	/*----------------------------------snmp监控--------------------------------*/
 	/**
 	 * 是否启用snmp监控
 	 */
@@ -117,7 +134,7 @@ public class CfgConstant {
 	 * 监听设备IP
 	 */
 	public final static String MONITOR_IP = "monitorIp";
-	/*----------------------------------sms的key---------------------------------*/
+	/*----------------------------------发送sms---------------------------------*/
 	/**
 	 * SDK服务器地址(中国网建SMS短信通，固定的)
 	 */

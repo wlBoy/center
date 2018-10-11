@@ -118,11 +118,13 @@ public final class StringUtil {
 	 * 
 	 * @param output
 	 *            ByteArrayOutputStream
+	 * @param codeLength
+	 *            验证码长度
 	 * @return 验证码字符串
 	 */
-	public static String drawImg(ByteArrayOutputStream output) {
-		// 随机产生4个字符
-		String code = randomString(4);
+	public static String drawImg(ByteArrayOutputStream output,int codeLength) {
+		// 随机产生codeLength个字符
+		String code = randomString(codeLength);
 		// 设置验证码的宽高
 		int width = 100;
 		int height = 48;
