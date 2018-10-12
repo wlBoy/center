@@ -6,7 +6,7 @@ import org.springframework.web.servlet.ModelAndView;
  * 
  * @ClassName: View
  * @Package: com.xn.hk.common.constant
- * @Description: 系统中所有重定向Action
+ * @Description: 系统中所有重定向Action的常量类
  * @Author: wanlei
  * @Date: 2018年8月23日 上午10:32:05
  */

@@ -13,6 +13,8 @@ import java.util.Random;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.xn.hk.common.constant.Constant;
+
 /**
  * 
  * @ClassName: DateFormatUtil
@@ -22,12 +24,15 @@ import org.slf4j.LoggerFactory;
  * @Date: 2018年8月22日 上午9:12:16
  */
 public final class DateFormatUtil {
+	/**
+	 * 记录日志
+	 */
 	private static final Logger logger = LoggerFactory.getLogger(DateFormatUtil.class);
-
+	// 定义日期格式
 	public static final String PATTERN_DATE = "yyyy-MM-dd";
 	public static final String PATTERN_DATE_TIME = "yyyy-MM-dd HH:mm:ss";
-	public static final String PATTERN_yyMMddHHmmssSSS = "yyMMddHHmmssSSS";
-	public static final String PATTERN_yyyyMMdd = "yyyyMMdd";
+	public static final String PATTERN_DATE_SECOND = "yyMMddHHmmssSSS";
+	public static final String PATTERN_SIMPLE_DATE = "yyyyMMdd";
 	private static final String[] DAY_OF_WEEK = new String[] { "SUNDAY", "MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY",
 			"FRIDAY", "SATURDAY" };
 
@@ -59,7 +64,7 @@ public final class DateFormatUtil {
 	 * @return 格式化后的日期时间字符串
 	 */
 	public static String genNo() {
-		SimpleDateFormat sdf = new SimpleDateFormat(PATTERN_yyMMddHHmmssSSS);
+		SimpleDateFormat sdf = new SimpleDateFormat(PATTERN_DATE_SECOND);
 		return (sdf.format(new Date(System.currentTimeMillis())) + Math.abs(new Random().nextInt(64)));
 	}
 
@@ -72,7 +77,7 @@ public final class DateFormatUtil {
 	 */
 	public static String formatDateTime(Date date) {
 		if (date != null) {
-			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CHINESE);
+			SimpleDateFormat sdf = new SimpleDateFormat(PATTERN_DATE_TIME, Locale.CHINESE);
 			return sdf.format(date);
 		}
 		return "";
@@ -125,7 +130,7 @@ public final class DateFormatUtil {
 	 */
 	public static Date parseStrToDate(String dateStr) {
 		try {
-			SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd");
+			SimpleDateFormat sf = new SimpleDateFormat(PATTERN_DATE);
 			return sf.parse(dateStr);
 		} catch (ParseException e) {
 			logger.info(e.getMessage());
@@ -224,7 +229,7 @@ public final class DateFormatUtil {
 	 * @return 具体的天数
 	 */
 	public static int getDays(String dateStr) {
-		if (dateStr == null || dateStr.equals(""))
+		if (StringUtil.isEmpty(dateStr))
 			return 0;
 		Date date = null;
 		date = DateFormatUtil.parseStrToDate(dateStr, DateFormatUtil.PATTERN_DATE_TIME);
@@ -375,7 +380,7 @@ public final class DateFormatUtil {
 	 * @return
 	 */
 	public static int getNumberDay() {
-		SimpleDateFormat sdf = new SimpleDateFormat(PATTERN_yyyyMMdd);
+		SimpleDateFormat sdf = new SimpleDateFormat(PATTERN_SIMPLE_DATE);
 		return Integer.parseInt(sdf.format(new Date()));
 	}
 
@@ -455,7 +460,7 @@ public final class DateFormatUtil {
 		SimpleDateFormat dateStyle = new SimpleDateFormat(DateFormatUtil.PATTERN_DATE_TIME, Locale.CHINESE);
 		String newDate = dateStyle.format(new Date());
 		try {
-			newDate = URLEncoder.encode(newDate, "utf-8");
+			newDate = URLEncoder.encode(newDate, Constant.UTF8);
 		} catch (UnsupportedEncodingException e) {
 			logger.info(e.getMessage());
 		}

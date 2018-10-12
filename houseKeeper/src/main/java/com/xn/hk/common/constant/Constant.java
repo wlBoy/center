@@ -34,6 +34,10 @@ public class Constant {
 	 * 类别value
 	 */
 	public final static String TYPES_KEY = "types";
+	/**
+	 * UTF-8编码
+	 */
+	public final static String UTF8 = "UTF-8";
 
 	/*----------------------------------用户管理---------------------------------*/
 	/**

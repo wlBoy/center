@@ -15,6 +15,8 @@ import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.xn.hk.common.constant.Constant;
+
 /**
  * 
  * @ClassName: SystemCfg
@@ -28,7 +30,6 @@ public class SystemCfg {
 	 * 记录日志
 	 */
 	private static final Logger logger = LoggerFactory.getLogger(SystemCfg.class);
-	private static final String UTF8 = "UTF-8";
 	private static final String INI_FILE_PATH = System.getProperty("user.dir") + File.separator + "src" + File.separator
 			+ "main" + File.separator + "resources" + File.separator + CfgConstant.REALTIME_SYSTEM_CFG_INI;
 	private static SystemCfg instance;
@@ -60,7 +61,7 @@ public class SystemCfg {
 		// 使用流加载配置文件
 		try {
 			in = new InputStreamReader(
-					SystemCfg.class.getClassLoader().getResourceAsStream(CfgConstant.REALTIME_SYSTEM_CFG_INI), UTF8);
+					SystemCfg.class.getClassLoader().getResourceAsStream(CfgConstant.REALTIME_SYSTEM_CFG_INI), Constant.UTF8);
 			prop.load(in);
 			logger.info("读取系统配置文件成功，共{}项配置", prop.size());
 		} catch (UnsupportedEncodingException e) {
@@ -113,7 +114,7 @@ public class SystemCfg {
 				prop.setProperty(key, String.valueOf(cfgMap.get(key)));
 			}
 			// 保存系统配置文件，第二个参数为备注，可不传
-			prop.store(new OutputStreamWriter(out, UTF8), null);
+			prop.store(new OutputStreamWriter(out, Constant.UTF8), null);
 			logger.info("保存系统配置文件成功，共改变了{}项配置", cfgMap.size());
 		} catch (FileNotFoundException e) {
 			logger.error("路径{}下找不到系统配置文件，原因为:{}", INI_FILE_PATH, e.getMessage());

@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.xn.hk.common.constant.Constant;
 import com.xn.hk.common.constant.StatusEnum;
 import com.xn.hk.common.dao.BaseDao;
 import com.xn.hk.common.service.impl.BaseServiceImpl;
@@ -47,7 +48,7 @@ public class ModuleServiceImpl extends BaseServiceImpl<Module> implements Module
 		List<Module> modules = md.pageList(pages);
 		for (Module m : modules) {
 			// 一级模块的parentId等于0，排除一级模块
-			if (m.getParentId() != 0) {
+			if (m.getParentId().intValue() != Constant.ZERO_VALUE) {
 				// 查询其父级模块
 				Module module = md.findById(m.getParentId());
 				if (module != null) {

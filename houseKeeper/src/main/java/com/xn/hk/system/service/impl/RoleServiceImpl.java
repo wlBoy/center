@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.xn.hk.common.constant.Constant;
 import com.xn.hk.common.dao.BaseDao;
 import com.xn.hk.common.service.impl.BaseServiceImpl;
 import com.xn.hk.system.dao.RoleDao;
@@ -45,7 +46,7 @@ public class RoleServiceImpl extends BaseServiceImpl<Role> implements RoleServic
 		rd.insert(role);
 		// 为该角色分配模块
 		for (int i = 0; i < models.size(); i++) {
-			if (models.get(i).getModuleId() != null && models.get(i).getModuleId() != 0) {
+			if (models.get(i).getModuleId() != null && models.get(i).getModuleId().intValue() != Constant.ZERO_VALUE) {
 				// 将不为空的模块id塞入关系表中
 				rd.addModuleForRole(role.getRoleId(), models.get(i).getModuleId());
 			}
@@ -67,7 +68,7 @@ public class RoleServiceImpl extends BaseServiceImpl<Role> implements RoleServic
 		rd.deleteModuleForRole(role.getRoleId());
 		// 为该角色重新分配模块
 		for (int i = 0; i < role.getModules().size(); i++) {
-			if (role.getModules().get(i).getModuleId() != null && role.getModules().get(i).getModuleId() != 0) {
+			if (role.getModules().get(i).getModuleId() != null && role.getModules().get(i).getModuleId().intValue() != Constant.ZERO_VALUE) {
 				// 将不为空的模块id塞入关系表中
 				rd.addModuleForRole(role.getRoleId(), role.getModules().get(i).getModuleId());
 			}

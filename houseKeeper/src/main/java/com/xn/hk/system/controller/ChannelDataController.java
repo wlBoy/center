@@ -85,8 +85,8 @@ public class ChannelDataController {
 	@RequestMapping("/exportAll.do")
 	@ResponseBody
 	public void exportAll(String fileName, HttpServletResponse response) throws Exception {
-		response.setCharacterEncoding("UTF-8");
-		fileName = new String(fileName.getBytes("UTF-8"), "ISO8859-1") + ".xlsx";
+		response.setCharacterEncoding(Constant.UTF8);
+		fileName = new String(fileName.getBytes(Constant.UTF8), "ISO8859-1") + ".xlsx";
 		// 防止下载的文件名中文乱码
 		response.setHeader("Content-Disposition", "attachment;filename=" + fileName);
 		response.setContentType("application/vnd.ms-excel;charset=UTF-8");

@@ -28,6 +28,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.alibaba.fastjson.JSONObject;
+import com.xn.hk.common.constant.Constant;
 
 /**
  * @Title: HttpUtil
@@ -38,7 +39,6 @@ import com.alibaba.fastjson.JSONObject;
  */
 public class HttpUtil {
 	private static Logger logger = LoggerFactory.getLogger(HttpUtil.class);
-	private static final String UTF8 = "UTF-8";
 
 	/**
 	 * 发送get请求，参数拼接在地址上key=value&key=value
@@ -155,7 +155,7 @@ public class HttpUtil {
 		}
 		CloseableHttpResponse response = null;
 		try {
-			post.setEntity(new UrlEncodedFormEntity(pairs, UTF8));
+			post.setEntity(new UrlEncodedFormEntity(pairs, Constant.UTF8));
 			response = httpClient.execute(post);
 			if (response != null && response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
 				HttpEntity entity = response.getEntity();
@@ -211,7 +211,7 @@ public class HttpUtil {
 		HttpPost post = new HttpPost(url);
 		CloseableHttpResponse response = null;
 		try {
-			post.setEntity(new ByteArrayEntity(json.getBytes(UTF8)));
+			post.setEntity(new ByteArrayEntity(json.getBytes(Constant.UTF8)));
 			response = httpClient.execute(post);
 			if (response != null && response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
 				String resultStr = entityToString(response.getEntity());
@@ -254,9 +254,9 @@ public class HttpUtil {
 		if (entity != null) {
 			long lenth = entity.getContentLength();
 			if (lenth != -1 && lenth < 2048) {
-				result = EntityUtils.toString(entity, UTF8);
+				result = EntityUtils.toString(entity, Constant.UTF8);
 			} else {
-				InputStreamReader reader1 = new InputStreamReader(entity.getContent(), UTF8);
+				InputStreamReader reader1 = new InputStreamReader(entity.getContent(), Constant.UTF8);
 				CharArrayBuffer buffer = new CharArrayBuffer(2048);
 				char[] tmp = new char[1024];
 				int l;
