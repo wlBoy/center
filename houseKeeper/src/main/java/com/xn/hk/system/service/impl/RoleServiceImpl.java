@@ -40,7 +40,7 @@ public class RoleServiceImpl extends BaseServiceImpl<Role> implements RoleServic
 	 *            角色实体
 	 * @return 影响条数
 	 */
-	public int add(Role role) {
+	public int addRole(Role role) {
 		List<Module> models = role.getModules();
 		// 添加角色基本信息
 		rd.insert(role);
@@ -61,7 +61,7 @@ public class RoleServiceImpl extends BaseServiceImpl<Role> implements RoleServic
 	 *            角色实体
 	 * @return 影响条数
 	 */
-	public int update(Role role) {
+	public int updateRole(Role role) {
 		// 更新角色基本信息
 		rd.update(role);
 		// 删除该角色拥有的模块权限

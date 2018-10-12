@@ -2055,6 +2055,26 @@ CREATE TABLE `tb_xn_sys_role_module` (
   KEY `isDeleted` (`is_ok`)
 ) ENGINE=InnoDB AUTO_INCREMENT=372 DEFAULT CHARSET=utf8;
 
+/*Table structure for table `tb_xn_sys_admin_log` */
+
+DROP TABLE IF EXISTS `tb_xn_sys_admin_log`;
+
+CREATE TABLE `tb_xn_sys_admin_log` (
+  `log_id` varchar(50) NOT NULL COMMENT '日志ID',
+  `user_id` int(11) NOT NULL COMMENT '用户ID',
+  `user_name` varchar(50) NOT NULL COMMENT '用户姓名',
+  `log_type` int(4) NOT NULL COMMENT '日志类型',
+  `log_ip` varchar(50) NOT NULL COMMENT '日志记录IP',
+  `log_name` varchar(50) NOT NULL COMMENT '操作名称',
+  `log_content` varchar(255) NOT NULL COMMENT '操作内容',
+  `log_result` varchar(50) NOT NULL COMMENT '操作结果',
+  `curday` int(8) NOT NULL COMMENT '当前日期',
+  `log_time` datetime NOT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT '日志时间',
+  `log_timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '日志时间戳',
+  `is_ok` int(1) NOT NULL DEFAULT '0' COMMENT '是否有效',
+  PRIMARY KEY (`log_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 /*Data for the table `tb_xn_sys_role_module` */
 
 insert  into `tb_xn_sys_role_module`(`id`,`role_id`,`module_id`,`is_ok`) values 

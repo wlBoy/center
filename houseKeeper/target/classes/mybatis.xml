@@ -18,6 +18,7 @@
 		<typeAlias type="com.xn.hk.system.model.Role" alias="Role" />
 		<typeAlias type="com.xn.hk.system.model.Module" alias="Module" />
 		<typeAlias type="com.xn.hk.system.model.Log" alias="Log" />
+		<typeAlias type="com.xn.hk.system.model.AdminLog" alias="AdminLog" />
 		<!-- 测试EXCEL导入导出(POI) -->
 		<typeAlias type="com.xn.hk.system.model.ChannelData" alias="ChannelData" />
 		<!-- 分页bean -->

@@ -39,7 +39,7 @@ public class Log implements Serializable {
 	/**
 	 * 创建日期
 	 */
-	private String curday;
+	private Integer curday;
 	/**
 	 * 创建时间
 	 */
@@ -47,7 +47,7 @@ public class Log implements Serializable {
 	/**
 	 * 是否有效：0：未删状态(默认)，1：已删状态
 	 */
-	private String isOk;
+	private Integer isOk;
 
 	public String getLogId() {
 		return logId;
@@ -97,14 +97,6 @@ public class Log implements Serializable {
 		this.requestMethod = requestMethod;
 	}
 
-	public String getCurday() {
-		return curday;
-	}
-
-	public void setCurday(String curday) {
-		this.curday = curday;
-	}
-
 	public String getCreateTime() {
 		return createTime.substring(0, createTime.length() - 2);
 	}
@@ -113,11 +105,19 @@ public class Log implements Serializable {
 		this.createTime = createTime;
 	}
 
-	public String getIsOk() {
+	public Integer getCurday() {
+		return curday;
+	}
+
+	public void setCurday(Integer curday) {
+		this.curday = curday;
+	}
+
+	public Integer getIsOk() {
 		return isOk;
 	}
 
-	public void setIsOk(String isOk) {
+	public void setIsOk(Integer isOk) {
 		this.isOk = isOk;
 	}
 
@@ -127,10 +127,9 @@ public class Log implements Serializable {
 
 	@Override
 	public String toString() {
-		return "Log [logId=" + logId + ", userId=" + userId + ", userName="
-				+ userName + ", requestIp=" + requestIp + ", requestMethod="
-				+ requestMethod + ", curday=" + curday + ", createTime="
-				+ createTime + ", isOk=" + isOk + "]";
+		return "Log [logId=" + logId + ", userId=" + userId + ", userName=" + userName + ", requestIp=" + requestIp
+				+ ", requestMethod=" + requestMethod + ", curday=" + curday + ", createTime=" + createTime + ", isOk="
+				+ isOk + "]";
 	}
 
 }

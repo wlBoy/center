@@ -15,6 +15,8 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.xn.hk.common.constant.Constant;
 import com.xn.hk.common.constant.View;
+import com.xn.hk.common.utils.log.LogHelper;
+import com.xn.hk.common.utils.log.LogType;
 import com.xn.hk.common.utils.page.BasePage;
 import com.xn.hk.common.utils.string.StringUtil;
 import com.xn.hk.system.model.Module;
@@ -87,13 +89,17 @@ public class RoleController {
 	 */
 	@RequestMapping(value = "/add.do")
 	public ModelAndView add(Role role, HttpSession session) {
-		int result = roleService.insert(role);
+		boolean logResult = true;
+		int result = roleService.addRole(role);
 		if (result == Constant.ZERO_VALUE) {
+			logResult = false;
 			logger.error("添加角色{}失败!", role.getRoleName());
 		} else {
 			logger.info("添加角色{}成功!", role.getRoleName());
 			session.setAttribute(Constant.TIP_KEY, StringUtil.genTipMsg("添加角色成功!", Constant.SUCCESS_TIP_KEY));
 		}
+		// 记录日志
+		LogHelper.getInstance().saveLog(session, "添加角色", logResult, LogType.ROLE_LOG.getType(), role);
 		return View.ROLE_REDITRCT_ACTION;
 	}
 
@@ -107,13 +113,17 @@ public class RoleController {
 	 */
 	@RequestMapping(value = "/update.do")
 	public ModelAndView update(Role role, HttpSession session) {
-		int result = roleService.update(role);
+		boolean logResult = true;
+		int result = roleService.updateRole(role);
 		if (result == Constant.ZERO_VALUE) {
+			logResult = false;
 			logger.error("修改角色{}失败!", role.getRoleName());
 		} else {
 			logger.info("修改角色{}成功!", role.getRoleName());
 			session.setAttribute(Constant.TIP_KEY, StringUtil.genTipMsg("修改角色成功!", Constant.SUCCESS_TIP_KEY));
 		}
+		// 记录日志
+		LogHelper.getInstance().saveLog(session, "修改角色", logResult, LogType.ROLE_LOG.getType(), role);
 		return View.ROLE_REDITRCT_ACTION;
 	}
 
@@ -127,13 +137,17 @@ public class RoleController {
 	 */
 	@RequestMapping(value = "/delete.do")
 	public ModelAndView delete(Integer[] roleIds, HttpSession session) {
+		boolean logResult = true;
 		int result = roleService.deleteRole(roleIds);
 		if (result == Constant.ZERO_VALUE) {
+			logResult = false;
 			logger.error("删除失败,该角色ID不存在!");
 		} else {
 			logger.info("删除角色成功!");
 			session.setAttribute(Constant.TIP_KEY, StringUtil.genTipMsg("删除角色成功!", Constant.SUCCESS_TIP_KEY));
 		}
+		// 记录日志
+		LogHelper.getInstance().saveLog(session, "删除角色", logResult, LogType.ROLE_LOG.getType(), roleIds);
 		return View.ROLE_REDITRCT_ACTION;
 	}
 }

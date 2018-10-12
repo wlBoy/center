@@ -13,6 +13,22 @@ import com.xn.hk.system.model.Role;
  */
 public interface RoleService extends BaseService<Role> {
 	/**
+	 * 添加角色(复写父类的方法)
+	 * 
+	 * @param role
+	 *            角色实体
+	 * @return 影响条数
+	 */
+	public int addRole(Role role);
+	/**
+	 * 修改角色 (复写父类的方法)
+	 * 
+	 * @param role
+	 *            角色实体
+	 * @return 影响条数
+	 */
+	public int updateRole(Role role);
+	/**
 	 * 根据角色id数组删除角色
 	 * 
 	 * @param roleIds
