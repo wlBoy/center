@@ -248,4 +248,27 @@ public class SystemRestController {
 		}
 		return result;
 	}
+
+	/**
+	 * 测试方法
+	 * 
+	 * @param userId
+	 * @param userName
+	 * @return
+	 */
+	@RequestMapping(value = "/test.do")
+	public Result test(Integer userId, String userName) {
+		Result result = new Result();
+		// 校验参数非空性
+		if (userId == null) {
+			return Result.genNullValueTip(result, "userId");
+		}
+		if (StringUtil.isEmpty(userName)) {
+			return Result.genNullValueTip(result, "userName");
+		}
+		result.setCode(Result.SUCCESS_CODE);
+		result.setMsg("请求成功!");
+		result.setData(userId + "-" + userName);
+		return result;
+	}
 }

@@ -17,7 +17,7 @@
 	<bean class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter">
 		<property name="messageConverters">
 			<list>
-				<bean class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter" />
+				<ref bean="mappingJacksonHttpMessageConverter" /> <!-- json转换器 -->
 			</list>
 		</property>
 	</bean>
@@ -26,7 +26,9 @@
 		class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">
 		<property name="supportedMediaTypes">
 			<list>
+				<value>text/json;charset=UTF-8</value>
 				<value>text/html;charset=UTF-8</value>
+				<value>application/json;charset=UTF-8</value>
 			</list>
 		</property>
 	</bean>

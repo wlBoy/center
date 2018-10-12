@@ -51,7 +51,7 @@
 		<property name="triggers">
 			<list>
 				<!--触发器列表 -->
-				<ref bean="snmpTrigger" />
+				<!-- <ref bean="snmpTrigger" /> -->
 				<!-- <ref bean="simpleTrigger1" /> -->
 			</list>
 		</property>

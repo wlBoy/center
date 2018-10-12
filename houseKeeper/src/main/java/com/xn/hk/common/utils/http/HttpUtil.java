@@ -4,13 +4,12 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.net.URISyntaxException;
-import java.net.URLDecoder;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
@@ -20,7 +19,6 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.entity.ByteArrayEntity;
-import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
@@ -43,26 +41,43 @@ public class HttpUtil {
 	private static final String UTF8 = "UTF-8";
 
 	/**
-	 * get请求，参数拼接在地址上
+	 * 发送get请求，参数拼接在地址上key=value&key=value
 	 * 
 	 * @param url
 	 *            请求地址加参数
-	 * @return 响应
+	 * @return 响应字符串
 	 */
-	public String get(String url) {
-		String result = null;
+	public static Object httpGet(String url) {
+		return httpGet(url, false);
+	}
+
+	/**
+	 * 发送get请求，参数拼接在地址上key=value&key=value
+	 * 
+	 * @param url
+	 *            请求地址加参数
+	 * @param needResponseJsonObject
+	 *            是否需要响应jsonObject对象，为true则返回jsonObject对象，false返回字符串
+	 * @return 响应jsonObject对象或响应字符串
+	 */
+	public static Object httpGet(String url, boolean needResponseJsonObject) {
+		Object result = null;
 		CloseableHttpClient httpClient = HttpClients.createDefault();
 		HttpGet get = new HttpGet(url);
 		CloseableHttpResponse response = null;
 		try {
 			response = httpClient.execute(get);
-			if (response != null && response.getStatusLine().getStatusCode() == 200) {
-				HttpEntity entity = response.getEntity();
-				result = entityToString(entity);
+			if (response != null && response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
+				String resultStr = entityToString(response.getEntity());
+				if (needResponseJsonObject) {
+					// 把字符串转换成json对象
+					result = JSONObject.parseObject(resultStr);
+				} else {
+					result = resultStr;
+				}
 			}
-			return result;
 		} catch (IOException e) {
-			logger.error(e.getMessage());
+			logger.error("get请求{}失败，失败原因为:", url, e);
 		} finally {
 			try {
 				httpClient.close();
@@ -73,11 +88,11 @@ public class HttpUtil {
 				logger.error(e.getMessage());
 			}
 		}
-		return null;
+		return result;
 	}
 
 	/**
-	 * get请求，参数放在map里
+	 * 发送get请求
 	 * 
 	 * @param url
 	 *            请求地址
@@ -85,7 +100,7 @@ public class HttpUtil {
 	 *            参数map
 	 * @return 响应
 	 */
-	public String getMap(String url, Map<String, String> map) {
+	public static String httpGetMap(String url, Map<String, String> map) {
 		String result = null;
 		CloseableHttpClient httpClient = HttpClients.createDefault();
 		List<NameValuePair> pairs = new ArrayList<NameValuePair>();
@@ -102,13 +117,12 @@ public class HttpUtil {
 				HttpEntity entity = response.getEntity();
 				result = entityToString(entity);
 			}
-			return result;
 		} catch (URISyntaxException e) {
 			logger.error(e.getMessage());
 		} catch (ClientProtocolException e) {
 			logger.error(e.getMessage());
 		} catch (IOException e) {
-			logger.error(e.getMessage());
+			logger.error("get请求{}失败，失败原因为:", url, e);
 		} finally {
 			try {
 				httpClient.close();
@@ -119,20 +133,19 @@ public class HttpUtil {
 				logger.error(e.getMessage());
 			}
 		}
-
-		return null;
+		return result;
 	}
 
 	/**
-	 * 发送post请求，参数用map接收
+	 * 发送post请求
 	 * 
 	 * @param url
 	 *            地址
 	 * @param map
-	 *            参数
-	 * @return 返回值
+	 *            参数map集合
+	 * @return 响应字符串
 	 */
-	public String postMap(String url, Map<String, String> map) {
+	public static String httpPostMap(String url, Map<String, String> map) {
 		String result = null;
 		CloseableHttpClient httpClient = HttpClients.createDefault();
 		HttpPost post = new HttpPost(url);
@@ -148,13 +161,12 @@ public class HttpUtil {
 				HttpEntity entity = response.getEntity();
 				result = entityToString(entity);
 			}
-			return result;
 		} catch (UnsupportedEncodingException e) {
 			logger.error(e.getMessage());
 		} catch (ClientProtocolException e) {
 			logger.error(e.getMessage());
 		} catch (IOException e) {
-			logger.error(e.getMessage());
+			logger.error("post请求{}失败，失败原因为:", url, e);
 		} finally {
 			try {
 				httpClient.close();
@@ -166,37 +178,56 @@ public class HttpUtil {
 			}
 
 		}
-		return null;
+		return result;
 	}
 
 	/**
-	 * post请求，参数为json字符串
+	 * 发送post请求
 	 * 
 	 * @param url
 	 *            请求地址
-	 * @param jsonString
+	 * @param json
 	 *            json字符串
-	 * @return 响应
+	 * @return 响应字符串
 	 */
-	public String postJson(String url, String jsonString) {
-		String result = null;
+	public static Object httpPost(String url, String json) {
+		return httpPost(url, json, false);
+	}
+
+	/**
+	 * 发送post请求
+	 * 
+	 * @param url
+	 *            请求地址
+	 * @param json
+	 *            json字符串
+	 * @param needResponseJsonObject
+	 *            是否需要响应jsonObject对象，为true则返回jsonObject对象，false返回字符串
+	 * @return 响应jsonObject对象或响应字符串
+	 */
+	public static Object httpPost(String url, String json, boolean needResponseJsonObject) {
+		Object result = null;
 		CloseableHttpClient httpClient = HttpClients.createDefault();
 		HttpPost post = new HttpPost(url);
 		CloseableHttpResponse response = null;
 		try {
-			post.setEntity(new ByteArrayEntity(jsonString.getBytes(UTF8)));
+			post.setEntity(new ByteArrayEntity(json.getBytes(UTF8)));
 			response = httpClient.execute(post);
 			if (response != null && response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
-				HttpEntity entity = response.getEntity();
-				result = entityToString(entity);
+				String resultStr = entityToString(response.getEntity());
+				if (needResponseJsonObject) {
+					// 把字符串转换成json对象
+					result = JSONObject.parseObject(resultStr);
+				} else {
+					result = resultStr;
+				}
 			}
-			return result;
 		} catch (UnsupportedEncodingException e) {
 			logger.error(e.getMessage());
 		} catch (ClientProtocolException e) {
 			logger.error(e.getMessage());
 		} catch (IOException e) {
-			logger.error(e.getMessage());
+			logger.error("post请求{}失败，失败原因为:", url, e);
 		} finally {
 			try {
 				httpClient.close();
@@ -207,10 +238,18 @@ public class HttpUtil {
 				logger.error(e.getMessage());
 			}
 		}
-		return null;
+		return result;
 	}
 
-	private String entityToString(HttpEntity entity) throws IOException {
+	/**
+	 * 将实体转换为字符串(重写EntityUtils.toString方法)
+	 * 
+	 * @param entity
+	 *            实体
+	 * @return 字符串
+	 * @throws IOException
+	 */
+	private static String entityToString(HttpEntity entity) throws IOException {
 		String result = null;
 		if (entity != null) {
 			long lenth = entity.getContentLength();
@@ -230,94 +269,35 @@ public class HttpUtil {
 		return result;
 	}
 
-	/**
-	 * 发送get请求,返回JSONObject对象
-	 * 
-	 * @param url
-	 *            路径
-	 * @return
-	 */
-	public static JSONObject httpGet(String url) {
-		// get请求返回结果
-		JSONObject jsonResult = null;
-		try {
-			CloseableHttpClient client = HttpClients.createDefault();
-			// 发送get请求
-			HttpGet request = new HttpGet(url);
-			HttpResponse response = client.execute(request);
-			/** 请求发送成功，并得到响应 **/
-			if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
-				/** 读取服务器返回过来的json字符串数据 **/
-				String strResult = EntityUtils.toString(response.getEntity());
-				/** 把json字符串转换成json对象 **/
-				jsonResult = JSONObject.parseObject(strResult);
-				url = URLDecoder.decode(url, UTF8);
+	public static void main(String[] args) {
+		String getUrl = "http://127.0.0.1:8030/houseKeeper/system/rest/test.do?userId=1&userName=张三";
+		String postUrl = "http://127.0.0.1:8030/houseKeeper/system/rest/test.do";
+		System.out.println("*******测试get请求***********");
+		Object resultObj = httpGet(getUrl, true);
+		if (resultObj != null) {
+			if (resultObj instanceof String) {
+				System.out.println("返回的字符串为:" + resultObj.toString());
 			} else {
-				logger.error("get请求提交失败:" + url);
+				JSONObject jsonObj = (JSONObject) resultObj;
+				System.out.println("返回的字符串为:" + jsonObj.toJSONString());
 			}
-		} catch (IOException e) {
-			logger.error("get请求提交失败:" + url, e);
 		}
-		return jsonResult;
-	}
-
-	/**
-	 * 发送post请求,返回JSONObject对象
-	 * 
-	 * @param url
-	 *            路径
-	 * @param jsonParam
-	 *            json字符串参数
-	 * @return
-	 */
-	public static JSONObject httpPost(String url, JSONObject jsonParam) {
-		return httpPost(url, jsonParam, false);
-	}
-
-	/**
-	 * 发送post请求,返回JSONObject对象或null
-	 * 
-	 * @param url
-	 *            url地址
-	 * @param jsonParam
-	 *            json字符串参数
-	 * @param noNeedResponse
-	 *            不需要返回结果，true则返回null，false返回JSONObject对象
-	 * @return
-	 */
-	public static JSONObject httpPost(String url, JSONObject jsonParam, boolean noNeedResponse) {
-		// post请求返回结果
-		CloseableHttpClient client = HttpClients.createDefault();
-		JSONObject jsonResult = null;
-		HttpPost method = new HttpPost(url);
-		try {
-			if (null != jsonParam) {
-				// 解决中文乱码问题
-				StringEntity entity = new StringEntity(jsonParam.toString(), UTF8);
-				entity.setContentEncoding(UTF8);
-				entity.setContentType("application/json");
-				method.setEntity(entity);
+		Map<String, String> datamap = new HashMap<String, String>();
+		datamap.put("userId", "45");
+		datamap.put("userName", "测试");
+		System.out.println("返回的字符串为:" + httpGetMap(postUrl, datamap));
+		System.out.println("*******测试post请求***********");
+		String json = "{\"userId\":789,\"userName\":\"李柳\"}";
+		Object resultObject = httpPost(postUrl, json, true);
+		if (resultObject != null) {
+			if (resultObject instanceof String) {
+				System.out.println("返回的字符串为:" + resultObject.toString());
+			} else {
+				JSONObject jsonObj = (JSONObject) resultObject;
+				System.out.println("返回的字符串为:" + jsonObj.toJSONString());
 			}
-			HttpResponse result = client.execute(method);
-			url = URLDecoder.decode(url, UTF8);
-			/** 请求发送成功，并得到响应 **/
-			if (result.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
-				String str = "";
-				try {
-					/** 读取服务器返回过来的json字符串数据 **/
-					str = EntityUtils.toString(result.getEntity());
-					if (noNeedResponse) {
-						return null;
-					}
-					/** 把json字符串转换成json对象 **/
-					jsonResult = JSONObject.parseObject(str);
-				} catch (Exception e) {
-					logger.error("post请求提交失败:" + url, e);
-				}
-			}
-		} catch (IOException e) {
-			logger.error("post请求提交失败:" + url, e);
 		}
-		return jsonResult;
+		System.out.println("返回的字符串为:" + httpPostMap(postUrl, datamap));
+
 	}
 }
