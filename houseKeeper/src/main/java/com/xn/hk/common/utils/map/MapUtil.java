@@ -26,23 +26,31 @@ public class MapUtil {
 	 * 
 	 * @param map
 	 *            要转换的map数据集合
-	 * @param beanClass
+	 * @param clazz
 	 *            转换成实体对象的字节码
 	 * @return 实体对象
 	 * @throws Exception
 	 */
-	public static Object map2ObjByReflect(Map<String, Object> map, Class<?> beanClass) throws Exception {
-		if (map == null)
+	public static Object map2ObjByReflect(Map<String, Object> map, Class<?> clazz) throws Exception {
+		if (map == null || map.isEmpty()) {
 			return null;
-		Object obj = beanClass.newInstance();
-		Field[] fields = obj.getClass().getDeclaredFields();
+		}
+		Object obj = clazz.newInstance();
+		// 获取实体中所有的字段
+		Field[] fields = clazz.getDeclaredFields();
 		for (Field field : fields) {
+			// 当字段属性为static或final时，跳过
 			int mod = field.getModifiers();
 			if (Modifier.isStatic(mod) || Modifier.isFinal(mod)) {
 				continue;
 			}
+			// 将日期类型的值转换为字符串(格式为:yyyy-MM-dd HH:mm:ss)存储
+			Object fieldValue = map.get(field.getName());
+			if (fieldValue instanceof Date) {
+				fieldValue = DateFormatUtil.formatDateTime((Date) fieldValue);
+			}
 			field.setAccessible(true);
-			field.set(obj, map.get(field.getName()));
+			field.set(obj, fieldValue);
 		}
 		return obj;
 	}
@@ -62,10 +70,12 @@ public class MapUtil {
 			return null;
 		}
 		Map<String, Object> map = new HashMap<String, Object>();
+		// 获取实体中所有的字段
 		Field[] declaredFields = obj.getClass().getDeclaredFields();
 		for (Field field : declaredFields) {
-			// 将serialVersionUID属性排除在外
-			if ("serialVersionUID".equals(field.getName())) {
+			// 当字段属性为static或final时，跳过
+			int mod = field.getModifiers();
+			if (Modifier.isStatic(mod) || Modifier.isFinal(mod)) {
 				continue;
 			}
 			field.setAccessible(true);
@@ -85,8 +95,9 @@ public class MapUtil {
 	 * @throws Exception
 	 */
 	public static Object map2ObjByBeanUtils(Map<String, Object> map, Class<?> beanClass) throws Exception {
-		if (map == null)
+		if (map == null || map.isEmpty()) {
 			return null;
+		}
 		Object obj = beanClass.newInstance();
 		BeanUtils.populate(obj, map);
 		return obj;
@@ -99,8 +110,8 @@ public class MapUtil {
 		userMap.put("userPwd", "zhangsan");
 		userMap.put("userState", 0);
 		userMap.put("isOk", 0);
-		userMap.put("createTime", DateFormatUtil.formatDateTime(new Date()));
-		userMap.put("updateTime", DateFormatUtil.formatDateTime(new Date()));
+		userMap.put("createTime", new Date());
+		userMap.put("updateTime", new Date());
 		userMap.put("remark", "备注");
 		User user = (User) map2ObjByReflect(userMap, User.class);
 		System.out.println(user.toString());
@@ -115,5 +126,16 @@ public class MapUtil {
 		for (String key : roleMap.keySet()) {
 			System.out.println(key + "=" + roleMap.get(key));
 		}
+		Map<String, Object> userMap1 = new HashMap<String, Object>();
+		userMap1.put("userId", 4);
+		userMap1.put("userName", "李四");
+		userMap1.put("userPwd", "lisi");
+		userMap1.put("userState", 1);
+		userMap1.put("isOk", 1);
+		userMap1.put("createTime", DateFormatUtil.formatDateTime(new Date()));
+		userMap1.put("updateTime", DateFormatUtil.formatDateTime(new Date()));
+		userMap1.put("remark", "李四");
+		User user1 = (User) map2ObjByBeanUtils(userMap1, User.class);
+		System.out.println(user1.toString());
 	}
 }
