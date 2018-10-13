@@ -35,6 +35,10 @@ public class Constant {
 	 */
 	public final static String TYPES_KEY = "types";
 	/**
+	 * 日志级别的key
+	 */
+	public final static String LOG_TYPE_KEY = "logTypes";
+	/**
 	 * UTF-8编码
 	 */
 	public final static String UTF8 = "UTF-8";

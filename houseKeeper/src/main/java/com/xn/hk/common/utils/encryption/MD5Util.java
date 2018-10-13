@@ -2,6 +2,8 @@ package com.xn.hk.common.utils.encryption;
 
 import java.security.MessageDigest;
 
+import com.xn.hk.common.utils.cfg.CfgConstant;
+
 /**
  * 
  * @Title: MD5Util
@@ -46,7 +48,6 @@ public class MD5Util {
 	 * @param args
 	 */
 	public static void main(String args[]) {
-		String s = new String("admin");
-		System.out.println("MD5后：" + MD5(s));
+		System.out.println("MD5加密之后的密码为：" + MD5("admin" + CfgConstant.USER_PWD_KEY));
 	}
 }

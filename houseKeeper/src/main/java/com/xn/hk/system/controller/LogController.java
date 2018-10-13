@@ -87,6 +87,8 @@ public class LogController {
 		// 查询所有的用户
 		List<User> users = userService.findAll();
 		mv.addObject(Constant.USER_KEY, users);
+		// 拿到所有的日志类型
+		mv.addObject(Constant.LOG_TYPE_KEY, LogType.getChoiceList());
 		return mv;
 	}
 }

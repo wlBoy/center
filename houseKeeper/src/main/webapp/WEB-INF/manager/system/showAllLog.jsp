@@ -14,7 +14,7 @@
 	cursor:pointer;
 }
 .contact {
-	width: 1050px;
+	width: 100%;
 	height: 80px;
 	margin:10px auto;
 }
@@ -60,15 +60,15 @@ function check(isChecked) {
 		            </div>
             	</div>
               </div>
-             <div class="col-md-3">
+             <div class="col-md-2">
               	<div class="form-group">
-		            <label class="control-label col-md-5">请求方法</label>
-		            <div class="col-md-7">
+		            <label class="control-label col-md-6">请求方法</label>
+		            <div class="col-md-6">
 		              <input class="form-control" name="requestMethod" value="${pages.bean.requestMethod}" type="text">
 		            </div>
             	</div>
               </div>
-             <div class="col-md-2">
+             <div class="col-md-3">
               	<div class="form-group">
 		            <label class="control-label col-md-4">用户</label>
 		            <div class="col-md-8">

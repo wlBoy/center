@@ -27,12 +27,19 @@
 	</insert>
 	<!-- 分页显示所有日志 -->
 	<select id="pageList" parameterType="BasePage" resultMap="adminLogMap">
-		select * from tb_xn_sys_admin_log l left join tb_xn_sys_user u on l.user_id
+		select * from tb_xn_sys_admin_log l left join tb_xn_sys_user u on
+		l.user_id
 		= u.user_id where l.is_ok =0
 		<if test="bean != null">
 			<if test="bean.logName != null and bean.logName != '' ">
 				and l.log_name like CONCAT(CONCAT('%',
 				#{bean.logName}),'%')
+			</if>
+			<if test="bean.logResult != null and bean.logResult != '' ">
+				and l.log_result = #{bean.logResult}
+			</if>
+			<if test="bean.logType != null and bean.logType != '' ">
+				and l.log_type = #{bean.logType}
 			</if>
 			<if test="bean.userId != null and bean.userId != '' ">
 				and l.user_id = #{bean.userId}
@@ -45,12 +52,19 @@
 	</select>
 	<!-- 分页显示所有日志的记录数 -->
 	<select id="pageCount" parameterType="BasePage" resultType="java.lang.Integer">
-		select count(1) from tb_xn_sys_admin_log l left join tb_xn_sys_user u on l.user_id
+		select count(1) from tb_xn_sys_admin_log l left join tb_xn_sys_user u
+		on l.user_id
 		= u.user_id where l.is_ok =0
 		<if test="bean != null">
 			<if test="bean.logName != null and bean.logName != '' ">
 				and l.log_name like CONCAT(CONCAT('%',
 				#{bean.logName}),'%')
+			</if>
+			<if test="bean.logResult != null and bean.logResult != '' ">
+				and l.log_result = #{bean.logResult}
+			</if>
+			<if test="bean.logType != null and bean.logType != '' ">
+				and l.log_type = #{bean.logType}
 			</if>
 			<if test="bean.userId != null and bean.userId != '' ">
 				and l.user_id = #{bean.userId}
@@ -62,7 +76,8 @@
 	</select>
 	<!-- 分页显示所有日志的记录数 -->
 	<select id="findAll" resultMap="adminLogMap">
-		select * from tb_xn_sys_admin_log l left join tb_xn_sys_user u on l.user_id
+		select * from tb_xn_sys_admin_log
+		l left join tb_xn_sys_user u on l.user_id
 		= u.user_id where l.is_ok =0
 	</select>
 </mapper>

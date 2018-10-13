@@ -1,6 +1,8 @@
 package com.xn.hk.common.utils.log;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -52,6 +54,19 @@ public enum LogType {
 			logTypeMaps.put(item.getType(), item.getDesc());
 		}
 		return logTypeMaps;
+	}
+
+	/**
+	 * 拿到所有的日志类型枚举List
+	 * 
+	 * @return 所有的日志类型枚举List
+	 */
+	public static List<LogType> getChoiceList() {
+		List<LogType> logTypeList = new ArrayList<LogType>();
+		for (LogType item : LogType.values()) {
+			logTypeList.add(item);
+		}
+		return logTypeList;
 	}
 
 	public Integer getType() {
