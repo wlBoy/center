@@ -17,13 +17,12 @@
 		<result property="isOk" column="is_ok" />
 	</resultMap>
 	<!-- 定义数据库基本列,只适用代替单表的* -->
-	<sql id="Base_Column_List">log_id,user_id,user_name,log_type,log_ip,log_name,log_content,log_result,curday,log_time,log_timestamp,is_ok
+	<sql id="Base_Column_List">log_id,user_id,user_name,log_type,log_ip,log_name,log_content,log_result,log_result_desc,curday,log_time,log_timestamp,is_ok
 	</sql>
 	<!-- 添加日志 -->
 	<insert id="insert" parameterType="AdminLog">
 		INSERT INTO
 		tb_xn_sys_admin_log
-		(log_id,user_id,user_name,log_type,log_ip,log_name,log_content,log_result,curday,log_time,is_ok)
-		VALUES(#{logId},#{userId},#{userName},#{logType},#{logIp},#{logName},#{logResult},#{curday},#{logTime},#{isOk})
+		VALUES(#{logId},#{userId},#{userName},#{logType},#{logIp},#{logName},#{logContent},#{logResult},#{logResultDesc},#{curday},#{logTime},#{logTimeStamp},#{isOk})
 	</insert>
 </mapper>

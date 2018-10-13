@@ -13,6 +13,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.xn.hk.common.constant.Constant;
 import com.xn.hk.common.constant.View;
+import com.xn.hk.common.utils.log.LogType;
 import com.xn.hk.common.utils.string.StringUtil;
 import com.xn.hk.exam.model.QuestionType;
 import com.xn.hk.exam.service.QuestionTypeService;
@@ -62,7 +63,7 @@ public class QuestionTypeController {
 	 */
 	@RequestMapping(value = "/add.do")
 	public ModelAndView add(QuestionType type, HttpSession session) {
-		int result = questionTypeService.insert(type);
+		int result = questionTypeService.insert(session, "添加题型", LogType.QUESTION_TYPE_LOG.getType(), type);
 		if (result == Constant.ZERO_VALUE) {
 			logger.error("添加题型{}失败!", type.getTypeName());
 		} else {
@@ -82,7 +83,7 @@ public class QuestionTypeController {
 	 */
 	@RequestMapping(value = "/update.do")
 	public ModelAndView update(QuestionType type, HttpSession session) {
-		int result = questionTypeService.update(type);
+		int result = questionTypeService.update(session, "修改题型", LogType.QUESTION_TYPE_LOG.getType(), type);
 		if (result == Constant.ZERO_VALUE) {
 			logger.error("修改题型{}失败!", type.getTypeName());
 		} else {
@@ -102,7 +103,7 @@ public class QuestionTypeController {
 	 */
 	@RequestMapping(value = "/delete.do")
 	public ModelAndView delete(Integer[] typeIds, HttpSession session) {
-		int result = questionTypeService.batchDelete(typeIds);
+		int result = questionTypeService.batchDelete(session, "删除题型", LogType.QUESTION_TYPE_LOG.getType(), typeIds);
 		if (result == Constant.ZERO_VALUE) {
 			logger.error("删除失败,该题型ID不存在!");
 		} else {

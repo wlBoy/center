@@ -15,6 +15,7 @@ import com.xn.hk.account.model.AccountType;
 import com.xn.hk.account.service.AccountTypeService;
 import com.xn.hk.common.constant.Constant;
 import com.xn.hk.common.constant.View;
+import com.xn.hk.common.utils.log.LogType;
 import com.xn.hk.common.utils.page.BasePage;
 import com.xn.hk.common.utils.string.StringUtil;
 import com.xn.hk.system.model.User;
@@ -78,7 +79,7 @@ public class AccountTypeController {
 		// 从session中拿出当前用户信息,将它塞入对象中去
 		User user = (User) session.getAttribute(Constant.SESSION_USER_KEY);
 		type.setUserId(user.getUserId());
-		int result = accountTypeService.insert(type);
+		int result = accountTypeService.insert(session, "添加账务类别", LogType.ACCOUNT_TYPE_LOG.getType(), type);
 		if (result == Constant.ZERO_VALUE) {
 			logger.error("添加个人账务类别{}失败!", type.getTypeName());
 		} else {
@@ -98,13 +99,14 @@ public class AccountTypeController {
 	 */
 	@RequestMapping(value = "/update.do")
 	public ModelAndView updateType(AccountType type, HttpSession session) {
-		int result = accountTypeService.update(type);
+		int result = accountTypeService.update(session, "修改账务类别", LogType.ACCOUNT_TYPE_LOG.getType(), type);
 		if (result == Constant.ZERO_VALUE) {
 			logger.error("修改个人账务类别{}失败!", type.getTypeName());
 		} else {
 			logger.info("修改个人账务类别{}成功!", type.getTypeName());
 			session.setAttribute(Constant.TIP_KEY, StringUtil.genTipMsg("修改个人账务类别成功!", Constant.SUCCESS_TIP_KEY));
 		}
+		// 记录日志
 		return View.ACCOUNT_TYPE_REDITRCT_ACTION;
 	}
 
@@ -118,7 +120,7 @@ public class AccountTypeController {
 	 */
 	@RequestMapping(value = "/delete.do")
 	public ModelAndView deleteType(Integer[] typeIds, HttpSession session) {
-		int result = accountTypeService.batchDelete(typeIds);
+		int result = accountTypeService.batchDelete(session, "删除账务类别", LogType.ACCOUNT_TYPE_LOG.getType(), typeIds);
 		if (result == Constant.ZERO_VALUE) {
 			logger.error("删除失败,该数组不存在!");
 		} else {

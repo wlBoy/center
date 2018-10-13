@@ -19,12 +19,12 @@ import com.xn.hk.exam.service.QuestionTypeService;
 @Service
 public class QuestionTypeServiceImpl extends BaseServiceImpl<QuestionType> implements QuestionTypeService {
 	@Autowired
-	private QuestionTypeDao qtd;
+	private QuestionTypeDao questionTypeDao;
 	/**
 	 * 指定特定的dao
 	 */
 	public BaseDao<QuestionType> getDao() {
-		return qtd;
+		return questionTypeDao;
 	}
 
 }

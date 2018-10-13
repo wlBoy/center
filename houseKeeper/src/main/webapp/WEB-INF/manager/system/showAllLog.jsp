@@ -38,33 +38,6 @@
 }
 </style>
 <script type="text/javascript">
-/*删除多条记录*/
-function doDeleteMore() {
-swal({
-	title: "删除日志", 
-	text: "你确定删除这些记录?", 
-	type: "warning",
-	showCancelButton: true,
-	closeOnConfirm: false,
-	confirmButtonText: "确定",
-	confirmButtonColor: "#ec6c62"
-	}, function() {
-		var param = "";
-		var isCkecked = false;
-		$(".box").each(function(i, o) {
-			if (o.checked) {
-				isCkecked = true;
-				param += "logIds=" + o.value + "&";
-			}
-
-		});
-		if (isCkecked) {
-			location = "${ctx}/system/log/delete.do?" + param;
-		} else {
-			swal("OMG!", "请选择你要删除的记录！", "error");
-		}
-	});
-}
 /*复选框联动*/
 function check(isChecked) {
 	$('.box').each(function(i, o) {
@@ -135,8 +108,6 @@ function check(isChecked) {
 	<!-- 主题内容区 -->
 	<div class="con">
 		<div class="bs-example4" data-example-id="contextual-table">
-			<button type="button" id="delete" class="btn btn_5 btn-lg btn-Danger"
-				onclick="doDeleteMore();">批删</button>
 			<span class="title">所有日志列表</span>
 			<table class="table">
 				<thead>

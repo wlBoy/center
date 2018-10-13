@@ -32,15 +32,15 @@ public class AccountServiceImpl extends BaseServiceImpl<Account> implements Acco
 	 */
 	private static final Logger logger = LoggerFactory.getLogger(AccountServiceImpl.class);
 	@Autowired
-	private AccountDao ad;
+	private AccountDao accountDao;
 	@Autowired
-	private MoneyDao md;
+	private MoneyDao moneyDao;
 
 	/**
 	 * 实现父类的方法，指定所用的dao
 	 */
 	public BaseDao<Account> getDao() {
-		return ad;
+		return accountDao;
 	}
 
 	/**
@@ -51,8 +51,8 @@ public class AccountServiceImpl extends BaseServiceImpl<Account> implements Acco
 	 * @return 个人账务标题列表
 	 */
 	public List<Account> pagePersonalList(BasePage<Account> pages) {
-		pages.setCount(ad.pagePersonalCount(pages));
-		return ad.pagePersonalList(pages);
+		pages.setCount(accountDao.pagePersonalCount(pages));
+		return accountDao.pagePersonalList(pages);
 	}
 
 	/**
@@ -65,7 +65,7 @@ public class AccountServiceImpl extends BaseServiceImpl<Account> implements Acco
 	 * @return 个人账务标题
 	 */
 	public Account findByNameAndUserId(String accountTitle, Integer userId) {
-		return ad.findByNameAndUserId(accountTitle, userId);
+		return accountDao.findByNameAndUserId(accountTitle, userId);
 	}
 
 	/**
@@ -77,9 +77,9 @@ public class AccountServiceImpl extends BaseServiceImpl<Account> implements Acco
 	 */
 	public int addAccount(Account account) {
 		// 添加账务信息
-		ad.insert(account);
+		accountDao.insert(account);
 		// 查找刚添加的账务全部信息
-		account = ad.findById(account.getAccountId());
+		account = accountDao.findById(account.getAccountId());
 		// 添加资产表信息
 		int count = addData(account);
 		return count + 1;
@@ -94,9 +94,9 @@ public class AccountServiceImpl extends BaseServiceImpl<Account> implements Acco
 	 */
 	public int updateAccount(Account account) {
 		// 更新之前先根据账务ID查询该账务的老价格和父类型
-		Account oldAccount = ad.findById(account.getAccountId());
+		Account oldAccount = accountDao.findById(account.getAccountId());
 		// 更新账务信息
-		ad.update(account);
+		accountDao.update(account);
 		// 更新资产表信息
 		int count = updateData(oldAccount, account);
 		return count + 1;
@@ -112,9 +112,9 @@ public class AccountServiceImpl extends BaseServiceImpl<Account> implements Acco
 	public int deleteAccount(Integer[] accountIds) {
 		for (int i = 0; i < accountIds.length; i++) {
 			// 查找要删除的账务全部信息
-			Account a = ad.findById(accountIds[i]);
+			Account a = accountDao.findById(accountIds[i]);
 			// 删除账务信息
-			ad.delete(accountIds[i]);
+			accountDao.delete(accountIds[i]);
 			// 更新资产表数据
 			deleteData(a);
 		}
@@ -133,7 +133,7 @@ public class AccountServiceImpl extends BaseServiceImpl<Account> implements Acco
 		m.setUserId(account.getUserId());
 		m.setCurmonth(account.getCurmonth());
 		m.setCurday(account.getCurday());
-		Money result = md.findByUserIdAndDate(m);
+		Money result = moneyDao.findByUserIdAndDate(m);
 		// 根据用户ID和当前日期查找该条数据是否存在
 		if (result == null) {
 			// 不存在,执行插入操作
@@ -142,7 +142,7 @@ public class AccountServiceImpl extends BaseServiceImpl<Account> implements Acco
 			} else {
 				m.setOutFee(account.getAccountFee());
 			}
-			return md.insert(m);
+			return moneyDao.insert(m);
 		} else {
 			// 存在,执行更新操作
 			logger.info("更新前-->总收入为:{},总支出为:{}", result.getInFee(), result.getOutFee());
@@ -152,7 +152,7 @@ public class AccountServiceImpl extends BaseServiceImpl<Account> implements Acco
 				result.setOutFee(result.getOutFee() + account.getAccountFee());
 			}
 			logger.info("更新后-->总收入为:{},总支出为:{}", result.getInFee(), result.getOutFee());
-			md.update(result);
+			moneyDao.update(result);
 			return 0;
 		}
 	}
@@ -170,7 +170,7 @@ public class AccountServiceImpl extends BaseServiceImpl<Account> implements Acco
 		Money m = new Money();
 		m.setUserId(oldAccount.getUserId());
 		m.setCurday(oldAccount.getCurday());
-		Money result = md.findByUserIdAndDate(m);
+		Money result = moneyDao.findByUserIdAndDate(m);
 		logger.info("旧账务-->总收入为:{},总支出为:{}", result.getInFee(), result.getOutFee());
 		// 先减去之前账务的金额,再填充更新后账务的金额
 		if (Constant.COMEIN_VALUE.equals(oldAccount.getType().getParentType())) {
@@ -179,7 +179,7 @@ public class AccountServiceImpl extends BaseServiceImpl<Account> implements Acco
 			result.setOutFee(result.getOutFee() - oldAccount.getAccountFee() + newAccount.getAccountFee());
 		}
 		logger.info("更新后-->总收入为:{},总支出为:{}", result.getInFee(), result.getOutFee());
-		return md.update(result);
+		return moneyDao.update(result);
 	}
 
 	/**
@@ -193,7 +193,7 @@ public class AccountServiceImpl extends BaseServiceImpl<Account> implements Acco
 		Money m = new Money();
 		m.setUserId(a.getUserId());
 		m.setCurday(a.getCurday());
-		Money result = md.findByUserIdAndDate(m);
+		Money result = moneyDao.findByUserIdAndDate(m);
 		logger.info("更新前-->总收入:{},总支出:{}", result.getInFee(), result.getOutFee());
 		// 减去已删除账务的金额
 		if (Constant.COMEIN_VALUE.equals(a.getType().getParentType())) {
@@ -202,7 +202,7 @@ public class AccountServiceImpl extends BaseServiceImpl<Account> implements Acco
 			result.setOutFee(result.getOutFee() - a.getAccountFee());
 		}
 		logger.info("更新后-->总收入为:{},总支出为:{}", result.getInFee(), result.getOutFee());
-		return md.update(result);
+		return moneyDao.update(result);
 	}
 
 }

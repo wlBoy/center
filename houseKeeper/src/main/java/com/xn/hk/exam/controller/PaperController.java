@@ -13,6 +13,8 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.xn.hk.common.constant.Constant;
 import com.xn.hk.common.constant.View;
+import com.xn.hk.common.utils.log.LogHelper;
+import com.xn.hk.common.utils.log.LogType;
 import com.xn.hk.common.utils.page.BasePage;
 import com.xn.hk.common.utils.string.StringUtil;
 import com.xn.hk.exam.model.Paper;
@@ -21,6 +23,7 @@ import com.xn.hk.exam.model.QuestionType;
 import com.xn.hk.exam.service.PaperService;
 import com.xn.hk.exam.service.QuestionService;
 import com.xn.hk.exam.service.QuestionTypeService;
+import com.xn.hk.system.dao.AdminLogDao;
 import com.xn.hk.system.model.User;
 import com.xn.hk.system.service.UserService;
 
@@ -51,6 +54,8 @@ public class PaperController {
 	private QuestionService questionService;
 	@Autowired
 	private UserService userService;
+	@Autowired
+	private AdminLogDao adminLogDao;
 
 	/**
 	 * 后台实现试卷分页
@@ -90,16 +95,20 @@ public class PaperController {
 	 */
 	@RequestMapping(value = "/add.do")
 	public ModelAndView addQuestion(Paper paper, HttpSession session) {
+		boolean logResult = true;
 		// 从session中取出当前用户
 		User user = (User) session.getAttribute(Constant.SESSION_USER_KEY);
 		paper.setCreatePaperId(user.getUserId());
 		int result = paperService.addPaper(paper);
 		if (result == Constant.ZERO_VALUE) {
+			logResult = false;
 			logger.error("添加试卷{}失败!", paper.getPaperName());
 		} else {
 			logger.info("添加试卷{}成功!", paper.getPaperName());
 			session.setAttribute(Constant.TIP_KEY, StringUtil.genTipMsg("添加试卷成功!", Constant.SUCCESS_TIP_KEY));
 		}
+		// 记录日志
+		LogHelper.getInstance().saveLog(adminLogDao, session, "添加试卷", logResult, LogType.PAPER_LOG.getType(), paper);
 		return View.PAPER_REDITRCT_ACTION;
 	}
 
@@ -113,7 +122,7 @@ public class PaperController {
 	 */
 	@RequestMapping(value = "/update.do")
 	public ModelAndView updateQuestion(Paper paper, HttpSession session) {
-		int result = paperService.update(paper);
+		int result = paperService.update(session, "修改试卷", LogType.PAPER_LOG.getType(), paper);
 		if (result == Constant.ZERO_VALUE) {
 			logger.error("修改试卷{}失败!", paper.getPaperName());
 		} else {
@@ -133,12 +142,20 @@ public class PaperController {
 	 */
 	@RequestMapping(value = "/delete.do")
 	public ModelAndView deleteQuestion(Integer[] paperIds, HttpSession session) {
+		boolean logResult = true;
 		int result = paperService.deletePaper(paperIds);
 		if (result == Constant.ZERO_VALUE) {
+			logResult = false;
 			logger.error("删除失败,该数组不存在!");
 		} else {
 			logger.info("删除试卷成功!");
 			session.setAttribute(Constant.TIP_KEY, StringUtil.genTipMsg("删除试卷成功!", Constant.SUCCESS_TIP_KEY));
+		}
+		for (Integer paperId : paperIds) {
+			Paper paper = paperService.findById(paperId);
+			// 记录日志
+			LogHelper.getInstance().saveLog(adminLogDao, session, "删除试卷", logResult, LogType.PAPER_LOG.getType(),
+					paper);
 		}
 		return View.PAPER_REDITRCT_ACTION;
 	}
@@ -151,13 +168,18 @@ public class PaperController {
 	 * @return ModelAndView
 	 */
 	@RequestMapping(value = "/changeState.do")
-	public ModelAndView changeState(Integer paperId) {
+	public ModelAndView changeState(Integer paperId, HttpSession session) {
+		boolean logResult = true;
 		int result = paperService.changeState(paperId);
 		if (result == Constant.ZERO_VALUE) {
+			logResult = false;
 			logger.error("试卷{}切换状态失败!", paperId);
 		} else {
 			logger.info("试卷{}切换状态成功!", paperId);
 		}
+		Paper paper = paperService.findById(paperId);
+		// 记录日志
+		LogHelper.getInstance().saveLog(adminLogDao, session, "切换状态", logResult, LogType.PAPER_LOG.getType(), paper);
 		return View.PAPER_REDITRCT_ACTION;
 	}
 

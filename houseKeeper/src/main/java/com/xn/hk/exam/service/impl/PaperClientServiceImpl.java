@@ -25,15 +25,15 @@ import com.xn.hk.exam.service.PaperClientService;
 @Service
 public class PaperClientServiceImpl extends BaseServiceImpl<Paper> implements PaperClientService {
 	@Autowired
-	private PaperClientDao pcd;
+	private PaperClientDao paperClientDao;
 	@Autowired
-	private ScoreDao sd;
+	private ScoreDao scoreDao;
 
 	/**
 	 * 指定特定的dao
 	 */
 	public BaseDao<Paper> getDao() {
-		return pcd;
+		return paperClientDao;
 	}
 
 	/**
@@ -50,11 +50,11 @@ public class PaperClientServiceImpl extends BaseServiceImpl<Paper> implements Pa
 	public int addScoreAndSolution(Score score, List<Question> qlist, List<String> userList) {
 		// 将用户填的答案保存到答案表,方便批阅试卷
 		for (int i = 0; i < qlist.size(); i++) {
-			pcd.addUserSolution(score.getPaper().getPaperId(), score.getExamPaperId(), qlist.get(i).getQuestionId(),
+			paperClientDao.addUserSolution(score.getPaper().getPaperId(), score.getExamPaperId(), qlist.get(i).getQuestionId(),
 					userList.get(i));
 		}
 		// 将用户的客观题的分数保存到分数表中
-		sd.insert(score);
+		scoreDao.insert(score);
 		return qlist.size() + 1;
 	}
 
@@ -68,7 +68,7 @@ public class PaperClientServiceImpl extends BaseServiceImpl<Paper> implements Pa
 	 * @return 用户答案数组
 	 */
 	public List<String> findSolutionByPaperIdAndUserId(Integer paperId, Integer userId) {
-		return pcd.findSolutionByPaperIdAndUserId(paperId, userId);
+		return paperClientDao.findSolutionByPaperIdAndUserId(paperId, userId);
 	}
 
 }

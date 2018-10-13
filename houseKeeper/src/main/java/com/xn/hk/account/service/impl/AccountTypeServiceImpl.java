@@ -23,13 +23,13 @@ import com.xn.hk.common.utils.page.BasePage;
 @Service
 public class AccountTypeServiceImpl extends BaseServiceImpl<AccountType> implements AccountTypeService {
 	@Autowired
-	private AccountTypeDao atd;
+	private AccountTypeDao accountTypeDao;
 
 	/**
 	 * 实现父类的方法，指定所用的dao
 	 */
 	public BaseDao<AccountType> getDao() {
-		return atd;
+		return accountTypeDao;
 	}
 
 	/**
@@ -40,8 +40,8 @@ public class AccountTypeServiceImpl extends BaseServiceImpl<AccountType> impleme
 	 * @return 个人账务类别列表
 	 */
 	public List<AccountType> pagePersonalList(BasePage<AccountType> pages) {
-		pages.setCount(atd.pagePersonalCount(pages));
-		return atd.pagePersonalList(pages);
+		pages.setCount(accountTypeDao.pagePersonalCount(pages));
+		return accountTypeDao.pagePersonalList(pages);
 	}
 
 	/**
@@ -54,7 +54,7 @@ public class AccountTypeServiceImpl extends BaseServiceImpl<AccountType> impleme
 	 * @return 个人账务类别列表
 	 */
 	public List<AccountType> findChildType(String parentType, Integer userId) {
-		return atd.findChildType(parentType, userId);
+		return accountTypeDao.findChildType(parentType, userId);
 	}
 
 	/**
@@ -67,7 +67,7 @@ public class AccountTypeServiceImpl extends BaseServiceImpl<AccountType> impleme
 	 * @return 个人账务类别
 	 */
 	public AccountType findByNameAndUserId(String typeName, Integer userId) {
-		return atd.findByNameAndUserId(typeName, userId);
+		return accountTypeDao.findByNameAndUserId(typeName, userId);
 	}
 
 }

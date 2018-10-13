@@ -19,6 +19,7 @@ import com.xn.hk.common.utils.log.LogHelper;
 import com.xn.hk.common.utils.log.LogType;
 import com.xn.hk.common.utils.page.BasePage;
 import com.xn.hk.common.utils.string.StringUtil;
+import com.xn.hk.system.dao.AdminLogDao;
 import com.xn.hk.system.model.Module;
 import com.xn.hk.system.model.Role;
 import com.xn.hk.system.service.ModuleService;
@@ -47,6 +48,8 @@ public class RoleController {
 	private RoleService roleService;
 	@Autowired
 	private ModuleService moduleService;
+	@Autowired
+	private AdminLogDao adminLogDao;
 
 	/**
 	 * 分页显示所有角色(使用分页插件mybatis分页插件pagehelper实现分页)
@@ -99,7 +102,7 @@ public class RoleController {
 			session.setAttribute(Constant.TIP_KEY, StringUtil.genTipMsg("添加角色成功!", Constant.SUCCESS_TIP_KEY));
 		}
 		// 记录日志
-		LogHelper.getInstance().saveLog(session, "添加角色", logResult, LogType.ROLE_LOG.getType(), role);
+		LogHelper.getInstance().saveLog(adminLogDao, session, "添加角色", logResult, LogType.ROLE_LOG.getType(), role);
 		return View.ROLE_REDITRCT_ACTION;
 	}
 
@@ -123,7 +126,7 @@ public class RoleController {
 			session.setAttribute(Constant.TIP_KEY, StringUtil.genTipMsg("修改角色成功!", Constant.SUCCESS_TIP_KEY));
 		}
 		// 记录日志
-		LogHelper.getInstance().saveLog(session, "修改角色", logResult, LogType.ROLE_LOG.getType(), role);
+		LogHelper.getInstance().saveLog(adminLogDao, session, "修改角色", logResult, LogType.ROLE_LOG.getType(), role);
 		return View.ROLE_REDITRCT_ACTION;
 	}
 
@@ -146,8 +149,11 @@ public class RoleController {
 			logger.info("删除角色成功!");
 			session.setAttribute(Constant.TIP_KEY, StringUtil.genTipMsg("删除角色成功!", Constant.SUCCESS_TIP_KEY));
 		}
-		// 记录日志
-		LogHelper.getInstance().saveLog(session, "删除角色", logResult, LogType.ROLE_LOG.getType(), roleIds);
+		for (Integer roleId : roleIds) {
+			Role role = roleService.findById(roleId);
+			// 记录日志
+			LogHelper.getInstance().saveLog(adminLogDao, session, "删除角色", logResult, LogType.ROLE_LOG.getType(), role);
+		}
 		return View.ROLE_REDITRCT_ACTION;
 	}
 }

@@ -4,16 +4,14 @@ import javax.servlet.http.HttpSession;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 
-import com.alibaba.fastjson.JSONObject;
 import com.xn.hk.common.constant.Constant;
+import com.xn.hk.common.dao.BaseDao;
 import com.xn.hk.common.utils.filter.ManagerLoginFilter;
 import com.xn.hk.common.utils.string.DateFormatUtil;
 import com.xn.hk.common.utils.string.StringUtil;
 import com.xn.hk.system.model.AdminLog;
 import com.xn.hk.system.model.User;
-import com.xn.hk.system.service.AdminLogService;
 
 /**
  * 
@@ -34,6 +32,11 @@ public class LogHelper {
 
 	}
 
+	/**
+	 * 单例模式
+	 * 
+	 * @return
+	 */
 	public static synchronized LogHelper getInstance() {
 		if (instance == null) {
 			instance = new LogHelper();
@@ -42,14 +45,10 @@ public class LogHelper {
 	}
 
 	/**
-	 * 注入日志服务类
-	 */
-	@Autowired
-	private AdminLogService adminLogService;
-
-	/**
 	 * 保存日志信息
 	 * 
+	 * @param adminLogDao
+	 *            日志dao层
 	 * @param session
 	 *            session
 	 * @param logName
@@ -61,8 +60,11 @@ public class LogHelper {
 	 * @param Object
 	 *            日志记录对象
 	 */
-	public void saveLog(HttpSession session, String logName, boolean logResult, Integer logType, Object obj) {
-		String logContent = logName + "[" + JSONObject.toJSONString(obj) + "]";// 拼接日志内容
+	public void saveLog(BaseDao<AdminLog> adminLogDao, HttpSession session, String logName, boolean logResult,
+			Integer logType, Object obj) {
+		String objStr = obj.toString();
+		objStr = objStr.substring(objStr.indexOf("["), objStr.length());
+		String logContent = logName + objStr;// 拼接日志内容
 		// 从session中拿出用户信息
 		User user = (User) session.getAttribute(Constant.SESSION_USER_KEY);
 		AdminLog adminLog = new AdminLog();
@@ -71,13 +73,14 @@ public class LogHelper {
 		adminLog.setUserName(user.getUserName());
 		adminLog.setLogType(logType);
 		adminLog.setLogContent(logContent);
-		adminLog.setLogTime(DateFormatUtil.formatDate());
+		adminLog.setLogTime(DateFormatUtil.formatDateTime());
 		adminLog.setCurday(DateFormatUtil.getNumberDay());
 		adminLog.setLogResult(logResult == true ? "成功" : "失败");
 		adminLog.setLogName(logName);
+		adminLog.setLogTimeStamp(DateFormatUtil.formatDateTime());
 		adminLog.setLogIp(ManagerLoginFilter.IP);
-		adminLog.setIsOk(0);
-		int result = adminLogService.insert(adminLog);
+		adminLog.setIsOk(Constant.ZERO_VALUE);
+		int result = adminLogDao.insert(adminLog);
 		if (result == Constant.ZERO_VALUE) {
 			logger.error("插入日志失败，日志信息为:" + adminLog.toString());
 		} else {

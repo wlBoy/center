@@ -70,10 +70,4 @@
 		select * from tb_xn_sys_log l left join tb_xn_sys_user u on l.user_id
 		= u.user_id where l.is_ok =0
 	</select>
-	<!-- 逻辑删除日志 -->
-	<update id="delete" parameterType="java.lang.String">
-		update tb_xn_sys_log set
-		is_ok = 1
-		where log_id = #{0}
-	</update>
 </mapper>

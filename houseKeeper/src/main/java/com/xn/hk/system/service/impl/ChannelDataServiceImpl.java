@@ -30,13 +30,13 @@ import com.xn.hk.system.service.ChannelDataService;
 @Service
 public class ChannelDataServiceImpl extends BaseServiceImpl<ChannelData> implements ChannelDataService {
 	@Autowired
-	private ChannelDataDao cdd;
+	private ChannelDataDao channelDataDao;
 
 	/**
 	 * 指定dao层
 	 */
 	public BaseDao<ChannelData> getDao() {
-		return cdd;
+		return channelDataDao;
 	}
 
 	/**
@@ -67,7 +67,7 @@ public class ChannelDataServiceImpl extends BaseServiceImpl<ChannelData> impleme
 			list.add(cd);
 		}
 		// 批量插入EXCEL表格数据
-		cdd.insertInfoBatch(list);
+		channelDataDao.insertInfoBatch(list);
 		return list.size();
 	}
 
@@ -79,7 +79,7 @@ public class ChannelDataServiceImpl extends BaseServiceImpl<ChannelData> impleme
 	 */
 	public XSSFWorkbook exportAll() throws Exception {
 		// 查询要生成EXCEL表格中的内容数据
-		List<ChannelData> list = cdd.findAll();
+		List<ChannelData> list = channelDataDao.findAll();
 		// 生成EXCEL格式文件
 		List<ExcelBean> excel = new ArrayList<ExcelBean>();
 		Map<Integer, List<ExcelBean>> map = new LinkedHashMap<Integer, List<ExcelBean>>();

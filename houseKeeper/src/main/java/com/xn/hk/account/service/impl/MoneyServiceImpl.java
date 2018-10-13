@@ -20,13 +20,13 @@ import com.xn.hk.common.service.impl.BaseServiceImpl;
 @Service
 public class MoneyServiceImpl extends BaseServiceImpl<Money> implements MoneyService {
 	@Autowired
-	private MoneyDao md;
+	private MoneyDao moneyDao;
 
 	/**
 	 * 实现父类的方法，指定所用的dao
 	 */
 	public BaseDao<Money> getDao() {
-		return md;
+		return moneyDao;
 	}
 
 }

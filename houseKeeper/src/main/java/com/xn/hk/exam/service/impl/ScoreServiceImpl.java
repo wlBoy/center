@@ -23,13 +23,13 @@ import com.xn.hk.exam.service.ScoreService;
 @Service
 public class ScoreServiceImpl extends BaseServiceImpl<Score> implements ScoreService {
 	@Autowired
-	private ScoreDao sd;
+	private ScoreDao scoreDao;
 
 	/**
 	 * 指定特定的dao
 	 */
 	public BaseDao<Score> getDao() {
-		return sd;
+		return scoreDao;
 	}
 
 	/**
@@ -40,9 +40,9 @@ public class ScoreServiceImpl extends BaseServiceImpl<Score> implements ScoreSer
 	 * @return 分数实体列表
 	 */
 	public List<Score> showPersonalList(BasePage<Score> pages) {
-		int count = sd.showPersonalCount(pages);
+		int count = scoreDao.showPersonalCount(pages);
 		pages.setCount(count);
-		return sd.showPersonalList(pages);
+		return scoreDao.showPersonalList(pages);
 	}
 
 	/**
@@ -55,7 +55,7 @@ public class ScoreServiceImpl extends BaseServiceImpl<Score> implements ScoreSer
 	 * @return 分数实体(包含试卷信息)
 	 */
 	public Score findByPaperIdAndUserId(Integer paperId, Integer userId) {
-		return sd.findByPaperIdAndUserId(paperId, userId);
+		return scoreDao.findByPaperIdAndUserId(paperId, userId);
 	}
 
 	/**
@@ -70,7 +70,7 @@ public class ScoreServiceImpl extends BaseServiceImpl<Score> implements ScoreSer
 	 * @return 影响条数
 	 */
 	public int updateScore(Integer paperId, Integer userId, Integer sum) {
-		return sd.updateScore(paperId, userId, sum);
+		return scoreDao.updateScore(paperId, userId, sum);
 	}
 
 }

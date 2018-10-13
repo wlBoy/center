@@ -2,6 +2,8 @@ package com.xn.hk.common.service;
 
 import java.util.List;
 
+import javax.servlet.http.HttpSession;
+
 import com.xn.hk.common.utils.page.BasePage;
 
 /**
@@ -16,47 +18,77 @@ public interface BaseService<T> {
 	/**
 	 * 添加实体
 	 * 
+	 * @param session
+	 *            session
+	 * @param logName
+	 *            日志操作名称
+	 * @param logType
+	 *            日志操作类型
 	 * @param t
 	 *            实体对象
 	 * @return 返回影响条数
 	 */
-	public int insert(T t);
+	public int insert(HttpSession session, String logName, Integer logType, T t);
 
 	/**
 	 * 批量添加实体
 	 * 
+	 * @param session
+	 *            session
+	 * @param logName
+	 *            日志操作名称
+	 * @param logType
+	 *            日志操作类型
 	 * @param List<T>
 	 *            实体对象列表
 	 * @return 返回影响条数
 	 */
-	public int batchInsert(List<T> list);
+	public int batchInsert(HttpSession session, String logName, Integer logType, List<T> list);
 
 	/**
 	 * 更新实体
 	 * 
+	 * @param session
+	 *            session
+	 * @param logName
+	 *            日志操作名称
+	 * @param logType
+	 *            日志操作类型
 	 * @param t
 	 *            实体对象
 	 * @return 返回影响条数
 	 */
-	public int update(T t);
+	public int update(HttpSession session, String logName, Integer logType, T t);
 
 	/**
 	 * 删除实体
 	 * 
+	 * @param session
+	 *            session
+	 * @param logName
+	 *            日志操作名称
+	 * @param logType
+	 *            日志操作类型
 	 * @param id
 	 *            实体ID
 	 * @return 返回影响条数
 	 */
-	public int delete(Object id);
+	public int delete(HttpSession session, String logName, Integer logType, Object id);
 
 	/**
 	 * 批量删除实体
 	 * 
+	 * @param session
+	 *            session
+	 * @param logName
+	 *            日志操作名称
+	 * @param logType
+	 *            日志操作类型
 	 * @param ids
 	 *            实体ID数组
 	 * @return 返回影响条数
 	 */
-	public int batchDelete(Object[] ids);
+	public int batchDelete(HttpSession session, String logName, Integer logType, Object[] ids);
 
 	/**
 	 * 查询分页对象列表

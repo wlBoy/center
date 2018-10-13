@@ -17,8 +17,11 @@ import com.xn.hk.account.service.AccountService;
 import com.xn.hk.account.service.AccountTypeService;
 import com.xn.hk.common.constant.Constant;
 import com.xn.hk.common.constant.View;
+import com.xn.hk.common.utils.log.LogHelper;
+import com.xn.hk.common.utils.log.LogType;
 import com.xn.hk.common.utils.page.BasePage;
 import com.xn.hk.common.utils.string.StringUtil;
+import com.xn.hk.system.dao.AdminLogDao;
 import com.xn.hk.system.model.User;
 import com.xn.hk.system.service.UserService;
 
@@ -37,7 +40,7 @@ public class AccountController {
 	 * 记录日志
 	 */
 	private static final Logger logger = LoggerFactory.getLogger(AccountController.class);
-	
+
 	/**
 	 * 注入service层
 	 */
@@ -47,6 +50,8 @@ public class AccountController {
 	private AccountTypeService accountTypeService;
 	@Autowired
 	private UserService userService;
+	@Autowired
+	private AdminLogDao adminLogDao;
 
 	/**
 	 * 实现个人账务分页
@@ -113,16 +118,21 @@ public class AccountController {
 	 */
 	@RequestMapping(value = "/add.do")
 	public ModelAndView addAccount(Account account, HttpSession session) {
+		boolean logResult = true;
 		// 从session中拿出当前用户信息,将它塞入对象中去
 		User user = (User) session.getAttribute(Constant.SESSION_USER_KEY);
 		account.setUserId(user.getUserId());
 		int result = accountService.addAccount(account);
 		if (result == Constant.ZERO_VALUE) {
+			logResult = false;
 			logger.error("添加个人账务{}失败!", account.getAccountTitle());
 		} else {
 			logger.info("添加个人账务{}成功!", account.getAccountTitle());
 			session.setAttribute(Constant.TIP_KEY, StringUtil.genTipMsg("添加个人账务成功!", Constant.SUCCESS_TIP_KEY));
 		}
+		// 记录日志
+		LogHelper.getInstance().saveLog(adminLogDao, session, "添加账务", logResult, LogType.ACCOUNT_LOG.getType(),
+				account);
 		return View.PERSONAL_ACCOUNT_REDITRCT_ACTION;
 	}
 
@@ -136,13 +146,18 @@ public class AccountController {
 	 */
 	@RequestMapping(value = "/update.do")
 	public ModelAndView updateAccount(Account account, HttpSession session) {
+		boolean logResult = true;
 		int result = accountService.updateAccount(account);
 		if (result == Constant.ZERO_VALUE) {
+			logResult = false;
 			logger.error("修改个人账务{}失败!", account.getAccountTitle());
 		} else {
 			logger.info("修改个人账务{}成功!", account.getAccountTitle());
 			session.setAttribute(Constant.TIP_KEY, StringUtil.genTipMsg("修改个人账务成功!", Constant.SUCCESS_TIP_KEY));
 		}
+		// 记录日志
+		LogHelper.getInstance().saveLog(adminLogDao, session, "修改账务", logResult, LogType.ACCOUNT_LOG.getType(),
+				account);
 		return View.PERSONAL_ACCOUNT_REDITRCT_ACTION;
 	}
 
@@ -156,12 +171,20 @@ public class AccountController {
 	 */
 	@RequestMapping(value = "/delete.do")
 	public ModelAndView deleteAccount(Integer[] accountIds, HttpSession session) {
+		boolean logResult = true;
 		int result = accountService.deleteAccount(accountIds);
 		if (result == Constant.ZERO_VALUE) {
+			logResult = false;
 			logger.error("删除失败,该数组不存在!");
 		} else {
 			logger.info("删除个人账务成功!");
 			session.setAttribute(Constant.TIP_KEY, StringUtil.genTipMsg("删除个人账务成功!", Constant.SUCCESS_TIP_KEY));
+		}
+		for (Integer accountId : accountIds) {
+			Account account = accountService.findById(accountId);
+			// 记录日志
+			LogHelper.getInstance().saveLog(adminLogDao, session, "删除账务", logResult, LogType.ACCOUNT_LOG.getType(),
+					account);
 		}
 		return View.PERSONAL_ACCOUNT_REDITRCT_ACTION;
 	}

@@ -20,12 +20,12 @@ import com.xn.hk.system.service.LogService;
 @Service
 public class LogServiceImpl extends BaseServiceImpl<Log> implements LogService {
 	@Autowired
-	private LogDao ld;
+	private LogDao logDao;
 
 	/**
 	 * 实现父类的方法，指定所用的dao
 	 */
 	public BaseDao<Log> getDao() {
-		return ld;
+		return logDao;
 	}
 }

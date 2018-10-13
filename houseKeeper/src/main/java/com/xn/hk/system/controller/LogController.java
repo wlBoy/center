@@ -2,19 +2,14 @@ package com.xn.hk.system.controller;
 
 import java.util.List;
 
-import javax.servlet.http.HttpSession;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.xn.hk.common.constant.Constant;
-import com.xn.hk.common.constant.View;
 import com.xn.hk.common.utils.page.BasePage;
-import com.xn.hk.common.utils.string.StringUtil;
 import com.xn.hk.system.model.Log;
 import com.xn.hk.system.model.User;
 import com.xn.hk.system.service.LogService;
@@ -31,11 +26,6 @@ import com.xn.hk.system.service.UserService;
 @Controller
 @RequestMapping(value = "/system/log")
 public class LogController {
-	/**
-	 * 记录日志
-	 */
-	private static final Logger logger = LoggerFactory.getLogger(LogController.class);
-
 	/**
 	 * 注入service层
 	 */
@@ -68,23 +58,4 @@ public class LogController {
 		return mv;
 	}
 
-	/**
-	 * 批量删除日志
-	 * 
-	 * @param logIds
-	 *            日志ID数组
-	 * @param session
-	 * @return ModelAndView
-	 */
-	@RequestMapping(value = "/delete.do")
-	public ModelAndView deleteLog(String[] logIds, HttpSession session) {
-		int result = logService.batchDelete(logIds);
-		if (result == Constant.ZERO_VALUE) {
-			logger.error("删除失败,该数组不存在!");
-		} else {
-			logger.info("删除日志成功!");
-			session.setAttribute(Constant.TIP_KEY, StringUtil.genTipMsg("删除日志成功!", Constant.SUCCESS_TIP_KEY));
-		}
-		return View.LOG_REDITRCT_ACTION;
-	}
 }

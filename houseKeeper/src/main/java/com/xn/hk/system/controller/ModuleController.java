@@ -13,8 +13,11 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.xn.hk.common.constant.Constant;
 import com.xn.hk.common.constant.View;
+import com.xn.hk.common.utils.log.LogHelper;
+import com.xn.hk.common.utils.log.LogType;
 import com.xn.hk.common.utils.page.BasePage;
 import com.xn.hk.common.utils.string.StringUtil;
+import com.xn.hk.system.dao.AdminLogDao;
 import com.xn.hk.system.model.Module;
 import com.xn.hk.system.service.ModuleService;
 
@@ -39,6 +42,8 @@ public class ModuleController {
 	 */
 	@Autowired
 	private ModuleService moduleService;
+	@Autowired
+	private AdminLogDao adminLogDao;
 
 	/**
 	 * 实现模块分页
@@ -74,7 +79,7 @@ public class ModuleController {
 	 */
 	@RequestMapping(value = "/add.do")
 	public ModelAndView addModule(Module module, HttpSession session) {
-		int result = moduleService.insert(module);
+		int result = moduleService.insert(session, "添加模块", LogType.MODULE_LOG.getType(), module);
 		if (result == Constant.ZERO_VALUE) {
 			logger.error("添加模块{}失败!", module.getModuleName());
 		} else {
@@ -93,7 +98,7 @@ public class ModuleController {
 	 */
 	@RequestMapping(value = "/update.do")
 	public ModelAndView updateModule(Module module, HttpSession session) {
-		int result = moduleService.update(module);
+		int result = moduleService.update(session, "更新模块", LogType.MODULE_LOG.getType(), module);
 		if (result == Constant.ZERO_VALUE) {
 			logger.error("修改模块{}失败!", module.getModuleName());
 		} else {
@@ -113,7 +118,7 @@ public class ModuleController {
 	 */
 	@RequestMapping(value = "/delete.do")
 	public ModelAndView deleteModule(Integer[] moduleIds, HttpSession session) {
-		int result = moduleService.batchDelete(moduleIds);
+		int result = moduleService.batchDelete(session, "删除模块", LogType.MODULE_LOG.getType(), moduleIds);
 		if (result == Constant.ZERO_VALUE) {
 			logger.error("删除失败,该数组不存在!");
 		} else {
@@ -131,13 +136,18 @@ public class ModuleController {
 	 * @return ModelAndView
 	 */
 	@RequestMapping(value = "/changeState.do")
-	public ModelAndView changeState(Integer moduleId) {
+	public ModelAndView changeState(Integer moduleId, HttpSession session) {
+		boolean logResult = true;
+		Module module = moduleService.findById(moduleId);
 		int result = moduleService.changeState(moduleId);
 		if (result == Constant.ZERO_VALUE) {
+			logResult = false;
 			logger.error("模块{}切换状态失败!", moduleId);
 		} else {
 			logger.info("模块{}切换状态成功!", moduleId);
 		}
+		// 记录日志
+		LogHelper.getInstance().saveLog(adminLogDao, session, "切换状态", logResult, LogType.MODULE_LOG.getType(), module);
 		return View.MODULE_REDITRCT_ACTION;
 	}
 }

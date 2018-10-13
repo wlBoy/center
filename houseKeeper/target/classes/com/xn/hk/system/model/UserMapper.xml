@@ -27,16 +27,6 @@
 	<!-- 定义数据库基本列,只适用代替单表的* -->
 	<sql id="Base_Column_List">user_id,role_id,user_name,user_pwd,user_face,user_state,is_ok,create_time,update_time,remark
 	</sql>
-	<!-- 根据用户名和密码查询该用户及其角色信息(用于用户登录,冻结状态不能登陆) -->
-	<select id="login" parameterType="User" resultMap="userMap">
-		SELECT
-		*
-		FROM
-		tb_xn_sys_user u LEFT JOIN tb_xn_sys_role r ON u.role_id =
-		r.role_id
-		WHERE u.user_state=0 AND u.user_name=#{userName} AND
-		u.user_pwd=#{userPwd}
-	</select>
 	<!-- 分页显示列表 -->
 	<select id="pageList" parameterType="BasePage" resultMap="userMap">
 		SELECT

@@ -21,24 +21,13 @@ import com.xn.hk.system.service.UserService;
 @Service
 public class UserServiceImpl extends BaseServiceImpl<User> implements UserService {
 	@Autowired
-	private UserDao ud;
+	private UserDao userDao;
 
 	/**
 	 * 实现父类的方法，指定所用的dao
 	 */
 	public BaseDao<User> getDao() {
-		return ud;
-	}
-
-	/**
-	 * 账户登录
-	 * 
-	 * @param user
-	 *            用户实体
-	 * @return 登录成功返回该实体，失败返回null
-	 */
-	public User login(User user) {
-		return ud.login(user);
+		return userDao;
 	}
 
 	/**
@@ -49,12 +38,12 @@ public class UserServiceImpl extends BaseServiceImpl<User> implements UserServic
 	 * @return 返回影响条数
 	 */
 	public int changeState(Integer userId) {
-		Integer userState = ud.findById(userId).getUserState();
+		Integer userState = userDao.findById(userId).getUserState();
 		// 拿到当前用户的状态，判断调用不同的方法切换用户状态
 		if (userState.intValue() == StatusEnum.NORMAL.getCode().intValue()) {
-			return ud.changeState(StatusEnum.ISLOCKED.getCode(), userId);
+			return userDao.changeState(StatusEnum.ISLOCKED.getCode(), userId);
 		} else {
-			return ud.changeState(StatusEnum.NORMAL.getCode(), userId);
+			return userDao.changeState(StatusEnum.NORMAL.getCode(), userId);
 		}
 	}
 
@@ -66,7 +55,7 @@ public class UserServiceImpl extends BaseServiceImpl<User> implements UserServic
 	 * @return 返回影响条数
 	 */
 	public int uploadFace(User user) {
-		return ud.uploadFace(user);
+		return userDao.uploadFace(user);
 	}
 
 }

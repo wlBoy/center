@@ -24,13 +24,13 @@ import com.xn.hk.system.service.RoleService;
 @Service
 public class RoleServiceImpl extends BaseServiceImpl<Role> implements RoleService {
 	@Autowired
-	private RoleDao rd;
+	private RoleDao roleDao;
 
 	/**
 	 * 实现父类的方法，指定所用的dao
 	 */
 	public BaseDao<Role> getDao() {
-		return rd;
+		return roleDao;
 	}
 
 	/**
@@ -43,12 +43,12 @@ public class RoleServiceImpl extends BaseServiceImpl<Role> implements RoleServic
 	public int addRole(Role role) {
 		List<Module> models = role.getModules();
 		// 添加角色基本信息
-		rd.insert(role);
+		roleDao.insert(role);
 		// 为该角色分配模块
 		for (int i = 0; i < models.size(); i++) {
 			if (models.get(i).getModuleId() != null && models.get(i).getModuleId().intValue() != Constant.ZERO_VALUE) {
 				// 将不为空的模块id塞入关系表中
-				rd.addModuleForRole(role.getRoleId(), models.get(i).getModuleId());
+				roleDao.addModuleForRole(role.getRoleId(), models.get(i).getModuleId());
 			}
 		}
 		return models.size() + 1;
@@ -63,14 +63,14 @@ public class RoleServiceImpl extends BaseServiceImpl<Role> implements RoleServic
 	 */
 	public int updateRole(Role role) {
 		// 更新角色基本信息
-		rd.update(role);
+		roleDao.update(role);
 		// 删除该角色拥有的模块权限
-		rd.deleteModuleForRole(role.getRoleId());
+		roleDao.deleteModuleForRole(role.getRoleId());
 		// 为该角色重新分配模块
 		for (int i = 0; i < role.getModules().size(); i++) {
 			if (role.getModules().get(i).getModuleId() != null && role.getModules().get(i).getModuleId().intValue() != Constant.ZERO_VALUE) {
 				// 将不为空的模块id塞入关系表中
-				rd.addModuleForRole(role.getRoleId(), role.getModules().get(i).getModuleId());
+				roleDao.addModuleForRole(role.getRoleId(), role.getModules().get(i).getModuleId());
 			}
 		}
 		return role.getModules().size() + 1;
@@ -86,9 +86,9 @@ public class RoleServiceImpl extends BaseServiceImpl<Role> implements RoleServic
 	public int deleteRole(Integer[] roleIds) {
 		for (int i = 0; i < roleIds.length; i++) {
 			// 删除角色基本信息
-			rd.delete(roleIds[i]);
+			roleDao.delete(roleIds[i]);
 			// 删除该角色拥有的模块权限
-			rd.deleteModuleForRole(roleIds[i]);
+			roleDao.deleteModuleForRole(roleIds[i]);
 		}
 		return roleIds.length;
 	}

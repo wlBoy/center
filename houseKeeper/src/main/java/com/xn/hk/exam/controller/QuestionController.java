@@ -13,12 +13,15 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.xn.hk.common.constant.Constant;
 import com.xn.hk.common.constant.View;
+import com.xn.hk.common.utils.log.LogHelper;
+import com.xn.hk.common.utils.log.LogType;
 import com.xn.hk.common.utils.page.BasePage;
 import com.xn.hk.common.utils.string.StringUtil;
 import com.xn.hk.exam.model.Question;
 import com.xn.hk.exam.model.QuestionType;
 import com.xn.hk.exam.service.QuestionService;
 import com.xn.hk.exam.service.QuestionTypeService;
+import com.xn.hk.system.dao.AdminLogDao;
 
 /**
  * 
@@ -43,6 +46,8 @@ public class QuestionController {
 	private QuestionService questionService;
 	@Autowired
 	private QuestionTypeService questionTypeService;
+	@Autowired
+	private AdminLogDao adminLogDao;
 
 	/**
 	 * 实现题目分页
@@ -79,7 +84,7 @@ public class QuestionController {
 	 */
 	@RequestMapping(value = "/add.do")
 	public ModelAndView addQuestion(Question question, HttpSession session) {
-		int result = questionService.insert(question);
+		int result = questionService.insert(session, "添加题目", LogType.QUESTION_LOG.getType(), question);
 		if (result == Constant.ZERO_VALUE) {
 			logger.error("添加题目{}失败!", question.getQuestionTitle());
 		} else {
@@ -99,7 +104,7 @@ public class QuestionController {
 	 */
 	@RequestMapping(value = "/update.do")
 	public ModelAndView updateQuestion(Question question, HttpSession session) {
-		int result = questionService.update(question);
+		int result = questionService.update(session, "修改题目", LogType.QUESTION_LOG.getType(), question);
 		if (result == Constant.ZERO_VALUE) {
 			logger.error("修改题目{}失败!", question.getQuestionTitle());
 		} else {
@@ -119,7 +124,7 @@ public class QuestionController {
 	 */
 	@RequestMapping(value = "/delete.do")
 	public ModelAndView deleteQuestion(Integer[] questionIds, HttpSession session) {
-		int result = questionService.batchDelete(questionIds);
+		int result = questionService.batchDelete(session, "删除题目", LogType.QUESTION_LOG.getType(), questionIds);
 		if (result == Constant.ZERO_VALUE) {
 			logger.error("删除失败,该数组不存在!");
 		} else {
@@ -137,13 +142,19 @@ public class QuestionController {
 	 * @return ModelAndView
 	 */
 	@RequestMapping(value = "/changeState.do")
-	public ModelAndView changeState(Integer questionId) {
+	public ModelAndView changeState(Integer questionId, HttpSession session) {
+		Question question = questionService.findById(questionId);
+		boolean logResult = true;
 		int result = questionService.changeState(questionId);
 		if (result == Constant.ZERO_VALUE) {
+			logResult = false;
 			logger.error("题目{}切换状态失败!", questionId);
 		} else {
 			logger.info("题目{}切换状态成功!", questionId);
 		}
+		// 记录日志
+		LogHelper.getInstance().saveLog(adminLogDao, session, "切换状态", logResult, LogType.QUESTION_LOG.getType(),
+				question);
 		return View.QUESTION_REDITRCT_ACTION;
 	}
 }

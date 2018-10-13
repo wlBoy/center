@@ -23,13 +23,13 @@ import com.xn.hk.exam.service.QuestionService;
 @Service
 public class QuestionServiceImpl extends BaseServiceImpl<Question> implements QuestionService {
 	@Autowired
-	private QuestionDao qd;
+	private QuestionDao questionDao;
 
 	/**
 	 * 指定特定的dao
 	 */
 	public BaseDao<Question> getDao() {
-		return qd;
+		return questionDao;
 	}
 
 	/**
@@ -39,11 +39,11 @@ public class QuestionServiceImpl extends BaseServiceImpl<Question> implements Qu
 	 * @return 影响条数
 	 */
 	public int changeState(Integer questionId) {
-		Question q = qd.findById(questionId);
+		Question q = questionDao.findById(questionId);
 		if (q.getQuestionStatus().intValue() == StatusEnum.NORMAL.getCode().intValue()) {
-			return qd.changeState(StatusEnum.ISLOCKED.getCode(), questionId);
+			return questionDao.changeState(StatusEnum.ISLOCKED.getCode(), questionId);
 		} else {
-			return qd.changeState(StatusEnum.NORMAL.getCode(), questionId);
+			return questionDao.changeState(StatusEnum.NORMAL.getCode(), questionId);
 		}
 	}
 
@@ -55,7 +55,7 @@ public class QuestionServiceImpl extends BaseServiceImpl<Question> implements Qu
 	 * @return 该试卷的所有题目列表
 	 */
 	public List<Question> findQuestionByPaperId(Integer paperId) {
-		return qd.findQuestionByPaperId(paperId);
+		return questionDao.findQuestionByPaperId(paperId);
 	}
 
 	/**
@@ -68,7 +68,7 @@ public class QuestionServiceImpl extends BaseServiceImpl<Question> implements Qu
 	 * @return 题目数组
 	 */
 	public List<Question> findAnswerByPaperIdAndUserId(Integer paperId, Integer userId) {
-		return qd.findAnswerByPaperIdAndUserId(paperId, userId);
+		return questionDao.findAnswerByPaperIdAndUserId(paperId, userId);
 	}
 
 }

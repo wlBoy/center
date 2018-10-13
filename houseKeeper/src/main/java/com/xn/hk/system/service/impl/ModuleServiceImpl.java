@@ -25,13 +25,13 @@ import com.xn.hk.system.service.ModuleService;
 @Service
 public class ModuleServiceImpl extends BaseServiceImpl<Module> implements ModuleService {
 	@Autowired
-	private ModuleDao md;
+	private ModuleDao moduleDao;
 
 	/**
 	 * 实现父类的方法，指定所用的dao
 	 */
 	public BaseDao<Module> getDao() {
-		return md;
+		return moduleDao;
 	}
 
 	/**
@@ -43,14 +43,14 @@ public class ModuleServiceImpl extends BaseServiceImpl<Module> implements Module
 	 */
 	public List<Module> pageList(BasePage<Module> pages) {
 		// 查询分页总记录数
-		pages.setCount(md.pageCount(pages));
+		pages.setCount(moduleDao.pageCount(pages));
 		// 分页查询，返回查询结果list
-		List<Module> modules = md.pageList(pages);
+		List<Module> modules = moduleDao.pageList(pages);
 		for (Module m : modules) {
 			// 一级模块的parentId等于0，排除一级模块
 			if (m.getParentId().intValue() != Constant.ZERO_VALUE) {
 				// 查询其父级模块
-				Module module = md.findById(m.getParentId());
+				Module module = moduleDao.findById(m.getParentId());
 				if (module != null) {
 					// 该父模块存在，将父级模块名称封装到分页列表对象中去
 					m.setParentName(module.getModuleName());
@@ -68,12 +68,12 @@ public class ModuleServiceImpl extends BaseServiceImpl<Module> implements Module
 	 * @return 返回影响条数
 	 */
 	public int changeState(Integer moduleId) {
-		Integer moduleState = md.findById(moduleId).getIsAllowed();
+		Integer moduleState = moduleDao.findById(moduleId).getIsAllowed();
 		// 拿到当前模块的状态，判断调用不同的方法切换模块状态
 		if (moduleState.intValue() == StatusEnum.NORMAL.getCode().intValue()) {
-			return md.changeState(StatusEnum.ISLOCKED.getCode(), moduleId);
+			return moduleDao.changeState(StatusEnum.ISLOCKED.getCode(), moduleId);
 		} else {
-			return md.changeState(StatusEnum.NORMAL.getCode(), moduleId);
+			return moduleDao.changeState(StatusEnum.NORMAL.getCode(), moduleId);
 		}
 	}
 
@@ -85,7 +85,7 @@ public class ModuleServiceImpl extends BaseServiceImpl<Module> implements Module
 	 * @return 模块列表
 	 */
 	public List<Module> findModuleByLevel(Integer level) {
-		return md.findModuleByLevel(level);
+		return moduleDao.findModuleByLevel(level);
 	}
 
 	/**
@@ -98,7 +98,7 @@ public class ModuleServiceImpl extends BaseServiceImpl<Module> implements Module
 	 * @return 模块列表
 	 */
 	public List<Module> findModuleByRoleId(Integer level, Integer roleId) {
-		return md.findModuleByRoleId(level, roleId);
+		return moduleDao.findModuleByRoleId(level, roleId);
 	}
 
 }

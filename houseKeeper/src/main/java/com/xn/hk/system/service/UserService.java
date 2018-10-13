@@ -12,14 +12,6 @@ import com.xn.hk.system.model.User;
  * @Date: 2017-11-28 下午03:24:36
  */
 public interface UserService extends BaseService<User> {
-	/**
-	 * 账户登录
-	 * 
-	 * @param user
-	 *            用户实体
-	 * @return 登录成功返回该实体，失败返回null
-	 */
-	public User login(User user);
 
 	/**
 	 * 切换用户状态

@@ -25,15 +25,15 @@ import com.xn.hk.exam.service.PaperService;
 @Service
 public class PaperServiceImpl extends BaseServiceImpl<Paper> implements PaperService {
 	@Autowired
-	private PaperDao pd;
+	private PaperDao paperDao;
 	@Autowired
-	private QuestionDao qd;
+	private QuestionDao questionDao;
 
 	/**
 	 * 指定特定的dao
 	 */
 	public BaseDao<Paper> getDao() {
-		return pd;
+		return paperDao;
 	}
 
 	/**
@@ -44,11 +44,11 @@ public class PaperServiceImpl extends BaseServiceImpl<Paper> implements PaperSer
 	 * @return 影响条数
 	 */
 	public int changeState(Integer paperId) {
-		Paper p = pd.findById(paperId);
+		Paper p = paperDao.findById(paperId);
 		if (p.getIsAllowed().intValue() == StatusEnum.NORMAL.getCode().intValue()) {
-			return pd.changeState(StatusEnum.ISLOCKED.getCode(), paperId);
+			return paperDao.changeState(StatusEnum.ISLOCKED.getCode(), paperId);
 		} else {
-			return pd.changeState(StatusEnum.NORMAL.getCode(), paperId);
+			return paperDao.changeState(StatusEnum.NORMAL.getCode(), paperId);
 		}
 	}
 
@@ -61,18 +61,18 @@ public class PaperServiceImpl extends BaseServiceImpl<Paper> implements PaperSer
 	 */
 	public int addPaper(Paper paper) {
 		// 添加试卷的基本信息
-		pd.insert(paper);
+		paperDao.insert(paper);
 		// 添加配置表的信息
 		for (int i = 0; i < paper.getTypeIds().length; i++) {
-			pd.configPaper(paper.getPaperId(), paper.getTypeIds()[i], paper.getTypeNums()[i], paper.getTypeScores()[i]);
+			paperDao.configPaper(paper.getPaperId(), paper.getTypeIds()[i], paper.getTypeNums()[i], paper.getTypeScores()[i]);
 		}
 		// 根据配置表生成随机数量题型的题目
 		for (int i = 0; i < paper.getTypeIds().length; i++) {
-			Integer[] qids = qd.genQuestionIds(paper.getTypeIds()[i], paper.getTypeNums()[i]);
+			Integer[] qids = questionDao.genQuestionIds(paper.getTypeIds()[i], paper.getTypeNums()[i]);
 			paper.setQuestionIds(qids);
 			for (int j = 0; j < qids.length; j++) {
 				// 添加生成表信息
-				pd.createPaper(paper.getPaperId(), paper.getTypeIds()[i], qids[j]);
+				paperDao.createPaper(paper.getPaperId(), paper.getTypeIds()[i], qids[j]);
 			}
 		}
 		return paper.getTypeIds().length * 3 + 1;
@@ -88,11 +88,11 @@ public class PaperServiceImpl extends BaseServiceImpl<Paper> implements PaperSer
 	public int deletePaper(Integer[] paperIds) {
 		for (int i = 0; i < paperIds.length; i++) {
 			// 删除试卷的基本模板信息
-			pd.delete(paperIds[i]);
+			paperDao.delete(paperIds[i]);
 			// 删除配置表信息
-			pd.deleteConfig(paperIds[i]);
+			paperDao.deleteConfig(paperIds[i]);
 			// 删除生成表信息
-			pd.deleteCreate(paperIds[i]);
+			paperDao.deleteCreate(paperIds[i]);
 		}
 		return paperIds.length;
 	}
@@ -105,8 +105,8 @@ public class PaperServiceImpl extends BaseServiceImpl<Paper> implements PaperSer
 	 * @return 待批阅试卷列表
 	 */
 	public List<Paper> pageRemainReadList(BasePage<Paper> pages) {
-		pages.setCount(pd.pageRemainReadCount(pages));
-		return pd.pageRemainReadList(pages);
+		pages.setCount(paperDao.pageRemainReadCount(pages));
+		return paperDao.pageRemainReadList(pages);
 	}
 
 	/**
@@ -117,7 +117,7 @@ public class PaperServiceImpl extends BaseServiceImpl<Paper> implements PaperSer
 	 * @return 简答题的分数
 	 */
 	public Integer findScoreByPaperId(Integer paperId) {
-		return pd.findScoreByPaperId(paperId);
+		return paperDao.findScoreByPaperId(paperId);
 	}
 
 }

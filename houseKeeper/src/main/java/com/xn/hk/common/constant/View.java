@@ -18,7 +18,6 @@ public class View {
 	public static final ModelAndView USER_REDITRCT_UPDATE_PWD_VIEW = new ModelAndView("redirect:toUpdatePwd.do");// 重定向到后台修改密码页面
 	public static final ModelAndView ROLE_REDITRCT_ACTION = new ModelAndView("redirect:showAllRole.do");// 重定向分页所有角色的Action
 	public static final ModelAndView MODULE_REDITRCT_ACTION = new ModelAndView("redirect:showAllModule.do");// 重定向分页所有模块的Action
-	public static final ModelAndView LOG_REDITRCT_ACTION = new ModelAndView("redirect:showAllLog.do");// 重定向分页所有日志的Action
 	public static final ModelAndView CHANNEL_REDITRCT_ACTION = new ModelAndView("redirect:showAllChannelData.do");// 重定向分页所有渠道的Action
 	/*----------------------------------账务管理---------------------------------*/
 	public static final ModelAndView PERSONAL_ACCOUNT_REDITRCT_ACTION = new ModelAndView(
