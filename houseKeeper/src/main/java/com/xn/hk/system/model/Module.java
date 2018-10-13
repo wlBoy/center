@@ -4,6 +4,9 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.xn.hk.common.constant.EnabledEnum;
+import com.xn.hk.common.constant.StatusEnum;
+
 /**
  * 
  * @Title: Module
@@ -176,6 +179,51 @@ public class Module implements Serializable {
 				+ isOk + ", moduleId=" + moduleId + ", moduleLevel=" + moduleLevel + ", moduleName=" + moduleName
 				+ ", parentId=" + parentId + ", parentName=" + parentName + ", remark=" + remark + ", roles=" + roles
 				+ ", updateTime=" + updateTime + "]";
+	}
+
+	/**
+	 * 拼接日志内容(排除空信息和可指定记录内容字段)
+	 * 
+	 * @return 日志内容
+	 */
+	public String getLogContent() {
+		StringBuffer sb = new StringBuffer();
+		sb.append("[");
+		if (getModuleId() != null) {
+			sb.append("模块ID=" + getModuleId());
+		}
+		if (getModuleName() != null) {
+			sb.append("模块姓名=" + getModuleName());
+		}
+		if (getModuleLevel() != null) {
+			sb.append("模块级别=" + getModuleLevel());
+		}
+		if (getActionUrl() != null) {
+			sb.append("请求URL=" + getActionUrl());
+		}
+		if (getParentId() != null) {
+			sb.append("父级模块ID=" + getParentId());
+		}
+		if (getParentName() != null) {
+			sb.append("父级模块名称=" + getParentName());
+		}
+		if (getIsAllowed() != null) {
+			sb.append("模块状态=" + StatusEnum.getDescByCode(getIsAllowed()));
+		}
+		if (getIsOk() != null) {
+			sb.append("是否可用=" + EnabledEnum.getDescByCode(getIsOk()));
+		}
+		if (getCreateTime() != null) {
+			sb.append("创建时间=" + getCreateTime());
+		}
+		if (getUpdateTime() != null) {
+			sb.append("更新时间=" + getUpdateTime());
+		}
+		if (getRemark() != null) {
+			sb.append("备注信息=" + getRemark());
+		}
+		sb.append("]");
+		return sb.toString();
 	}
 
 }

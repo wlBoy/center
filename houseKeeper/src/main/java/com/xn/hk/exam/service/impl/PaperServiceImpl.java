@@ -45,10 +45,10 @@ public class PaperServiceImpl extends BaseServiceImpl<Paper> implements PaperSer
 	 */
 	public int changeState(Integer paperId) {
 		Paper p = paperDao.findById(paperId);
-		if (p.getIsAllowed().intValue() == StatusEnum.NORMAL.getCode().intValue()) {
-			return paperDao.changeState(StatusEnum.ISLOCKED.getCode(), paperId);
+		if (p.getIsAllowed().intValue() == StatusEnum.ACTIVE.getCode().intValue()) {
+			return paperDao.changeState(StatusEnum.LOCKED.getCode(), paperId);
 		} else {
-			return paperDao.changeState(StatusEnum.NORMAL.getCode(), paperId);
+			return paperDao.changeState(StatusEnum.ACTIVE.getCode(), paperId);
 		}
 	}
 

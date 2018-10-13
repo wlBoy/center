@@ -3,6 +3,9 @@ package com.xn.hk.exam.model;
 import java.io.Serializable;
 import java.util.Arrays;
 
+import com.xn.hk.common.constant.EnabledEnum;
+import com.xn.hk.common.constant.StatusEnum;
+
 /**
  * 
  * @Title: Paper
@@ -261,4 +264,57 @@ public class Paper implements Serializable {
 				+ Arrays.toString(questionIds) + ", examPaperId=" + examPaperId + ", paperStatus=" + paperStatus + "]";
 	}
 
+	/**
+	 * 拼接日志内容(排除空信息和可指定记录内容字段)
+	 * 
+	 * @return 日志内容
+	 */
+	public String getLogContent() {
+		StringBuffer sb = new StringBuffer();
+		sb.append("[");
+		if (getPaperId() != null) {
+			sb.append("试卷ID=" + getPaperId());
+		}
+		if (getCreatePaperId() != null) {
+			sb.append("创建人ID=" + getCreatePaperId());
+		}
+		if (getCreatePaperName() != null) {
+			sb.append("创建人姓名=" + getCreatePaperName());
+		}
+		if (getPaperName() != null) {
+			sb.append("试卷名称=" + getPaperName());
+		}
+		if (getPaperScore() != null) {
+			sb.append("试卷分数=" + getPaperScore());
+		}
+		if (getTotalTime() != null) {
+			sb.append("试卷总时间=" + getTotalTime());
+		}
+		if (getStartTime() != null) {
+			sb.append("开考时间=" + getStartTime());
+		}
+		if (getEndTime() != null) {
+			sb.append("结束时间=" + getEndTime());
+		}
+		if (getCurday() != null) {
+			sb.append("创建日期=" + getCurday());
+		}
+		if (getIsAllowed() != null) {
+			sb.append("试卷状态=" + StatusEnum.getDescByCode(getIsAllowed()));
+		}
+		if (getIsOk() != null) {
+			sb.append("是否可用=" + EnabledEnum.getDescByCode(getIsOk()));
+		}
+		if (getCreateTime() != null) {
+			sb.append("创建时间=" + getCreateTime());
+		}
+		if (getUpdateTime() != null) {
+			sb.append("更新时间=" + getUpdateTime());
+		}
+		if (getRemark() != null) {
+			sb.append("备注信息=" + getRemark());
+		}
+		sb.append("]");
+		return sb.toString();
+	}
 }

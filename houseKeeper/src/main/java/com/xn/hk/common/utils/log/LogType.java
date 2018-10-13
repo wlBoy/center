@@ -12,8 +12,8 @@ import java.util.Map;
  * @Date: 2018年10月12日 下午2:30:57
  */
 public enum LogType {
-	USER_LOG(1, "用户日志"), ROLE_LOG(2, "角色日志"), MODULE_LOG(4, "模块日志"), ACCOUNT_LOG(5, "账务日志"), ACCOUNT_TYPE_LOG(6,
-			"账务类别日志"), PAPER_LOG(7, "试卷日志"), QUESTION_LOG(8, "题目日志"), QUESTION_TYPE_LOG(9, "题型日志");
+	USER_LOG(1, "用户日志"), ROLE_LOG(2, "角色日志"), MODULE_LOG(3, "模块日志"), ACCOUNT_LOG(4, "账务日志"), ACCOUNT_TYPE_LOG(5,
+			"账务类别日志"), PAPER_LOG(6, "试卷日志"), QUESTION_LOG(7, "题目日志"), QUESTION_TYPE_LOG(8, "题型日志");
 
 	private Integer type;// 日志类型
 	private String desc;// 日志描述

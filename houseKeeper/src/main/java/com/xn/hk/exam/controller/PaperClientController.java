@@ -152,7 +152,7 @@ public class PaperClientController {
 		score.setBriefScore(Constant.ZERO_VALUE);
 		score.getPaper().setPaperId(paperId);
 		score.setExamPaperId(user.getUserId());
-		score.setPaperStatus(StatusEnum.ISLOCKED.getCode());
+		score.setPaperStatus(StatusEnum.LOCKED.getCode());
 		// 添加分数和用户答案
 		paperClientService.addScoreAndSolution(score, qlist, userList);
 		session.setAttribute(Constant.TIP_KEY, StringUtil.genTipMsg("交卷成功!", Constant.SUCCESS_TIP_KEY));

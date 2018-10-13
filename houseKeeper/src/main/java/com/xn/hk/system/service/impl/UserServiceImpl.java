@@ -40,10 +40,10 @@ public class UserServiceImpl extends BaseServiceImpl<User> implements UserServic
 	public int changeState(Integer userId) {
 		Integer userState = userDao.findById(userId).getUserState();
 		// 拿到当前用户的状态，判断调用不同的方法切换用户状态
-		if (userState.intValue() == StatusEnum.NORMAL.getCode().intValue()) {
-			return userDao.changeState(StatusEnum.ISLOCKED.getCode(), userId);
+		if (userState.intValue() == StatusEnum.ACTIVE.getCode().intValue()) {
+			return userDao.changeState(StatusEnum.LOCKED.getCode(), userId);
 		} else {
-			return userDao.changeState(StatusEnum.NORMAL.getCode(), userId);
+			return userDao.changeState(StatusEnum.ACTIVE.getCode(), userId);
 		}
 	}
 

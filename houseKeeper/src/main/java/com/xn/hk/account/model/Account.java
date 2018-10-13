@@ -2,6 +2,8 @@ package com.xn.hk.account.model;
 
 import java.io.Serializable;
 
+import com.xn.hk.common.constant.EnabledEnum;
+
 /**
  * 
  * @Title: Account
@@ -39,7 +41,7 @@ public class Account implements Serializable {
 	/**
 	 * 是否有效：0：未删状态(默认)，1：已删状态
 	 */
-	private int isOk;
+	private Integer isOk;
 	/**
 	 * 创建月份,固定8位(格式:YYYYmm)
 	 */
@@ -124,11 +126,11 @@ public class Account implements Serializable {
 		this.accountType = accountType;
 	}
 
-	public int getIsOk() {
+	public Integer getIsOk() {
 		return isOk;
 	}
 
-	public void setIsOk(int isOk) {
+	public void setIsOk(Integer isOk) {
 		this.isOk = isOk;
 	}
 
@@ -184,4 +186,54 @@ public class Account implements Serializable {
 				+ updateTime + ", remark=" + remark + ", userName=" + userName + "]";
 	}
 
+	/**
+	 * 拼接日志内容(排除空信息和可指定记录内容字段)
+	 * 
+	 * @return 日志内容
+	 */
+	public String getLogContent() {
+		StringBuffer sb = new StringBuffer();
+		sb.append("[");
+		if (getAccountId() != null) {
+			sb.append("账务ID=" + getAccountId());
+		}
+		if (getAccountTitle() != null) {
+			sb.append("账务标题=" + getAccountTitle());
+		}
+		if (getUserId() != null) {
+			sb.append("用户ID=" + getUserId());
+		}
+		if (getUserName() != null) {
+			sb.append("用户姓名=" + getUserName());
+		}
+		if (getAccountFee() != 0) {
+			sb.append("账务金额=" + getAccountFee());
+		}
+		if (getType().getTypeName() != null) {
+			sb.append("账务类别=" + getType().getTypeName());
+		}
+		if (getAccountType() != null) {
+			sb.append("支付方式=" + getAccountType());
+		}
+		if (getIsOk() != null) {
+			sb.append("是否可用=" + EnabledEnum.getDescByCode(getIsOk()));
+		}
+		if (getCurmonth() != null) {
+			sb.append("创建月份=" + getCurmonth());
+		}
+		if (getCurday() != null) {
+			sb.append("创建日期=" + getCurday());
+		}
+		if (getCreateTime() != null) {
+			sb.append("创建时间=" + getCreateTime());
+		}
+		if (getUpdateTime() != null) {
+			sb.append("更新时间=" + getUpdateTime());
+		}
+		if (getRemark() != null) {
+			sb.append("备注信息=" + getRemark());
+		}
+		sb.append("]");
+		return sb.toString();
+	}
 }

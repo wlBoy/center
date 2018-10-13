@@ -2,6 +2,8 @@ package com.xn.hk.exam.model;
 
 import java.io.Serializable;
 
+import com.xn.hk.common.constant.EnabledEnum;
+
 /**
  * @Title: QuestionType
  * @Package: com.xn.hk.exam.model
@@ -22,7 +24,7 @@ public class QuestionType implements Serializable {
 	/**
 	 * 是否有效：0：未删状态(默认)，1：已删状态
 	 */
-	private int isOk;
+	private Integer isOk;
 	/**
 	 * 创建时间
 	 */
@@ -52,11 +54,11 @@ public class QuestionType implements Serializable {
 		this.typeName = typeName;
 	}
 
-	public int getIsOk() {
+	public Integer getIsOk() {
 		return isOk;
 	}
 
-	public void setIsOk(int isOk) {
+	public void setIsOk(Integer isOk) {
 		this.isOk = isOk;
 	}
 
@@ -92,6 +94,36 @@ public class QuestionType implements Serializable {
 	public String toString() {
 		return "QuestionType [typeId=" + typeId + ", typeName=" + typeName + ", isOk=" + isOk + ", createTime="
 				+ createTime + ", updateTime=" + updateTime + ", remark=" + remark + "]";
+	}
+	
+	/**
+	 * 拼接日志内容(排除空信息和可指定记录内容字段)
+	 * 
+	 * @return 日志内容
+	 */
+	public String getLogContent() {
+		StringBuffer sb = new StringBuffer();
+		sb.append("[");
+		if (getTypeId() != null) {
+			sb.append("题型ID=" + getTypeId());
+		}
+		if (getTypeName() != null) {
+			sb.append("题型名称=" + getTypeName());
+		}
+		if (getIsOk() != null) {
+			sb.append("是否可用=" + EnabledEnum.getDescByCode(getIsOk()));
+		}
+		if (getCreateTime() != null) {
+			sb.append("创建时间=" + getCreateTime());
+		}
+		if (getUpdateTime() != null) {
+			sb.append("更新时间=" + getUpdateTime());
+		}
+		if (getRemark() != null) {
+			sb.append("备注信息=" + getRemark());
+		}
+		sb.append("]");
+		return sb.toString();
 	}
 
 }

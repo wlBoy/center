@@ -5,12 +5,19 @@ import javax.servlet.http.HttpSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.xn.hk.account.model.Account;
+import com.xn.hk.account.model.AccountType;
 import com.xn.hk.common.constant.Constant;
 import com.xn.hk.common.dao.BaseDao;
 import com.xn.hk.common.utils.filter.ManagerLoginFilter;
 import com.xn.hk.common.utils.string.DateFormatUtil;
 import com.xn.hk.common.utils.string.StringUtil;
+import com.xn.hk.exam.model.Paper;
+import com.xn.hk.exam.model.Question;
+import com.xn.hk.exam.model.QuestionType;
 import com.xn.hk.system.model.AdminLog;
+import com.xn.hk.system.model.Module;
+import com.xn.hk.system.model.Role;
 import com.xn.hk.system.model.User;
 
 /**
@@ -62,15 +69,17 @@ public class LogHelper {
 	 */
 	public void saveLog(BaseDao<AdminLog> adminLogDao, HttpSession session, String logName, boolean logResult,
 			Integer logType, Object obj) {
-		String objStr = obj.toString();
-		objStr = objStr.substring(objStr.indexOf("["), objStr.length());
-		String logContent = logName + objStr;// 拼接日志内容
+		String logContent = logName + getLogContent(obj);// 拼接日志内容
+		AdminLog adminLog = new AdminLog();
 		// 从session中拿出用户信息
 		User user = (User) session.getAttribute(Constant.SESSION_USER_KEY);
-		AdminLog adminLog = new AdminLog();
-		adminLog.setLogId(StringUtil.genUUIDString());
+		// 当用户session为空时，此时为登录或注销操作，此时从obj中取用户信息
+		if (user == null) {
+			user = (User) obj;
+		}
 		adminLog.setUserId(user.getUserId());
 		adminLog.setUserName(user.getUserName());
+		adminLog.setLogId(StringUtil.genUUIDString());
 		adminLog.setLogType(logType);
 		adminLog.setLogContent(logContent);
 		adminLog.setLogTime(DateFormatUtil.formatDateTime());
@@ -85,6 +94,44 @@ public class LogHelper {
 			logger.error("插入日志失败，日志信息为:" + adminLog.toString());
 		} else {
 			logger.error("插入日志成功，日志信息为:" + adminLog.toString());
+		}
+	}
+
+	/**
+	 * 通过传进来的obj对象动态生成日志内容[key1=value1,key2=value2]
+	 * 
+	 * @param obj
+	 *            obj对象
+	 * @return 日志内容
+	 */
+	private String getLogContent(Object obj) {
+		if (obj instanceof User) {
+			User user = (User) obj;
+			return user.getLogContent();
+		} else if (obj instanceof Role) {
+			Role role = (Role) obj;
+			return role.getLogContent();
+		} else if (obj instanceof Module) {
+			Module module = (Module) obj;
+			return module.getLogContent();
+		} else if (obj instanceof Account) {
+			Account account = (Account) obj;
+			return account.getLogContent();
+		} else if (obj instanceof AccountType) {
+			AccountType accountType = (AccountType) obj;
+			return accountType.getLogContent();
+		} else if (obj instanceof QuestionType) {
+			QuestionType questionType = (QuestionType) obj;
+			return questionType.getLogContent();
+		} else if (obj instanceof Question) {
+			Question question = (Question) obj;
+			return question.getLogContent();
+		} else if (obj instanceof Paper) {
+			Paper paper = (Paper) obj;
+			return paper.getLogContent();
+		} else {
+			logger.error("不支持改对象模型!");
+			return "";
 		}
 	}
 

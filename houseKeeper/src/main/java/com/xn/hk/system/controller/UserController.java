@@ -124,8 +124,6 @@ public class UserController {
 		String verifyCodeValue = (String) session.getAttribute(Constant.VERIFY_CODE_KEY);
 		if (!user.getVerifyCode().equalsIgnoreCase(verifyCodeValue)) {
 			logger.error("验证码错误!");
-			// 记录日志
-			LogHelper.getInstance().saveLog(adminLogDao, session, "用户登录", false, LogType.USER_LOG.getType(), user);
 			session.setAttribute(Constant.TIP_KEY, StringUtil.genTipMsg("验证码错误!", Constant.ERROR_TIP_KEY));
 			return View.USER_REDITRCT_LOGIN_VIEW;
 		}
@@ -133,10 +131,10 @@ public class UserController {
 		User u = userService.findByName(userName);
 		if (u != null) {
 			// 4.账户被冻结
-			if (u.getUserState().intValue() == StatusEnum.ISLOCKED.getCode().intValue()) {
+			if (u.getUserState().intValue() == StatusEnum.LOCKED.getCode().intValue()) {
 				logger.error("用户{}已冻结，请联系管理员!", user.getUserName());
 				// 记录日志
-				LogHelper.getInstance().saveLog(adminLogDao, session, "用户登录", false, LogType.USER_LOG.getType(), user);
+				LogHelper.getInstance().saveLog(adminLogDao, session, "用户登录", false, LogType.USER_LOG.getType(), u);
 				session.setAttribute(Constant.TIP_KEY, StringUtil.genTipMsg("该账户已冻结，请联系管理员!", Constant.ERROR_TIP_KEY));
 				return View.USER_REDITRCT_LOGIN_VIEW;
 			} else {
@@ -154,7 +152,7 @@ public class UserController {
 					logger.info("用户{}登录成功!", userName);
 					// 记录日志
 					LogHelper.getInstance().saveLog(adminLogDao, session, "用户登录", true, LogType.USER_LOG.getType(),
-							user);
+							u);
 					// 将该用户保存至session中
 					session.setAttribute(Constant.SESSION_USER_KEY, u);
 					return View.USER_REDITRCT_HOME_VIEW;
@@ -162,7 +160,7 @@ public class UserController {
 					logger.error("用户{}登录,密码错误!", userName);
 					// 记录日志
 					LogHelper.getInstance().saveLog(adminLogDao, session, "用户登录", false, LogType.USER_LOG.getType(),
-							user);
+							u);
 					session.setAttribute(Constant.TIP_KEY, StringUtil.genTipMsg("登录密码错误!", Constant.ERROR_TIP_KEY));
 					return View.USER_REDITRCT_LOGIN_VIEW;
 				}
@@ -170,8 +168,6 @@ public class UserController {
 		} else {
 			// 账户不存在
 			logger.error("用户{}不存在!", userName);
-			// 记录日志
-			LogHelper.getInstance().saveLog(adminLogDao, session, "用户登录", false, LogType.USER_LOG.getType(), user);
 			session.setAttribute(Constant.TIP_KEY, StringUtil.genTipMsg("该账户不存在!", Constant.ERROR_TIP_KEY));
 			return View.USER_REDITRCT_LOGIN_VIEW;
 		}
@@ -352,6 +348,9 @@ public class UserController {
 	 */
 	@RequestMapping(value = "/update.do")
 	public ModelAndView updateUser(User user, HttpSession session) {
+		// 使用MD5加密(用户登录密码+登录密码key)存入数据库中,提高密码的加密程度
+		String userPwd = MD5Util.MD5(genUserPwd(user) + CfgConstant.USER_PWD_KEY);
+		user.setUserPwd(userPwd);
 		int result = userService.update(session, "修改用户", LogType.USER_LOG.getType(), user);
 		if (result == Constant.ZERO_VALUE) {
 			logger.error("修改{}用户失败!", user.getUserName());
@@ -454,6 +453,7 @@ public class UserController {
 			user.setUserFace(newName);
 			// 更新用户信息
 			userService.uploadFace(user);
+			user = userService.findById(user.getUserId());
 			// 记录日志
 			LogHelper.getInstance().saveLog(adminLogDao, session, "上传头像", true, LogType.USER_LOG.getType(), user);
 			session.setAttribute(Constant.TIP_KEY, StringUtil.genTipMsg("上传头像成功!", Constant.SUCCESS_TIP_KEY));

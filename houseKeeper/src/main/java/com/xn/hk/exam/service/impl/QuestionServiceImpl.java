@@ -40,10 +40,10 @@ public class QuestionServiceImpl extends BaseServiceImpl<Question> implements Qu
 	 */
 	public int changeState(Integer questionId) {
 		Question q = questionDao.findById(questionId);
-		if (q.getQuestionStatus().intValue() == StatusEnum.NORMAL.getCode().intValue()) {
-			return questionDao.changeState(StatusEnum.ISLOCKED.getCode(), questionId);
+		if (q.getQuestionStatus().intValue() == StatusEnum.ACTIVE.getCode().intValue()) {
+			return questionDao.changeState(StatusEnum.LOCKED.getCode(), questionId);
 		} else {
-			return questionDao.changeState(StatusEnum.NORMAL.getCode(), questionId);
+			return questionDao.changeState(StatusEnum.ACTIVE.getCode(), questionId);
 		}
 	}
 

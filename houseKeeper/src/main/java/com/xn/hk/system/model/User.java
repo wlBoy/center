@@ -2,6 +2,9 @@ package com.xn.hk.system.model;
 
 import java.io.Serializable;
 
+import com.xn.hk.common.constant.EnabledEnum;
+import com.xn.hk.common.constant.StatusEnum;
+
 /**
  * 
  * @Title: User
@@ -168,4 +171,39 @@ public class User implements Serializable {
 				+ ", role=" + role + "]";
 	}
 
+	/**
+	 * 拼接日志内容(排除空信息和可指定记录内容字段)
+	 * 
+	 * @return 日志内容
+	 */
+	public String getLogContent() {
+		StringBuffer sb = new StringBuffer();
+		sb.append("[");
+		if (getUserId() != null) {
+			sb.append("用户ID=" + getUserId());
+		}
+		if (getUserName() != null) {
+			sb.append("用户姓名=" + getUserName());
+		}
+		if (getUserState() != null) {
+			sb.append("用户状态=" + StatusEnum.getDescByCode(getUserState()));
+		}
+		if (getIsOk() != null) {
+			sb.append("是否可用=" + EnabledEnum.getDescByCode(getIsOk()));
+		}
+		if (getCreateTime() != null) {
+			sb.append("创建时间=" + getCreateTime());
+		}
+		if (getUpdateTime() != null) {
+			sb.append("更新时间=" + getUpdateTime());
+		}
+		if (getRemark() != null) {
+			sb.append("备注信息=" + getRemark());
+		}
+		if (getRole().getRoleName() != null) {
+			sb.append("角色名称=" + getRole().getRoleName());
+		}
+		sb.append("]");
+		return sb.toString();
+	}
 }

@@ -2,6 +2,9 @@ package com.xn.hk.exam.model;
 
 import java.io.Serializable;
 
+import com.xn.hk.common.constant.EnabledEnum;
+import com.xn.hk.common.constant.StatusEnum;
+
 /**
  * 
  * @Title: Question
@@ -77,6 +80,7 @@ public class Question implements Serializable {
 	 * 
 	 */
 	private String userSolution;
+
 	public Integer getQuestionId() {
 		return questionId;
 	}
@@ -212,4 +216,66 @@ public class Question implements Serializable {
 		this.userSolution = userSolution;
 	}
 
+	@Override
+	public String toString() {
+		return "Question [questionId=" + questionId + ", type=" + type + ", questionTitle=" + questionTitle
+				+ ", optionA=" + optionA + ", optionB=" + optionB + ", optionC=" + optionC + ", optionD=" + optionD
+				+ ", answer=" + answer + ", curday=" + curday + ", questionStatus=" + questionStatus + ", isOk=" + isOk
+				+ ", createTime=" + createTime + ", updateTime=" + updateTime + ", remark=" + remark
+				+ ", questionScore=" + questionScore + ", userSolution=" + userSolution + "]";
+	}
+
+	/**
+	 * 拼接日志内容(排除空信息和可指定记录内容字段)
+	 * 
+	 * @return 日志内容
+	 */
+	public String getLogContent() {
+		StringBuffer sb = new StringBuffer();
+		sb.append("[");
+		if (getQuestionId() != null) {
+			sb.append("题目ID=" + getQuestionId());
+		}
+		if (getType().getTypeName() != null) {
+			sb.append("题型名称=" + getType().getTypeName());
+		}
+		if (getQuestionTitle() != null) {
+			sb.append("题目标题=" + getQuestionTitle());
+		}
+		if (getOptionA() != null) {
+			sb.append("选项A=" + getOptionA());
+		}
+		if (getOptionB() != null) {
+			sb.append("选项B=" + getOptionB());
+		}
+		if (getOptionC() != null) {
+			sb.append("选项C=" + getOptionC());
+		}
+		if (getOptionD() != null) {
+			sb.append("选项D=" + getOptionD());
+		}
+		if (getAnswer() != null) {
+			sb.append("题目答案=" + getAnswer());
+		}
+		if (getCurday() != null) {
+			sb.append("创建日期=" + getCurday());
+		}
+		if (getQuestionStatus() != null) {
+			sb.append("题目状态=" + StatusEnum.getDescByCode(getQuestionStatus()));
+		}
+		if (getIsOk() != null) {
+			sb.append("是否可用=" + EnabledEnum.getDescByCode(getIsOk()));
+		}
+		if (getCreateTime() != null) {
+			sb.append("创建时间=" + getCreateTime());
+		}
+		if (getUpdateTime() != null) {
+			sb.append("更新时间=" + getUpdateTime());
+		}
+		if (getRemark() != null) {
+			sb.append("备注信息=" + getRemark());
+		}
+		sb.append("]");
+		return sb.toString();
+	}
 }

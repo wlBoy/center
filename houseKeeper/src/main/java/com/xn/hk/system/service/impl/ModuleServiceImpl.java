@@ -70,10 +70,10 @@ public class ModuleServiceImpl extends BaseServiceImpl<Module> implements Module
 	public int changeState(Integer moduleId) {
 		Integer moduleState = moduleDao.findById(moduleId).getIsAllowed();
 		// 拿到当前模块的状态，判断调用不同的方法切换模块状态
-		if (moduleState.intValue() == StatusEnum.NORMAL.getCode().intValue()) {
-			return moduleDao.changeState(StatusEnum.ISLOCKED.getCode(), moduleId);
+		if (moduleState.intValue() == StatusEnum.ACTIVE.getCode().intValue()) {
+			return moduleDao.changeState(StatusEnum.LOCKED.getCode(), moduleId);
 		} else {
-			return moduleDao.changeState(StatusEnum.NORMAL.getCode(), moduleId);
+			return moduleDao.changeState(StatusEnum.ACTIVE.getCode(), moduleId);
 		}
 	}
 
