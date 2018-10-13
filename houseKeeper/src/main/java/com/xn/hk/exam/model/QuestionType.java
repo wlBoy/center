@@ -95,7 +95,7 @@ public class QuestionType implements Serializable {
 		return "QuestionType [typeId=" + typeId + ", typeName=" + typeName + ", isOk=" + isOk + ", createTime="
 				+ createTime + ", updateTime=" + updateTime + ", remark=" + remark + "]";
 	}
-	
+
 	/**
 	 * 拼接日志内容(排除空信息和可指定记录内容字段)
 	 * 
@@ -105,25 +105,27 @@ public class QuestionType implements Serializable {
 		StringBuffer sb = new StringBuffer();
 		sb.append("[");
 		if (getTypeId() != null) {
-			sb.append("题型ID=" + getTypeId());
+			sb.append("题型ID=" + getTypeId() + ",");
 		}
 		if (getTypeName() != null) {
-			sb.append("题型名称=" + getTypeName());
+			sb.append("题型名称=" + getTypeName() + ",");
 		}
 		if (getIsOk() != null) {
-			sb.append("是否可用=" + EnabledEnum.getDescByCode(getIsOk()));
+			sb.append("是否可用=" + EnabledEnum.getDescByCode(getIsOk()) + ",");
 		}
 		if (getCreateTime() != null) {
-			sb.append("创建时间=" + getCreateTime());
+			sb.append("创建时间=" + getCreateTime() + ",");
 		}
-		if (getUpdateTime() != null) {
-			sb.append("更新时间=" + getUpdateTime());
+		if (createTime != null) {
+			sb.append("创建时间=" + getCreateTime() + ",");
 		}
-		if (getRemark() != null) {
-			sb.append("备注信息=" + getRemark());
+		if (updateTime != null) {
+			sb.append("更新时间=" + getUpdateTime() + ",");
 		}
-		sb.append("]");
-		return sb.toString();
+		// 去除最后一个,后再拼接]
+		String str = sb.toString();
+		str = str.substring(0, str.length() - 1) + "]";
+		return str;
 	}
 
 }

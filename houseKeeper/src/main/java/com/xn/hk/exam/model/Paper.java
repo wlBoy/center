@@ -273,48 +273,50 @@ public class Paper implements Serializable {
 		StringBuffer sb = new StringBuffer();
 		sb.append("[");
 		if (getPaperId() != null) {
-			sb.append("试卷ID=" + getPaperId());
+			sb.append("试卷ID=" + getPaperId() + ",");
 		}
 		if (getCreatePaperId() != null) {
-			sb.append("创建人ID=" + getCreatePaperId());
+			sb.append("创建人ID=" + getCreatePaperId() + ",");
 		}
 		if (getCreatePaperName() != null) {
-			sb.append("创建人姓名=" + getCreatePaperName());
+			sb.append("创建人姓名=" + getCreatePaperName() + ",");
 		}
 		if (getPaperName() != null) {
-			sb.append("试卷名称=" + getPaperName());
+			sb.append("试卷名称=" + getPaperName() + ",");
 		}
 		if (getPaperScore() != null) {
-			sb.append("试卷分数=" + getPaperScore());
+			sb.append("试卷分数=" + getPaperScore() + ",");
 		}
 		if (getTotalTime() != null) {
-			sb.append("试卷总时间=" + getTotalTime());
+			sb.append("试卷总时间=" + getTotalTime() + ",");
 		}
-		if (getStartTime() != null) {
-			sb.append("开考时间=" + getStartTime());
+		if (startTime != null) {
+			sb.append("开考时间=" + getStartTime() + ",");
 		}
-		if (getEndTime() != null) {
-			sb.append("结束时间=" + getEndTime());
+		if (endTime != null) {
+			sb.append("结束时间=" + getEndTime() + ",");
 		}
 		if (getCurday() != null) {
-			sb.append("创建日期=" + getCurday());
+			sb.append("创建日期=" + getCurday() + ",");
 		}
 		if (getIsAllowed() != null) {
-			sb.append("试卷状态=" + StatusEnum.getDescByCode(getIsAllowed()));
+			sb.append("试卷状态=" + StatusEnum.getDescByCode(getIsAllowed()) + ",");
 		}
 		if (getIsOk() != null) {
-			sb.append("是否可用=" + EnabledEnum.getDescByCode(getIsOk()));
+			sb.append("是否可用=" + EnabledEnum.getDescByCode(getIsOk()) + ",");
 		}
-		if (getCreateTime() != null) {
-			sb.append("创建时间=" + getCreateTime());
+		if (createTime != null) {
+			sb.append("创建时间=" + getCreateTime() + ",");
 		}
-		if (getUpdateTime() != null) {
-			sb.append("更新时间=" + getUpdateTime());
+		if (updateTime != null) {
+			sb.append("更新时间=" + getUpdateTime() + ",");
 		}
 		if (getRemark() != null) {
-			sb.append("备注信息=" + getRemark());
+			sb.append("备注信息=" + getRemark() + ",");
 		}
-		sb.append("]");
-		return sb.toString();
+		// 去除最后一个,后再拼接]
+		String str = sb.toString();
+		str = str.substring(0, str.length() - 1) + "]";
+		return str;
 	}
 }

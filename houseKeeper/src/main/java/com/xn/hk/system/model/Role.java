@@ -74,7 +74,7 @@ public class Role implements Serializable {
 	}
 
 	public String getCreateTime() {
-		return createTime.substring(0,createTime.length()-2);
+		return createTime.substring(0, createTime.length() - 2);
 	}
 
 	public void setCreateTime(String createTime) {
@@ -82,7 +82,7 @@ public class Role implements Serializable {
 	}
 
 	public String getUpdateTime() {
-		return updateTime.substring(0,updateTime.length()-2);
+		return updateTime.substring(0, updateTime.length() - 2);
 	}
 
 	public void setUpdateTime(String updateTime) {
@@ -126,6 +126,7 @@ public class Role implements Serializable {
 				+ ", updateTime=" + updateTime + ", remark=" + remark + ", modules=" + modules + ", moduleName="
 				+ moduleName + "]";
 	}
+
 	/**
 	 * 拼接日志内容(排除空信息和可指定记录内容字段)
 	 * 
@@ -135,24 +136,26 @@ public class Role implements Serializable {
 		StringBuffer sb = new StringBuffer();
 		sb.append("[");
 		if (getRoleId() != null) {
-			sb.append("角色ID=" + getRoleId());
+			sb.append("角色ID=" + getRoleId() + ",");
 		}
 		if (getRoleName() != null) {
-			sb.append("角色姓名=" + getRoleName());
+			sb.append("角色姓名=" + getRoleName() + ",");
 		}
 		if (getIsOk() != null) {
-			sb.append("是否可用=" + EnabledEnum.getDescByCode(getIsOk()));
+			sb.append("是否可用=" + EnabledEnum.getDescByCode(getIsOk()) + ",");
 		}
-		if (getCreateTime() != null) {
-			sb.append("创建时间=" + getCreateTime());
+		if (createTime != null) {
+			sb.append("创建时间=" + getCreateTime() + ",");
 		}
-		if (getUpdateTime() != null) {
-			sb.append("更新时间=" + getUpdateTime());
+		if (updateTime != null) {
+			sb.append("更新时间=" + getUpdateTime() + ",");
 		}
 		if (getRemark() != null) {
-			sb.append("备注信息=" + getRemark());
+			sb.append("备注信息=" + getRemark() + ",");
 		}
-		sb.append("]");
-		return sb.toString();
+		// 去除最后一个,后再拼接]
+		String str = sb.toString();
+		str = str.substring(0, str.length() - 1) + "]";
+		return str;
 	}
 }

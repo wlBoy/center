@@ -180,30 +180,32 @@ public class User implements Serializable {
 		StringBuffer sb = new StringBuffer();
 		sb.append("[");
 		if (getUserId() != null) {
-			sb.append("用户ID=" + getUserId());
+			sb.append("用户ID=" + getUserId() + ",");
 		}
 		if (getUserName() != null) {
-			sb.append("用户姓名=" + getUserName());
-		}
-		if (getUserState() != null) {
-			sb.append("用户状态=" + StatusEnum.getDescByCode(getUserState()));
-		}
-		if (getIsOk() != null) {
-			sb.append("是否可用=" + EnabledEnum.getDescByCode(getIsOk()));
-		}
-		if (getCreateTime() != null) {
-			sb.append("创建时间=" + getCreateTime());
-		}
-		if (getUpdateTime() != null) {
-			sb.append("更新时间=" + getUpdateTime());
-		}
-		if (getRemark() != null) {
-			sb.append("备注信息=" + getRemark());
+			sb.append("用户姓名=" + getUserName() + ",");
 		}
 		if (getRole().getRoleName() != null) {
-			sb.append("角色名称=" + getRole().getRoleName());
+			sb.append("角色名称=" + getRole().getRoleName() + ",");
 		}
-		sb.append("]");
-		return sb.toString();
+		if (getUserState() != null) {
+			sb.append("用户状态=" + StatusEnum.getDescByCode(getUserState()) + ",");
+		}
+		if (getIsOk() != null) {
+			sb.append("是否可用=" + EnabledEnum.getDescByCode(getIsOk()) + ",");
+		}
+		if (createTime != null) {
+			sb.append("创建时间=" + getCreateTime() + ",");
+		}
+		if (updateTime != null) {
+			sb.append("更新时间=" + getUpdateTime() + ",");
+		}
+		if (getRemark() != null) {
+			sb.append("备注信息=" + getRemark() + ",");
+		}
+		// 去除最后一个,后再拼接]
+		String str = sb.toString();
+		str = str.substring(0, str.length() - 1) + "]";
+		return str;
 	}
 }

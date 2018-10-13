@@ -3,7 +3,6 @@ package com.xn.hk.system.model;
 import java.io.Serializable;
 
 /**
- * 
  * @Title: Log
  * @Package: com.xn.hk.system.model
  * @Description: 系统管理的记录日志实体类

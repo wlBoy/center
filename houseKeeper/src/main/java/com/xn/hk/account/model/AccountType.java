@@ -3,6 +3,7 @@ package com.xn.hk.account.model;
 import java.io.Serializable;
 
 import com.xn.hk.common.constant.EnabledEnum;
+
 /**
  * 
  * @Title: AccountType
@@ -120,6 +121,7 @@ public class AccountType implements Serializable {
 				+ parentType + ", isOk=" + isOk + ", createTime=" + createTime + ", updateTime=" + updateTime
 				+ ", remark=" + remark + "]";
 	}
+
 	/**
 	 * 拼接日志内容(排除空信息和可指定记录内容字段)
 	 * 
@@ -129,30 +131,32 @@ public class AccountType implements Serializable {
 		StringBuffer sb = new StringBuffer();
 		sb.append("[");
 		if (getTypeId() != null) {
-			sb.append("账务类别ID=" + getTypeId());
+			sb.append("账务类别ID=" + getTypeId() + ",");
 		}
 		if (getUserId() != null) {
-			sb.append("用户ID=" + getUserId());
+			sb.append("用户ID=" + getUserId() + ",");
 		}
 		if (getTypeName() != null) {
-			sb.append("账务类别名称=" +getTypeName());
+			sb.append("账务类别名称=" + getTypeName() + ",");
 		}
 		if (getParentType() != null) {
-			sb.append("账务父类别=" +getParentType());
+			sb.append("账务父类别=" + getParentType() + ",");
 		}
 		if (getIsOk() != null) {
-			sb.append("是否可用=" + EnabledEnum.getDescByCode(getIsOk()));
+			sb.append("是否可用=" + EnabledEnum.getDescByCode(getIsOk()) + ",");
 		}
-		if (getCreateTime() != null) {
-			sb.append("创建时间=" + getCreateTime());
+		if (createTime != null) {
+			sb.append("创建时间=" + getCreateTime() + ",");
 		}
-		if (getUpdateTime() != null) {
-			sb.append("更新时间=" + getUpdateTime());
+		if (updateTime != null) {
+			sb.append("更新时间=" + getUpdateTime() + ",");
 		}
 		if (getRemark() != null) {
-			sb.append("备注信息=" + getRemark());
+			sb.append("备注信息=" + getRemark() + ",");
 		}
-		sb.append("]");
-		return sb.toString();
+		// 去除最后一个,后再拼接]
+		String str = sb.toString();
+		str = str.substring(0, str.length() - 1) + "]";
+		return str;
 	}
 }

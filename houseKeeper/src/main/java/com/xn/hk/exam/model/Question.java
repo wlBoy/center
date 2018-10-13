@@ -234,48 +234,50 @@ public class Question implements Serializable {
 		StringBuffer sb = new StringBuffer();
 		sb.append("[");
 		if (getQuestionId() != null) {
-			sb.append("题目ID=" + getQuestionId());
+			sb.append("题目ID=" + getQuestionId() + ",");
 		}
 		if (getType().getTypeName() != null) {
 			sb.append("题型名称=" + getType().getTypeName());
 		}
 		if (getQuestionTitle() != null) {
-			sb.append("题目标题=" + getQuestionTitle());
+			sb.append("题目标题=" + getQuestionTitle() + ",");
 		}
 		if (getOptionA() != null) {
-			sb.append("选项A=" + getOptionA());
+			sb.append("选项A=" + getOptionA() + ",");
 		}
 		if (getOptionB() != null) {
-			sb.append("选项B=" + getOptionB());
+			sb.append("选项B=" + getOptionB() + ",");
 		}
 		if (getOptionC() != null) {
-			sb.append("选项C=" + getOptionC());
+			sb.append("选项C=" + getOptionC() + ",");
 		}
 		if (getOptionD() != null) {
-			sb.append("选项D=" + getOptionD());
+			sb.append("选项D=" + getOptionD() + ",");
 		}
 		if (getAnswer() != null) {
-			sb.append("题目答案=" + getAnswer());
+			sb.append("题目答案=" + getAnswer() + ",");
 		}
 		if (getCurday() != null) {
-			sb.append("创建日期=" + getCurday());
+			sb.append("创建日期=" + getCurday() + ",");
 		}
 		if (getQuestionStatus() != null) {
-			sb.append("题目状态=" + StatusEnum.getDescByCode(getQuestionStatus()));
+			sb.append("题目状态=" + StatusEnum.getDescByCode(getQuestionStatus()) + ",");
 		}
 		if (getIsOk() != null) {
-			sb.append("是否可用=" + EnabledEnum.getDescByCode(getIsOk()));
+			sb.append("是否可用=" + EnabledEnum.getDescByCode(getIsOk()) + ",");
 		}
-		if (getCreateTime() != null) {
-			sb.append("创建时间=" + getCreateTime());
+		if (createTime != null) {
+			sb.append("创建时间=" + getCreateTime() + ",");
 		}
-		if (getUpdateTime() != null) {
-			sb.append("更新时间=" + getUpdateTime());
+		if (updateTime != null) {
+			sb.append("更新时间=" + getUpdateTime() + ",");
 		}
 		if (getRemark() != null) {
-			sb.append("备注信息=" + getRemark());
+			sb.append("备注信息=" + getRemark() + ",");
 		}
-		sb.append("]");
-		return sb.toString();
+		// 去除最后一个,后再拼接]
+		String str = sb.toString();
+		str = str.substring(0, str.length() - 1) + "]";
+		return str;
 	}
 }

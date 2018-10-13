@@ -195,45 +195,47 @@ public class Account implements Serializable {
 		StringBuffer sb = new StringBuffer();
 		sb.append("[");
 		if (getAccountId() != null) {
-			sb.append("账务ID=" + getAccountId());
+			sb.append("账务ID=" + getAccountId() + ",");
 		}
 		if (getAccountTitle() != null) {
-			sb.append("账务标题=" + getAccountTitle());
+			sb.append("账务标题=" + getAccountTitle() + ",");
 		}
 		if (getUserId() != null) {
-			sb.append("用户ID=" + getUserId());
+			sb.append("用户ID=" + getUserId() + ",");
 		}
 		if (getUserName() != null) {
-			sb.append("用户姓名=" + getUserName());
+			sb.append("用户姓名=" + getUserName() + ",");
 		}
 		if (getAccountFee() != 0) {
-			sb.append("账务金额=" + getAccountFee());
+			sb.append("账务金额=" + getAccountFee() + ",");
 		}
 		if (getType().getTypeName() != null) {
-			sb.append("账务类别=" + getType().getTypeName());
+			sb.append("账务类别=" + getType().getTypeName() + ",");
 		}
 		if (getAccountType() != null) {
-			sb.append("支付方式=" + getAccountType());
+			sb.append("支付方式=" + getAccountType() + ",");
 		}
 		if (getIsOk() != null) {
-			sb.append("是否可用=" + EnabledEnum.getDescByCode(getIsOk()));
+			sb.append("是否可用=" + EnabledEnum.getDescByCode(getIsOk()) + ",");
 		}
 		if (getCurmonth() != null) {
-			sb.append("创建月份=" + getCurmonth());
+			sb.append("创建月份=" + getCurmonth() + ",");
 		}
 		if (getCurday() != null) {
-			sb.append("创建日期=" + getCurday());
+			sb.append("创建日期=" + getCurday() + ",");
 		}
-		if (getCreateTime() != null) {
-			sb.append("创建时间=" + getCreateTime());
+		if (createTime != null) {
+			sb.append("创建时间=" + getCreateTime() + ",");
 		}
-		if (getUpdateTime() != null) {
-			sb.append("更新时间=" + getUpdateTime());
+		if (updateTime != null) {
+			sb.append("更新时间=" + getUpdateTime() + ",");
 		}
 		if (getRemark() != null) {
-			sb.append("备注信息=" + getRemark());
+			sb.append("备注信息=" + getRemark() + ",");
 		}
-		sb.append("]");
-		return sb.toString();
+		// 去除最后一个,后再拼接]
+		String str = sb.toString();
+		str = str.substring(0, str.length() - 1) + "]";
+		return str;
 	}
 }

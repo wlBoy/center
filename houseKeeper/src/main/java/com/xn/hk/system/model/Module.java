@@ -190,40 +190,42 @@ public class Module implements Serializable {
 		StringBuffer sb = new StringBuffer();
 		sb.append("[");
 		if (getModuleId() != null) {
-			sb.append("模块ID=" + getModuleId());
+			sb.append("模块ID=" + getModuleId() + ",");
 		}
 		if (getModuleName() != null) {
-			sb.append("模块姓名=" + getModuleName());
+			sb.append("模块姓名=" + getModuleName() + ",");
 		}
 		if (getModuleLevel() != null) {
-			sb.append("模块级别=" + getModuleLevel());
+			sb.append("模块级别=" + getModuleLevel() + ",");
 		}
 		if (getActionUrl() != null) {
-			sb.append("请求URL=" + getActionUrl());
+			sb.append("请求URL=" + getActionUrl() + ",");
 		}
 		if (getParentId() != null) {
-			sb.append("父级模块ID=" + getParentId());
+			sb.append("父级模块ID=" + getParentId() + ",");
 		}
 		if (getParentName() != null) {
-			sb.append("父级模块名称=" + getParentName());
+			sb.append("父级模块名称=" + getParentName() + ",");
 		}
 		if (getIsAllowed() != null) {
-			sb.append("模块状态=" + StatusEnum.getDescByCode(getIsAllowed()));
+			sb.append("模块状态=" + StatusEnum.getDescByCode(getIsAllowed()) + ",");
 		}
 		if (getIsOk() != null) {
-			sb.append("是否可用=" + EnabledEnum.getDescByCode(getIsOk()));
+			sb.append("是否可用=" + EnabledEnum.getDescByCode(getIsOk()) + ",");
 		}
-		if (getCreateTime() != null) {
-			sb.append("创建时间=" + getCreateTime());
+		if (createTime != null) {
+			sb.append("创建时间=" + getCreateTime() + ",");
 		}
-		if (getUpdateTime() != null) {
-			sb.append("更新时间=" + getUpdateTime());
+		if (updateTime != null) {
+			sb.append("更新时间=" + getUpdateTime() + ",");
 		}
 		if (getRemark() != null) {
-			sb.append("备注信息=" + getRemark());
+			sb.append("备注信息=" + getRemark() + ",");
 		}
-		sb.append("]");
-		return sb.toString();
+		// 去除最后一个,后再拼接]
+		String str = sb.toString();
+		str = str.substring(0, str.length() - 1) + "]";
+		return str;
 	}
 
 }

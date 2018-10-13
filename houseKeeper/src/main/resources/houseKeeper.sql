@@ -2015,7 +2015,8 @@ insert  into `tb_xn_sys_module`(`module_id`,`module_name`,`parent_id`,`module_le
 (26,'批阅试卷',17,2,'/exam/score/showAllScore.do',0,0,'2018-01-17 15:31:01','2018-01-19 13:45:00','批阅试卷'),
 (27,'已考试卷',24,2,'/exam/score/showPersonalScore.do',0,0,'2018-01-17 15:32:08','2018-01-17 15:32:08','已考试卷'),
 (28,'渠道数据',14,2,'/data/channel/showAllChannelData.do',1,0,'2018-01-22 11:56:06','2018-04-15 18:10:03','渠道数据'),
-(29,'日志管理',1,2,'/system/log/showAllLog.do',0,0,'2018-01-23 15:27:03','2018-01-23 15:27:03','日志管理');
+(29,'日志管理',1,2,'/system/log/showAllLog.do',0,0,'2018-01-23 15:27:03','2018-01-23 15:27:03','日志管理'),
+(30,'系统日志管理',1,2,'/system/log/showAllAdminLog.do',0,0,'2018-01-23 15:27:03','2018-01-23 15:27:03','系统日志管理');
 
 /*Table structure for table `tb_xn_sys_role` */
 

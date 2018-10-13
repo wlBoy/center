@@ -61,6 +61,11 @@ public class AdminLog implements Serializable {
 	 */
 	private Integer isOk;
 
+	/**
+	 * 日志类型描述
+	 */
+	private String logTypeDesc;
+
 	public String getLogId() {
 		return logId;
 	}
@@ -71,6 +76,14 @@ public class AdminLog implements Serializable {
 
 	public Integer getUserId() {
 		return userId;
+	}
+
+	public String getLogTypeDesc() {
+		return logTypeDesc;
+	}
+
+	public void setLogTypeDesc(String logTypeDesc) {
+		this.logTypeDesc = logTypeDesc;
 	}
 
 	public void setUserId(Integer userId) {
@@ -134,7 +147,7 @@ public class AdminLog implements Serializable {
 	}
 
 	public String getLogTime() {
-		return logTime;
+		return logTime.substring(0, logTime.length() - 2);
 	}
 
 	public void setLogTime(String logTime) {
@@ -142,7 +155,7 @@ public class AdminLog implements Serializable {
 	}
 
 	public String getLogTimeStamp() {
-		return logTimeStamp;
+		return logTimeStamp.substring(0, logTimeStamp.length() - 2);
 	}
 
 	public void setLogTimeStamp(String logTimeStamp) {
