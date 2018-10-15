@@ -84,7 +84,7 @@ public class AccountRestController {
 		Result result = new Result();
 		if (userId == null) {
 			// 从session中拿出当前用户信息
-			User user = (User) session.getAttribute(Constant.SESSION_USER_KEY);
+			User user = (User) session.getAttribute(Constant.SESSION_USER);
 			if (user == null) {
 				return Result.genNullValueTip(result, "userId");
 			}
@@ -152,7 +152,7 @@ public class AccountRestController {
 		Result result = new Result();
 		if (userId == null) {
 			// 从session中拿出当前用户信息
-			User user = (User) session.getAttribute(Constant.SESSION_USER_KEY);
+			User user = (User) session.getAttribute(Constant.SESSION_USER);
 			if (user == null) {
 				return Result.genNullValueTip(result, "userId");
 			}

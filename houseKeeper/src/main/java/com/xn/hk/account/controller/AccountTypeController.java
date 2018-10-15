@@ -55,14 +55,14 @@ public class AccountTypeController {
 	public ModelAndView showPersonalType(AccountType type, BasePage<AccountType> pages, HttpSession session) {
 		ModelAndView mv = new ModelAndView("account/showPersonalType");
 		// 从session中拿出当前用户信息,将它塞入分页对象中去
-		User user = (User) session.getAttribute(Constant.SESSION_USER_KEY);
+		User user = (User) session.getAttribute(Constant.SESSION_USER);
 		type.setUserId(user.getUserId());
 		// 封装查询条件
 		pages.setBean(type);
 		List<AccountType> types = accountTypeService.pagePersonalList(pages);
 		// 将list封装到分页对象中
 		pages.setList(types);
-		mv.addObject(Constant.PAGE_KEY, pages);
+		mv.addObject(Constant.PAGES, pages);
 		return mv;
 	}
 
@@ -77,14 +77,14 @@ public class AccountTypeController {
 	@RequestMapping(value = "/add.do")
 	public ModelAndView addType(AccountType type, HttpSession session) {
 		// 从session中拿出当前用户信息,将它塞入对象中去
-		User user = (User) session.getAttribute(Constant.SESSION_USER_KEY);
+		User user = (User) session.getAttribute(Constant.SESSION_USER);
 		type.setUserId(user.getUserId());
 		int result = accountTypeService.insert(session, "添加账务类别", LogType.ACCOUNT_TYPE_LOG.getType(), type);
 		if (result == Constant.ZERO_VALUE) {
 			logger.error("添加个人账务类别{}失败!", type.getTypeName());
 		} else {
 			logger.info("添加个人账务类别{}成功!", type.getTypeName());
-			session.setAttribute(Constant.TIP_KEY, StringUtil.genTipMsg("添加个人账务类别成功!", Constant.SUCCESS_TIP_KEY));
+			session.setAttribute(Constant.TIP_MSG, StringUtil.genTipMsg("添加个人账务类别成功!", Constant.SUCCESS_TIP));
 		}
 		return View.ACCOUNT_TYPE_REDITRCT_ACTION;
 	}
@@ -104,7 +104,7 @@ public class AccountTypeController {
 			logger.error("修改个人账务类别{}失败!", type.getTypeName());
 		} else {
 			logger.info("修改个人账务类别{}成功!", type.getTypeName());
-			session.setAttribute(Constant.TIP_KEY, StringUtil.genTipMsg("修改个人账务类别成功!", Constant.SUCCESS_TIP_KEY));
+			session.setAttribute(Constant.TIP_MSG, StringUtil.genTipMsg("修改个人账务类别成功!", Constant.SUCCESS_TIP));
 		}
 		// 记录日志
 		return View.ACCOUNT_TYPE_REDITRCT_ACTION;
@@ -125,7 +125,7 @@ public class AccountTypeController {
 			logger.error("删除失败,该数组不存在!");
 		} else {
 			logger.info("删除个人账务类别成功!");
-			session.setAttribute(Constant.TIP_KEY, StringUtil.genTipMsg("删除个人账务类别成功!", Constant.SUCCESS_TIP_KEY));
+			session.setAttribute(Constant.TIP_MSG, StringUtil.genTipMsg("删除个人账务类别成功!", Constant.SUCCESS_TIP));
 		}
 		return View.ACCOUNT_TYPE_REDITRCT_ACTION;
 	}

@@ -75,13 +75,13 @@ public class PaperController {
 		List<Paper> papers = paperService.pageList(pages);
 		// 将list封装到分页对象中
 		pages.setList(papers);
-		mv.addObject(Constant.PAGE_KEY, pages);
+		mv.addObject(Constant.PAGES, pages);
 		// 查询所有的题型,供添加试卷时使用
 		List<QuestionType> types = questionTypeService.findAll();
-		mv.addObject(Constant.TYPES_KEY, types);
+		mv.addObject(Constant.TYPES, types);
 		// 查询所有用户信息，供下拉框显示
 		List<User> users = userService.findAll();
-		mv.addObject(Constant.USER_KEY, users);
+		mv.addObject(Constant.USERS, users);
 		return mv;
 	}
 
@@ -97,7 +97,7 @@ public class PaperController {
 	public ModelAndView addQuestion(Paper paper, HttpSession session) {
 		boolean logResult = true;
 		// 从session中取出当前用户
-		User user = (User) session.getAttribute(Constant.SESSION_USER_KEY);
+		User user = (User) session.getAttribute(Constant.SESSION_USER);
 		paper.setCreatePaperId(user.getUserId());
 		int result = paperService.addPaper(paper);
 		if (result == Constant.ZERO_VALUE) {
@@ -105,7 +105,7 @@ public class PaperController {
 			logger.error("添加试卷{}失败!", paper.getPaperName());
 		} else {
 			logger.info("添加试卷{}成功!", paper.getPaperName());
-			session.setAttribute(Constant.TIP_KEY, StringUtil.genTipMsg("添加试卷成功!", Constant.SUCCESS_TIP_KEY));
+			session.setAttribute(Constant.TIP_MSG, StringUtil.genTipMsg("添加试卷成功!", Constant.SUCCESS_TIP));
 		}
 		// 记录日志
 		LogHelper.getInstance().saveLog(adminLogDao, session, "添加试卷", logResult, LogType.PAPER_LOG.getType(), paper);
@@ -127,7 +127,7 @@ public class PaperController {
 			logger.error("修改试卷{}失败!", paper.getPaperName());
 		} else {
 			logger.info("修改试卷{}成功!", paper.getPaperName());
-			session.setAttribute(Constant.TIP_KEY, StringUtil.genTipMsg("修改试卷成功!", Constant.SUCCESS_TIP_KEY));
+			session.setAttribute(Constant.TIP_MSG, StringUtil.genTipMsg("修改试卷成功!", Constant.SUCCESS_TIP));
 		}
 		return View.PAPER_REDITRCT_ACTION;
 	}
@@ -149,7 +149,7 @@ public class PaperController {
 			logger.error("删除失败,该数组不存在!");
 		} else {
 			logger.info("删除试卷成功!");
-			session.setAttribute(Constant.TIP_KEY, StringUtil.genTipMsg("删除试卷成功!", Constant.SUCCESS_TIP_KEY));
+			session.setAttribute(Constant.TIP_MSG, StringUtil.genTipMsg("删除试卷成功!", Constant.SUCCESS_TIP));
 		}
 		for (Integer paperId : paperIds) {
 			Paper paper = paperService.findById(paperId);
@@ -199,10 +199,10 @@ public class PaperController {
 		List<Question> qList = questionService.findAnswerByPaperIdAndUserId(paperId, userId);
 		// 在试卷配置表中根据试卷ID查询该试卷简答题的分数(即每到简答题分数)
 		Integer score = paperService.findScoreByPaperId(paperId);
-		mv.addObject(Constant.SCORE_VALUES, score);
-		mv.addObject(Constant.PAPERID_KEY, paperId);
-		mv.addObject(Constant.USERID_KEY, userId);
-		mv.addObject(Constant.QLIST_VALUES, qList);
+		mv.addObject(Constant.SCORE, score);
+		mv.addObject(Constant.PAPER_ID, paperId);
+		mv.addObject(Constant.USER_ID, userId);
+		mv.addObject(Constant.QLIST, qList);
 		return mv;
 	}
 

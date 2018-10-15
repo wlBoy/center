@@ -49,7 +49,7 @@ public class QuestionTypeController {
 	public ModelAndView showAllType() {
 		ModelAndView mv = new ModelAndView("exam/showAllType");
 		List<QuestionType> types = questionTypeService.findAll();
-		mv.addObject(Constant.TYPES_KEY, types);
+		mv.addObject(Constant.TYPES, types);
 		return mv;
 	}
 
@@ -68,7 +68,7 @@ public class QuestionTypeController {
 			logger.error("添加题型{}失败!", type.getTypeName());
 		} else {
 			logger.info("添加题型{}成功!", type.getTypeName());
-			session.setAttribute(Constant.TIP_KEY, StringUtil.genTipMsg("添加题型成功!", Constant.SUCCESS_TIP_KEY));
+			session.setAttribute(Constant.TIP_MSG, StringUtil.genTipMsg("添加题型成功!", Constant.SUCCESS_TIP));
 		}
 		return View.QUESTION_TYPE_REDITRCT_ACTION;
 	}
@@ -88,7 +88,7 @@ public class QuestionTypeController {
 			logger.error("修改题型{}失败!", type.getTypeName());
 		} else {
 			logger.info("修改题型{}成功!", type.getTypeName());
-			session.setAttribute(Constant.TIP_KEY, StringUtil.genTipMsg("修改题型成功!", Constant.SUCCESS_TIP_KEY));
+			session.setAttribute(Constant.TIP_MSG, StringUtil.genTipMsg("修改题型成功!", Constant.SUCCESS_TIP));
 		}
 		return View.QUESTION_TYPE_REDITRCT_ACTION;
 	}
@@ -108,7 +108,7 @@ public class QuestionTypeController {
 			logger.error("删除失败,该题型ID不存在!");
 		} else {
 			logger.info("删除题型成功!");
-			session.setAttribute(Constant.TIP_KEY, StringUtil.genTipMsg("删除题型成功!", Constant.SUCCESS_TIP_KEY));
+			session.setAttribute(Constant.TIP_MSG, StringUtil.genTipMsg("删除题型成功!", Constant.SUCCESS_TIP));
 		}
 		return View.QUESTION_TYPE_REDITRCT_ACTION;
 	}

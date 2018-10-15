@@ -127,10 +127,10 @@ public class UserController {
 		saveCookie(user, session, response);
 		if(enableVerifyCodeLogin) {
 			// 2.取到用户输入的验证码和session中的验证码比较
-			String verifyCodeValue = (String) session.getAttribute(Constant.VERIFY_CODE_KEY);
+			String verifyCodeValue = (String) session.getAttribute(Constant.VERIFY_CODE_VALUE);
 			if (!user.getVerifyCode().equalsIgnoreCase(verifyCodeValue)) {
 				logger.error("验证码错误!");
-				session.setAttribute(Constant.TIP_KEY, StringUtil.genTipMsg("验证码错误!", Constant.ERROR_TIP_KEY));
+				session.setAttribute(Constant.TIP_MSG, StringUtil.genTipMsg("验证码错误!", Constant.ERROR_TIP));
 				return View.USER_REDITRCT_LOGIN_VIEW;
 			}
 		}
@@ -142,7 +142,7 @@ public class UserController {
 				logger.error("用户{}已冻结，请联系管理员!", user.getUserName());
 				// 记录日志
 				LogHelper.getInstance().saveLog(adminLogDao, session, "用户登录", false, LogType.USER_LOG.getType(), u);
-				session.setAttribute(Constant.TIP_KEY, StringUtil.genTipMsg("该账户已冻结，请联系管理员!", Constant.ERROR_TIP_KEY));
+				session.setAttribute(Constant.TIP_MSG, StringUtil.genTipMsg("该账户已冻结，请联系管理员!", Constant.ERROR_TIP));
 				return View.USER_REDITRCT_LOGIN_VIEW;
 			} else {
 				// 5.正常通过，可以登录
@@ -154,26 +154,26 @@ public class UserController {
 					List<Module> twoModules = moduleService.findModuleByRoleId(Constant.TWO_MODULES_VALUE,
 							u.getRole().getRoleId());
 					// 保存该账户角色可访问的一级模块数组和所有的二级模块列表，以便页面遍历
-					session.setAttribute(Constant.ONE_MODULES_KEY, oneModules);
-					session.setAttribute(Constant.TWO_MODULES_KEY, twoModules);
+					session.setAttribute(Constant.ONE_MODULES, oneModules);
+					session.setAttribute(Constant.TWO_MODULES, twoModules);
 					logger.info("用户{}登录成功!", userName);
 					// 记录日志
 					LogHelper.getInstance().saveLog(adminLogDao, session, "用户登录", true, LogType.USER_LOG.getType(), u);
 					// 将该用户保存至session中
-					session.setAttribute(Constant.SESSION_USER_KEY, u);
+					session.setAttribute(Constant.SESSION_USER, u);
 					return View.USER_REDITRCT_HOME_VIEW;
 				} else {
 					logger.error("用户{}登录,密码错误!", userName);
 					// 记录日志
 					LogHelper.getInstance().saveLog(adminLogDao, session, "用户登录", false, LogType.USER_LOG.getType(), u);
-					session.setAttribute(Constant.TIP_KEY, StringUtil.genTipMsg("登录密码错误!", Constant.ERROR_TIP_KEY));
+					session.setAttribute(Constant.TIP_MSG, StringUtil.genTipMsg("登录密码错误!", Constant.ERROR_TIP));
 					return View.USER_REDITRCT_LOGIN_VIEW;
 				}
 			}
 		} else {
 			// 账户不存在
 			logger.error("用户{}不存在!", userName);
-			session.setAttribute(Constant.TIP_KEY, StringUtil.genTipMsg("该账户不存在!", Constant.ERROR_TIP_KEY));
+			session.setAttribute(Constant.TIP_MSG, StringUtil.genTipMsg("该账户不存在!", Constant.ERROR_TIP));
 			return View.USER_REDITRCT_LOGIN_VIEW;
 		}
 	}
@@ -187,8 +187,8 @@ public class UserController {
 	 */
 	private void saveCookie(User user, HttpSession session, HttpServletResponse response) {
 		// 创建Cookie
-		Cookie nameCookie = new Cookie(Constant.USERNAME_KEY, user.getUserName());
-		Cookie pwdCookie = new Cookie(Constant.USERPWD_KEY, user.getUserPwd());
+		Cookie nameCookie = new Cookie(Constant.COOKIE_USERNAME, user.getUserName());
+		Cookie pwdCookie = new Cookie(Constant.COOKIE_USERPWD, user.getUserPwd());
 		logger.info("{}选择{}保存cookie:", user.getUserName(), user.getRememberMe());
 		if (user.getRememberMe() == null) {
 			// 不保存Cookie
@@ -229,7 +229,7 @@ public class UserController {
 		// 获取验证码
 		String verifyCodeValue = StringUtil.drawImg(output, length.intValue());
 		// 将验证码放入session中,以便登录时校验
-		session.setAttribute(Constant.VERIFY_CODE_KEY, verifyCodeValue);
+		session.setAttribute(Constant.VERIFY_CODE_VALUE, verifyCodeValue);
 		try {
 			ServletOutputStream out = response.getOutputStream();
 			output.writeTo(out);
@@ -247,12 +247,12 @@ public class UserController {
 	 */
 	@RequestMapping(value = "/logoff.do")
 	public ModelAndView logoff(HttpSession session) {
-		User user = (User) session.getAttribute(Constant.SESSION_USER_KEY);
+		User user = (User) session.getAttribute(Constant.SESSION_USER);
 		// 销毁session中的user
-		session.removeAttribute(Constant.SESSION_USER_KEY);
+		session.removeAttribute(Constant.SESSION_USER);
 		// 记录日志
 		LogHelper.getInstance().saveLog(adminLogDao, session, "用户注销", true, LogType.USER_LOG.getType(), user);
-		session.setAttribute(Constant.TIP_KEY, StringUtil.genTipMsg("用户注销成功!", Constant.SUCCESS_TIP_KEY));
+		session.setAttribute(Constant.TIP_MSG, StringUtil.genTipMsg("用户注销成功!", Constant.SUCCESS_TIP));
 		return View.USER_REDITRCT_LOGIN_VIEW;
 	}
 
@@ -273,10 +273,10 @@ public class UserController {
 		List<User> users = userService.pageList(pages);
 		// 将list封装到分页对象中
 		pages.setList(users);
-		mv.addObject(Constant.PAGE_KEY, pages);
+		mv.addObject(Constant.PAGES, pages);
 		// 查询所有的角色
 		List<Role> roles = roleService.findAll();
-		mv.addObject(Constant.ROlE_KEY, roles);
+		mv.addObject(Constant.ROlES, roles);
 		return mv;
 	}
 
@@ -295,7 +295,7 @@ public class UserController {
 			logger.error("删除失败,该数组不存在!");
 		} else {
 			logger.info("删除用户成功!");
-			session.setAttribute(Constant.TIP_KEY, StringUtil.genTipMsg("删除用户成功!", Constant.SUCCESS_TIP_KEY));
+			session.setAttribute(Constant.TIP_MSG, StringUtil.genTipMsg("删除用户成功!", Constant.SUCCESS_TIP));
 		}
 		return View.USER_REDITRCT_ACTION;
 	}
@@ -318,7 +318,7 @@ public class UserController {
 			logger.error("添加{}用户失败!", user.getUserName());
 		} else {
 			logger.info("添加{}用户成功!", user.getUserName());
-			session.setAttribute(Constant.TIP_KEY, StringUtil.genTipMsg("添加用户成功!", Constant.SUCCESS_TIP_KEY));
+			session.setAttribute(Constant.TIP_MSG, StringUtil.genTipMsg("添加用户成功!", Constant.SUCCESS_TIP));
 		}
 		return View.USER_REDITRCT_ACTION;
 	}
@@ -361,7 +361,7 @@ public class UserController {
 			logger.error("修改{}用户失败!", user.getUserName());
 		} else {
 			logger.info("修改{}用户成功!", user.getUserName());
-			session.setAttribute(Constant.TIP_KEY, StringUtil.genTipMsg("修改用户成功!", Constant.SUCCESS_TIP_KEY));
+			session.setAttribute(Constant.TIP_MSG, StringUtil.genTipMsg("修改用户成功!", Constant.SUCCESS_TIP));
 		}
 		return View.USER_REDITRCT_ACTION;
 	}
@@ -408,13 +408,13 @@ public class UserController {
 			// 重置密码
 			userPwd = genUserPwd(user);
 			logName = "重置密码";
-			session.setAttribute(Constant.TIP_KEY, StringUtil.genTipMsg("重置密码成功!", Constant.SUCCESS_TIP_KEY));
+			session.setAttribute(Constant.TIP_MSG, StringUtil.genTipMsg("重置密码成功!", Constant.SUCCESS_TIP));
 			mv = View.USER_REDITRCT_ACTION;
 		} else {
 			// 修改密码
 			userPwd = newpassword;
 			logName = "修改密码";
-			session.setAttribute(Constant.TIP_KEY, StringUtil.genTipMsg("修改密码成功,可以去登录了!", Constant.SUCCESS_TIP_KEY));
+			session.setAttribute(Constant.TIP_MSG, StringUtil.genTipMsg("修改密码成功,可以去登录了!", Constant.SUCCESS_TIP));
 			mv = View.USER_REDITRCT_UPDATE_PWD_VIEW;
 		}
 		// 使用MD5加密(用户登录密码+登录密码key)存入数据库中,提高密码的加密程度
@@ -461,13 +461,13 @@ public class UserController {
 			user = userService.findById(user.getUserId());
 			// 记录日志
 			LogHelper.getInstance().saveLog(adminLogDao, session, "上传头像", true, LogType.USER_LOG.getType(), user);
-			session.setAttribute(Constant.TIP_KEY, StringUtil.genTipMsg("上传头像成功!", Constant.SUCCESS_TIP_KEY));
+			session.setAttribute(Constant.TIP_MSG, StringUtil.genTipMsg("上传头像成功!", Constant.SUCCESS_TIP));
 			return View.USER_REDITRCT_ACTION;
 		} catch (Exception e) {
 			logger.error("用户{}上传头像失败,原因是:{}", user.getUserName(), e.getMessage());
 			// 记录日志
 			LogHelper.getInstance().saveLog(adminLogDao, session, "上传头像", false, LogType.USER_LOG.getType(), user);
-			session.setAttribute(Constant.TIP_KEY, StringUtil.genTipMsg("上传头像失败!", Constant.ERROR_TIP_KEY));
+			session.setAttribute(Constant.TIP_MSG, StringUtil.genTipMsg("上传头像失败!", Constant.ERROR_TIP));
 			return View.USER_REDITRCT_ACTION;
 		}
 	}

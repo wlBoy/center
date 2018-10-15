@@ -57,7 +57,7 @@ public class ScoreController {
 	public ModelAndView showPersonalScore(Score score, BasePage<Score> pages, HttpSession session) {
 		ModelAndView mv = new ModelAndView("examClient/showPersonalScore");
 		// 从session中拿出当前用户信息,将它塞入分页对象中去
-		User user = (User) session.getAttribute(Constant.SESSION_USER_KEY);
+		User user = (User) session.getAttribute(Constant.SESSION_USER);
 		score.setExamPaperId(user.getUserId());
 		// 封装查询条件
 		pages.setBean(score);
@@ -65,10 +65,10 @@ public class ScoreController {
 		List<Score> scores = scoreService.showPersonalList(pages);
 		// 将list封装到分页对象中
 		pages.setList(scores);
-		mv.addObject(Constant.PAGE_KEY, pages);
+		mv.addObject(Constant.PAGES, pages);
 		// 查询所有用户信息，供下拉框显示
 		List<User> users = userService.findAll();
-		mv.addObject(Constant.USER_KEY, users);
+		mv.addObject(Constant.USERS, users);
 		return mv;
 	}
 
@@ -90,10 +90,10 @@ public class ScoreController {
 		List<Score> scores = scoreService.pageList(pages);
 		// 将list封装到分页对象中
 		pages.setList(scores);
-		mv.addObject(Constant.PAGE_KEY, pages);
+		mv.addObject(Constant.PAGES, pages);
 		// 查询所有用户信息，供下拉框显示
 		List<User> users = userService.findAll();
-		mv.addObject(Constant.USER_KEY, users);
+		mv.addObject(Constant.USERS, users);
 		return mv;
 	}
 
@@ -114,7 +114,7 @@ public class ScoreController {
 		logger.info("用户{}试卷{}简答题总分为:{}", userId, paperId, sum);
 		// 根据试卷ID和用户ID给该试卷主观题打分
 		scoreService.updateScore(paperId, userId, sum);
-		session.setAttribute(Constant.TIP_KEY, StringUtil.genTipMsg("批阅试卷成功!", Constant.SUCCESS_TIP_KEY));
+		session.setAttribute(Constant.TIP_MSG, StringUtil.genTipMsg("批阅试卷成功!", Constant.SUCCESS_TIP));
 		return View.SCORE_REDITRCT_ACTION;
 	}
 }

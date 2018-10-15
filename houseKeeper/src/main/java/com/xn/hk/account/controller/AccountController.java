@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.xn.hk.account.model.Account;
+import com.xn.hk.account.model.AccountParentType;
 import com.xn.hk.account.model.AccountType;
 import com.xn.hk.account.service.AccountService;
 import com.xn.hk.account.service.AccountTypeService;
@@ -67,20 +68,22 @@ public class AccountController {
 	public ModelAndView showPersonalAccount(Account account, BasePage<Account> pages, HttpSession session) {
 		ModelAndView mv = new ModelAndView("account/showPersonalAccount");
 		// 从session中拿出当前用户信息,将它塞入分页对象中去
-		User user = (User) session.getAttribute(Constant.SESSION_USER_KEY);
+		User user = (User) session.getAttribute(Constant.SESSION_USER);
 		account.setUserId(user.getUserId());
 		// 封装查询条件
 		pages.setBean(account);
 		List<Account> accounts = accountService.pagePersonalList(pages);
 		// 将list封装到分页对象中
 		pages.setList(accounts);
-		mv.addObject(Constant.PAGE_KEY, pages);
+		mv.addObject(Constant.PAGES, pages);
 		// 查询父级别为"收入"的子账务类别,供页面下拉框显示
-		List<AccountType> comeInTypes = accountTypeService.findChildType(Constant.COMEIN_VALUE, user.getUserId());
-		mv.addObject(Constant.COMEIN_TYPES_KEY, comeInTypes);
+		List<AccountType> comeInTypes = accountTypeService.findChildType(AccountParentType.COME_IN.getDesc(),
+				user.getUserId());
+		mv.addObject(Constant.COME_IN_TYPES, comeInTypes);
 		// 查询父级别为"支出"的子账务类别,供页面下拉框显示
-		List<AccountType> comeOutTypes = accountTypeService.findChildType(Constant.COMEOUT_VALUE, user.getUserId());
-		mv.addObject(Constant.COMEOUT_TYPES_KEY, comeOutTypes);
+		List<AccountType> comeOutTypes = accountTypeService.findChildType(AccountParentType.COME_OUT.getDesc(),
+				user.getUserId());
+		mv.addObject(Constant.COME_OUT_TYPES, comeOutTypes);
 		return mv;
 	}
 
@@ -101,10 +104,10 @@ public class AccountController {
 		List<Account> accounts = accountService.pageList(pages);
 		// 将list封装到分页对象中
 		pages.setList(accounts);
-		mv.addObject(Constant.PAGE_KEY, pages);
+		mv.addObject(Constant.PAGES, pages);
 		// 查询所有用户信息，供下拉框显示
 		List<User> users = userService.findAll();
-		mv.addObject(Constant.USER_KEY, users);
+		mv.addObject(Constant.USERS, users);
 		return mv;
 	}
 
@@ -120,7 +123,7 @@ public class AccountController {
 	public ModelAndView addAccount(Account account, HttpSession session) {
 		boolean logResult = true;
 		// 从session中拿出当前用户信息,将它塞入对象中去
-		User user = (User) session.getAttribute(Constant.SESSION_USER_KEY);
+		User user = (User) session.getAttribute(Constant.SESSION_USER);
 		account.setUserId(user.getUserId());
 		int result = accountService.addAccount(account);
 		if (result == Constant.ZERO_VALUE) {
@@ -128,7 +131,7 @@ public class AccountController {
 			logger.error("添加个人账务{}失败!", account.getAccountTitle());
 		} else {
 			logger.info("添加个人账务{}成功!", account.getAccountTitle());
-			session.setAttribute(Constant.TIP_KEY, StringUtil.genTipMsg("添加个人账务成功!", Constant.SUCCESS_TIP_KEY));
+			session.setAttribute(Constant.TIP_MSG, StringUtil.genTipMsg("添加个人账务成功!", Constant.SUCCESS_TIP));
 		}
 		// 记录日志
 		LogHelper.getInstance().saveLog(adminLogDao, session, "添加账务", logResult, LogType.ACCOUNT_LOG.getType(),
@@ -153,7 +156,7 @@ public class AccountController {
 			logger.error("修改个人账务{}失败!", account.getAccountTitle());
 		} else {
 			logger.info("修改个人账务{}成功!", account.getAccountTitle());
-			session.setAttribute(Constant.TIP_KEY, StringUtil.genTipMsg("修改个人账务成功!", Constant.SUCCESS_TIP_KEY));
+			session.setAttribute(Constant.TIP_MSG, StringUtil.genTipMsg("修改个人账务成功!", Constant.SUCCESS_TIP));
 		}
 		// 记录日志
 		LogHelper.getInstance().saveLog(adminLogDao, session, "修改账务", logResult, LogType.ACCOUNT_LOG.getType(),
@@ -178,7 +181,7 @@ public class AccountController {
 			logger.error("删除失败,该数组不存在!");
 		} else {
 			logger.info("删除个人账务成功!");
-			session.setAttribute(Constant.TIP_KEY, StringUtil.genTipMsg("删除个人账务成功!", Constant.SUCCESS_TIP_KEY));
+			session.setAttribute(Constant.TIP_MSG, StringUtil.genTipMsg("删除个人账务成功!", Constant.SUCCESS_TIP));
 		}
 		for (Integer accountId : accountIds) {
 			Account account = accountService.findById(accountId);

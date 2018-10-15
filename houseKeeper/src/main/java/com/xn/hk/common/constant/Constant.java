@@ -15,29 +15,29 @@ public class Constant {
 	 */
 	public final static int ZERO_VALUE = 0;
 	/**
-	 * 提示信息key
+	 * 提示信息
 	 */
-	public final static String TIP_KEY = "msg";
+	public final static String TIP_MSG = "msg";
 	/**
-	 * 提示信息-成功状态key
+	 * 提示信息-成功状态
 	 */
-	public final static String SUCCESS_TIP_KEY = "success";
+	public final static String SUCCESS_TIP = "success";
 	/**
-	 * 提示信息-错误状态key
+	 * 提示信息-错误状态
 	 */
-	public final static String ERROR_TIP_KEY = "error";
+	public final static String ERROR_TIP = "error";
 	/**
-	 * 分页信息的key
+	 * 分页信息
 	 */
-	public final static String PAGE_KEY = "pages";
+	public final static String PAGES = "pages";
 	/**
-	 * 类别value
+	 * 类别信息
 	 */
-	public final static String TYPES_KEY = "types";
+	public final static String TYPES = "types";
 	/**
-	 * 日志级别的key
+	 * 日志级别
 	 */
-	public final static String LOG_TYPE_KEY = "logTypes";
+	public final static String LOG_TYPES = "logTypes";
 	/**
 	 * UTF-8编码
 	 */
@@ -45,50 +45,50 @@ public class Constant {
 
 	/*----------------------------------用户管理---------------------------------*/
 	/**
-	 * session中已登录用户key
+	 * session中已登录用户
 	 */
-	public final static String SESSION_USER_KEY = "user";
+	public final static String SESSION_USER = "user";
 	/**
-	 * cookie中用户名key
+	 * cookie中用户名
 	 */
-	public final static String USERNAME_KEY = "userName";
+	public final static String COOKIE_USERNAME = "userName";
 	/**
-	 * cookie中用户密码key
+	 * cookie中用户密码
 	 */
-	public final static String USERPWD_KEY = "userPwd";
+	public final static String COOKIE_USERPWD = "userPwd";
 	/**
-	 * 所有用户列表key
+	 * 所有用户列表
 	 */
-	public final static String USER_KEY = "users";
+	public final static String USERS = "users";
 	/**
-	 * 用户IDkey
+	 * 用户ID
 	 */
-	public final static String USERID_KEY = "userId";
+	public final static String USER_ID = "userId";
 	/**
-	 * 验证码key
+	 * 验证码
 	 */
-	public final static String VERIFY_CODE_KEY = "verifyCodeValue";
+	public final static String VERIFY_CODE_VALUE = "verifyCodeValue";
 
 	/*----------------------------------角色管理---------------------------------*/
 	/**
-	 * 所有角色的key
+	 * 所有角色
 	 */
-	public final static String ROlE_KEY = "roles";
+	public final static String ROlES = "roles";
 	/*----------------------------------模块管理---------------------------------*/
 	/**
-	 * 所有一级模块列表key
+	 * 所有一级模块列表
 	 */
-	public final static String ONE_MODULES_KEY = "oneModules";
+	public final static String ONE_MODULES = "oneModules";
 	/**
-	 * 所有二级模块列表key
+	 * 所有二级模块列表
 	 */
-	public final static String TWO_MODULES_KEY = "twoModules";
+	public final static String TWO_MODULES = "twoModules";
 	/**
-	 * 所有一级模块列表大小key
+	 * 所有一级模块列表大小
 	 */
 	public final static String ONE_MODULES_SIZE = "oneModulesSize";
 	/**
-	 * 所有二级模块列表大小key
+	 * 所有二级模块列表大小
 	 */
 	public final static String TWO_MODULES_SIZE = "oneModulesSize";
 	/**
@@ -101,46 +101,38 @@ public class Constant {
 	public final static int TWO_MODULES_VALUE = 2;
 	/*----------------------------------账务管理---------------------------------*/
 	/**
-	 * 账务父类别-支出
+	 * 账务父类别为收入的子类别列表
 	 */
-	public final static String COMEOUT_VALUE = "支出";
+	public final static String COME_IN_TYPES = "comeInTypes";
 	/**
-	 * 账务父类别-收入
+	 * 父类别为支出的子类别列表
 	 */
-	public final static String COMEIN_VALUE = "收入";
-	/**
-	 * 账务父类别为收入的子类别列表key
-	 */
-	public final static String COMEIN_TYPES_KEY = "comeInTypes";
-	/**
-	 * 父类别为支出的子类别列表key
-	 */
-	public final static String COMEOUT_TYPES_KEY = "comeOutTypes";
+	public final static String COME_OUT_TYPES = "comeOutTypes";
 	/*----------------------------------考试管理---------------------------------*/
 	/**
-	 * 题目列表value
+	 * 题目列表
 	 */
-	public final static String QLIST_VALUES = "qlist";
+	public final static String QLIST = "qlist";
 	/**
-	 * 用户题目答案列表value
+	 * 用户题目答案列表
 	 */
-	public final static String ULIST_VALUES = "ulist";
+	public final static String ULIST = "ulist";
 	/**
-	 * 分数value
+	 * 分数
 	 */
-	public final static String SCORE_VALUES = "score";
+	public final static String SCORE = "score";
 	/**
-	 * 试卷key
+	 * 试卷
 	 */
-	public final static String PAPER_KEY = "paper";
+	public final static String PAPER = "paper";
 	/**
-	 * 试卷IDkey
+	 * 试卷ID
 	 */
-	public final static String PAPERID_KEY = "paperId";
+	public final static String PAPER_ID = "paperId";
 	/**
-	 * 试卷正确答案key
+	 * 试卷正确答案
 	 */
-	public final static String ANSWER_KEY = "answer";
+	public final static String ANSWER = "answer";
 	
 
 }

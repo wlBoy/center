@@ -10,9 +10,9 @@ import org.springframework.stereotype.Service;
 import com.xn.hk.account.dao.AccountDao;
 import com.xn.hk.account.dao.MoneyDao;
 import com.xn.hk.account.model.Account;
+import com.xn.hk.account.model.AccountParentType;
 import com.xn.hk.account.model.Money;
 import com.xn.hk.account.service.AccountService;
-import com.xn.hk.common.constant.Constant;
 import com.xn.hk.common.dao.BaseDao;
 import com.xn.hk.common.service.impl.BaseServiceImpl;
 import com.xn.hk.common.utils.page.BasePage;
@@ -137,7 +137,7 @@ public class AccountServiceImpl extends BaseServiceImpl<Account> implements Acco
 		// 根据用户ID和当前日期查找该条数据是否存在
 		if (result == null) {
 			// 不存在,执行插入操作
-			if (Constant.COMEIN_VALUE.equals(account.getType().getParentType())) {
+			if (AccountParentType.COME_IN.getDesc().equals(account.getType().getParentType())) {
 				m.setInFee(account.getAccountFee());
 			} else {
 				m.setOutFee(account.getAccountFee());
@@ -146,7 +146,7 @@ public class AccountServiceImpl extends BaseServiceImpl<Account> implements Acco
 		} else {
 			// 存在,执行更新操作
 			logger.info("更新前-->总收入为:{},总支出为:{}", result.getInFee(), result.getOutFee());
-			if (Constant.COMEIN_VALUE.equals(account.getType().getParentType())) {
+			if (AccountParentType.COME_IN.getDesc().equals(account.getType().getParentType())) {
 				result.setInFee(result.getInFee() + account.getAccountFee());
 			} else {
 				result.setOutFee(result.getOutFee() + account.getAccountFee());
@@ -173,7 +173,7 @@ public class AccountServiceImpl extends BaseServiceImpl<Account> implements Acco
 		Money result = moneyDao.findByUserIdAndDate(m);
 		logger.info("旧账务-->总收入为:{},总支出为:{}", result.getInFee(), result.getOutFee());
 		// 先减去之前账务的金额,再填充更新后账务的金额
-		if (Constant.COMEIN_VALUE.equals(oldAccount.getType().getParentType())) {
+		if (AccountParentType.COME_IN.getDesc().equals(oldAccount.getType().getParentType())) {
 			result.setInFee(result.getInFee() - oldAccount.getAccountFee() + newAccount.getAccountFee());
 		} else {
 			result.setOutFee(result.getOutFee() - oldAccount.getAccountFee() + newAccount.getAccountFee());
@@ -196,7 +196,7 @@ public class AccountServiceImpl extends BaseServiceImpl<Account> implements Acco
 		Money result = moneyDao.findByUserIdAndDate(m);
 		logger.info("更新前-->总收入:{},总支出:{}", result.getInFee(), result.getOutFee());
 		// 减去已删除账务的金额
-		if (Constant.COMEIN_VALUE.equals(a.getType().getParentType())) {
+		if (AccountParentType.COME_IN.getDesc().equals(a.getType().getParentType())) {
 			result.setInFee(result.getInFee() - a.getAccountFee());
 		} else {
 			result.setOutFee(result.getOutFee() - a.getAccountFee());

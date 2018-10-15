@@ -2,6 +2,8 @@ package com.xn.hk.system.model;
 
 import java.io.Serializable;
 
+import com.xn.hk.common.utils.log.LogType;
+
 /**
  * 
  * @ClassName: AdminLog
@@ -28,6 +30,10 @@ public class AdminLog implements Serializable {
 	 * 日志类型
 	 */
 	private Integer logType;
+	/**
+	 * 日志类型描述(枚举类中的描述)
+	 */
+	private String logTypeDesc;
 	/**
 	 * 日志记录IP
 	 */
@@ -61,11 +67,6 @@ public class AdminLog implements Serializable {
 	 */
 	private Integer isOk;
 
-	/**
-	 * 日志类型描述
-	 */
-	private String logTypeDesc;
-
 	public String getLogId() {
 		return logId;
 	}
@@ -79,6 +80,8 @@ public class AdminLog implements Serializable {
 	}
 
 	public String getLogTypeDesc() {
+		// 替换枚举类中的描述语
+		logTypeDesc = LogType.getLogType(logType);
 		return logTypeDesc;
 	}
 

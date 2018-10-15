@@ -50,10 +50,10 @@ public class MoneyController {
 		List<Money> moneys = moneyService.pageList(pages);
 		// 将list封装到分页对象中
 		pages.setList(moneys);
-		mv.addObject(Constant.PAGE_KEY, pages);
+		mv.addObject(Constant.PAGES, pages);
 		// 查询所有用户信息，供下拉框显示
 		List<User> users = userService.findAll();
-		mv.addObject(Constant.USER_KEY, users);
+		mv.addObject(Constant.USERS, users);
 		return mv;
 	}
 

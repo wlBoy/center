@@ -67,10 +67,10 @@ public class QuestionController {
 		List<Question> questions = questionService.pageList(pages);
 		// 将list封装到分页对象中
 		pages.setList(questions);
-		mv.addObject(Constant.PAGE_KEY, pages);
+		mv.addObject(Constant.PAGES, pages);
 		// 查询所有的题型
 		List<QuestionType> types = questionTypeService.findAll();
-		mv.addObject(Constant.TYPES_KEY, types);
+		mv.addObject(Constant.TYPES, types);
 		return mv;
 	}
 
@@ -89,7 +89,7 @@ public class QuestionController {
 			logger.error("添加题目{}失败!", question.getQuestionTitle());
 		} else {
 			logger.info("添加题目{}成功!", question.getQuestionTitle());
-			session.setAttribute(Constant.TIP_KEY, StringUtil.genTipMsg("添加题目成功!", Constant.SUCCESS_TIP_KEY));
+			session.setAttribute(Constant.TIP_MSG, StringUtil.genTipMsg("添加题目成功!", Constant.SUCCESS_TIP));
 		}
 		return View.QUESTION_REDITRCT_ACTION;
 	}
@@ -109,7 +109,7 @@ public class QuestionController {
 			logger.error("修改题目{}失败!", question.getQuestionTitle());
 		} else {
 			logger.info("修改题目{}成功!", question.getQuestionTitle());
-			session.setAttribute(Constant.TIP_KEY, StringUtil.genTipMsg("修改题目成功!", Constant.SUCCESS_TIP_KEY));
+			session.setAttribute(Constant.TIP_MSG, StringUtil.genTipMsg("修改题目成功!", Constant.SUCCESS_TIP));
 		}
 		return View.QUESTION_REDITRCT_ACTION;
 	}
@@ -129,7 +129,7 @@ public class QuestionController {
 			logger.error("删除失败,该数组不存在!");
 		} else {
 			logger.info("删除题目成功!");
-			session.setAttribute(Constant.TIP_KEY, StringUtil.genTipMsg("删除题目成功!", Constant.SUCCESS_TIP_KEY));
+			session.setAttribute(Constant.TIP_MSG, StringUtil.genTipMsg("删除题目成功!", Constant.SUCCESS_TIP));
 		}
 		return View.QUESTION_REDITRCT_ACTION;
 	}

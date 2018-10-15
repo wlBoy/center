@@ -62,10 +62,10 @@ public class ModuleController {
 		List<Module> modules = moduleService.pageList(pages);
 		// 将list封装到分页对象中
 		pages.setList(modules);
-		mv.addObject(Constant.PAGE_KEY, pages);
+		mv.addObject(Constant.PAGES, pages);
 		// 查询所有的一级模块
 		List<Module> oneModules = moduleService.findModuleByLevel(Constant.ONE_MODULES_VALUE);
-		mv.addObject(Constant.ONE_MODULES_KEY, oneModules);
+		mv.addObject(Constant.ONE_MODULES, oneModules);
 		return mv;
 	}
 
@@ -84,7 +84,7 @@ public class ModuleController {
 			logger.error("添加模块{}失败!", module.getModuleName());
 		} else {
 			logger.info("添加模块{}成功!", module.getModuleName());
-			session.setAttribute(Constant.TIP_KEY, StringUtil.genTipMsg("添加模块成功!", Constant.SUCCESS_TIP_KEY));
+			session.setAttribute(Constant.TIP_MSG, StringUtil.genTipMsg("添加模块成功!", Constant.SUCCESS_TIP));
 		}
 		return View.MODULE_REDITRCT_ACTION;
 	}
@@ -103,7 +103,7 @@ public class ModuleController {
 			logger.error("修改模块{}失败!", module.getModuleName());
 		} else {
 			logger.info("修改模块{}成功!", module.getModuleName());
-			session.setAttribute(Constant.TIP_KEY, StringUtil.genTipMsg("修改模块成功!", Constant.SUCCESS_TIP_KEY));
+			session.setAttribute(Constant.TIP_MSG, StringUtil.genTipMsg("修改模块成功!", Constant.SUCCESS_TIP));
 		}
 		return View.MODULE_REDITRCT_ACTION;
 	}
@@ -123,7 +123,7 @@ public class ModuleController {
 			logger.error("删除失败,该数组不存在!");
 		} else {
 			logger.info("删除模块成功!");
-			session.setAttribute(Constant.TIP_KEY, StringUtil.genTipMsg("删除模块成功!", Constant.SUCCESS_TIP_KEY));
+			session.setAttribute(Constant.TIP_MSG, StringUtil.genTipMsg("删除模块成功!", Constant.SUCCESS_TIP));
 		}
 		return View.MODULE_REDITRCT_ACTION;
 	}

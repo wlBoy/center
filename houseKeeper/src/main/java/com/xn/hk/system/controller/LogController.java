@@ -55,10 +55,10 @@ public class LogController {
 		List<Log> logs = logService.pageList(pages);
 		// 将list封装到分页对象中
 		pages.setList(logs);
-		mv.addObject(Constant.PAGE_KEY, pages);
+		mv.addObject(Constant.PAGES, pages);
 		// 查询所有的用户
 		List<User> users = userService.findAll();
-		mv.addObject(Constant.USER_KEY, users);
+		mv.addObject(Constant.USERS, users);
 		return mv;
 	}
 
@@ -77,18 +77,14 @@ public class LogController {
 		// 封装查询条件
 		pages.setBean(adminLog);
 		List<AdminLog> logs = adminLogService.pageList(pages);
-		// 填充日志类型描述语
-		for (AdminLog log : logs) {
-			log.setLogTypeDesc(LogType.getLogType(log.getLogType()));
-		}
 		// 将list封装到分页对象中
 		pages.setList(logs);
-		mv.addObject(Constant.PAGE_KEY, pages);
+		mv.addObject(Constant.PAGES, pages);
 		// 查询所有的用户
 		List<User> users = userService.findAll();
-		mv.addObject(Constant.USER_KEY, users);
+		mv.addObject(Constant.USERS, users);
 		// 拿到所有的日志类型
-		mv.addObject(Constant.LOG_TYPE_KEY, LogType.getChoiceList());
+		mv.addObject(Constant.LOG_TYPES, LogType.getChoiceList());
 		return mv;
 	}
 }

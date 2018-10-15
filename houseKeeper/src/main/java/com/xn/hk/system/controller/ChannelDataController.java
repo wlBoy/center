@@ -67,7 +67,7 @@ public class ChannelDataController {
 			logger.error("导入Excel数据失败!");
 		} else {
 			logger.info("导入Excel数据成功!");
-			session.setAttribute(Constant.TIP_KEY, StringUtil.genTipMsg("导入Excel数据成功!", Constant.SUCCESS_TIP_KEY));
+			session.setAttribute(Constant.TIP_MSG, StringUtil.genTipMsg("导入Excel数据成功!", Constant.SUCCESS_TIP));
 		}
 		in.close();
 		return View.CHANNEL_REDITRCT_ACTION;
@@ -123,7 +123,7 @@ public class ChannelDataController {
 		List<ChannelData> list = channelDataService.pageList(pages);
 		// 将list封装到分页对象中
 		pages.setList(list);
-		mv.addObject(Constant.PAGE_KEY, pages);
+		mv.addObject(Constant.PAGES, pages);
 		return mv;
 	}
 

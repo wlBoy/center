@@ -55,8 +55,8 @@ public class ManagerLoginFilter implements Filter {
 		HttpSession session = request.getSession();
 		// 当访问的是后台首页，则进行session判断，没登录转向登录页面
 		if (TOHOME_ACTION.equals(targetURL)) {
-			if (session == null || session.getAttribute(Constant.SESSION_USER_KEY) == null) {
-				session.setAttribute(Constant.TIP_KEY, StringUtil.genTipMsg("您还没有登录,请先登录!", "error"));
+			if (session == null || session.getAttribute(Constant.SESSION_USER) == null) {
+				session.setAttribute(Constant.TIP_MSG, StringUtil.genTipMsg("您还没有登录,请先登录!", Constant.ERROR_TIP));
 				response.sendRedirect(ctx + TOLOGIN_ACTION);
 				return;
 			}

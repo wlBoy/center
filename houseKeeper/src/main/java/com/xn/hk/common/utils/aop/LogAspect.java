@@ -42,7 +42,7 @@ public class LogAspect {
 		// 获取请求request
 		request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
 		// 获取当前session中的用户
-		User user = (User) request.getSession().getAttribute(Constant.SESSION_USER_KEY);
+		User user = (User) request.getSession().getAttribute(Constant.SESSION_USER);
 		if (user == null) {
 			return value;
 		}

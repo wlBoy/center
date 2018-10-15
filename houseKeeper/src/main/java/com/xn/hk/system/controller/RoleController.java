@@ -71,12 +71,12 @@ public class RoleController {
 		PageInfo<Role> roles = new PageInfo<Role>(roleService.pageAll(pages));
 		pages.setList(roles.getList());
 		pages.setCount((int) roles.getTotal());
-		mv.addObject(Constant.PAGE_KEY, pages);
+		mv.addObject(Constant.PAGES, pages);
 		// 查询所有的一级模块和二级模块和它们的个数,以便角色分配时模块联动
 		List<Module> oneModules = moduleService.findModuleByLevel(Constant.ONE_MODULES_VALUE);
 		List<Module> twoModules = moduleService.findModuleByLevel(Constant.TWO_MODULES_VALUE);
-		mv.addObject(Constant.ONE_MODULES_KEY, oneModules);
-		mv.addObject(Constant.TWO_MODULES_KEY, twoModules);
+		mv.addObject(Constant.ONE_MODULES, oneModules);
+		mv.addObject(Constant.TWO_MODULES, twoModules);
 		mv.addObject(Constant.ONE_MODULES_SIZE, oneModules.size());
 		mv.addObject(Constant.TWO_MODULES_SIZE, twoModules.size());
 		return mv;
@@ -99,7 +99,7 @@ public class RoleController {
 			logger.error("添加角色{}失败!", role.getRoleName());
 		} else {
 			logger.info("添加角色{}成功!", role.getRoleName());
-			session.setAttribute(Constant.TIP_KEY, StringUtil.genTipMsg("添加角色成功!", Constant.SUCCESS_TIP_KEY));
+			session.setAttribute(Constant.TIP_MSG, StringUtil.genTipMsg("添加角色成功!", Constant.SUCCESS_TIP));
 		}
 		// 记录日志
 		LogHelper.getInstance().saveLog(adminLogDao, session, "添加角色", logResult, LogType.ROLE_LOG.getType(), role);
@@ -123,7 +123,7 @@ public class RoleController {
 			logger.error("修改角色{}失败!", role.getRoleName());
 		} else {
 			logger.info("修改角色{}成功!", role.getRoleName());
-			session.setAttribute(Constant.TIP_KEY, StringUtil.genTipMsg("修改角色成功!", Constant.SUCCESS_TIP_KEY));
+			session.setAttribute(Constant.TIP_MSG, StringUtil.genTipMsg("修改角色成功!", Constant.SUCCESS_TIP));
 		}
 		// 记录日志
 		LogHelper.getInstance().saveLog(adminLogDao, session, "修改角色", logResult, LogType.ROLE_LOG.getType(), role);
@@ -147,7 +147,7 @@ public class RoleController {
 			logger.error("删除失败,该角色ID不存在!");
 		} else {
 			logger.info("删除角色成功!");
-			session.setAttribute(Constant.TIP_KEY, StringUtil.genTipMsg("删除角色成功!", Constant.SUCCESS_TIP_KEY));
+			session.setAttribute(Constant.TIP_MSG, StringUtil.genTipMsg("删除角色成功!", Constant.SUCCESS_TIP));
 		}
 		for (Integer roleId : roleIds) {
 			Role role = roleService.findById(roleId);

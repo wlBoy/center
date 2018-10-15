@@ -72,7 +72,7 @@ public class LogHelper {
 		String logContent = logName + getLogContent(obj);// 拼接日志内容
 		AdminLog adminLog = new AdminLog();
 		// 从session中拿出用户信息
-		User user = (User) session.getAttribute(Constant.SESSION_USER_KEY);
+		User user = (User) session.getAttribute(Constant.SESSION_USER);
 		// 当用户session为空时，此时为登录或注销操作，此时从obj中取用户信息
 		if (user == null) {
 			user = (User) obj;

@@ -23,7 +23,7 @@ public class CfgConstant {
 	 */
 	public final static String DEFAULT_USER_PWD = "defaultUserPwd";
 	/**
-	 * 登录密码加密的key
+	 * 登录密码加密
 	 */
 	public final static String USER_PWD_KEY = SystemCfg.getInstance().loadCfg().getProperty("userPwdKey");
 	/**
