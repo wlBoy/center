@@ -9,6 +9,7 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import com.xn.hk.common.constant.Constant;
+import com.xn.hk.common.utils.ip.IpHelper;
 import com.xn.hk.common.utils.string.StringUtil;
 import com.xn.hk.system.dao.LogDao;
 import com.xn.hk.system.model.Log;
@@ -41,6 +42,7 @@ public class LogAspect {
 		value = pjp.proceed();
 		// 获取请求request
 		request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
+		String ip = IpHelper.getIp();
 		// 获取当前session中的用户
 		User user = (User) request.getSession().getAttribute(Constant.SESSION_USER);
 		if (user == null) {
@@ -53,7 +55,7 @@ public class LogAspect {
 			log.setRequestClass(pjp.getTarget().getClass().getSimpleName());
 			// 获取请求方法名
 			log.setRequestMethod(pjp.getSignature().getName());
-			log.setRequestIp(request.getRemoteAddr());
+			log.setRequestIp(ip);
 		} catch (Throwable e) {
 			log.setLogId(StringUtil.genUUIDString());
 			log.setUserId(user.getUserId());
@@ -61,7 +63,7 @@ public class LogAspect {
 			log.setRequestClass(pjp.getTarget().getClass().getSimpleName());
 			// 获取请求方法名
 			log.setRequestMethod(pjp.getSignature().getName());
-			log.setRequestIp(request.getRemoteAddr());
+			log.setRequestIp(ip);
 		}
 		// 添加日志至数据库
 		ld.insert(log);

@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import com.xn.hk.common.constant.Constant;
+import com.xn.hk.common.utils.ip.IpHelper;
 import com.xn.hk.common.utils.string.StringUtil;
 
 /**
@@ -34,8 +35,6 @@ public class ManagerLoginFilter implements Filter {
 	private static final String TOLOGIN_ACTION = "/system/user/tologin.do";
 	// 转向后台首页的Action
 	private static final String TOHOME_ACTION = "/system/user/tohome.do";
-	// 请求的IP地址
-	public static String IP = null;
 
 	public void init(FilterConfig filterConfig) throws ServletException {
 
@@ -48,8 +47,8 @@ public class ManagerLoginFilter implements Filter {
 		HttpServletResponse response = (HttpServletResponse) res;
 		// 获取项目名称
 		String ctx = request.getContextPath();
-		// 初始化IP地址
-		IP = request.getRemoteAddr();
+		// 调用IpHelper类中的set方法设置访问系统的IP地址
+		IpHelper.setIp(request.getRemoteAddr());
 		// 除掉项目名称后的访问页面的当前路径
 		String targetURL = request.getRequestURI().substring(ctx.length());
 		HttpSession session = request.getSession();

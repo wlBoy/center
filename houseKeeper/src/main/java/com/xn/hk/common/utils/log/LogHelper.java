@@ -9,7 +9,7 @@ import com.xn.hk.account.model.Account;
 import com.xn.hk.account.model.AccountType;
 import com.xn.hk.common.constant.Constant;
 import com.xn.hk.common.dao.BaseDao;
-import com.xn.hk.common.utils.filter.ManagerLoginFilter;
+import com.xn.hk.common.utils.ip.IpHelper;
 import com.xn.hk.common.utils.string.DateFormatUtil;
 import com.xn.hk.common.utils.string.StringUtil;
 import com.xn.hk.exam.model.Paper;
@@ -87,7 +87,7 @@ public class LogHelper {
 		adminLog.setLogResult(logResult == true ? "成功" : "失败");
 		adminLog.setLogName(logName);
 		adminLog.setLogTimeStamp(DateFormatUtil.formatDateTime());
-		adminLog.setLogIp(ManagerLoginFilter.IP);
+		adminLog.setLogIp(IpHelper.getIp());
 		adminLog.setIsOk(Constant.ZERO_VALUE);
 		int result = adminLogDao.insert(adminLog);
 		if (result == Constant.ZERO_VALUE) {
