@@ -27,6 +27,10 @@ public class CfgConstant {
 	 */
 	public final static String USER_PWD_KEY = SystemCfg.getInstance().loadCfg().getProperty("userPwdKey");
 	/**
+	 * 是否启用验证码登录
+	 */
+	public final static String ENABLE_VERIFY_CODE_LOGIN = "enableVerifyCodeLogin";
+	/**
 	 * 验证码长度
 	 */
 	public final static String VERIFY_CODE_LENGTH = "verifyCodeLength";

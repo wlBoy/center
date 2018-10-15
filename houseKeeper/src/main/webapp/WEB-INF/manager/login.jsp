@@ -34,6 +34,13 @@
 	        }else{
 		        $("#rememberMe").prop("checked",false);
 	        }
+	     	// 取出配置文件中的是否启用验证码登录
+	        var enableVerifyCodeLogin = ${enableVerifyCodeLogin};
+	        if(enableVerifyCodeLogin){
+	        	$("#verifyCodeDiv").show();
+	        }else{
+	        	$("#verifyCodeDiv").hide();
+	        }
 	    });
 		/* 切换验证码 */
 		function changeCode(obj) {
@@ -75,7 +82,7 @@
 							<input class="form-control" type="password" name="userPwd" id="userPwd">
 						</div>
 					</div>
-					<div class="form-group">
+					<div class="form-group" id="verifyCodeDiv">
 						<div class="input-group">
 							<span class="input-group-addon"><i class="icon-key"></i>
 							</span>

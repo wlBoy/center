@@ -52,6 +52,9 @@ public class UserController {
 	 * 记录日志
 	 */
 	private static final Logger logger = LoggerFactory.getLogger(UserController.class);
+	// 取出配置文件中的是否启用验证码登录
+	private static final Boolean enableVerifyCodeLogin = Boolean
+			.parseBoolean(SystemCfg.getInstance().loadCfg().getProperty(CfgConstant.ENABLE_VERIFY_CODE_LOGIN));
 	/**
 	 * 注入service层
 	 */
@@ -70,12 +73,14 @@ public class UserController {
 	 * @return
 	 */
 	@RequestMapping(value = "/tologin.do")
-	public String toLoginJsp() {
+	public String toLoginJsp(HttpSession session) {
+		// 取出配置文件中的是否启用验证码登录，放入session中，以便登录页面能获取得到
+		session.setAttribute(CfgConstant.ENABLE_VERIFY_CODE_LOGIN, enableVerifyCodeLogin);
 		return "login";
 	}
 
 	/**
-	 * 转到WEB-INF下的后台首页页面
+	 * 转到WEB-INF下的后台首页页面(初始化登录页面)
 	 * 
 	 * @return
 	 */
@@ -120,12 +125,14 @@ public class UserController {
 		String userPwd = MD5Util.MD5(user.getUserPwd() + CfgConstant.USER_PWD_KEY);
 		// 1.保存cookie实现记住密码功能
 		saveCookie(user, session, response);
-		// 2.取到用户输入的验证码和session中的验证码比较
-		String verifyCodeValue = (String) session.getAttribute(Constant.VERIFY_CODE_KEY);
-		if (!user.getVerifyCode().equalsIgnoreCase(verifyCodeValue)) {
-			logger.error("验证码错误!");
-			session.setAttribute(Constant.TIP_KEY, StringUtil.genTipMsg("验证码错误!", Constant.ERROR_TIP_KEY));
-			return View.USER_REDITRCT_LOGIN_VIEW;
+		if(enableVerifyCodeLogin) {
+			// 2.取到用户输入的验证码和session中的验证码比较
+			String verifyCodeValue = (String) session.getAttribute(Constant.VERIFY_CODE_KEY);
+			if (!user.getVerifyCode().equalsIgnoreCase(verifyCodeValue)) {
+				logger.error("验证码错误!");
+				session.setAttribute(Constant.TIP_KEY, StringUtil.genTipMsg("验证码错误!", Constant.ERROR_TIP_KEY));
+				return View.USER_REDITRCT_LOGIN_VIEW;
+			}
 		}
 		// 3.通过用户名查找该用户是否存在
 		User u = userService.findByName(userName);
@@ -151,16 +158,14 @@ public class UserController {
 					session.setAttribute(Constant.TWO_MODULES_KEY, twoModules);
 					logger.info("用户{}登录成功!", userName);
 					// 记录日志
-					LogHelper.getInstance().saveLog(adminLogDao, session, "用户登录", true, LogType.USER_LOG.getType(),
-							u);
+					LogHelper.getInstance().saveLog(adminLogDao, session, "用户登录", true, LogType.USER_LOG.getType(), u);
 					// 将该用户保存至session中
 					session.setAttribute(Constant.SESSION_USER_KEY, u);
 					return View.USER_REDITRCT_HOME_VIEW;
 				} else {
 					logger.error("用户{}登录,密码错误!", userName);
 					// 记录日志
-					LogHelper.getInstance().saveLog(adminLogDao, session, "用户登录", false, LogType.USER_LOG.getType(),
-							u);
+					LogHelper.getInstance().saveLog(adminLogDao, session, "用户登录", false, LogType.USER_LOG.getType(), u);
 					session.setAttribute(Constant.TIP_KEY, StringUtil.genTipMsg("登录密码错误!", Constant.ERROR_TIP_KEY));
 					return View.USER_REDITRCT_LOGIN_VIEW;
 				}
