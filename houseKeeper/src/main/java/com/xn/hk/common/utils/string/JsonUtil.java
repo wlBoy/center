@@ -160,5 +160,9 @@ public class JsonUtil {
 		result.setCode(0);
 		result.setMsg("新密码与旧密码一致!");
 		result.setData(null);
+		System.out.println(object2Json(result));
+		System.out.println(object2JsonNoFeatures(result));
+		System.out.println(jsonToObject("{\"code\":0,\"data\":null,\"msg\":\"新密码与旧密码一致!\"}"));
+		System.out.println(jsonToBean("{\"code\":0,\"data\":null,\"msg\":\"新密码与旧密码一致!\"}", Result.class).getMsg());
 	}
 }
