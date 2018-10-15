@@ -5,7 +5,7 @@ import java.io.Serializable;
 /**
  * @Title: Log
  * @Package: com.xn.hk.system.model
- * @Description: 系统管理的记录日志实体类
+ * @Description: 系统管理的记录日志实体类(使用AOP技术实现的，这个记录的不是很规范)
  * @Author: wanlei
  * @Date: 2018年1月23日 下午3:47:38
  */

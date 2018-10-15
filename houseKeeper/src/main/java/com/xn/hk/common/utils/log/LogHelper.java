@@ -1,5 +1,8 @@
 package com.xn.hk.common.utils.log;
 
+import java.lang.reflect.Method;
+import java.util.Date;
+
 import javax.servlet.http.HttpSession;
 
 import org.slf4j.Logger;
@@ -8,6 +11,8 @@ import org.slf4j.LoggerFactory;
 import com.xn.hk.account.model.Account;
 import com.xn.hk.account.model.AccountType;
 import com.xn.hk.common.constant.Constant;
+import com.xn.hk.common.constant.EnabledEnum;
+import com.xn.hk.common.constant.StatusEnum;
 import com.xn.hk.common.dao.BaseDao;
 import com.xn.hk.common.utils.ip.IpHelper;
 import com.xn.hk.common.utils.string.DateFormatUtil;
@@ -33,14 +38,15 @@ public class LogHelper {
 	 * 记录日志
 	 */
 	private static final Logger logger = LoggerFactory.getLogger(LogHelper.class);
+	private static final String LOG_CONTENT_METHOD = "getLogContent";
 	private static LogHelper instance = null;
 
 	private LogHelper() {
-
+		super();
 	}
 
 	/**
-	 * 单例模式
+	 * 懒汉式单例模式，线程安全
 	 * 
 	 * @return
 	 */
@@ -69,7 +75,7 @@ public class LogHelper {
 	 */
 	public void saveLog(BaseDao<AdminLog> adminLogDao, HttpSession session, String logName, boolean logResult,
 			Integer logType, Object obj) {
-		String logContent = logName + getLogContent(obj);// 拼接日志内容
+		String logContent = logName + getLogContentByReflect(obj);// 拼接日志内容
 		AdminLog adminLog = new AdminLog();
 		// 从session中拿出用户信息
 		User user = (User) session.getAttribute(Constant.SESSION_USER);
@@ -130,9 +136,48 @@ public class LogHelper {
 			Paper paper = (Paper) obj;
 			return paper.getLogContent();
 		} else {
-			logger.error("不支持改对象模型!");
+			logger.error("不支持该对象模型:{}!", obj);
 			return "";
 		}
 	}
 
+	/**
+	 * 通过反射实现获取实体类中的日志内容
+	 * 
+	 * @param obj
+	 *            实体对象
+	 * @return 日志内容
+	 */
+	@SuppressWarnings("all")
+	private String getLogContentByReflect(Object obj) {
+		String logContent = null;
+		Class clazz = obj.getClass();
+		Method[] methods = clazz.getDeclaredMethods();
+		try {
+			Method logMethod = clazz.getMethod(LOG_CONTENT_METHOD);
+			if (logMethod != null && !StringUtil.isEmpty(logMethod.getName())) {
+				logMethod.setAccessible(true);
+				logContent = String.valueOf(logMethod.invoke(obj));
+			} else {
+				logger.error("{}类中,没有找到getLogContent方法!", clazz.getName());
+			}
+		} catch (Exception e) {
+			logger.error("{}类中,使用反射调用getLogContent方法失败!", clazz.getName());
+		}
+		return logContent;
+	}
+
+	public static void main(String[] args) {
+		User user = new User();
+		user.setUserId(21);
+		user.setUserName("测试");
+		user.setRemark("测试记录日志");
+		user.setUserState(StatusEnum.ACTIVE.getCode());
+		user.setIsOk(EnabledEnum.ENABLED.getCode());
+		user.getRole().setRoleName("测试角色");
+		user.setCreateTime(DateFormatUtil.formatDateTime(new Date()));
+		user.setUpdateTime(DateFormatUtil.formatDateTime(new Date()));
+		System.out.println("日志内容为:" + LogHelper.getInstance().getLogContent(user));
+		System.out.println("日志内容为:" + LogHelper.getInstance().getLogContentByReflect(user));
+	}
 }

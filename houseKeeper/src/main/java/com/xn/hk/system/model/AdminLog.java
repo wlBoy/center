@@ -8,7 +8,7 @@ import com.xn.hk.common.utils.log.LogType;
  * 
  * @ClassName: AdminLog
  * @Package: com.xn.hk.system.model
- * @Description: 管理员操作日志实体类
+ * @Description: 管理员操作日志实体类(使用LogHelper类实现的，记录信息更全更规范，推荐使用这种方式)
  * @Author: wanlei
  * @Date: 2018年10月12日 下午2:51:41
  */
