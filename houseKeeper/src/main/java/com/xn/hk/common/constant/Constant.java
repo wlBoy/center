@@ -42,6 +42,10 @@ public class Constant {
 	 * UTF-8编码
 	 */
 	public final static String UTF8 = "UTF-8";
+	/**
+	 * GBK编码
+	 */
+	public final static String GBK = "GBK";
 
 	/*----------------------------------用户管理---------------------------------*/
 	/**

@@ -1,11 +1,11 @@
 package com.xn.hk.common.utils.file;
 
-import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
@@ -27,292 +27,220 @@ import org.slf4j.LoggerFactory;
 public class ZipUtil {
 	private static final Logger logger = LoggerFactory.getLogger(ZipUtil.class);
 
-	public ZipUtil() {
-		super();
-	}
-
 	/**
-	 * 压缩文件
 	 * 
-	 * @param srcFiles
-	 *            : 要被压缩的文件
-	 * @param dstFile
-	 *            : 压缩后的文件
-	 * @param comment
-	 *            : 文件注释
-	 * @param ifFullPath
-	 *            : 是否全路径打包
-	 * @param srcFilesPrefix
-	 *            : 被压缩文件的前缀
+	 * 将指定文件或文件夹压缩成ZIP
+	 * 
+	 * @param srcDir
+	 *            压缩文件夹路径
+	 * @param out
+	 *            压缩文件输出流
+	 * @param KeepDirStructure
+	 *            是否保留原来的目录结构,true:保留目录结构;
+	 *            false:所有文件跑到压缩包根目录下(注意：不保留目录结构可能会出现同名文件,会压缩失败)
 	 */
 
-	public static void zip(String[] srcFiles, String dstFile, String comment, boolean ifFullPath, String srcFilesPrefix)
-			throws IOException {
-		if (srcFiles.length == 0)
-			return;
-		File fileDst = new File(dstFile);
-		File parentDir = fileDst.getParentFile();
-		if (!parentDir.exists()) {
-			parentDir.mkdirs();
-		}
-		if (fileDst.exists())
-			fileDst.delete();
-		fileDst.createNewFile();
-
-		ZipOutputStream zos = new ZipOutputStream(new FileOutputStream(fileDst));
-		zos.setMethod(ZipOutputStream.DEFLATED);
-
-		if (comment != null) {
-			zos.setComment(comment);
-		}
-
-		DataOutputStream dos = new DataOutputStream(zos);
-
-		for (int i = 0; i < srcFiles.length; i++) {
-			String entryPath = srcFiles[i];
-			File fileEntry;
-			if (srcFilesPrefix != null) {
-				fileEntry = new File(srcFilesPrefix + entryPath);
-			} else {
-				fileEntry = new File(entryPath);
-			}
-
-			if (ifFullPath) {
-				zos.putNextEntry(new ZipEntry(entryPath));
-			} else {
-				zos.putNextEntry(new ZipEntry(fileEntry.getName()));
-			}
-
-			FileInputStream fis = new FileInputStream(fileEntry);
-
-			byte[] buff = new byte[8192];
-			int len = 0;
-
-			while (true) {
-				len = fis.read(buff);
-				if (len == -1 || len == 0)
-					break;
-
-				dos.write(buff, 0, len);
-			}
-
-			zos.closeEntry();
-			fis.close();
-		}
-		dos.close();
-		zos.close();
-	}
-
-	/**
-	 * 压缩文件
-	 * 
-	 * @param srcFiles
-	 *            : 要被压缩的文件
-	 * @param dstFile
-	 *            : 压缩后的文件
-	 * @param comment
-	 *            : 文件注释
-	 */
-	public static void zip(String[] srcFiles, String dstFile, String comment) throws IOException {
-		zip(srcFiles, dstFile, comment, false, null);
-	}
-
-	/**
-	 * 压缩文件
-	 * 
-	 * @param srcFiles
-	 *            : 要被压缩的文件
-	 * @param dstFile
-	 *            : 压缩后的文件
-	 * 
-	 */
-	public static void zip(String[] srcFiles, String dstFile) throws IOException {
-		zip(srcFiles, dstFile, null);
-	}
-
-	/**
-	 * 解压缩文件
-	 * 
-	 * @param srcFile
-	 *            : 压缩文件名
-	 * @param dstDir
-	 *            : 要解压到的目录
-	 * @param entryName
-	 *            : 要解压哪个文件，如果为null则解压所有文件。
-	 * @param retainPath
-	 *            : 是否保留文件路径信息，true-保留，false-不保留。
-	 */
-	public static void unzip(String srcFile, String dstDir, String entryName, boolean retainPath) throws Exception {
-
-		ZipFile zipFile = null;
-
+	public static void zipFile(String srcDir, OutputStream out, boolean KeepDirStructure) {
+		long start = System.currentTimeMillis();
+		ZipOutputStream zos = null;
 		try {
-			zipFile = new ZipFile(srcFile);
-			Enumeration<? extends ZipEntry> entryEnu = zipFile.entries();
-			while (entryEnu.hasMoreElements()) {
-				File fileItem = null;
-				ZipEntry entry = (ZipEntry) entryEnu.nextElement();
-
-				String name = entry.getName();
-				if (entryName != null && !entryName.equalsIgnoreCase(name))
-					continue;
-				if (dstDir != null) {
-					if (!retainPath) {
-						File f = new File(name);
-						name = f.getName();
-					} else {
-						if (System.getProperty("os.name").indexOf("Windows") != -1) {
-
-							if (name.matches("^[a-zA-Z]:.*")) {
-								// 如果是WINDOWS系统，将文件名中的驱动器符号去掉
-								name = name.substring(name.indexOf('\\') + 1);
-							}
-						}
-					}
-					fileItem = new File(dstDir + File.separator + name);
-				} else {
-					fileItem = new File(name);
-				}
-
-				File parentDir = fileItem.getParentFile();
-				if (!parentDir.exists()) {
-					parentDir.mkdirs();
-				}
-				if (fileItem.exists())
-					fileItem.delete();
-				fileItem.createNewFile();
-				FileOutputStream fos = null;
-				InputStream is = null;
-
-				try {
-					fos = new FileOutputStream(fileItem);
-					is = zipFile.getInputStream(entry);
-
-					byte[] buff = new byte[8192];
-					int len = 0;
-					while ((len = is.read(buff)) != -1) {
-						fos.write(buff, 0, len);
-					}
-				} finally {
-					try {
-						fos.flush();
-						fos.close();
-						is.close();
-					} catch (Exception e) {
-					}
-				}
-			}
+			zos = new ZipOutputStream(out);
+			File sourceFile = new File(srcDir);
+			compress(sourceFile, zos, sourceFile.getName(), KeepDirStructure);
+			long end = System.currentTimeMillis();
+			logger.info("压缩完成，耗时{}ms!", (end - start));
 		} catch (Exception e) {
-			throw new Exception("解压缩失败：" + e.getMessage());
-
+			logger.error("压缩文件失败，原因为:{}", e);
 		} finally {
 			try {
-				zipFile.close();
-			} catch (Exception e) {
+				if (zos != null) {
+					zos.close();
+				}
+			} catch (IOException e) {
+				logger.error("关闭流失败，原因为:{}", e);
 			}
 		}
-
 	}
 
 	/**
-	 * 将文件解压缩到指定的目录，保持被压缩文件的路径信息。
-	 */
-	public static void unzip(String zipFile, String dstDir) throws Exception {
-		unzip(zipFile, dstDir, null, true);
-	}
-
-	/**
-	 * 解压缩文件，覆盖被压缩的文件。
-	 */
-	public static void unzip(String zipFile) throws Exception {
-		unzip(zipFile, null, null, true);
-	}
-
-	/**
-	 * 获取所有的文件目录
+	 * 
+	 * 将文件列表压缩成ZIP
 	 * 
 	 * @param srcFiles
-	 * @return
+	 *            需要压缩的文件列表
+	 * @param out
+	 *            压缩文件输出流
 	 */
-	private static ArrayList<File> getTotalFiles(File[] srcFiles) {
 
-		ArrayList<File> files = new ArrayList<File>();
-		for (int i = 0; i < srcFiles.length; i++) {
-			File file = srcFiles[i];
-			if (!file.exists()) {
-				logger.debug("warnning:the file you want to backup is missing=" + file.getAbsolutePath());
-				continue;
+	public static void zipFile(List<File> srcFiles, OutputStream out) {
+		long start = System.currentTimeMillis();
+		ZipOutputStream zos = null;
+		try {
+			zos = new ZipOutputStream(out);
+			for (File srcFile : srcFiles) {
+				byte[] buf = new byte[1024];
+				zos.putNextEntry(new ZipEntry(srcFile.getName()));
+				int len = 0;
+				FileInputStream in = new FileInputStream(srcFile);
+				while ((len = in.read(buf)) != -1) {
+					zos.write(buf, 0, len);
+				}
+				zos.closeEntry();
+				in.close();
 			}
-			if (file.isDirectory()) {
-				// 递归调用
-				List<File> dir = getTotalFiles(file.listFiles());
-				for (int j = 0; j < dir.size(); j++) {
-					File dirfile = dir.get(j);
-					files.add(dirfile);
+			long end = System.currentTimeMillis();
+			logger.info("压缩完成，耗时{}ms!", (end - start));
+		} catch (Exception e) {
+			logger.error("压缩文件失败，原因为:{}", e);
+		} finally {
+			try {
+				if (zos != null) {
+					zos.close();
+				}
+			} catch (IOException e) {
+				logger.error("关闭流失败，原因为:{}", e);
+			}
+		}
+	}
+
+	/**
+	 * 
+	 * 递归压缩方法
+	 * 
+	 * @param sourceFile
+	 *            源文件
+	 * @param zos
+	 *            zip输出流
+	 * @param name
+	 *            压缩后的名称
+	 * @param KeepDirStructure
+	 *            是否保留原来的目录结构,true:保留目录结构;
+	 *            false:所有文件跑到压缩包根目录下(注意：不保留目录结构可能会出现同名文件,会压缩失败)
+	 * @throws Exception
+	 * 
+	 */
+
+	private static void compress(File sourceFile, ZipOutputStream zos, String name, boolean KeepDirStructure)
+			throws Exception {
+		byte[] buf = new byte[1024];
+		if (sourceFile.isFile()) {
+			// 向zip输出流中添加一个zip实体，构造器中name为zip实体的文件的名字
+			zos.putNextEntry(new ZipEntry(name));
+			// copy文件到zip输出流中
+			int len = 0;
+			FileInputStream in = new FileInputStream(sourceFile);
+			while ((len = in.read(buf)) != -1) {
+				zos.write(buf, 0, len);
+			}
+			zos.closeEntry();
+			in.close();
+		} else {
+			File[] listFiles = sourceFile.listFiles();
+			if (listFiles == null || listFiles.length == 0) {
+				// 需要保留原来的文件结构时,需要对空文件夹进行处理
+				if (KeepDirStructure) {
+					// 空文件夹的处理
+					zos.putNextEntry(new ZipEntry(name + "/"));
+					// 没有文件，不需要文件的copy
+					zos.closeEntry();
 				}
 			} else {
-				files.add(file);
+				for (File file : listFiles) {
+					// 判断是否需要保留原来的文件结构
+					if (KeepDirStructure) {
+						// 注意：file.getName()前面需要带上父文件夹的名字加一斜杠,
+						// 不然最后压缩包中就不能保留原来的文件结构,即：所有文件都跑到压缩包根目录下了
+						compress(file, zos, name + "/" + file.getName(), KeepDirStructure);
+					} else {
+						compress(file, zos, file.getName(), KeepDirStructure);
+					}
+				}
 			}
 		}
-
-		return files;
 	}
 
 	/**
-	 * 获取所有的文件目录，忽略掉srcIgnFiles
 	 * 
-	 * @param srcFiles
-	 * @param srcIgnFiles
-	 * @return
+	 * 解压zip文件
+	 * 
+	 * @param srcDirPath
+	 *            zip源路径
+	 * @param destDirPath
+	 *            解压后的目标文件夹,例如:D:\\test\\(D盘下的test文件夹，不存在会自动创建，test后面的\\一定要有)
 	 */
-	public static File[] toFiles(File[] srcFiles, File[] srcIgnFiles) {
-		ArrayList<File> files = getTotalFiles(srcFiles);
-		ArrayList<File> ignFiles = new ArrayList<File>();
-		if (srcIgnFiles != null) {
-			ignFiles = getTotalFiles(srcIgnFiles);
+
+	public static void unZipFile(String srcDirPath, String destDirPath) {
+		long start = System.currentTimeMillis();
+		File srcFile = new File(srcDirPath);
+		// 判断源文件是否存在
+		if (!srcFile.exists()) {
+			logger.error("{}所指文件不存在", srcFile.getPath());
+			return;
 		}
-
-		ArrayList<File> temp = new ArrayList<File>();
-		temp.addAll(files);
-
-		for (File file : files) {
-			if (ignFiles.contains(file)) {
-				temp.remove(file);
+		// 判断源文件是否为zip格式压缩包
+		if (!srcDirPath.endsWith("zip")) {
+			logger.error("源文件不是zip类型的文件!");
+			return;
+		}
+		ZipFile zipFile = null;
+		try {
+			zipFile = new ZipFile(srcFile);
+			Enumeration<?> entries = zipFile.entries();
+			while (entries.hasMoreElements()) {
+				ZipEntry entry = (ZipEntry) entries.nextElement();
+				logger.info("解压{}", entry.getName());
+				// 如果是文件夹，就创建个文件夹
+				if (entry.isDirectory()) {
+					String dirPath = destDirPath + "/" + entry.getName();
+					File dir = new File(dirPath);
+					dir.mkdirs();
+				} else {
+					// 如果是文件，就先创建一个文件，然后用io流把内容copy过去
+					File targetFile = new File(destDirPath + "/" + entry.getName());
+					// 保证这个文件的父文件夹必须要存在
+					if (!targetFile.getParentFile().exists()) {
+						targetFile.getParentFile().mkdirs();
+					}
+					targetFile.createNewFile();
+					// 将压缩文件内容写入到这个文件中
+					InputStream is = zipFile.getInputStream(entry);
+					FileOutputStream fos = new FileOutputStream(targetFile);
+					int len = 0;
+					byte[] buf = new byte[1024];
+					while ((len = is.read(buf)) != -1) {
+						fos.write(buf, 0, len);
+					}
+					// 关流顺序，先打开的后关闭
+					fos.close();
+					is.close();
+				}
+			}
+			long end = System.currentTimeMillis();
+			logger.info("解压完成，耗时{}ms!", (end - start));
+		} catch (Exception e) {
+			logger.error("解压文件失败，原因为:{}", e);
+		} finally {
+			try {
+				if (zipFile != null) {
+					zipFile.close();
+				}
+			} catch (IOException e) {
+				logger.error("关闭流失败，原因为:{}", e);
 			}
 		}
-
-		File[] a = new File[temp.size()];
-		return (File[]) temp.toArray(a);
 	}
 
-	public static File[] toFiles(String[] srcFiles, String[] ignFiles) {
-		File[] a = new File[srcFiles.length];
+	public static void main(String[] args) throws IOException {
 
-		for (int i = 0; i < srcFiles.length; i++) {
-			a[i] = new File(srcFiles[i]);
-		}
-		File[] b = null;
-		if (ignFiles != null) {
-			b = new File[ignFiles.length];
-			for (int i = 0; i < ignFiles.length; i++) {
-				b[i] = new File(ignFiles[i]);
-			}
-		}
+		FileOutputStream fos1 = new FileOutputStream(new File("D:/mytest.zip"));
+		zipFile("E:\\develop tools\\drivenFile", fos1, false);
+		List<File> fileList = new ArrayList<File>();
+		fileList.add(new File("E:\\develop tools\\vmware12\\vmFile\\IE\\IE9-Windows7-x64-chs.exe"));
+		fileList.add(new File("E:\\develop tools\\vmware12\\vmFile\\IE\\IE9-Windows7-x86-chs.exe"));
+		FileOutputStream fos2 = new FileOutputStream(new File("D:/ie9.zip"));
+		zipFile(fileList, fos2);
 
-		return toFiles(a, b);
+		unZipFile("E:\\develop tools\\apache-maven-3.5.3-bin.zip", "D:\\test\\");
+
 	}
-
-	public static String[] getTotoalPathes(String[] srcFiles, String[] ignFiles) {
-
-		ArrayList<String> pathes = new ArrayList<String>();
-		File[] files = toFiles(srcFiles, ignFiles);
-
-		for (File file : files) {
-			pathes.add(file.getAbsolutePath());
-		}
-
-		String[] a = new String[pathes.size()];
-		return (String[]) pathes.toArray(a);
-	}
-
 }
