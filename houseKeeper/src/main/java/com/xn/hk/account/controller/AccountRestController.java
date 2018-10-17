@@ -46,28 +46,21 @@ public class AccountRestController {
 	 * 
 	 * @param typeId
 	 *            账务类别Id
-	 * @return 账务类别实体
+	 * @return 结果提示信息实体
 	 */
 	@RequestMapping(value = "/findByTypeId.do", method = RequestMethod.POST)
 	public Result findByTypeId(Integer typeId) {
-		Result result = new Result();
 		// 校验参数非空性
 		if (typeId == null) {
-			return Result.genNullValueTip(result, "typeId");
+			return Result.genNullParamTip("账务类别ID");
 		}
 		AccountType type = accountTypeService.findById(typeId);
 		if (type == null) {
-			logger.info("该账务类别不存在!");
-			result.setCode(Result.FAILURE_CODE);
-			result.setMsg("该账务类别不存在!");
-			result.setData(null);
-			return result;
+			logger.info("findByTypeId-->查到{}账务类别!", typeId);
+			return new Result(Result.FAILURE, "该账务类别不存在!", null);
 		}
-		logger.info("查到该账务类别!");
-		result.setCode(Result.SUCCESS_CODE);
-		result.setMsg("查到该账务类别!");
-		result.setData(type);
-		return result;
+		logger.info("findByTypeId-->查到{}账务类别!", typeId);
+		return Result.genTip(Result.SUCCESS, "查到该账务类别!", type);
 	}
 
 	/**
@@ -77,36 +70,29 @@ public class AccountRestController {
 	 *            账务类别名
 	 * @param userId
 	 *            用户ID
-	 * @return 账务类别实体
+	 * @return 结果提示信息实体
 	 */
 	@RequestMapping(value = "/findByTypeName.do", method = RequestMethod.POST)
 	public Result findByTypeName(String typeName, Integer userId, HttpSession session) {
-		Result result = new Result();
 		if (userId == null) {
 			// 从session中拿出当前用户信息
 			User user = (User) session.getAttribute(Constant.SESSION_USER);
 			if (user == null) {
-				return Result.genNullValueTip(result, "userId");
+				return Result.genNullParamTip("用户ID");
 			}
 			userId = user.getUserId();
 		}
 		// 校验参数非空性
 		if (StringUtil.isEmpty(typeName)) {
-			return Result.genNullValueTip(result, "typeName");
+			return Result.genNullParamTip("账务类别名称");
 		}
 		AccountType type = accountTypeService.findByNameAndUserId(typeName, userId);
 		if (type == null) {
-			logger.info("该个人账务类别不存在!");
-			result.setCode(Result.FAILURE_CODE);
-			result.setMsg("该个人账务类别不存在!");
-			result.setData(null);
-			return result;
+			logger.info("findByTypeName-->{}个人账务类别不存在!", typeName);
+			return Result.genTip(Result.FAILURE, "该个人账务类别不存在!", null);
 		}
-		logger.info("查到该个人账务类别!");
-		result.setCode(Result.SUCCESS_CODE);
-		result.setMsg("查到该个人账务类别!");
-		result.setData(type);
-		return result;
+		logger.info("findByTypeName-->查到{}个人账务类别!", typeName);
+		return Result.genTip(Result.SUCCESS, "查到该个人账务类别!", type);
 	}
 
 	/**
@@ -114,28 +100,21 @@ public class AccountRestController {
 	 * 
 	 * @param accountId
 	 *            账务Id
-	 * @return 账务类别实体
+	 * @return 结果提示信息实体
 	 */
 	@RequestMapping(value = "/findByAccountId.do", method = RequestMethod.POST)
 	public Result findByAccountId(Integer accountId) {
-		Result result = new Result();
 		// 校验参数非空性
 		if (accountId == null) {
-			return Result.genNullValueTip(result, "accountId");
+			return Result.genNullParamTip("账务ID");
 		}
 		Account account = accountService.findById(accountId);
 		if (account == null) {
-			logger.info("该账务不存在!");
-			result.setCode(Result.FAILURE_CODE);
-			result.setMsg("该账务不存在!");
-			result.setData(null);
-			return result;
+			logger.info("findByAccountId-->{}账务不存在!", accountId);
+			return Result.genTip(Result.FAILURE, "该账务不存在!", null);
 		}
-		logger.info("查到该账务!");
-		result.setCode(Result.SUCCESS_CODE);
-		result.setMsg("查到该账务!");
-		result.setData(account);
-		return result;
+		logger.info("findByAccountId-->查到{}账务!", accountId);
+		return Result.genTip(Result.SUCCESS, "查到该账务!", account);
 	}
 
 	/**
@@ -145,35 +124,28 @@ public class AccountRestController {
 	 *            账务标题
 	 * @param userId
 	 *            用户ID
-	 * @return 账务类别实体
+	 * @return 结果提示信息实体
 	 */
 	@RequestMapping(value = "/findByAccountTitle.do", method = RequestMethod.POST)
 	public Result findByAccountTitle(String accountTitle, Integer userId, HttpSession session) {
-		Result result = new Result();
 		if (userId == null) {
 			// 从session中拿出当前用户信息
 			User user = (User) session.getAttribute(Constant.SESSION_USER);
 			if (user == null) {
-				return Result.genNullValueTip(result, "userId");
+				return Result.genNullParamTip("用户ID");
 			}
 			userId = user.getUserId();
 		}
 		// 校验参数非空性
 		if (StringUtil.isEmpty(accountTitle)) {
-			return Result.genNullValueTip(result, "accountTitle");
+			return Result.genNullParamTip("账务标题");
 		}
 		Account account = accountService.findByNameAndUserId(accountTitle, userId);
 		if (account == null) {
-			logger.info("该个人账务不存在!");
-			result.setCode(Result.FAILURE_CODE);
-			result.setMsg("该个人账务不存在!");
-			result.setData(null);
-			return result;
+			logger.info("findByAccountTitle-->{}个人账务不存在!", accountTitle);
+			return Result.genTip(Result.FAILURE, "该个人账务不存在!", null);
 		}
-		logger.info("查到该个人账务!");
-		result.setCode(Result.SUCCESS_CODE);
-		result.setMsg("查到该个人账务!");
-		result.setData(account);
-		return result;
+		logger.info("findByAccountTitle-->查到{}个人账务!", accountTitle);
+		return Result.genTip(Result.SUCCESS, "查到该个人账务!", account);
 	}
 }

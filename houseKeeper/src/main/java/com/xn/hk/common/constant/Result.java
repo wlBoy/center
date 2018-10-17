@@ -12,8 +12,8 @@ import java.io.Serializable;
  */
 public class Result implements Serializable {
 	private static final long serialVersionUID = 1L;
-	public static final int SUCCESS_CODE = 0;// 返回的状态码,0代表成功
-	public static final int FAILURE_CODE = 1;// 返回的状态码,1代表失败
+	public static final int SUCCESS = 0;// 返回的状态码,0代表成功
+	public static final int FAILURE = 1;// 返回的状态码,1代表失败
 	/**
 	 * 返回的状态码,0代表成功，1代表失败
 	 */
@@ -26,6 +26,17 @@ public class Result implements Serializable {
 	 * 返回的对象数据
 	 */
 	private Object data;
+
+	public Result() {
+		super();
+	}
+
+	public Result(Integer code, String msg, Object data) {
+		super();
+		this.code = code;
+		this.msg = msg;
+		this.data = data;
+	}
 
 	public Integer getCode() {
 		return code;
@@ -56,18 +67,28 @@ public class Result implements Serializable {
 	}
 
 	/**
-	 * 当参数非空时，返回的提示信息实体
+	 * 当参数为空时，返回参数为空的提示信息
 	 * 
-	 * @param result
-	 *            提示信息实体类
 	 * @param desc
 	 *            参数提示语
 	 * @return 返回提示信息实体
 	 */
-	public static Result genNullValueTip(Result result, String desc) {
-		result.setCode(FAILURE_CODE);
-		result.setMsg(desc + "参数不能为空!");
-		result.setData(null);
-		return result;
+	public static Result genNullParamTip(String desc) {
+		return new Result(FAILURE, desc + "参数不能为空!", null);
+	}
+
+	/**
+	 * 生成信息实体
+	 * 
+	 * @param code
+	 *            状态码
+	 * @param desc
+	 *            提示信息
+	 * @param data
+	 *            返回数据
+	 * @return 返回提示信息实体
+	 */
+	public static Result genTip(Integer code, String desc, Object data) {
+		return new Result(code, desc, data);
 	}
 }

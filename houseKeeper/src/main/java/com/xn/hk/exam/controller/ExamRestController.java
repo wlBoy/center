@@ -46,28 +46,21 @@ public class ExamRestController {
 	 * 
 	 * @param userId
 	 *            题型Id
-	 * @return 题型实体
+	 * @return 结果提示信息实体
 	 */
 	@RequestMapping(value = "/findByTypeId.do", method = RequestMethod.POST)
 	public Result findByTypeId(Integer typeId) {
-		Result result = new Result();
 		// 校验参数非空性
 		if (typeId == null) {
-			return Result.genNullValueTip(result, "typeId");
+			return Result.genNullParamTip("题型ID");
 		}
 		QuestionType type = questionTypeService.findById(typeId);
 		if (type == null) {
-			logger.info("该题型不存在!");
-			result.setCode(Result.FAILURE_CODE);
-			result.setMsg("该题型不存在!");
-			result.setData(null);
-			return result;
+			logger.info("findByTypeId-->{}题型不存在!", typeId);
+			return Result.genTip(Result.FAILURE, "该题型不存在!", null);
 		}
-		logger.info("查到该题型!");
-		result.setCode(Result.SUCCESS_CODE);
-		result.setMsg("查到该题型!");
-		result.setData(type);
-		return result;
+		logger.info("findByTypeId-->查到{}题型!", typeId);
+		return Result.genTip(Result.SUCCESS, "查到该题型!", type);
 	}
 
 	/**
@@ -75,28 +68,21 @@ public class ExamRestController {
 	 * 
 	 * @param userName
 	 *            题型名
-	 * @return 题型实体
+	 * @return 结果提示信息实体
 	 */
 	@RequestMapping(value = "/findByTypeName.do", method = RequestMethod.POST)
 	public Result findByTypeName(String typeName) {
-		Result result = new Result();
 		// 校验参数非空性
 		if (StringUtil.isEmpty(typeName)) {
-			return Result.genNullValueTip(result, "typeName");
+			return Result.genNullParamTip("题型名称");
 		}
 		QuestionType type = questionTypeService.findByName(typeName);
 		if (type == null) {
-			logger.info("该题型不存在!");
-			result.setCode(Result.FAILURE_CODE);
-			result.setMsg("该题型不存在!");
-			result.setData(null);
-			return result;
+			logger.info("findByTypeName-->{}题型不存在!", typeName);
+			return Result.genTip(Result.FAILURE, "该题型不存在!", null);
 		}
-		logger.info("查到该题型!");
-		result.setCode(Result.SUCCESS_CODE);
-		result.setMsg("查到该题型!");
-		result.setData(type);
-		return result;
+		logger.info("findByTypeName-->查到{}题型!", typeName);
+		return Result.genTip(Result.SUCCESS, "查到该题型!", type);
 	}
 
 	/**
@@ -104,28 +90,21 @@ public class ExamRestController {
 	 * 
 	 * @param questionId
 	 *            题目Id
-	 * @return 题目实体
+	 * @return 结果提示信息实体
 	 */
 	@RequestMapping(value = "/findByQuestionId.do", method = RequestMethod.POST)
 	public Result findByQuestionId(Integer questionId) {
-		Result result = new Result();
 		// 校验参数非空性
 		if (questionId == null) {
-			return Result.genNullValueTip(result, "questionId");
+			return Result.genNullParamTip("题目ID");
 		}
 		Question question = questionService.findById(questionId);
 		if (question == null) {
-			logger.info("该题目不存在!");
-			result.setCode(Result.FAILURE_CODE);
-			result.setMsg("该题目不存在!");
-			result.setData(null);
-			return result;
+			logger.info("findByQuestionId-->{}题目不存在!", questionId);
+			return Result.genTip(Result.FAILURE, "该题目不存在!", null);
 		}
-		logger.info("查到该题目!");
-		result.setCode(Result.SUCCESS_CODE);
-		result.setMsg("查到该题目!");
-		result.setData(question);
-		return result;
+		logger.info("findByQuestionId-->查到{}题目!", questionId);
+		return Result.genTip(Result.SUCCESS, "查到该题目!", question);
 	}
 
 	/**
@@ -133,27 +112,20 @@ public class ExamRestController {
 	 * 
 	 * @param paperId
 	 *            试卷Id
-	 * @return 试卷实体
+	 * @return 结果提示信息实体
 	 */
 	@RequestMapping(value = "/findByPaperId.do", method = RequestMethod.POST)
 	public Result findByPaperId(Integer paperId) {
-		Result result = new Result();
 		// 校验参数非空性
 		if (paperId == null) {
-			return Result.genNullValueTip(result, "paperId");
+			return Result.genNullParamTip("试卷iD");
 		}
 		Paper paper = paperService.findById(paperId);
 		if (paper == null) {
-			logger.info("该试卷不存在!");
-			result.setCode(Result.FAILURE_CODE);
-			result.setMsg("该试卷不存在!");
-			result.setData(null);
-			return result;
+			logger.info("findByPaperId-->{}试卷不存在!", paperId);
+			return Result.genTip(Result.FAILURE, "该试卷不存在!", null);
 		}
-		logger.info("查到该试卷!");
-		result.setCode(Result.SUCCESS_CODE);
-		result.setMsg("查到该试卷!");
-		result.setData(paper);
-		return result;
+		logger.info("findByPaperId-->查到{}试卷!", paperId);
+		return Result.genTip(Result.SUCCESS, "查到该试卷!", paper);
 	}
 }

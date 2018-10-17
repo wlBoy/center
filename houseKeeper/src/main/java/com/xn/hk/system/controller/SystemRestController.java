@@ -45,28 +45,21 @@ public class SystemRestController {
 	 * 
 	 * @param userId
 	 *            用户Id
-	 * @return 用户实体
+	 * @return 结果提示信息实体
 	 */
 	@RequestMapping(value = "/findByUserId.do", method = RequestMethod.POST)
 	public Result findByUserId(Integer userId) {
-		Result result = new Result();
 		// 校验参数非空性
 		if (userId == null) {
-			return Result.genNullValueTip(result, "userId");
+			return Result.genNullParamTip("用户ID");
 		}
 		User user = userService.findById(userId);
 		if (user == null) {
-			logger.info("该用户不存在!");
-			result.setCode(Result.FAILURE_CODE);
-			result.setMsg("该用户不存在!");
-			result.setData(null);
-			return result;
+			logger.info("findByUserId-->{}用户不存在!", userId);
+			Result.genTip(Result.FAILURE, "该用户不存在!", null);
 		}
-		logger.info("查到该用户!");
-		result.setCode(Result.SUCCESS_CODE);
-		result.setMsg("查到该用户!");
-		result.setData(user);
-		return result;
+		logger.info("findByUserId-->查到{}用户!", userId);
+		return Result.genTip(Result.SUCCESS, "查到该用户!", user);
 	}
 
 	/**
@@ -74,28 +67,21 @@ public class SystemRestController {
 	 * 
 	 * @param userName
 	 *            用户名
-	 * @return 用户实体
+	 * @return 结果提示信息实体
 	 */
 	@RequestMapping(value = "/findByUserName.do", method = RequestMethod.POST)
 	public Result findByUserName(String userName) {
-		Result result = new Result();
 		// 校验参数非空性
 		if (StringUtil.isEmpty(userName)) {
-			return Result.genNullValueTip(result, "userName");
+			return Result.genNullParamTip("用户名");
 		}
 		User user = userService.findByName(userName);
 		if (user == null) {
-			logger.info("该用户不存在!");
-			result.setCode(Result.FAILURE_CODE);
-			result.setMsg("该用户不存在!");
-			result.setData(null);
-			return result;
+			logger.info("findByUserName-->{}用户不存在!", userName);
+			Result.genTip(Result.FAILURE, "该用户不存在!", null);
 		}
-		logger.info("查到该用户!");
-		result.setCode(Result.SUCCESS_CODE);
-		result.setMsg("查到该用户!");
-		result.setData(user);
-		return result;
+		logger.info("findByUserName-->查到{}用户!", userName);
+		return Result.genTip(Result.SUCCESS, "查到该用户!", user);
 	}
 
 	/**
@@ -103,28 +89,21 @@ public class SystemRestController {
 	 * 
 	 * @param roleId
 	 *            角色Id
-	 * @return 角色实体
+	 * @return 结果提示信息实体
 	 */
 	@RequestMapping(value = "/findByRoleId.do", method = RequestMethod.POST)
 	public Result findByRoleId(Integer roleId) {
-		Result result = new Result();
 		// 校验参数非空性
 		if (roleId == null) {
-			return Result.genNullValueTip(result, "roleId");
+			return Result.genNullParamTip("角色ID");
 		}
 		Role role = roleService.findById(roleId);
 		if (role == null) {
-			logger.info("该角色不存在!");
-			result.setCode(Result.FAILURE_CODE);
-			result.setMsg("该角色不存在!");
-			result.setData(null);
-			return result;
+			logger.info("findByRoleId-->{}角色不存在!", roleId);
+			Result.genTip(Result.FAILURE, "该角色不存在!", null);
 		}
-		logger.info("查到该角色!");
-		result.setCode(Result.SUCCESS_CODE);
-		result.setMsg("查到该角色!");
-		result.setData(role);
-		return result;
+		logger.info("findByRoleId-->查到{}角色!", roleId);
+		return Result.genTip(Result.SUCCESS, "查到该角色!", role);
 	}
 
 	/**
@@ -136,24 +115,17 @@ public class SystemRestController {
 	 */
 	@RequestMapping(value = "/findByRoleName.do", method = RequestMethod.POST)
 	public Result findByRoleName(String roleName) {
-		Result result = new Result();
 		// 校验参数非空性
 		if (StringUtil.isEmpty(roleName)) {
-			return Result.genNullValueTip(result, "roleName");
+			return Result.genNullParamTip("角色名");
 		}
 		Role role = roleService.findByName(roleName);
 		if (role == null) {
-			logger.info("该角色不存在!");
-			result.setCode(Result.FAILURE_CODE);
-			result.setMsg("该角色不存在!");
-			result.setData(null);
-			return result;
+			logger.info("findByRoleName-->{}角色不存在!", roleName);
+			Result.genTip(Result.FAILURE, "该角色不存在!", null);
 		}
-		logger.info("查到该角色!");
-		result.setCode(Result.SUCCESS_CODE);
-		result.setMsg("查到该角色!");
-		result.setData(role);
-		return result;
+		logger.info("findByRoleName-->查到{}角色!", roleName);
+		return Result.genTip(Result.SUCCESS, "查到该角色!", role);
 	}
 
 	/**
@@ -165,24 +137,17 @@ public class SystemRestController {
 	 */
 	@RequestMapping(value = "/findByModuleId.do", method = RequestMethod.POST)
 	public Result findByModuleId(Integer moduleId) {
-		Result result = new Result();
 		// 校验参数非空性
 		if (moduleId == null) {
-			return Result.genNullValueTip(result, "moduleId");
+			return Result.genNullParamTip("模块ID");
 		}
 		Module module = moduleService.findById(moduleId);
 		if (module == null) {
-			logger.info("该模块不存在!");
-			result.setCode(Result.FAILURE_CODE);
-			result.setMsg("该模块不存在!");
-			result.setData(null);
-			return result;
+			logger.info("findByModuleId-->{}模块不存在!", moduleId);
+			return Result.genTip(Result.FAILURE, "该模块不存在!", null);
 		}
-		logger.info("查到该模块!");
-		result.setCode(Result.SUCCESS_CODE);
-		result.setMsg("查到该模块!");
-		result.setData(module);
-		return result;
+		logger.info("findByModuleId-->查到{}模块!", moduleId);
+		return Result.genTip(Result.SUCCESS, "查到该模块!", module);
 	}
 
 	/**
@@ -190,28 +155,21 @@ public class SystemRestController {
 	 * 
 	 * @param moduleName
 	 *            模块名
-	 * @return 模块实体
+	 * @return 结果提示信息实体
 	 */
 	@RequestMapping(value = "/findByModuleName.do", method = RequestMethod.POST)
 	public Result findByModuleName(String moduleName) {
-		Result result = new Result();
 		// 校验参数非空性
 		if (StringUtil.isEmpty(moduleName)) {
-			return Result.genNullValueTip(result, "moduleName");
+			return Result.genNullParamTip("模块名");
 		}
 		Module module = moduleService.findByName(moduleName);
 		if (module == null) {
-			logger.info("该模块不存在!");
-			result.setCode(Result.FAILURE_CODE);
-			result.setMsg("该模块不存在!");
-			result.setData(null);
-			return result;
+			logger.info("findByModuleName-->{}模块不存在!", moduleName);
+			return Result.genTip(Result.FAILURE, "该模块不存在!", null);
 		}
-		logger.info("查到该模块!");
-		result.setCode(Result.SUCCESS_CODE);
-		result.setMsg("查到该模块!");
-		result.setData(module);
-		return result;
+		logger.info("findByModuleName-->查到{}模块!", moduleName);
+		return Result.genTip(Result.SUCCESS, "查到该模块!", module);
 	}
 
 	/**
@@ -221,54 +179,45 @@ public class SystemRestController {
 	 *            用户ID
 	 * @param newPwd
 	 *            新密码
-	 * @return
+	 * @return 结果提示信息实体
 	 */
 	@RequestMapping(value = "/checkOldPwd.do", method = RequestMethod.POST)
 	public Result checkOldPwd(Integer userId, String newPwd) {
-		Result result = new Result();
 		// 校验参数非空性
 		if (userId == null) {
-			return Result.genNullValueTip(result, "userId");
+			return Result.genNullParamTip("用户ID");
 		}
 		if (StringUtil.isEmpty(newPwd)) {
-			return Result.genNullValueTip(result, "newPwd");
+			return Result.genNullParamTip("新密码");
 		}
 		User user = userService.findById(userId);
 		String userPwd = MD5Util.MD5(newPwd + CfgConstant.USER_PWD_KEY);// 新密码加密
 		if (userPwd.equals(user.getUserPwd())) {
-			logger.info("新密码与旧密码一致!");
-			result.setCode(Result.FAILURE_CODE);
-			result.setMsg("新密码与旧密码一致!");
-			result.setData(newPwd);
-		} else {
-			logger.info("新密码与旧密码不一致!");
-			result.setCode(Result.SUCCESS_CODE);
-			result.setMsg("新密码与旧密码不一致!");
-			result.setData(newPwd);
+			logger.info("checkOldPwd-->新密码与旧密码一致!用户ID为:{}", userId);
+			return Result.genTip(Result.FAILURE, "新密码与旧密码一致!", newPwd);
 		}
-		return result;
+		logger.info("checkOldPwd-->新密码与旧密码不一致!用户ID为:{}", userId);
+		return Result.genTip(Result.SUCCESS, "新密码与旧密码不一致!", newPwd);
 	}
 
 	/**
-	 * 测试方法
+	 * 测试方法，测试接口
 	 * 
 	 * @param userId
+	 *            用户ID
 	 * @param userName
-	 * @return
+	 *            用户姓名
+	 * @return 结果提示信息实体
 	 */
 	@RequestMapping(value = "/test.do")
 	public Result test(Integer userId, String userName) {
-		Result result = new Result();
 		// 校验参数非空性
 		if (userId == null) {
-			return Result.genNullValueTip(result, "userId");
+			return Result.genNullParamTip("用户ID");
 		}
 		if (StringUtil.isEmpty(userName)) {
-			return Result.genNullValueTip(result, "userName");
+			return Result.genNullParamTip("用户姓名");
 		}
-		result.setCode(Result.SUCCESS_CODE);
-		result.setMsg("请求成功!");
-		result.setData(userId + "-" + userName);
-		return result;
+		return Result.genTip(Result.SUCCESS, "请求成功!", userId + "-" + userName);
 	}
 }
