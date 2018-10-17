@@ -18,6 +18,11 @@ import java.util.regex.Pattern;
 
 import javax.imageio.ImageIO;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.xn.hk.common.constant.Constant;
+
 /**
  * @Title: StringUtil
  * @Package: com.xn.hk.common.utils
@@ -26,10 +31,15 @@ import javax.imageio.ImageIO;
  * @Date: 2018年1月8日 下午5:01:12
  */
 public final class StringUtil {
+	private static final Logger logger = LoggerFactory.getLogger(StringUtil.class);
+	/**
+	 * 所有字符和数字
+	 */
+	private static final String allNumAndChar = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 	/**
 	 * 数字字符数组
 	 */
-	private final static char[] digitArray = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' };
+	private static final char[] digitArray = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' };
 	/**
 	 * 16进制数
 	 */
@@ -39,7 +49,8 @@ public final class StringUtil {
 	 * 随机生成指定长度的纯数字字符串
 	 * 
 	 * @param length
-	 * @return
+	 *            指定长度
+	 * @return 返回指定长度的纯数字字符串
 	 */
 	public static String randomDigit(int length) {
 		char[] c = new char[length];
@@ -50,33 +61,17 @@ public final class StringUtil {
 	}
 
 	/**
-	 * 将String类型的true或者false转换为Boolean类型
-	 * 
-	 * @param value
-	 * @return Boolean类型
-	 */
-	public static boolean String2Boolean(String value) {
-		if (isEmpty(value)) {
-			return false;
-		}
-		if (value.equalsIgnoreCase("true")) {
-			return true;
-		}
-		return false;
-	}
-
-	/**
-	 * 生成指定长度的字符串
+	 * 生成指定长度的随机字符串
 	 * 
 	 * @param len
-	 * @return
+	 *            指定长度
+	 * @return 返回指定长度的字符串
 	 */
 	public static String randomString(int len) {
 		Random r = new Random();
 		StringBuffer sb = new StringBuffer();
-		String s = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 		for (int i = 0; i < len; i++) {
-			sb.append(s.charAt(r.nextInt(s.length())));
+			sb.append(allNumAndChar.charAt(r.nextInt(allNumAndChar.length())));
 		}
 		return sb.toString();
 	}
@@ -85,7 +80,8 @@ public final class StringUtil {
 	 * 判断一个字符串为空
 	 * 
 	 * @param value
-	 * @return
+	 *            字符串
+	 * @return 为空返回true，否则返回false
 	 */
 	public static boolean isEmpty(String value) {
 		return value == null || value.trim().equals("");
@@ -98,7 +94,7 @@ public final class StringUtil {
 	 *            提示语
 	 * @param status
 	 *            success 或 error
-	 * @return
+	 * @return 返回生成提示语
 	 */
 	public static String genTipMsg(String tip, String status) {
 		return "<script>$(function(){swal('OMG!', '" + tip + "', '" + status + "');});</script>";
@@ -107,7 +103,7 @@ public final class StringUtil {
 	/**
 	 * 生成随机的UUID字符串
 	 * 
-	 * @return
+	 * @return 返回随机的UUID字符串
 	 */
 	public static String genUUIDString() {
 		return UUID.randomUUID().toString().replaceAll("-", "");
@@ -122,7 +118,7 @@ public final class StringUtil {
 	 *            验证码长度
 	 * @return 验证码字符串
 	 */
-	public static String drawImg(ByteArrayOutputStream output,int codeLength) {
+	public static String drawImg(ByteArrayOutputStream output, int codeLength) {
 		// 随机产生codeLength个字符
 		String code = randomString(codeLength);
 		// 设置验证码的宽高
@@ -148,7 +144,7 @@ public final class StringUtil {
 		try {
 			ImageIO.write(bi, "jpg", output);
 		} catch (IOException e) {
-			e.printStackTrace();
+			logger.error("生成验证码失败，原因为:" + e);
 		}
 		return code;
 	}
@@ -162,7 +158,7 @@ public final class StringUtil {
 	 */
 	public static String filterUnNumber(String str) {
 		if (StringUtil.isEmpty(str))
-			return "";
+			return null;
 		String regEx = "[^0-9]";
 		Pattern p = Pattern.compile(regEx);
 		Matcher m = p.matcher(str);
@@ -174,7 +170,7 @@ public final class StringUtil {
 	 * 
 	 * @param str
 	 *            字符串
-	 * @return
+	 * @return 是纯数字返回true，否则返回false
 	 */
 	public static boolean isDigit(String str) {
 		String regEx = "(\\d+?)";
@@ -184,14 +180,14 @@ public final class StringUtil {
 	}
 
 	/**
-	 * 判断一个字符串是否为号码
+	 * 判断一个字符串是否为手机号码
 	 * 
 	 * @param number
 	 *            手机号码字符串
-	 * @return
+	 * @return 是电话号码返回true，否则返回false
 	 */
 	public static boolean isMobileNumber(String number) {
-		if (StringUtil.isEmpty(number)||number.length() != 11) {
+		if (StringUtil.isEmpty(number) || number.length() != 11) {
 			return false;
 		}
 		Pattern p = Pattern.compile("^((13[0-9])|(15[^4,\\\\D])|(18[0,5-9]))\\\\d{8}$");
@@ -202,38 +198,38 @@ public final class StringUtil {
 	/**
 	 * 将一个字符串进行URL编码
 	 * 
-	 * @param url
+	 * @param str
 	 *            字符串
-	 * @return
+	 * @return 返回URL编码后的字符串
 	 */
-	public final static String urlEncode(String url) {
-		if (isEmpty(url)) {
-			return "";
+	public final static String urlEncode(String str) {
+		if (isEmpty(str)) {
+			return null;
 		}
 		try {
-			return URLEncoder.encode(url, "UTF-8");
+			return URLEncoder.encode(str, Constant.UTF8);
 		} catch (UnsupportedEncodingException e) {
-			e.printStackTrace();
-			return "";
+			logger.error("URL编码失败，原因为:" + e);
+			return null;
 		}
 	}
 
 	/**
 	 * 将一个字符串进行URL解码
 	 * 
-	 * @param url
+	 * @param str
 	 *            字符串
-	 * @return
+	 * @return 返回URL解码后的字符串
 	 */
-	public final static String urlDecode(String url) {
-		if (isEmpty(url)) {
-			return "";
+	public final static String urlDecode(String str) {
+		if (isEmpty(str)) {
+			return null;
 		}
 		try {
-			return URLDecoder.decode(url, "UTF-8");
+			return URLDecoder.decode(str, Constant.UTF8);
 		} catch (UnsupportedEncodingException e) {
-			e.printStackTrace();
-			return "";
+			logger.error("URL编码失败，原因为:" + e);
+			return null;
 		}
 	}
 

@@ -23,7 +23,7 @@ import com.xn.hk.common.constant.StatusEnum;
 import com.xn.hk.common.constant.View;
 import com.xn.hk.common.utils.cfg.CfgConstant;
 import com.xn.hk.common.utils.cfg.SystemCfg;
-import com.xn.hk.common.utils.encryption.MD5Util;
+import com.xn.hk.common.utils.encryption.Md5Util;
 import com.xn.hk.common.utils.log.LogHelper;
 import com.xn.hk.common.utils.log.LogType;
 import com.xn.hk.common.utils.page.BasePage;
@@ -122,7 +122,7 @@ public class UserController {
 	public ModelAndView login(User user, HttpSession session, HttpServletResponse response) {
 		String userName = user.getUserName();
 		// 使用MD5加密(用户登录密码+登录密码key)存入数据库中,提高密码的加密程度
-		String userPwd = MD5Util.MD5(user.getUserPwd() + CfgConstant.USER_PWD_KEY);
+		String userPwd = Md5Util.MD5(user.getUserPwd() + CfgConstant.USER_PWD_KEY);
 		// 1.保存cookie实现记住密码功能
 		saveCookie(user, session, response);
 		if(enableVerifyCodeLogin) {
@@ -311,7 +311,7 @@ public class UserController {
 	@RequestMapping(value = "/add.do")
 	public ModelAndView addUser(User user, HttpSession session) {
 		// 使用MD5加密(用户登录密码+登录密码key)存入数据库中,提高密码的加密程度
-		String userPwd = MD5Util.MD5(genUserPwd(user) + CfgConstant.USER_PWD_KEY);
+		String userPwd = Md5Util.MD5(genUserPwd(user) + CfgConstant.USER_PWD_KEY);
 		user.setUserPwd(userPwd);
 		int result = userService.insert(session, "添加用户", LogType.USER_LOG.getType(), user);
 		if (result == Constant.ZERO_VALUE) {
@@ -354,7 +354,7 @@ public class UserController {
 	@RequestMapping(value = "/update.do")
 	public ModelAndView updateUser(User user, HttpSession session) {
 		// 使用MD5加密(用户登录密码+登录密码key)存入数据库中,提高密码的加密程度
-		String userPwd = MD5Util.MD5(genUserPwd(user) + CfgConstant.USER_PWD_KEY);
+		String userPwd = Md5Util.MD5(genUserPwd(user) + CfgConstant.USER_PWD_KEY);
 		user.setUserPwd(userPwd);
 		int result = userService.update(session, "修改用户", LogType.USER_LOG.getType(), user);
 		if (result == Constant.ZERO_VALUE) {
@@ -418,7 +418,7 @@ public class UserController {
 			mv = View.USER_REDITRCT_UPDATE_PWD_VIEW;
 		}
 		// 使用MD5加密(用户登录密码+登录密码key)存入数据库中,提高密码的加密程度
-		user.setUserPwd(MD5Util.MD5(userPwd + CfgConstant.USER_PWD_KEY));
+		user.setUserPwd(Md5Util.MD5(userPwd + CfgConstant.USER_PWD_KEY));
 		int result = userService.update(session, logName, LogType.USER_LOG.getType(), user);
 		if (result == Constant.ZERO_VALUE) {
 			logger.error("用户{}修改密码失败!", user.getUserName());

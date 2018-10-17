@@ -20,7 +20,7 @@ import org.slf4j.LoggerFactory;
  * 
  * @ClassName: ZipUtil
  * @Package: com.xn.hk.common.utils.file
- * @Description: Zip相关函数
+ * @Description: 压缩文件和解压zip文件的操作工具类
  * @Author: wanlei
  * @Date: 2018年8月23日 上午11:18:48
  */
