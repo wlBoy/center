@@ -1,6 +1,5 @@
 package com.xn.hk.common.utils.quartz;
 
-import java.io.IOException;
 import java.util.Properties;
 
 /**
@@ -31,10 +30,8 @@ public class TimingTask {
 
 	/**
 	 * 
-	 * 服务启动后添加定时任务
+	 * 初始化定时任务，通过调用QuartzManager.addJob方法可添加n个定时任务
 	 * 
-	 * @throws FileNotFoundException
-	 * @throws IOException
 	 */
 	public void initJob() {
 		Properties prop = CronCfg.loadCfg();
@@ -44,6 +41,11 @@ public class TimingTask {
 		// QuartzManager.createSimpleJob(TEST_TASK, TestTask.class, 10);
 	}
 
+	/**
+	 * 测试方法，手动调用
+	 * 
+	 * @param args
+	 */
 	public static void main(String[] args) {
 		// 手动调用启动定时任务
 		TimingTask.getInstance().initJob();

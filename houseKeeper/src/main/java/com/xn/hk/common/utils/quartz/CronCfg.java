@@ -45,4 +45,16 @@ public class CronCfg {
 		return InitConfigFile.getInstance().loadCfgMap(CRON_CFG);
 	}
 
+	/**
+	 * main测试方法
+	 * 
+	 * @param args
+	 */
+	public static void main(String[] args) {
+		System.out.println("-----测试读取配置文件方法-----");
+		Map<String, String> cfgMap = loadCfgMap();
+		for (String key : cfgMap.keySet()) {
+			System.out.println(key + "=" + cfgMap.get(key));
+		}
+	}
 }

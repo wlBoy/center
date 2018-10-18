@@ -198,7 +198,10 @@ public class SystemCfg {
 	public static boolean saveCfg(Map<String, Object> cfgMap) {
 		return InitConfigFile.getInstance().saveCfg(cfgMap, REALTIME_SYSTEM_CFG_INI);
 	}
-
+	/**
+	 * main测试方法
+	 * @param args
+	 */
 	public static void main(String[] args) {
 		System.out.println("-----测试保存配置文件方法-----");
 		Map<String, Object> cfgMap = new HashMap<String, Object>();
