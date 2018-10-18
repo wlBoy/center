@@ -37,13 +37,12 @@ public final class DateFormatUtil {
 			"FRIDAY", "SATURDAY" };
 
 	/**
-	 * 把日期时间格式化为yyyy-MM-dd格式
+	 * 把当前时间格式化为yyyy-MM-dd格式
 	 * 
 	 * @return 格式化后的日期时间字符串
 	 */
 	public static String formatDate() {
-		SimpleDateFormat dateStyle = new SimpleDateFormat(PATTERN_DATE);
-		return dateStyle.format(new Date());
+		return formatDate(new Date());
 	}
 
 	/**
@@ -52,8 +51,11 @@ public final class DateFormatUtil {
 	 * @return 格式化后的日期时间字符串
 	 */
 	public static String formatDate(Date date) {
-		SimpleDateFormat dateStyle = new SimpleDateFormat(PATTERN_DATE);
-		return dateStyle.format(date);
+		if (date != null) {
+			SimpleDateFormat dateStyle = new SimpleDateFormat(PATTERN_DATE);
+			return dateStyle.format(date);
+		}
+		return "";
 	}
 
 	/**
@@ -66,6 +68,15 @@ public final class DateFormatUtil {
 	public static String genNo() {
 		SimpleDateFormat sdf = new SimpleDateFormat(PATTERN_DATE_SECOND);
 		return (sdf.format(new Date(System.currentTimeMillis())) + Math.abs(new Random().nextInt(64)));
+	}
+
+	/**
+	 * 把当前时间格式化为yyyy-MM-dd HH:mm:ss格式
+	 * 
+	 * @return 格式化后的日期时间字符串
+	 */
+	public static String formatDateTime() {
+		return formatDateTime(new Date());
 	}
 
 	/**
@@ -84,7 +95,7 @@ public final class DateFormatUtil {
 	}
 
 	/**
-	 * 把日期时间格式化为指定格式
+	 * 把当前时间格式化为指定格式
 	 * 
 	 * @param dt
 	 *            java.util.Date
@@ -110,32 +121,12 @@ public final class DateFormatUtil {
 	}
 
 	/**
-	 * 把当前日期时间格式化为yyyy-MM-dd HH:mm:ss格式
-	 * 
-	 * @param dt
-	 *            java.util.Date
-	 * @return 格式化后的日期时间字符串
-	 */
-	public static String formatDateTime() {
-		return formatDateTime(PATTERN_DATE_TIME);
-	}
-
-	/**
 	 * 将指定的字符串转换成日期
 	 * 
-	 * @param dateStr:
-	 *            待转换的日期符串,以yyyy-MM-dd模板进行转换
-	 * @return 返回标准的日期格式yyyy-MM-dd,与字符串dateStr对应的date对象
-	 * @throws ParseStringException
+	 * @return 返回日期格式yyyy-MM-dd HH:mm:ss
 	 */
 	public static Date parseStrToDate(String dateStr) {
-		try {
-			SimpleDateFormat sf = new SimpleDateFormat(PATTERN_DATE);
-			return sf.parse(dateStr);
-		} catch (ParseException e) {
-			logger.info(e.getMessage());
-			return null;
-		}
+		return parseStrToDate(dateStr, PATTERN_DATE_TIME);
 	}
 
 	/**
@@ -146,12 +137,11 @@ public final class DateFormatUtil {
 	 * @param pattern:
 	 *            字符串的格式模板,例如:yyyy-MM-dd hh:mm:ss
 	 * @return 与字符串dateStr对应的date对象
-	 * @throws ParseStringException
 	 */
-	public static Date parseStrToDate(String date, String pattern) {
+	public static Date parseStrToDate(String datestr, String pattern) {
 		try {
 			SimpleDateFormat sdf = new SimpleDateFormat(pattern);
-			return sdf.parse(date);
+			return sdf.parse(datestr);
 		} catch (ParseException e) {
 			logger.info(e.getMessage());
 			return null;
@@ -273,8 +263,10 @@ public final class DateFormatUtil {
 	 * 返回较小的时间
 	 * 
 	 * @param date1
+	 *            时间1
 	 * @param date2
-	 * @return
+	 *            时间2
+	 * @return 返回较小的时间
 	 */
 	public static Date getMinDate(Date date1, String date2) {
 		Date date = DateFormatUtil.parseStrToDate(date2, DateFormatUtil.PATTERN_DATE_TIME);
@@ -292,7 +284,8 @@ public final class DateFormatUtil {
 	 * 返回每月最后一天的日期,格式为yyyy-MM-dd
 	 * 
 	 * @param month
-	 * @return
+	 *            月份
+	 * @return 返回每月最后一天的日期
 	 */
 	public static String getLastDayOfMonth(String month) {
 		Calendar cal = Calendar.getInstance();
@@ -307,7 +300,8 @@ public final class DateFormatUtil {
 	 * 返回每月第一天的日期,格式为yyyy-MM-dd
 	 * 
 	 * @param month
-	 * @return
+	 *            月份
+	 * @return 返回每月第一天的日期
 	 */
 	public static String getFirstDayOfMonth(Date date) {
 		Calendar cal = Calendar.getInstance();
@@ -320,7 +314,7 @@ public final class DateFormatUtil {
 	/**
 	 * 返回当前时间月份第一天的日期,格式为yyyy-MM-dd
 	 * 
-	 * @return
+	 * @return 返回当前时间月份第一天的日期
 	 */
 	public static String getFirstDayOfMonth() {
 		return DateFormatUtil.getFirstDayOfMonth(new Date());
@@ -329,8 +323,7 @@ public final class DateFormatUtil {
 	/**
 	 * 返回每月第一天的日期,格式为yyyy-MM-dd
 	 * 
-	 * @param month
-	 * @return
+	 * @return 返回每月第一天的日期
 	 */
 	public static String getFirstDayOfLastMonth() {
 		Calendar cal = Calendar.getInstance();
@@ -342,7 +335,7 @@ public final class DateFormatUtil {
 	/**
 	 * 获取昨天的日期,格式为yyyy-MM-dd
 	 * 
-	 * @return
+	 * @return 获取昨天的日期
 	 */
 	public static String getYesterday() {
 		Calendar cal = Calendar.getInstance();
@@ -436,29 +429,31 @@ public final class DateFormatUtil {
 	 * @return nowTimeStamp
 	 */
 	public static long getNowTimeStamp() {
-		return getNowTimeStampStr() / 1000;
+		return getCurrentTimeMillis() / 1000;
 	}
 
 	/**
-	 * 取得当前时间戳（精确到毫秒）
-	 *
-	 * @return nowTimeStampStr
-	 */
-	public static long getNowTimeStampStr() {
-		return System.currentTimeMillis();
-	}
-
-	/**
-	 * 把当前日期时间格式化为yyyy-MM-dd HH:mm:ss格式并进行url编码
+	 * 把日期时间格式化为yyyy-MM-dd HH:mm:ss并进行url编码
 	 * 
-	 * @param dt
+	 * @param date
 	 *            java.util.Date
 	 * @return 格式化后的日期时间字符串
-	 * @throws UnsupportedEncodingException
 	 */
-	public static String formatDateTimeToUrl() {
-		SimpleDateFormat dateStyle = new SimpleDateFormat(DateFormatUtil.PATTERN_DATE_TIME, Locale.CHINESE);
-		String newDate = dateStyle.format(new Date());
+	public static String formatDateTimeToUrl(Date date) {
+		return formatDateTimeToUrl(date, PATTERN_DATE_TIME);
+	}
+
+	/**
+	 * 把日期时间格式化为指定格式格式并进行url编码
+	 * 
+	 * @param date
+	 *            java.util.Date
+	 * @param pattern
+	 *            格式化字符串
+	 * @return 格式化后的日期时间字符串
+	 */
+	public static String formatDateTimeToUrl(Date date, String pattern) {
+		String newDate = formatDateTime(new Date(), pattern);
 		try {
 			newDate = URLEncoder.encode(newDate, Constant.UTF8);
 		} catch (UnsupportedEncodingException e) {

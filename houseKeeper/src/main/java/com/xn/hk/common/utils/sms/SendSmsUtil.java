@@ -8,7 +8,6 @@ import org.apache.http.HttpStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.xn.hk.common.utils.cfg.CfgConstant;
 import com.xn.hk.common.utils.cfg.SystemCfg;
 import com.xn.hk.common.utils.string.StringUtil;
 
@@ -34,8 +33,8 @@ public class SendSmsUtil {
 	private static final String SMSTEXT = "smsText";
 	private static final String CONTENT_TYPE_KEY = "Content-Type";
 	// 取出配置文件中sms编码
-	private static final String SMS_CHARACTER_CODING = SystemCfg.getInstance().loadCfgMap()
-			.get(CfgConstant.SMS_CHARACTER_CODING).toLowerCase();
+	private static final String SMS_CHARACTER_CODING = SystemCfg.loadCfgMap()
+			.get(SystemCfg.SMS_CHARACTER_CODING).toLowerCase();
 	private static final String CONTENT_TYPE_VALUE = "application/x-www-form-urlencoded;charset="
 			+ SMS_CHARACTER_CODING;
 	private static SendSmsUtil instance;
@@ -63,11 +62,11 @@ public class SendSmsUtil {
 	 */
 	public void sendSms(String smsText) {
 		String smsUrl = "";
-		if (!Boolean.valueOf(SystemCfg.getInstance().loadCfgMap().get(CfgConstant.ENABLE_SMS))) {
+		if (!Boolean.valueOf(SystemCfg.loadCfgMap().get(SystemCfg.ENABLE_SMS))) {
 			logger.error("请启用发送sms短信功能!");
 			return;
 		}
-		String smsMobile = SystemCfg.getInstance().loadCfgMap().get(CfgConstant.SMS_MOBILE);
+		String smsMobile = SystemCfg.loadCfgMap().get(SystemCfg.SMS_MOBILE);
 		if (StringUtil.isMobileNumber(smsMobile)) {
 			logger.error("{}电话号码不合法!", smsMobile);
 			return;
@@ -82,8 +81,8 @@ public class SendSmsUtil {
 		PostMethod post = new PostMethod(smsUrl);
 		post.addRequestHeader(CONTENT_TYPE_KEY, CONTENT_TYPE_VALUE);// 在头文件中设置转码
 		NameValuePair[] data = {
-				new NameValuePair(UID, SystemCfg.getInstance().loadCfgMap().get(CfgConstant.SMS_USERNAME)), // 登录的用户名
-				new NameValuePair(KEY, SystemCfg.getInstance().loadCfgMap().get(CfgConstant.SMS_PASSWORD)), // 接口安全密钥
+				new NameValuePair(UID, SystemCfg.loadCfgMap().get(SystemCfg.SMS_USERNAME)), // 登录的用户名
+				new NameValuePair(KEY, SystemCfg.loadCfgMap().get(SystemCfg.SMS_PASSWORD)), // 接口安全密钥
 				new NameValuePair(SMSMOB, smsMobile), // 接受验证码的手机号
 				new NameValuePair(SMSTEXT, smsText) };// 发送短信内容
 		post.setRequestBody(data);

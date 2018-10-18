@@ -21,7 +21,6 @@ import org.springframework.web.servlet.ModelAndView;
 import com.xn.hk.common.constant.Constant;
 import com.xn.hk.common.constant.StatusEnum;
 import com.xn.hk.common.constant.View;
-import com.xn.hk.common.utils.cfg.CfgConstant;
 import com.xn.hk.common.utils.cfg.SystemCfg;
 import com.xn.hk.common.utils.encryption.Md5Util;
 import com.xn.hk.common.utils.log.LogHelper;
@@ -54,7 +53,7 @@ public class UserController {
 	private static final Logger logger = LoggerFactory.getLogger(UserController.class);
 	// 取出配置文件中的是否启用验证码登录
 	private static final Boolean enableVerifyCodeLogin = Boolean
-			.parseBoolean(SystemCfg.getInstance().loadCfg().getProperty(CfgConstant.ENABLE_VERIFY_CODE_LOGIN));
+			.parseBoolean(SystemCfg.loadCfg().getProperty(SystemCfg.ENABLE_VERIFY_CODE_LOGIN));
 	/**
 	 * 注入service层
 	 */
@@ -75,7 +74,7 @@ public class UserController {
 	@RequestMapping(value = "/tologin.do")
 	public String toLoginJsp(HttpSession session) {
 		// 取出配置文件中的是否启用验证码登录，放入session中，以便登录页面能获取得到
-		session.setAttribute(CfgConstant.ENABLE_VERIFY_CODE_LOGIN, enableVerifyCodeLogin);
+		session.setAttribute(SystemCfg.ENABLE_VERIFY_CODE_LOGIN, enableVerifyCodeLogin);
 		return "login";
 	}
 
@@ -122,10 +121,10 @@ public class UserController {
 	public ModelAndView login(User user, HttpSession session, HttpServletResponse response) {
 		String userName = user.getUserName();
 		// 使用MD5加密(用户登录密码+登录密码key)存入数据库中,提高密码的加密程度
-		String userPwd = Md5Util.MD5(user.getUserPwd() + CfgConstant.USER_PWD_KEY);
+		String userPwd = Md5Util.MD5(user.getUserPwd() + SystemCfg.USER_PWD_KEY);
 		// 1.保存cookie实现记住密码功能
 		saveCookie(user, session, response);
-		if(enableVerifyCodeLogin) {
+		if (enableVerifyCodeLogin) {
 			// 2.取到用户输入的验证码和session中的验证码比较
 			String verifyCodeValue = (String) session.getAttribute(Constant.VERIFY_CODE_VALUE);
 			if (!user.getVerifyCode().equalsIgnoreCase(verifyCodeValue)) {
@@ -219,7 +218,7 @@ public class UserController {
 	public void getVerifyCode(HttpServletResponse response, HttpSession session) {
 		ByteArrayOutputStream output = new ByteArrayOutputStream();
 		// 获取配置文件中的验证码长度,不设置默认为4
-		String verifyCodeLength = SystemCfg.getInstance().loadCfg().getProperty(CfgConstant.VERIFY_CODE_LENGTH);
+		String verifyCodeLength = SystemCfg.loadCfg().getProperty(SystemCfg.VERIFY_CODE_LENGTH);
 		Integer length = null;
 		if (StringUtil.isEmpty(verifyCodeLength)) {
 			length = 4;
@@ -311,7 +310,7 @@ public class UserController {
 	@RequestMapping(value = "/add.do")
 	public ModelAndView addUser(User user, HttpSession session) {
 		// 使用MD5加密(用户登录密码+登录密码key)存入数据库中,提高密码的加密程度
-		String userPwd = Md5Util.MD5(genUserPwd(user) + CfgConstant.USER_PWD_KEY);
+		String userPwd = Md5Util.MD5(genUserPwd(user) + SystemCfg.USER_PWD_KEY);
 		user.setUserPwd(userPwd);
 		int result = userService.insert(session, "添加用户", LogType.USER_LOG.getType(), user);
 		if (result == Constant.ZERO_VALUE) {
@@ -333,7 +332,7 @@ public class UserController {
 	private String genUserPwd(User user) {
 		String userPwd = null;
 		// 获取配置文件中的默认密码
-		String defaultUserPwd = SystemCfg.getInstance().loadCfg().getProperty(CfgConstant.DEFAULT_USER_PWD);
+		String defaultUserPwd = SystemCfg.loadCfg().getProperty(SystemCfg.DEFAULT_USER_PWD);
 		if (StringUtil.isEmpty(defaultUserPwd)) {
 			// 生成密码,规则为:用户名的拼音
 			userPwd = Pinyin4jUtil.getPinYin(user.getUserName());
@@ -354,7 +353,7 @@ public class UserController {
 	@RequestMapping(value = "/update.do")
 	public ModelAndView updateUser(User user, HttpSession session) {
 		// 使用MD5加密(用户登录密码+登录密码key)存入数据库中,提高密码的加密程度
-		String userPwd = Md5Util.MD5(genUserPwd(user) + CfgConstant.USER_PWD_KEY);
+		String userPwd = Md5Util.MD5(genUserPwd(user) + SystemCfg.USER_PWD_KEY);
 		user.setUserPwd(userPwd);
 		int result = userService.update(session, "修改用户", LogType.USER_LOG.getType(), user);
 		if (result == Constant.ZERO_VALUE) {
@@ -418,7 +417,7 @@ public class UserController {
 			mv = View.USER_REDITRCT_UPDATE_PWD_VIEW;
 		}
 		// 使用MD5加密(用户登录密码+登录密码key)存入数据库中,提高密码的加密程度
-		user.setUserPwd(Md5Util.MD5(userPwd + CfgConstant.USER_PWD_KEY));
+		user.setUserPwd(Md5Util.MD5(userPwd + SystemCfg.USER_PWD_KEY));
 		int result = userService.update(session, logName, LogType.USER_LOG.getType(), user);
 		if (result == Constant.ZERO_VALUE) {
 			logger.error("用户{}修改密码失败!", user.getUserName());
@@ -447,7 +446,7 @@ public class UserController {
 		String suffix = oldName.substring(oldName.lastIndexOf("."), oldName.length());
 		String newName = StringUtil.genUUIDString() + suffix;
 		// 本地存储路径,此路径在server.xml中已配置图片虚拟路径对应
-		String userFacePath = SystemCfg.getInstance().loadCfg().getProperty(CfgConstant.USER_PHOTO_PATH);
+		String userFacePath = SystemCfg.loadCfg().getProperty(SystemCfg.USER_PHOTO_PATH);
 		File dir = new File(userFacePath, newName);
 		if (!dir.exists()) {
 			dir.mkdirs();

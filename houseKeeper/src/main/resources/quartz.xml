@@ -42,7 +42,7 @@
 		class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
 		<property name="jobDetail" ref="snmptask" />
 
-		<property name="cronExpression" value="${snmp.cron}" />
+		<property name="cronExpression" value="${snmpTask}" />
 	</bean>
 
 	<!-- 4.定时器总管理类 如果将lazy-init='false'那么容器启动就会执行调度程序 -->

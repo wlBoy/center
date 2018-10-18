@@ -5,7 +5,7 @@ import java.security.MessageDigest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.xn.hk.common.utils.cfg.CfgConstant;
+import com.xn.hk.common.utils.cfg.SystemCfg;
 
 /**
  * 
@@ -54,6 +54,6 @@ public class Md5Util {
 	 * @param args
 	 */
 	public static void main(String args[]) {
-		System.out.println("MD5加密之后的密码为：" + MD5("admin" + CfgConstant.USER_PWD_KEY));
+		System.out.println("MD5加密之后的密码为：" + MD5("admin" + SystemCfg.USER_PWD_KEY));
 	}
 }

@@ -20,7 +20,6 @@ import javax.mail.internet.MimeMultipart;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.xn.hk.common.utils.cfg.CfgConstant;
 import com.xn.hk.common.utils.cfg.SystemCfg;
 
 /**
@@ -66,17 +65,17 @@ public class EmailProxy {
 	 * @throws IOException
 	 */
 	public void sendTextMail(Email mailInfo) throws MessagingException, IOException {
-		if (!Boolean.valueOf(SystemCfg.getInstance().loadCfg().getProperty(CfgConstant.ENABLE_MAIL))) {
+		if (!Boolean.valueOf(SystemCfg.loadCfg().getProperty(SystemCfg.ENABLE_MAIL))) {
 			logger.error("请启用发送邮件功能!");
 			return;
 		}
 		// 判断是否需要身份认证
 		MyAuthenticator authenticator = null;
 		Properties prop = getProperties();
-		if (Boolean.valueOf(prop.getProperty(CfgConstant.MAIL_VALIDATE))) {
+		if (Boolean.valueOf(prop.getProperty(SystemCfg.MAIL_VALIDATE))) {
 			// 如果需要身份认证，则创建一个密码验证器
-			authenticator = new MyAuthenticator(prop.getProperty(CfgConstant.MAIL_USERNAME),
-					prop.getProperty(CfgConstant.MAIL_PASSWORD));
+			authenticator = new MyAuthenticator(prop.getProperty(SystemCfg.MAIL_USERNAME),
+					prop.getProperty(SystemCfg.MAIL_PASSWORD));
 		}
 		// 根据邮件会话属性和密码验证器构造一个发送邮件的session
 		Session session = Session.getDefaultInstance(prop, authenticator);
@@ -84,7 +83,7 @@ public class EmailProxy {
 		// 根据session创建一个邮件消息
 		Message mailMessage = new MimeMessage(session);
 		// 创建邮件发送者地址
-		Address from = new InternetAddress(prop.getProperty(CfgConstant.MAIL_FROM).toString());
+		Address from = new InternetAddress(prop.getProperty(SystemCfg.MAIL_FROM).toString());
 		// 设置邮件消息的发送者
 		mailMessage.setFrom(from);
 		// 创建邮件的接收者地址，并设置到邮件消息中
@@ -111,11 +110,11 @@ public class EmailProxy {
 	 * @throws IOException
 	 */
 	private Properties getProperties() throws IOException {
-		Properties prop = SystemCfg.getInstance().loadCfg();
+		Properties prop = SystemCfg.loadCfg();
 		// 设置snmp的主机，端口号和是否需要授权验证(这一步一定要有)
-		prop.put(MAIL_SMTP_HOST, prop.getProperty(CfgConstant.MAIL_HOST));
-		prop.put(MAIL_SMTP_PORT, prop.getProperty(CfgConstant.MAIL_PORT));
-		prop.put(MAIL_SMTP_AUTH, prop.getProperty(CfgConstant.MAIL_VALIDATE));
+		prop.put(MAIL_SMTP_HOST, prop.getProperty(SystemCfg.MAIL_HOST));
+		prop.put(MAIL_SMTP_PORT, prop.getProperty(SystemCfg.MAIL_PORT));
+		prop.put(MAIL_SMTP_AUTH, prop.getProperty(SystemCfg.MAIL_VALIDATE));
 		return prop;
 	}
 

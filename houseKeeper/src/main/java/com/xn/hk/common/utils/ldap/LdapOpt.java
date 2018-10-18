@@ -20,7 +20,6 @@ import javax.naming.ldap.LdapContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.xn.hk.common.utils.cfg.CfgConstant;
 import com.xn.hk.common.utils.cfg.SystemCfg;
 
 /**
@@ -38,7 +37,7 @@ public class LdapOpt {
 	// 非加密通道端口
 	private static final String WITHOUT_SSL_LDAP_URL_PORT = "389";
 	// 根节点
-	public static String BASE_DN = SystemCfg.getInstance().loadCfg().getProperty(CfgConstant.BASE_DN);
+	public static String BASE_DN = SystemCfg.loadCfg().getProperty(SystemCfg.BASE_DN);
 	// 不需要密码
 	public final static int UF_PASSWD_NOTREQD = 0x0020;
 	// 用户不能更改密码。可以读取此标志，但不能直接设置它。
@@ -58,17 +57,17 @@ public class LdapOpt {
 	 */
 	public static LdapContext getConn() throws NamingException {
 		// 登录名
-		String SECURITY_PRINCIPAL = SystemCfg.getInstance().loadCfg().getProperty(CfgConstant.SECURITY_PRINCIPAL);
+		String SECURITY_PRINCIPAL = SystemCfg.loadCfg().getProperty(SystemCfg.SECURITY_PRINCIPAL);
 		// keyStore的存储位置
-		String KEYSTORE = SystemCfg.getInstance().loadCfg().getProperty(CfgConstant.KEY_STORE);
+		String KEYSTORE = SystemCfg.loadCfg().getProperty(SystemCfg.KEY_STORE);
 		// SSL密码
-		String SSL_PASSWORD = SystemCfg.getInstance().loadCfg().getProperty(CfgConstant.SSL_PASSWORD);
+		String SSL_PASSWORD = SystemCfg.loadCfg().getProperty(SystemCfg.SSL_PASSWORD);
 		// AD域管理员密码
-		String AD_PASSWORD = SystemCfg.getInstance().loadCfg().getProperty(CfgConstant.AD_PASSWORD);
+		String AD_PASSWORD = SystemCfg.loadCfg().getProperty(SystemCfg.AD_PASSWORD);
 		// LDAP_URL
-		String LDAP_URL = SystemCfg.getInstance().loadCfg().getProperty(CfgConstant.LDAP_URL);
+		String LDAP_URL = SystemCfg.loadCfg().getProperty(SystemCfg.LDAP_URL);
 		String port = null;
-		if (Boolean.valueOf(SystemCfg.getInstance().loadCfg().getProperty(CfgConstant.USE_SSL))) {
+		if (Boolean.valueOf(SystemCfg.loadCfg().getProperty(SystemCfg.USE_SSL))) {
 			port = SSL_LDAP_URL_PORT;
 		} else {
 			port = WITHOUT_SSL_LDAP_URL_PORT;
@@ -185,7 +184,7 @@ public class LdapOpt {
 				}
 				// required attributes
 				int userAccountControl = UF_NORMAL_ACCOUNT + UF_PASSWD_NOTREQD + UF_PASSWORD_EXPIRED;
-				if (Boolean.valueOf(SystemCfg.getInstance().loadCfg().getProperty(CfgConstant.PASSWORD_CANT_CHANGE))) {
+				if (Boolean.valueOf(SystemCfg.loadCfg().getProperty(SystemCfg.PASSWORD_CANT_CHANGE))) {
 					userAccountControl += UF_PASSWD_CANT_CHANGE;
 				}
 				if (accountDisable) {
@@ -206,8 +205,7 @@ public class LdapOpt {
 					logger.error("User already exists, has been moved into the organization unit");
 				}
 			}
-			if (Boolean.valueOf(SystemCfg.getInstance().loadCfg().getProperty(CfgConstant.PUSH_PASSWORD))
-					&& passWord != null) {
+			if (Boolean.valueOf(SystemCfg.loadCfg().getProperty(SystemCfg.PUSH_PASSWORD)) && passWord != null) {
 				ModificationItem[] mods = new ModificationItem[2];
 				// format the password
 				String newQuotedPassword = "\"" + passWord + "\"";
@@ -215,7 +213,7 @@ public class LdapOpt {
 				mods[0] = new ModificationItem(DirContext.REPLACE_ATTRIBUTE,
 						new BasicAttribute("unicodePwd", newUnicodePassword));
 				int userAccountControl = UF_NORMAL_ACCOUNT + UF_PASSWD_NOTREQD + UF_PASSWORD_EXPIRED;
-				if (Boolean.valueOf(SystemCfg.getInstance().loadCfg().getProperty(CfgConstant.PASSWORD_CANT_CHANGE))) {
+				if (Boolean.valueOf(SystemCfg.loadCfg().getProperty(SystemCfg.PASSWORD_CANT_CHANGE))) {
 					userAccountControl += UF_PASSWD_CANT_CHANGE;
 				}
 				if (accountDisable) {
