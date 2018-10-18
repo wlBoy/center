@@ -141,8 +141,9 @@ public class ChannelData implements Serializable {
 		return serialVersionUID;
 	}
 
-	public String getCreatetime() {
-		return createtime;
+	public String getCreateTime() {
+		// 解决mysql数据库datetime类型取出时间多个.0的问题，截取前19位即可，格式为:yyyy-MM-dd HH:mm:ss
+		return createtime.length() == 19 ? createtime : createtime.substring(0, 19);
 	}
 
 	public void setCreatetime(String createtime) {

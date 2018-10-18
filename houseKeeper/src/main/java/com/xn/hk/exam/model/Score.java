@@ -125,9 +125,9 @@ public class Score implements Serializable {
 	}
 
 	public String getSubmitTime() {
-		return submitTime.substring(0, submitTime.length() - 2);
+		// 解决mysql数据库datetime类型取出时间多个.0的问题，截取前19位即可，格式为:yyyy-MM-dd HH:mm:ss
+		return submitTime.length() == 19 ? submitTime : submitTime.substring(0, 19);
 	}
-
 	public void setSubmitTime(String submitTime) {
 		this.submitTime = submitTime;
 	}

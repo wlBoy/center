@@ -88,7 +88,8 @@ public class AccountType implements Serializable {
 	}
 
 	public String getCreateTime() {
-		return createTime.substring(0, createTime.length() - 2);
+		// 解决mysql数据库datetime类型取出时间多个.0的问题，截取前19位即可，格式为:yyyy-MM-dd HH:mm:ss
+		return createTime.length() == 19 ? createTime : createTime.substring(0, 19);
 	}
 
 	public void setCreateTime(String createTime) {
@@ -96,7 +97,8 @@ public class AccountType implements Serializable {
 	}
 
 	public String getUpdateTime() {
-		return updateTime.substring(0, updateTime.length() - 2);
+		// 解决mysql数据库datetime类型取出时间多个.0的问题，截取前19位即可，格式为:yyyy-MM-dd HH:mm:ss
+		return updateTime.length() == 19 ? updateTime : updateTime.substring(0, 19);
 	}
 
 	public void setUpdateTime(String updateTime) {
