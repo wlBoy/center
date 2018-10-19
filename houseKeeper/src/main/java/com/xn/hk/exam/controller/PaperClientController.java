@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.xn.hk.common.constant.Constant;
-import com.xn.hk.common.constant.QuestionTypeEnum;
+import com.xn.hk.common.constant.QuestionType;
 import com.xn.hk.common.constant.StatusEnum;
 import com.xn.hk.common.constant.View;
 import com.xn.hk.common.utils.page.BasePage;
@@ -121,14 +121,14 @@ public class PaperClientController {
 		// 取出用户的答案放入userList中去
 		for (int i = 0; i < qlist.size(); i++) {
 			// 计算并保存单选题分数
-			if (qlist.get(i).getType().getTypeId().intValue() == QuestionTypeEnum.singleType.getTypeId().intValue()) {
+			if (qlist.get(i).getType().getTypeId().intValue() == QuestionType.singleType.getTypeId().intValue()) {
 				userList.add(request.getParameter(Constant.ANSWER + (i + 1)));
 				if (qlist.get(i).getAnswer().equals(userList.get(i))) {
 					singleScore += qlist.get(i).getQuestionScore();
 				}
 			}
 			// 计算并保存多选题分数
-			if (qlist.get(i).getType().getTypeId().intValue() == QuestionTypeEnum.multipleType.getTypeId().intValue()) {
+			if (qlist.get(i).getType().getTypeId().intValue() == QuestionType.multipleType.getTypeId().intValue()) {
 				String multipleSolution = "";
 				String[] strs = request.getParameterValues(Constant.ANSWER + (i + 1));
 				for (String s : strs) {
@@ -141,7 +141,7 @@ public class PaperClientController {
 				}
 			}
 			// 保存用户简答题答案,方便后台批阅主观题分数
-			if (qlist.get(i).getType().getTypeId().intValue() == QuestionTypeEnum.briefType.getTypeId().intValue()) {
+			if (qlist.get(i).getType().getTypeId().intValue() == QuestionType.briefType.getTypeId().intValue()) {
 				userList.add(request.getParameter(Constant.ANSWER + (i + 1)));
 			}
 		}

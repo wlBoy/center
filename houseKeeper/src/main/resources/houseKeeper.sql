@@ -2240,6 +2240,22 @@ CREATE TABLE `tb_xn_sys_user` (
   KEY `login` (`user_name`(10),`user_pwd`(10))
 ) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8;
 
+/*Table structure for table `tb_xn_sys_file` */
+
+DROP TABLE IF EXISTS `tb_xn_sys_file`;
+
+CREATE TABLE `tb_xn_sys_file` (
+  `file_id` varchar(255) NOT NULL COMMENT '文件ID',
+  `file_name` varchar(255) NOT NULL COMMENT '文件名',
+  `file_type` tinyint(4) NOT NULL COMMENT '文件类型',
+  `file_path` varchar(255) NOT NULL COMMENT '文件存储位置',
+  `upload_by` int(8) NOT NULL COMMENT '上传人',
+  `upload_time` datetime NOT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT '上传时间',
+  `remark` varchar(255) DEFAULT NULL COMMENT '备注信息',
+  `is_ok` tinyint(1) NOT NULL DEFAULT '0' COMMENT '是否有效',
+  PRIMARY KEY (`file_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 /*Data for the table `tb_xn_sys_user` */
 
 insert  into `tb_xn_sys_user`(`user_id`,`role_id`,`user_name`,`user_pwd`,`user_face`,`user_state`,`is_ok`,`create_time`,`update_time`,`remark`) values 

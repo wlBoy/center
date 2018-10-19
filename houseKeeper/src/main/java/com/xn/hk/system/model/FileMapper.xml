@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xn.hk.system.dao.FileDao">
+	<!--使用redis作为mybatis的二级缓存,针对具体某条语句禁用缓存,useCache="false",这里的RedisCache是个别名
+	<cache eviction="LRU" type="RedisCache" />-->
+	<!-- 用户映射 -->
+	<resultMap type="File" id="fileMap">
+		<id property="fileId" column="file_id" />
+		<result property="fileName" column="file_name" />
+		<result property="fileType" column="file_type" />
+		<result property="filePath" column="file_path" />
+		<result property="uploadBy" column="upload_by" />
+		<result property="isOk" column="is_ok" />
+		<result property="uploadTime" column="upload_time" />
+		<result property="remark" column="remark" />
+
+	</resultMap>
+	<!-- 定义数据库基本列,只适用代替单表的* -->
+	<sql id="Base_Column_List">file_id,file_name,file_type,file_path,upload_by,is_ok,upload_time,remark
+	</sql>
+</mapper>

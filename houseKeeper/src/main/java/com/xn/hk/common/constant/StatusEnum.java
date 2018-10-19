@@ -24,17 +24,10 @@ public enum StatusEnum {
 		return code;
 	}
 
-	public void setCode(Integer code) {
-		this.code = code;
-	}
-
 	public String getDesc() {
 		return desc;
 	}
 
-	public void setDesc(String desc) {
-		this.desc = desc;
-	}
 
 	/**
 	 * 通过状态码拿到其描述
