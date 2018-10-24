@@ -21,6 +21,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.xn.hk.common.utils.cfg.SystemCfg;
+import com.xn.hk.common.utils.string.StringUtil;
 
 /**
  * 
@@ -40,11 +41,11 @@ public class LdapOpt {
 	public static String BASE_DN = SystemCfg.loadCfg().getProperty(SystemCfg.BASE_DN);
 	// 不需要密码
 	public final static int UF_PASSWD_NOTREQD = 0x0020;
-	// 用户不能更改密码。可以读取此标志，但不能直接设置它。
+	// 用户不能更改密码。可以读取此标志，但不能直接设置它。(不能设置)
 	public final static int UF_PASSWD_CANT_CHANGE = 0x0040;
 	// 这是表示典型用户的默认帐户类型
 	public final static int UF_NORMAL_ACCOUNT = 0x0200;
-	// 用户的密码已过期
+	// 用户的密码已过期(Windows 2000/Windows Server 2003)
 	public final static int UF_PASSWORD_EXPIRED = 0x800000;
 	// 禁用用户帐户
 	public final static int UF_ACCOUNTDISABLE = 0x0002;
@@ -72,27 +73,39 @@ public class LdapOpt {
 		} else {
 			port = WITHOUT_SSL_LDAP_URL_PORT;
 		}
-		return getConnection(KEYSTORE, SSL_PASSWORD, SECURITY_PRINCIPAL, AD_PASSWORD, LDAP_URL, port);
+		if (StringUtil.isEmpty(KEYSTORE)) {
+			return getConnection(KEYSTORE, SSL_PASSWORD, SECURITY_PRINCIPAL, AD_PASSWORD, LDAP_URL, port);
+		} else {
+			return getConnection(KEYSTORE, SSL_PASSWORD, SECURITY_PRINCIPAL, AD_PASSWORD, LDAP_URL);
+		}
 	}
 
 	/**
-	 * 获取连接通道，如果是636接口就返回加密通道，否则返回普通通道
+	 * 获取连接通道，如果是636端口就返回加密通道，否则返回普通通道
 	 * 
 	 * @param keyStore
+	 *            keyStore文件的存储位置
 	 * @param sslPassWord
+	 *            ssl密码
 	 * @param adPassWord
+	 *            ad域管理员密码
 	 * @param ldapUrl
+	 *            ad域服务器地址
 	 * @param port
-	 * @return
+	 *            AD域端口号
+	 * @return 连接通道
 	 * @throws NamingException
 	 */
 	public static LdapContext getConnection(String keyStore, String sslPassWord, String userName, String adPassWord,
 			String ldapUrl, String port) throws NamingException {
 		Properties env = new Properties();
 		if (SSL_LDAP_URL_PORT.equals(port)) {
+			// 使用SSL加密连接LDAP服务器，当推送用户密码时，必须使用SSL连接
 			env.put(Context.SECURITY_PROTOCOL, "ssl");
-			env.put("java.naming.ldap.factory.socket",
-					"kl.pms.mods.syn.push.resourcePush.act.domain.LTSSSLSocketFactory");
+			System.setProperty("javax.net.ssl.trustStore", keyStore);
+			if (!StringUtil.isEmpty(sslPassWord)) {
+				System.setProperty("javax.net.ssl.trustStorePassword", sslPassWord);
+			}
 		}
 		env.put(Context.INITIAL_CONTEXT_FACTORY, "com.sun.jndi.ldap.LdapCtxFactory");
 		env.put(Context.PROVIDER_URL, "ldap://" + ldapUrl);
@@ -101,36 +114,27 @@ public class LdapOpt {
 		env.put(Context.SECURITY_PRINCIPAL, userName);
 		env.put(Context.SECURITY_CREDENTIALS, adPassWord);
 		env.put("com.sun.jndi.ldap.connect.pool", "true");
-		// env.put("java.naming.referral", "follow");
+		env.put("java.naming.referral", "follow");
 		return new InitialLdapContext(env, null);
 	}
 
 	/**
-	 * 创建ad域连接池 加密通道
+	 * 获取连接通道，默认返回普通通道
 	 * 
 	 * @param keyStore
+	 *            keyStore文件的存储位置
 	 * @param sslPassWord
+	 *            ssl密码
 	 * @param adPassWord
-	 *            ad域密码
+	 *            ad域管理员密码
 	 * @param ldapUrl
-	 *            ad域路径
-	 * @return
+	 *            ad域服务器地址
+	 * @return 连接通道
 	 * @throws NamingException
 	 */
 	public static LdapContext getConnection(String keyStore, String sslPassWord, String userName, String adPassWord,
 			String ldapUrl) throws NamingException {
-		System.setProperty("javax.net.ssl.trustStore", keyStore);
-		System.setProperty("javax.net.ssl.trustStorePassword", sslPassWord);
-		Properties env = new Properties();
-		env.put(Context.INITIAL_CONTEXT_FACTORY, "com.sun.jndi.ldap.LdapCtxFactory");
-		env.put(Context.PROVIDER_URL, "ldap://" + ldapUrl);
-		env.put(Context.SECURITY_AUTHENTICATION, "simple");
-		env.put(Context.SECURITY_PRINCIPAL, userName);
-		env.put(Context.SECURITY_CREDENTIALS, adPassWord);
-		env.put(Context.SECURITY_PROTOCOL, "ssl");
-		env.put("com.sun.jndi.ldap.connect.pool", "true");
-		env.put("java.naming.referral", "follow");
-		return new InitialLdapContext(env, null);
+		return getConnection(keyStore, sslPassWord, userName, adPassWord, ldapUrl, WITHOUT_SSL_LDAP_URL_PORT);
 	}
 
 	/**
@@ -253,6 +257,31 @@ public class LdapOpt {
 			return true;
 		} catch (Exception e) {
 			logger.info(e.getMessage());
+		} finally {
+			if (ctx != null) {
+				ctx.close();
+				ctx = null;
+			}
+		}
+		return false;
+	}
+
+	/**
+	 * 重命名DN
+	 * 
+	 * @param oldDN
+	 * @param newDN
+	 * @return
+	 * @throws NamingException
+	 */
+	public static boolean renameOU(String oldDN, String newDN) throws NamingException {
+		LdapContext ctx = null;
+		try {
+			ctx = getConn();
+			ctx.rename(oldDN, newDN);
+			return true;
+		} catch (Exception e) {
+			e.printStackTrace();
 		} finally {
 			if (ctx != null) {
 				ctx.close();
@@ -515,9 +544,10 @@ public class LdapOpt {
 		// // 用户为user，OU为organizationalUnit
 		// // 新增用户
 		// 机构路径 用户名 密码 attrs 'users'
-		if (addUser("上海", "test1", "123", attrs, "user", true)) {
-			System.out.println("添加成功！");
-		}
+		/*
+		 * if (addUser("上海", "test1", "123", attrs, "user", true)) {
+		 * System.out.println("添加成功！"); }
+		 */
 		// // 新增OU
 		// if (addUser("格尔,闸北,上海", "测试", "123", attrs, "organizationalUnit")) {
 		// System.out.println("添加成功！");
@@ -534,6 +564,14 @@ public class LdapOpt {
 		// if (modifyUser(attrs, "test123", "user")) {
 		// System.out.println("更新成功！");
 		// }
+		try {
+			getConnection("D:\\development\\jdk1.8\\jdk\\jre\\lib\\security\\cacerts", "",
+					"CN=Administrator,CN=Users,DC=koal,DC=wanl,DC=com", "wanlei123.", "192.168.229.131");
+			System.out.println("AD域ssl身份认证成功");
+		} catch (Exception e) {
+			System.out.println("AD域ssl身份认证失败");
+			e.printStackTrace();
+		}
 	}
 
 }
