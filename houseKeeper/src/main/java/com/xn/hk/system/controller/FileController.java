@@ -16,7 +16,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -86,13 +88,13 @@ public class FileController {
 	}
 
 	/**
-	 * 上传文件
+	 * 上传文件并保存文件至数据库中
 	 * 
 	 * @param file
 	 *            文件实体
 	 * @param session
 	 *            session
-	 * @return
+	 * @return ModelAndView
 	 */
 	@RequestMapping(value = "/uploadFile.do")
 	public ModelAndView uploadFile(MultipartFile uploadFile, String remark, HttpSession session) {
@@ -112,9 +114,9 @@ public class FileController {
 			session.setAttribute(Constant.TIP_MSG, StringUtil.genTipMsg("不支持" + suffix + "文件类型!", Constant.ERROR_TIP));
 			return View.FILE_REDITRCT_ACTION;
 		}
-		// 构建新的文件名
+		// 构建新的文件名(UUID_老文件名)
 		String newFileName = StringUtil.genUUIDString() + "_" + originalFileName;
-		// 得到配置文件中的文件存储位置
+		// 得到配置文件中的文件存储位置(以yyyyMMdd目录分开存储)
 		String filePath = SystemCfg.loadCfg().getProperty(SystemCfg.FILE_PATH) + File.separator
 				+ String.valueOf(DateFormatUtil.getNumberDay()) + File.separator + newFileName;
 		File localFile = new File(filePath);
@@ -133,12 +135,12 @@ public class FileController {
 		// 封装文件实体类，调用service方法入库
 		FileEntity fileEntity = new FileEntity();
 		User user = (User) session.getAttribute(Constant.SESSION_USER);
-		fileEntity.setFileId(StringUtil.genUUIDString());
+		fileEntity.setFileId(StringUtil.genUUIDString());// 生成UUID的文件ID
 		fileEntity.setFileName(originalFileName);
 		fileEntity.setFileType(type.getTypeId());
 		fileEntity.setUploadBy(user.getUserId());
 		fileEntity.setUploadByName(user.getUserName());
-		fileEntity.setFilePath(filePath);
+		fileEntity.setFilePath(filePath);// 文件存储位置即下载路径
 		fileEntity.setUploadTime(DateFormatUtil.formatDateTime());
 		fileEntity.setUpdateTime(DateFormatUtil.formatDateTime());
 		fileEntity.setCurday(DateFormatUtil.getNumberDay());
@@ -151,6 +153,28 @@ public class FileController {
 			session.setAttribute(Constant.TIP_MSG, StringUtil.genTipMsg("上传文件成功!", Constant.SUCCESS_TIP));
 		}
 		return View.FILE_REDITRCT_ACTION;
+	}
+
+	/**
+	 * 处理上传文件大小超过springmvc中配置的最大文件大小时，抛出的异常
+	 * 
+	 * @param ex
+	 *            异常信息
+	 * @param session
+	 * @return ModelAndView
+	 */
+	@ExceptionHandler
+	public ModelAndView handleException(Exception ex, HttpSession session) {
+		// 处理文件上传过大异常
+		if (ex instanceof MaxUploadSizeExceededException) {
+			long maxSize = ((MaxUploadSizeExceededException) ex).getMaxUploadSize();
+			String fileSize = maxSize / (1024 * 1024) + "M";
+			logger.error("上传文件大小超过{},异常信息为:{}", fileSize, ex);
+			session.setAttribute(Constant.TIP_MSG,
+					StringUtil.genTipMsg("上传文件大小超过" + fileSize + ",请更换文件!", Constant.ERROR_TIP));
+			return View.FILE_REDITRCT_ACTION;
+		}
+		return null;
 	}
 
 	/**
@@ -203,12 +227,15 @@ public class FileController {
 	 * 文件下载 注意重定向不能与下载文件同时用一个response，会报错
 	 * 
 	 * @param fileId
+	 *            文件ID
 	 * @param request
+	 *            request请求
 	 * @param response
-	 * @return
+	 *            response响应
+	 * @return ModelAndView
 	 */
 	@RequestMapping(value = "/downloadFile.do")
-	protected ModelAndView downloadFile(String fileId, HttpServletRequest request, HttpServletResponse response) {
+	public ModelAndView downloadFile(String fileId, HttpServletRequest request, HttpServletResponse response) {
 		String downloadFileName = "";// 下载文件名
 		FileEntity fileEntity = fileService.findById(fileId);
 		if (fileEntity == null) {
@@ -239,12 +266,11 @@ public class FileController {
 			BufferedInputStream bis = null;
 			OutputStream os = null;
 			try {
-				FileInputStream fileInputStream = new FileInputStream(file);
 				response.setContentType("application/force-download");// 设置强制下载不打开
-				response.setContentLength(fileInputStream.available());// 设置下载文件大小
+				response.setContentLength(FileUtil.getFileSize(filePath));// 设置下载文件大小
 				response.addHeader("Content-Disposition", "attachment;fileName=" + downloadFileName);// 设置下载文件名
 				byte[] buffer = new byte[1024];
-				bis = new BufferedInputStream(fileInputStream, 1024 * 1024);
+				bis = new BufferedInputStream(new FileInputStream(file), 1024 * 1024);
 				os = response.getOutputStream();
 				int len = 0;
 				while ((len = bis.read(buffer)) != -1) {
@@ -253,9 +279,6 @@ public class FileController {
 				os.flush();
 			} catch (Exception e) {
 				logger.error("下载{}文件失败!错误原因:{}", orginFileName, e);
-				// 记录日志
-				LogHelper.getInstance().saveLog(adminLogDao, request.getSession(), "下载文件", false,
-						LogType.FILE_LOG.getType(), fileEntity);
 				return null;
 			} finally {
 				if (bis != null) {
