@@ -38,8 +38,8 @@ import com.xn.hk.common.utils.string.DateFormatUtil;
  * @Date: 2018-1-20 上午11:28:00
  */
 public class ExcelUtil {
-	private final static String excel2003L = ".xls"; // 2003- 版本的excel
-	private final static String excel2007U = ".xlsx"; // 2007+ 版本的excel
+	public final static String excel2003L = ".xls"; // 2003- 版本的excel
+	public final static String excel2007U = ".xlsx"; // 2007+ 版本的excel
 
 	/**
 	 * 将EXCEL表格中的数据转换为list集合

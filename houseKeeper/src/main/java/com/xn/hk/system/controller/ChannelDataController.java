@@ -21,6 +21,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.xn.hk.common.constant.Constant;
 import com.xn.hk.common.constant.View;
+import com.xn.hk.common.utils.excel.ExcelUtil;
 import com.xn.hk.common.utils.page.BasePage;
 import com.xn.hk.common.utils.string.StringUtil;
 import com.xn.hk.system.model.ChannelData;
@@ -86,7 +87,7 @@ public class ChannelDataController {
 	@ResponseBody
 	public void exportAll(String fileName, HttpServletResponse response) throws Exception {
 		response.setCharacterEncoding(Constant.UTF8);
-		fileName = new String(fileName.getBytes(Constant.UTF8), "ISO8859-1") + ".xlsx";
+		fileName = new String(fileName.getBytes(Constant.UTF8), Constant.ISO_8859_1) + ExcelUtil.excel2003L;
 		// 防止下载的文件名中文乱码
 		response.setHeader("Content-Disposition", "attachment;filename=" + fileName);
 		response.setContentType("application/vnd.ms-excel;charset=UTF-8");

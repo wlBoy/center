@@ -172,7 +172,7 @@ public class SystemCfg {
 	 */
 	public final static String SMS_CHARACTER_CODING = "smsCharacterCoding";
 
-	/*-------------------------------------------------------------------*/
+	/*-------------------------------以上定义该配置文件key对应的常量---------------------------------*/
 	
 	/**
 	 * 方式一:返回Properties实体,读取systemCfg.ini中所有的配置信息(支持中文)
