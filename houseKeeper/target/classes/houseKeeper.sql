@@ -2253,7 +2253,7 @@ CREATE TABLE `tb_xn_sys_file` (
   `upload_by` int(8) NOT NULL COMMENT '上传人',
   `upload_time` datetime NOT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT '上传时间',
   `update_time` datetime NOT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
-   `curday` tinyint(8) NOT NULL COMMENT '创建日期',
+   `curday` int(8) NOT NULL COMMENT '创建日期',
   `remark` varchar(255) DEFAULT NULL COMMENT '备注信息',
   `is_ok` tinyint(1) NOT NULL DEFAULT '0' COMMENT '是否有效',
   PRIMARY KEY (`file_id`)
