@@ -107,11 +107,11 @@ public class FileController {
 		// 得到原始上传的文件名
 		String originalFileName = uploadFile.getOriginalFilename();
 		// 截取文件后缀,判断系统是否支持该文件类型,这里注意要用lastIndexOf查找.，因为文件名中可能含有.
-		String suffix = originalFileName.substring(originalFileName.lastIndexOf("."), originalFileName.length());
+		String suffix = originalFileName.substring(originalFileName.lastIndexOf(".") + 1, originalFileName.length());
 		FileType type = FileType.getFileTypeBySuffix(suffix);
 		if (type == null) {
-			logger.error("不支持{}文件类型!", suffix);
-			session.setAttribute(Constant.TIP_MSG, StringUtil.genTipMsg("不支持" + suffix + "文件类型!", Constant.ERROR_TIP));
+			logger.error("系统不支持{}文件类型!", suffix);
+			session.setAttribute(Constant.TIP_MSG, StringUtil.genTipMsg("系统不支持" + suffix + "文件类型!", Constant.ERROR_TIP));
 			return View.FILE_REDITRCT_ACTION;
 		}
 		// 构建新的文件名(UUID_老文件名)
@@ -132,7 +132,7 @@ public class FileController {
 			session.setAttribute(Constant.TIP_MSG, StringUtil.genTipMsg("上传文件失败!", Constant.ERROR_TIP));
 			return View.FILE_REDITRCT_ACTION;
 		}
-		// 封装文件实体类，调用service方法入库
+		// 封装文件实体类，调用service中insert方法入库
 		FileEntity fileEntity = new FileEntity();
 		User user = (User) session.getAttribute(Constant.SESSION_USER);
 		fileEntity.setFileId(StringUtil.genUUIDString());// 生成UUID的文件ID

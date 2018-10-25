@@ -65,7 +65,7 @@ public final class DateFormatUtil {
 	 *            java.util.Date
 	 * @return 格式化后的日期时间字符串
 	 */
-	public static String genNo() {
+	public static String genCurrentSecond() {
 		SimpleDateFormat sdf = new SimpleDateFormat(PATTERN_DATE_SECOND);
 		return (sdf.format(new Date(System.currentTimeMillis())) + Math.abs(new Random().nextInt(64)));
 	}
@@ -463,6 +463,6 @@ public final class DateFormatUtil {
 	}
 
 	public static void main(String[] args) {
-		System.out.println(genNo());
+		System.out.println(genCurrentSecond());
 	}
 }
