@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 import com.xn.hk.common.dao.BaseDao;
 import com.xn.hk.common.service.impl.BaseServiceImpl;
 import com.xn.hk.system.dao.FileDao;
-import com.xn.hk.system.model.File;
+import com.xn.hk.system.model.FileEntity;
 import com.xn.hk.system.service.FileService;
 
 /**
@@ -18,14 +18,14 @@ import com.xn.hk.system.service.FileService;
  * @Date: 2017-11-28 下午03:30:15
  */
 @Service
-public class FileServiceImpl extends BaseServiceImpl<File> implements FileService {
+public class FileServiceImpl extends BaseServiceImpl<FileEntity> implements FileService {
 	@Autowired
 	private FileDao fileDao;
 
 	/**
 	 * 实现父类的方法，指定所用的dao
 	 */
-	public BaseDao<File> getDao() {
+	public BaseDao<FileEntity> getDao() {
 		return fileDao;
 	}
 

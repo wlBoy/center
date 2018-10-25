@@ -19,6 +19,7 @@ public class View {
 	public static final ModelAndView ROLE_REDITRCT_ACTION = new ModelAndView("redirect:showAllRole.do");// 重定向分页所有角色的Action
 	public static final ModelAndView MODULE_REDITRCT_ACTION = new ModelAndView("redirect:showAllModule.do");// 重定向分页所有模块的Action
 	public static final ModelAndView CHANNEL_REDITRCT_ACTION = new ModelAndView("redirect:showAllChannelData.do");// 重定向分页所有渠道的Action
+	public static final ModelAndView FILE_REDITRCT_ACTION = new ModelAndView("redirect:showAllFile.do");// 重定向分页所有文件的Action
 	/*----------------------------------账务管理---------------------------------*/
 	public static final ModelAndView PERSONAL_ACCOUNT_REDITRCT_ACTION = new ModelAndView(
 			"redirect:showPersonalAccount.do");// 重定向分页所有账务的Action

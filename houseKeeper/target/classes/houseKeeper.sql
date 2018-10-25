@@ -2017,6 +2017,7 @@ insert  into `tb_xn_sys_module`(`module_id`,`module_name`,`parent_id`,`module_le
 (28,'渠道数据',14,2,'/data/channel/showAllChannelData.do',1,0,'2018-01-22 11:56:06','2018-04-15 18:10:03','渠道数据'),
 (29,'日志管理',1,2,'/system/log/showAllLog.do',0,0,'2018-01-23 15:27:03','2018-01-23 15:27:03','日志管理'),
 (30,'系统日志管理',1,2,'/system/log/showAllAdminLog.do',0,0,'2018-01-23 15:27:03','2018-01-23 15:27:03','系统日志管理');
+(31,'文件管理',1,2,'/system/file/showAllFile.do',0,0,'2018-01-23 15:27:03','2018-01-23 15:27:03','文件管理');
 
 /*Table structure for table `tb_xn_sys_role` */
 
@@ -2251,6 +2252,8 @@ CREATE TABLE `tb_xn_sys_file` (
   `file_path` varchar(255) NOT NULL COMMENT '文件存储位置',
   `upload_by` int(8) NOT NULL COMMENT '上传人',
   `upload_time` datetime NOT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT '上传时间',
+  `update_time` datetime NOT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+   `curday` tinyint(8) NOT NULL COMMENT '创建日期',
   `remark` varchar(255) DEFAULT NULL COMMENT '备注信息',
   `is_ok` tinyint(1) NOT NULL DEFAULT '0' COMMENT '是否有效',
   PRIMARY KEY (`file_id`)

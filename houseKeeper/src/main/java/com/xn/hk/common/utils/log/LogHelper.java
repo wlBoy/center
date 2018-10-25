@@ -104,7 +104,7 @@ public class LogHelper {
 	}
 
 	/**
-	 * 通过传进来的obj对象动态生成日志内容[key1=value1,key2=value2]
+	 * 通过传进来的obj对象动态生成日志内容[key1=value1,key2=value2] 这种方法太麻烦了
 	 * 
 	 * @param obj
 	 *            obj对象
@@ -142,7 +142,7 @@ public class LogHelper {
 	}
 
 	/**
-	 * 通过反射实现获取实体类中的日志内容
+	 * 通过反射实现获取实体类中的日志内容 推荐使用这种方法
 	 * 
 	 * @param obj
 	 *            实体对象
@@ -162,7 +162,7 @@ public class LogHelper {
 				logger.error("{}类中,没有找到getLogContent方法!", clazz.getName());
 			}
 		} catch (Exception e) {
-			logger.error("{}类中,使用反射调用getLogContent方法失败!", clazz.getName());
+			logger.error("{}类中,使用反射调用getLogContent方法失败,原因为:{}", clazz.getName(), e);
 		}
 		return logContent;
 	}

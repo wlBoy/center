@@ -19,7 +19,7 @@
 		<typeAlias type="com.xn.hk.system.model.Module" alias="Module" />
 		<typeAlias type="com.xn.hk.system.model.Log" alias="Log" />
 		<typeAlias type="com.xn.hk.system.model.AdminLog" alias="AdminLog" />
-		<typeAlias type="com.xn.hk.system.model.File" alias="File" />
+		<typeAlias type="com.xn.hk.system.model.FileEntity" alias="File" />
 		<!-- 测试EXCEL导入导出(POI) -->
 		<typeAlias type="com.xn.hk.system.model.ChannelData" alias="ChannelData" />
 		<!-- 分页bean -->

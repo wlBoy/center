@@ -13,7 +13,7 @@ import com.xn.hk.common.constant.FileType;
  * @Author: wanlei
  * @Date: 2018年10月19日 上午10:00:54
  */
-public class File implements Serializable {
+public class FileEntity implements Serializable {
 	private static final long serialVersionUID = 2202750306259747430L;
 	/**
 	 * 文件ID
@@ -42,11 +42,19 @@ public class File implements Serializable {
 	/**
 	 * 上传人名称
 	 */
-	private Integer uploadByName;
+	private String uploadByName;
 	/**
 	 * 上传时间
 	 */
 	private String uploadTime;
+	/**
+	 * 更新时间
+	 */
+	private String updateTime;
+	/**
+	 * 上传日期
+	 */
+	private Integer curday;
 	/**
 	 * 备注信息
 	 */
@@ -84,15 +92,23 @@ public class File implements Serializable {
 		return FileType.getFileTypeName(fileType);
 	}
 
+	public Integer getCurday() {
+		return curday;
+	}
+
+	public void setCurday(Integer curday) {
+		this.curday = curday;
+	}
+
 	public void setFileTypeName(String fileTypeName) {
 		this.fileTypeName = fileTypeName;
 	}
 
-	public Integer getUploadByName() {
+	public String getUploadByName() {
 		return uploadByName;
 	}
 
-	public void setUploadByName(Integer uploadByName) {
+	public void setUploadByName(String uploadByName) {
 		this.uploadByName = uploadByName;
 	}
 
@@ -121,6 +137,15 @@ public class File implements Serializable {
 		this.uploadTime = uploadTime;
 	}
 
+	public String getUpdateTime() {
+		// 解决mysql数据库datetime类型取出时间多个.0的问题，截取前19位即可，格式为:yyyy-MM-dd HH:mm:ss
+		return updateTime.length() == 19 ? updateTime : updateTime.substring(0, 19);
+	}
+
+	public void setUpdateTime(String updateTime) {
+		this.updateTime = updateTime;
+	}
+
 	public String getRemark() {
 		return remark;
 	}
@@ -141,11 +166,13 @@ public class File implements Serializable {
 		return serialVersionUID;
 	}
 
+
 	@Override
 	public String toString() {
-		return "File [fileId=" + fileId + ", fileName=" + fileName + ", fileType=" + fileType + ", fileTypeName="
+		return "FileEntity [fileId=" + fileId + ", fileName=" + fileName + ", fileType=" + fileType + ", fileTypeName="
 				+ fileTypeName + ", filePath=" + filePath + ", uploadBy=" + uploadBy + ", uploadByName=" + uploadByName
-				+ ", uploadTime=" + uploadTime + ", remark=" + remark + ", isOk=" + isOk + "]";
+				+ ", uploadTime=" + uploadTime + ", updateTime=" + updateTime + ", curday=" + curday + ", remark="
+				+ remark + ", isOk=" + isOk + "]";
 	}
 
 	/**
@@ -162,17 +189,23 @@ public class File implements Serializable {
 		if (getFileName() != null) {
 			sb.append("文件名=" + getFileName() + ",");
 		}
-		if (getFileTypeName() != null) {
-			sb.append("文件类型名=" + getFileTypeName() + ",");
+		if (getFileType() != null) {
+			sb.append("文件类型名=" + FileType.getFileTypeName(getFileType()) + ",");
 		}
 		if (getUploadByName() != null) {
-			sb.append("文件人名=" + getUploadByName() + ",");
+			sb.append("上传人=" + getUploadByName() + ",");
 		}
 		if (getIsOk() != null) {
 			sb.append("是否可用=" + EnabledEnum.getDescByCode(getIsOk()) + ",");
 		}
+		if (getCurday() != null) {
+			sb.append("创建日期=" + getCurday() + ",");
+		}
 		if (uploadTime != null) {
 			sb.append("创建时间=" + getUploadTime() + ",");
+		}
+		if (updateTime != null) {
+			sb.append("更新时间=" + getUpdateTime() + ",");
 		}
 		if (getRemark() != null) {
 			sb.append("备注信息=" + getRemark() + ",");

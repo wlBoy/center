@@ -46,6 +46,10 @@ public class Constant {
 	 * GBK编码
 	 */
 	public final static String GBK = "GBK";
+	/**
+	 * GBK编码
+	 */
+	public final static String ISO_8859_1 = "ISO-8859-1";
 
 	/*----------------------------------用户管理---------------------------------*/
 	/**

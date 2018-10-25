@@ -42,6 +42,10 @@ public class SystemCfg {
 	 * 用户头像存放位置
 	 */
 	public final static String USER_PHOTO_PATH = "userPhotoPath";
+	/**
+	 * 文件存放位置
+	 */
+	public final static String FILE_PATH = "filePath";
 
 	/*----------------------------------邮件服务器---------------------------------*/
 	/**

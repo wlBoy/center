@@ -11,9 +11,11 @@ import com.xn.hk.common.constant.Result;
 import com.xn.hk.common.utils.cfg.SystemCfg;
 import com.xn.hk.common.utils.encryption.Md5Util;
 import com.xn.hk.common.utils.string.StringUtil;
+import com.xn.hk.system.model.FileEntity;
 import com.xn.hk.system.model.Module;
 import com.xn.hk.system.model.Role;
 import com.xn.hk.system.model.User;
+import com.xn.hk.system.service.FileService;
 import com.xn.hk.system.service.ModuleService;
 import com.xn.hk.system.service.RoleService;
 import com.xn.hk.system.service.UserService;
@@ -39,6 +41,8 @@ public class SystemRestController {
 	private RoleService roleService;
 	@Autowired
 	private ModuleService moduleService;
+	@Autowired
+	private FileService fileService;
 
 	/**
 	 * 根据用户Id查询该用户
@@ -219,5 +223,27 @@ public class SystemRestController {
 			return Result.genNullParamTip("用户姓名");
 		}
 		return Result.genTip(Result.SUCCESS, "请求成功!", userId + "-" + userName);
+	}
+
+	/**
+	 * 根据文件Id查询该文件
+	 * 
+	 * @param fileId
+	 *            文件Id
+	 * @return 结果提示信息实体
+	 */
+	@RequestMapping(value = "/findByFileId.do", method = RequestMethod.POST)
+	public Result findByFileId(String fileId) {
+		// 校验参数非空性
+		if (fileId == null) {
+			return Result.genNullParamTip("文件ID");
+		}
+		FileEntity file = fileService.findById(fileId);
+		if (file == null) {
+			logger.info("findByFileId-->{}文件不存在!", fileId);
+			Result.genTip(Result.FAILURE, "该文件不存在!", null);
+		}
+		logger.info("findByFileId-->查到{}文件!", fileId);
+		return Result.genTip(Result.SUCCESS, "查到该文件!", file);
 	}
 }

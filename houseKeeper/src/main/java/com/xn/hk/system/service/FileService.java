@@ -1,7 +1,8 @@
 package com.xn.hk.system.service;
 
+
 import com.xn.hk.common.service.BaseService;
-import com.xn.hk.system.model.File;
+import com.xn.hk.system.model.FileEntity;
 
 /**
  * 
@@ -11,7 +12,6 @@ import com.xn.hk.system.model.File;
  * @Author: wanlei
  * @Date: 2017-11-28 下午03:24:36
  */
-public interface FileService extends BaseService<File> {
-
+public interface FileService extends BaseService<FileEntity> {
 
 }

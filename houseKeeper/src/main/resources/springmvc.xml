@@ -43,10 +43,13 @@
 		<property name="prefix" value="/WEB-INF/manager/" />
 		<property name="suffix" value=".jsp" />
 	</bean>
+	<!-- 配置自定义异常处理器类 -->
+	<bean class="com.xn.hk.common.utils.exception.ExceptionHandler" />
 	<!-- 配置上传解析类 -->
 	<bean id="multipartResolver"
 		class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
 		<property name="defaultEncoding" value="utf-8"></property>
-		<property name="maxUploadSize" value="5000000" />
+		<!-- 最大上传文件大小,不能超过100M -->
+		<property name="maxUploadSize" value="#{100*1024*1024}" />
 	</bean>
 </beans>			

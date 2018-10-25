@@ -1,7 +1,7 @@
 package com.xn.hk.system.dao;
 
 import com.xn.hk.common.dao.BaseDao;
-import com.xn.hk.system.model.File;
+import com.xn.hk.system.model.FileEntity;
 
 /**
  * 
@@ -11,7 +11,7 @@ import com.xn.hk.system.model.File;
  * @Author: wanlei
  * @Date: 2017-11-28 下午03:31:47
  */
-public interface FileDao extends BaseDao<File> {
+public interface FileDao extends BaseDao<FileEntity> {
 
 
 }
