@@ -72,7 +72,6 @@ public class AccountController {
 		account.setUserId(user.getUserId());
 		// 封装查询条件
 		pages.setBean(account);
-		System.out.println("fdsf");
 		List<Account> accounts = accountService.pagePersonalList(pages);
 		// 将list封装到分页对象中
 		pages.setList(accounts);
