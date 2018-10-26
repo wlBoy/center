@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xn.hk.system.dao.ChannelDataDao">
+	<!--使用redis作为mybatis的二级缓存,针对具体某条语句禁用缓存,useCache="false",这里的RedisCache是个别名 
+		<cache eviction="LRU" type="RedisCache" /> -->
+	<!-- 渠道数据 -->
+	<resultMap type="ChannelData" id="channelDataMap">
+		<id property="id" column="id" />
+		<result property="partner" column="partner" />
+		<result property="appName" column="app_name" />
+		<result property="channelNum" column="channel_num" />
+		<result property="partnerType" column="partner_type" />
+		<result property="curday" column="curday" />
+		<result property="activeNum" column="active_num" />
+		<result property="fee" column="fee" />
+		<result property="sumFee" column="sum_fee" />
+		<result property="status" column="status" />
+		<result property="createtime" column="createtime" />
+
+	</resultMap>
+	<!-- 定义数据库基本列,只适用代替单表的* -->
+	<sql id="Base_Column_List">id,partner,app_name,channel_num,partner_type,curday,active_num,fee,sum_fee,status,createtime
+	</sql>
+	<!-- 批量插入EXCEL表格数据 -->
+	<insert id="insertInfoBatch" parameterType="java.util.List">
+		insert into tb_xn_data_channel
+		(partner,app_name,channel_num,partner_type,curday,active_num,fee,sum_fee,status,createtime)
+		values
+		<foreach collection="list" item="c" index="index"
+			separator="," open="(" close=")">
+			#{c.partner}, #{c.appName},
+			#{c.channelNum},#{c.partnerType},
+			#{c.curday},
+			#{c.activeNum},
+			#{c.fee},#{c.sumFee}, #{c.status},now()
+		</foreach>
+	</insert>
+	<!-- 清空表数据 -->
+	<delete id="deleteAll">
+		delete from tb_xn_data_channel
+	</delete>
+	<!-- 查询所有数据 -->
+	<select id="findAll" resultMap="channelDataMap">
+		SELECT
+		<include refid="Base_Column_List"></include>
+		FROM tb_xn_data_channel
+	</select>
+	<!-- 分页显示列表 -->
+	<select id="pageList" parameterType="BasePage"
+		resultMap="channelDataMap">
+		SELECT
+		*
+		FROM tb_xn_data_channel where 1=1
+		<if test="bean != null">
+			<if test="bean.appName != null and bean.appName != ''">
+				and app_name like CONCAT(CONCAT('%',
+				#{bean.appName}),'%')
+			</if>
+			<if test="bean.curday != null and bean.curday != ''">
+				and curday = #{bean.curday}
+			</if>
+		</if>
+		ORDER BY id LIMIT #{start},#{size}
+	</select>
+	<!-- 分页总记录数 -->
+	<select id="pageCount" parameterType="BasePage" resultType="int">
+		SELECT COUNT(1) FROM tb_xn_data_channel where 1=1
+		<if test="bean != null">
+			<if test="bean.appName != null and bean.appName != ''">
+				and app_name like CONCAT(CONCAT('%',
+				#{bean.appName}),'%')
+			</if>
+			<if test="bean.curday != null and bean.curday != ''">
+				and curday = #{bean.curday}
+			</if>
+		</if>
+	</select>
+</mapper>

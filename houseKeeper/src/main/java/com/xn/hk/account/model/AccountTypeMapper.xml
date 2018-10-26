@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xn.hk.account.dao.AccountTypeDao">
+	<!--使用redis作为mybatis的二级缓存,针对具体某条语句禁用缓存,useCache="false",这里的RedisCache是个别名 
+		<cache eviction="LRU" type="RedisCache" /> -->
+	<!-- 账务类别映射 -->
+	<resultMap type="AccountType" id="accountTypeMap">
+		<id property="typeId" column="type_id" />
+		<result property="typeName" column="type_name" />
+		<result property="userId" column="user_id" />
+		<result property="parentType" column="parent_type" />
+		<result property="isOk" column="is_ok" />
+		<result property="createTime" column="create_time" />
+		<result property="updateTime" column="update_time" />
+		<result property="remark" column="remark" />
+	</resultMap>
+	<!-- 分页显示列表 -->
+	<select id="pagePersonalList" parameterType="BasePage"
+		resultMap="accountTypeMap">
+		SELECT * FROM tb_xn_account_type t INNER JOIN
+		tb_xn_sys_user u ON
+		t.user_id=u.user_id WHERE t.user_id = #{bean.userId} AND t.is_ok = 0
+		<if test="bean != null">
+			<if test="bean.typeName != null and bean.typeName != ''">
+				and t.type_name like CONCAT(CONCAT('%',
+				#{bean.typeName}),'%')
+			</if>
+			<if test="bean.parentType != null and bean.parentType != ''">
+				and t.parent_type = #{bean.parentType}
+			</if>
+		</if>
+		ORDER BY t.create_time DESC LIMIT #{start},#{size}
+	</select>
+	<!-- 分页总记录数 -->
+	<select id="pagePersonalCount" parameterType="BasePage"
+		resultType="int">
+		select count(1) from tb_xn_account_type t inner join
+		tb_xn_sys_user u
+		on t.user_id=u.user_id where t.user_id = #{bean.userId} AND t.is_ok =
+		0
+		<if test="bean != null">
+			<if test="bean.typeName != null and bean.typeName != ''">
+				and t.type_name like CONCAT(CONCAT('%',
+				#{bean.typeName}),'%')
+			</if>
+			<if test="bean.parentType != null and bean.parentType != ''">
+				and t.parent_type = #{bean.parentType}
+			</if>
+		</if>
+	</select>
+	<!-- 逻辑删除个人账务类别 -->
+	<update id="delete">
+		UPDATE tb_xn_account_type SET
+		is_ok =
+		1,update_time=now() where type_id=#{0}
+	</update>
+	<!-- 添加个人账务类别 -->
+	<insert id="insert" parameterType="AccountType">
+		INSERT INTO
+		tb_xn_account_type(user_id,parent_type,type_name,is_ok,create_time,update_time,remark)
+		VALUES(#{userId},#{parentType},#{typeName},0,NOW(),NOW(),#{remark})
+	</insert>
+	<!-- 更新个人账务类别 -->
+	<update id="update" parameterType="AccountType">
+		UPDATE tb_xn_account_type SET
+		type_name = #{typeName},parent_type =
+		#{parentType},update_time=now(),remark=#{remark}
+		where
+		type_id=#{typeId}
+	</update>
+	<!-- 通过账务类别id查询该账务类别 -->
+	<select id="findById" parameterType="java.lang.Integer"
+		resultMap="accountTypeMap">
+		SELECT *
+		FROM tb_xn_account_type WHERE is_ok=0 AND type_id =
+		#{0}
+	</select>
+	<!-- 根据账务类别名和用户ID查询该用户的个人账务类别 -->
+	<select id="findByNameAndUserId" resultMap="accountTypeMap">
+		SELECT *
+		FROM
+		tb_xn_account_type WHERE is_ok=0 AND user_id =
+		#{userId} AND type_name
+		= #{typeName}
+	</select>
+	<!-- 根据父级类别查询该用户的账务类别 -->
+	<select id="findChildType" resultMap="accountTypeMap">
+		SELECT *
+		FROM
+		tb_xn_account_type WHERE is_ok=0 AND
+		user_id=#{userId} AND parent_type
+		= #{parentType}
+	</select>
+</mapper>

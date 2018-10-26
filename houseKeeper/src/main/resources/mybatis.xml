@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+	<settings>
+		<!-- 开启全局的二级缓存 -->
+		<setting name="cacheEnabled" value="true" />
+		<!-- 开启延迟加载功能 -->
+		<setting name="lazyLoadingEnabled" value="true" />
+		<!-- 默认ture，代表使用本对象也会加载关联对象 -->
+		<setting name="aggressiveLazyLoading" value="false" />
+		<!-- 对于未知的SQL查询，允许返回不同的结果集以达到通用的效果 -->
+		<setting name="multipleResultSetsEnabled" value="true" />
+	</settings>
+	<!-- 定义别名 -->
+	<typeAliases>
+		<!-- 系统管理 -->
+		<typeAlias type="com.xn.hk.system.model.User" alias="User" />
+		<typeAlias type="com.xn.hk.system.model.Role" alias="Role" />
+		<typeAlias type="com.xn.hk.system.model.Module" alias="Module" />
+		<typeAlias type="com.xn.hk.system.model.Log" alias="Log" />
+		<typeAlias type="com.xn.hk.system.model.AdminLog" alias="AdminLog" />
+		<typeAlias type="com.xn.hk.system.model.FileEntity" alias="File" />
+		<!-- 测试EXCEL导入导出(POI) -->
+		<typeAlias type="com.xn.hk.system.model.ChannelData" alias="ChannelData" />
+		<!-- 分页bean -->
+		<typeAlias type="com.xn.hk.common.utils.page.BasePage" alias="BasePage" />
+		<!-- Redis缓存 -->
+		<typeAlias type="com.xn.hk.common.utils.redis.RedisCache" alias="RedisCache" />
+		<!-- 账务管理 -->
+		<typeAlias type="com.xn.hk.account.model.Account" alias="Account" />
+		<typeAlias type="com.xn.hk.account.model.Money" alias="Money" />
+		<typeAlias type="com.xn.hk.account.model.AccountType" alias="AccountType" />
+		<!-- 考试管理 -->
+		<typeAlias type="com.xn.hk.exam.model.QuestionType" alias="QuestionType" />
+		<typeAlias type="com.xn.hk.exam.model.Question" alias="Question" />
+		<typeAlias type="com.xn.hk.exam.model.Paper" alias="Paper" />
+		<typeAlias type="com.xn.hk.exam.model.Score" alias="Score" />
+	</typeAliases>
+	<!-- 配置mybatis分页插件pagehelper-->
+	<plugins>
+		<plugin interceptor="com.github.pagehelper.PageInterceptor">
+			<!-- 设置数据库类型,可选值为oracle,mysql,mariadb,sqlite,hsqldb,postgresql,没有默认值，必须指定该属性-->
+			<property name="helperDialect" value="mysql" />
+			<property name="offsetAsPageNum" value="true" />
+			<!-- rowBoundsWithCount设置为true时，使用 RowBounds 分页会进行 count 查询。 -->
+			<property name="rowBoundsWithCount" value="true" />
+			<!-- pageSizeZero 为 true， 当 pageSize=0 或者 RowBounds.limit = 0 就会查询出全部的结果 -->
+			<property name="pageSizeZero" value="true" />
+			<!-- reasonable 为 true，这时如果 pageNum<=0 会查询第一页，如果 pageNum>总页数 会查询最后一页 -->
+			<property name="reasonable" value="true" />
+			<property name="returnPageInfo" value="check" />
+		</plugin>
+	</plugins>
+</configuration>

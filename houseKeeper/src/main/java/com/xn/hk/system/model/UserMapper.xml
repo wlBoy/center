@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xn.hk.system.dao.UserDao">
+	<!--使用redis作为mybatis的二级缓存,针对具体某条语句禁用缓存,useCache="false",这里的RedisCache是个别名
+	<cache eviction="LRU" type="RedisCache" />-->
+	<!-- 用户映射 -->
+	<resultMap type="User" id="userMap">
+		<id property="userId" column="user_id" />
+		<result property="userName" column="user_name" />
+		<result property="userPwd" column="user_pwd" />
+		<result property="userFace" column="user_face" />
+		<result property="userState" column="user_state" />
+		<result property="isOk" column="is_ok" />
+		<result property="createTime" column="create_time" />
+		<result property="updateTime" column="update_time" />
+		<result property="remark" column="remark" />
+
+		<association property="role" javaType="Role">
+			<id property="roleId" column="role_id" />
+			<result property="roleName" column="role_name" />
+			<result property="isOk" column="is_ok" />
+			<result property="createTime" column="create_time" />
+			<result property="updateTime" column="update_time" />
+			<result property="remark" column="remark" />
+		</association>
+	</resultMap>
+	<!-- 定义数据库基本列,只适用代替单表的* -->
+	<sql id="Base_Column_List">user_id,role_id,user_name,user_pwd,user_face,user_state,is_ok,create_time,update_time,remark
+	</sql>
+	<!-- 分页显示列表 -->
+	<select id="pageList" parameterType="BasePage" resultMap="userMap">
+		SELECT
+		*
+		FROM tb_xn_sys_user u LEFT JOIN tb_xn_sys_role r ON u.role_id
+		=
+		r.role_id WHERE u.is_ok = 0
+		<if test="bean != null">
+			<if test="bean.userName != null and bean.userName != ''">
+				and u.user_name like CONCAT(CONCAT('%',
+				#{bean.userName}),'%')
+			</if>
+			<if test="bean.role.roleId != null and bean.role.roleId != ''">
+				and r.role_id = #{bean.role.roleId}
+			</if>
+			<if test="bean.userState != null">
+				and u.user_state = #{bean.userState}
+			</if>
+		</if>
+		ORDER BY u.create_time DESC LIMIT #{start},#{size}
+	</select>
+	<!-- 分页总记录数 -->
+	<select id="pageCount" parameterType="BasePage" resultType="int">
+		SELECT COUNT(1) FROM tb_xn_sys_user u LEFT JOIN tb_xn_sys_role r ON
+		u.role_id = r.role_id WHERE u.is_ok = 0
+		<if test="bean != null">
+			<if test="bean.userName != null and bean.userName != ''">
+				and u.user_name like CONCAT(CONCAT('%',
+				#{bean.userName}),'%')
+			</if>
+			<if test="bean.role.roleId != null and bean.role.roleId != ''">
+				and r.role_id = #{bean.role.roleId}
+			</if>
+			<if test="bean.userState != null">
+				and u.user_state = #{bean.userState}
+			</if>
+		</if>
+	</select>
+	<!-- 逻辑删除用户 -->
+	<update id="delete" parameterType="java.lang.Integer">
+		UPDATE tb_xn_sys_user SET
+		is_ok = 1,update_time=now() where user_id=#{0}
+	</update>
+	<!-- 添加用户 -->
+	<insert id="insert" parameterType="User">
+		INSERT INTO
+		tb_xn_sys_user(role_id,user_name,user_pwd,user_state,is_ok,create_time,update_time,remark)
+		VALUES(#{role.roleId},#{userName},#{userPwd},0,0,NOW(),NOW(),#{remark})
+	</insert>
+	<!-- 更新用户 -->
+	<update id="update" parameterType="User">
+		UPDATE tb_xn_sys_user SET
+		role_id = #{role.roleId},user_name =
+		#{userName},user_pwd=#{userPwd},update_time=now(),remark=#{remark}
+		where user_id=#{userId}
+	</update>
+	<!-- 通过用户id查询该用户 -->
+	<select id="findById" parameterType="java.lang.Integer"
+		resultMap="userMap">
+		SELECT
+		<include refid="Base_Column_List" />
+		FROM tb_xn_sys_user WHERE is_ok=0 AND user_id =
+		#{0}
+	</select>
+	<!-- 通过用户名查询该用户 -->
+	<select id="findByName" parameterType="java.lang.String"
+		resultMap="userMap">
+		SELECT
+		*
+		FROM
+		tb_xn_sys_user u LEFT JOIN tb_xn_sys_role r ON u.role_id =
+		r.role_id
+		WHERE u.is_ok=0 AND u.user_name=#{0}
+	</select>
+	<!-- 切换用户状态 -->
+	<update id="changeState">
+		UPDATE tb_xn_sys_user
+		SET user_state = #{status},update_time=now() where user_id=#{userId}
+	</update>
+	<!-- 查询所有用户 -->
+	<select id="findAll" resultMap="userMap">
+		SELECT
+		<include refid="Base_Column_List" />
+		FROM tb_xn_sys_user WHERE is_ok=0
+	</select>
+	<!-- 上传用户头像 -->
+	<update id="uploadFace" parameterType="User">
+		UPDATE tb_xn_sys_user SET
+		user_face = #{userFace},update_time=now()
+		where user_id=#{userId}
+	</update>
+</mapper>

@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:task="http://www.springframework.org/schema/task"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context-4.0.xsd
+        http://www.springframework.org/schema/aop
+        http://www.springframework.org/schema/aop/spring-aop-4.0.xsd
+        http://www.springframework.org/schema/tx
+        http://www.springframework.org/schema/tx/spring-tx-4.0.xsd">
+	<!--1.引入db数据库配置文件，在配置中占位使用 -->
+	<bean id="propertyConfigurer"
+		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="locations">
+			<list>
+				<value>classpath:db.properties</value>
+				<value>classpath:cron.properties</value>
+			</list>
+		</property>
+	</bean>
+
+	<!--2.导入redis配置文件 
+	 <import resource="redis.xml" />
+	-->
+
+
+	<!--3. 配置Druid连接池 -->
+	<bean id="datasource"
+		class="com.alibaba.druid.pool.DruidDataSource">
+		<!--数据库基本信息 -->
+		<property name="driverClassName" value="${mysql.driver}" />
+		<property name="url" value="${mysql.url}" />
+		<property name="username" value="${mysql.username}" />
+		<property name="password" value="${mysql.password}" />
+		<!-- 配置初始化大小、最小、最大 -->
+		<property name="initialSize" value="1" />
+		<property name="minIdle" value="1" />
+		<property name="maxActive" value="20" />
+		<!-- 配置获取连接等待超时的时间 -->
+		<property name="maxWait" value="5000" />
+		<!-- 配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒 -->
+		<property name="timeBetweenEvictionRunsMillis" value="60000" />
+		<!-- 配置一个连接在池中最小生存的时间，单位是毫秒 -->
+		<property name="minEvictableIdleTimeMillis" value="300000" />
+		<!-- 这里建议配置为TRUE，防止取到的连接不可用 -->
+		<property name="validationQuery" value="SELECT 'x'" />
+		<property name="testWhileIdle" value="true" />
+		<property name="testOnBorrow" value="true" />
+		<property name="testOnReturn" value="false" />
+		<!-- 打开PSCache，并且指定每个连接上PSCache的大小 -->
+		<!-- 如果用Oracle，则把poolPreparedStatements配置为true，mysql可以配置为false。分库分表较多的数据库，建议配置为false。 -->
+		<property name="poolPreparedStatements" value="false" />
+		<property name="maxPoolPreparedStatementPerConnectionSize"
+			value="20" />
+		<!-- 配置监控统计拦截的filters，去掉后监控界面sql无法统计 -->
+		<property name="filters" value="stat" />
+	</bean>
+
+	<!--4.整合mybatis,加载会话工厂sqlSessionFactoryBean -->
+	<bean id="sqlSessionFactory"
+		class="org.mybatis.spring.SqlSessionFactoryBean">
+		<!-- mybatis配置文件路径 -->
+		<property name="configLocation" value="classpath:mybatis.xml" />
+		<!-- 数据源 -->
+		<property name="dataSource" ref="datasource" />
+		<!-- 实体映射文件路径 -->
+		<property name="mapperLocations"
+			value="classpath:com/xn/hk/*/model/*Mapper.xml" />
+	</bean>
+
+	<!--5.自动扫描对象关系映射,生成接口实现类 -->
+	<bean id="mapperScannerConfigurer"
+		class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+		<!--指定会话工厂，如果当前上下文中只定义了一个则该属性可省去 -->
+		<property name="sqlSessionFactoryBeanName"
+			value="sqlSessionFactory" />
+		<!-- 指定要自动扫描接口的基础包，实现接口 -->
+		<property name="basePackage" value="com.xn.hk.*.dao" />
+	</bean>
+
+	<!--6.定义事务管理器，由spring管理事务 -->
+	<bean id="transactionManager"
+		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="datasource" />
+	</bean>
+	<!-- 定义一个事务通知 -->
+	<tx:advice id="tx" transaction-manager="transactionManager">
+		<tx:attributes>
+			<tx:method isolation="DEFAULT" name="page*"
+				propagation="REQUIRED" />
+			<tx:method name="add*" propagation="REQUIRED" />
+			<tx:method name="update*" propagation="REQUIRED" />
+			<tx:method name="delete*" propagation="REQUIRED" />
+			<tx:method name="find*" propagation="REQUIRED" />
+		</tx:attributes>
+	</tx:advice>
+
+	<!--7.容器自动扫描IOC组件 -->
+	<context:component-scan base-package="com.xn.hk" />
+
+	<!--8.aspectj支持自动代理实现AOP功能 -->
+	<aop:aspectj-autoproxy proxy-target-class="true" />
+
+	<!--9.配置druid监控spring -->
+	<bean id="druid-stat-interceptor"
+		class="com.alibaba.druid.support.spring.stat.DruidStatInterceptor" />
+	<bean id="druid-stat-pointcut"
+		class="org.springframework.aop.support.JdkRegexpMethodPointcut"
+		scope="prototype">
+		<property name="patterns">
+			<list>
+				<value>com.xn.hk.*.service.impl.*</value>
+			</list>
+		</property>
+	</bean>
+
+	<!--10. 配置aop切面 -->
+	<aop:config proxy-target-class="true">
+		<!-- 定义一个切入点 -->
+		<aop:pointcut id="serviceImpl"
+			expression="execution(* com.xn.hk..service.impl.*.*(..))" />
+		<!-- 切入事务 -->
+		<aop:advisor advice-ref="tx" pointcut-ref="serviceImpl" />
+		<!-- 切入druid监控 -->
+		<aop:advisor advice-ref="druid-stat-interceptor"
+			pointcut-ref="druid-stat-pointcut" />
+		<!-- 自定义日志切面 -->
+		<aop:aspect ref="LogAspect">
+			<aop:around method="doLog" pointcut-ref="serviceImpl" />
+		</aop:aspect>
+	</aop:config>
+	<!--11. 定时任务start -->
+	<import resource="quartz.xml" />
+</beans>

@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xn.hk.exam.dao.ScoreDao">
+	<!--使用redis作为mybatis的二级缓存,针对具体某条语句禁用缓存,useCache="false",这里的RedisCache是个别名
+	<cache eviction="LRU" type="RedisCache" /> -->
+	<!-- 分数映射 -->
+	<resultMap type="Score" id="scoreMap">
+		<id property="scoreId" column="score_id" />
+		<result property="examPaperId" column="exam_paper_id" />
+		<result property="examPaperName" column="exam_paper_name" />
+		<result property="singleScore" column="single_score" />
+		<result property="multipleScore" column="multiple_score" />
+		<result property="briefScore" column="brief_score" />
+		<result property="curday" column="curday" />
+		<result property="submitTime" column="submit_time" />
+		<result property="paperStatus" column="paper_status" />
+		<result property="isOk" column="is_ok" />
+
+		<association property="paper" javaType="Paper">
+			<id property="paperId" column="paper_id" />
+			<result property="createPaperId" column="create_paper_id" />
+			<result property="createPaperName" column="user_name" />
+			<result property="paperName" column="paper_name" />
+			<result property="paperScore" column="paper_score" />
+			<result property="totalTime" column="total_time" />
+			<result property="startTime" column="start_time" />
+			<result property="endTime" column="end_time" />
+			<result property="curday" column="curday" />
+			<result property="isAllowed" column="is_allowed" />
+			<result property="isOk" column="is_ok" />
+			<result property="createTime" column="create_time" />
+			<result property="updateTime" column="update_time" />
+			<result property="remark" column="remark" />
+		</association>
+	</resultMap>
+	<!-- 定义数据库基本列,只适用代替单表的* -->
+	<sql id="Base_Column_List">score_id,exam_paper_id,paper_id,single_score,multiple_score,brief_score,curday,submit_time,paper_status,is_ok
+	</sql>
+	<!-- 将用户的答题分数添加至分数表 -->
+	<insert id="insert" parameterType="Score">
+		INSERT INTO
+		tb_xn_exam_score(exam_paper_id,paper_id,single_score,multiple_score,brief_score,curday,submit_time,paper_status,is_ok)
+		VALUES(#{examPaperId},#{paper.paperId},#{singleScore},#{multipleScore},#{briefScore},DATE_FORMAT(NOW(),'%Y%m%d'),NOW(),#{paperStatus},0)
+	</insert>
+	<!-- 前台显示用户个人的分数列表(即用户个人所有的已考试卷) -->
+	<select id="showPersonalList" parameterType="BasePage"
+		resultMap="scoreMap">
+		SELECT * FROM tb_xn_exam_score s LEFT JOIN tb_xn_exam_paper p ON
+		s.paper_id = p.paper_id LEFT JOIN tb_xn_sys_user u ON
+		p.create_paper_id =
+		u.user_id where s.is_ok = 0 and s.exam_paper_id =
+		#{bean.examPaperId}
+		<if test="bean != null">
+			<if test="bean.paper.paperName != null and bean.paper.paperName != ''">
+				and p.paper_name like CONCAT(CONCAT('%',
+				#{bean.paper.paperName}),'%')
+			</if>
+			<if
+				test="bean.paper.createPaperId != null and bean.paper.createPaperId != ''">
+				and p.create_paper_id = #{bean.paper.createPaperId}
+			</if>
+			<if test="bean.paper.paperScore != null and bean.paper.paperScore != ''">
+				and p.paper_score = #{bean.paper.paperScore}
+			</if>
+			<!--交卷日期 -->
+			<if test="bean.curday != null and bean.curday != ''">
+				and s.curday = #{bean.curday}
+			</if>
+		</if>
+		ORDER BY p.create_time DESC LIMIT #{start},#{size}
+	</select>
+	<!--前台显示用户个人的分数总记录数(即用户个人所有的已考试卷) -->
+	<select id="showPersonalCount" parameterType="BasePage"
+		resultType="int">
+		SELECT count(1) FROM tb_xn_exam_score s LEFT JOIN tb_xn_exam_paper p
+		ON
+		s.paper_id = p.paper_id LEFT JOIN tb_xn_sys_user u ON
+		p.create_paper_id =
+		u.user_id where s.is_ok = 0 and s.exam_paper_id =
+		#{bean.examPaperId}
+		<if test="bean != null">
+			<if test="bean.paper.paperName != null and bean.paper.paperName != ''">
+				and p.paper_name like CONCAT(CONCAT('%',
+				#{bean.paper.paperName}),'%')
+			</if>
+			<if
+				test="bean.paper.createPaperId != null and bean.paper.createPaperId != ''">
+				and p.create_paper_id = #{bean.paper.createPaperId}
+			</if>
+			<if test="bean.paper.paperScore != null and bean.paper.paperScore != ''">
+				and p.paper_score = #{bean.paper.paperScore}
+			</if>
+			<!--交卷日期 -->
+			<if test="bean.curday != null and bean.curday != ''">
+				and s.curday = #{bean.curday}
+			</if>
+		</if>
+	</select>
+	<!-- 后台显示所欲的分数列表(即所有待批阅试卷),用于教师批阅试卷 -->
+	<select id="pageList" parameterType="BasePage" resultMap="scoreMap">
+		SELECT s.*,p.*,t.user_name exam_paper_name,u.user_name
+		FROM
+		tb_xn_exam_score s LEFT JOIN tb_xn_sys_user t
+		ON
+		s.exam_paper_id=t.user_id LEFT JOIN tb_xn_exam_paper p ON
+		s.paper_id =
+		p.paper_id LEFT JOIN tb_xn_sys_user u ON
+		p.create_paper_id = u.user_id
+		WHERE s.is_ok = 0 AND s.paper_status > 0
+		<if test="bean != null">
+			<if test="bean.paper.paperName != null and bean.paper.paperName != ''">
+				and p.paper_name like CONCAT(CONCAT('%',
+				#{bean.paper.paperName}),'%')
+			</if>
+			<if
+				test="bean.paper.createPaperId != null and bean.paper.createPaperId != ''">
+				and p.create_paper_id = #{bean.paper.createPaperId}
+			</if>
+			<if test="bean.paper.paperScore != null and bean.paper.paperScore != ''">
+				and p.paper_score = #{bean.paper.paperScore}
+			</if>
+			<if test="bean.examPaperId != null and bean.examPaperId != ''">
+				and s.exam_paper_id = #{bean.examPaperId}
+			</if>
+			<if test="bean.paperStatus != null and bean.paperStatus != ''">
+				and s.paper_status = #{bean.paperStatus}
+			</if>
+			<!--交卷日期 -->
+			<if test="bean.curday != null and bean.curday != ''">
+				and s.curday = #{bean.curday}
+			</if>
+		</if>
+		ORDER BY p.create_time
+		DESC LIMIT #{start},#{size}
+	</select>
+	<!--后台显示所欲的分数总记录数(即所有待批阅试卷),用于教师批阅试卷 -->
+	<select id="pageCount" parameterType="BasePage" resultType="int">
+		SELECT count(1)
+		FROM
+		tb_xn_exam_score s LEFT JOIN tb_xn_sys_user t
+		ON
+		s.exam_paper_id=t.user_id LEFT JOIN tb_xn_exam_paper p ON
+		s.paper_id =
+		p.paper_id LEFT JOIN tb_xn_sys_user u ON
+		p.create_paper_id = u.user_id
+		WHERE s.is_ok = 0 AND s.paper_status > 0
+		<if test="bean != null">
+			<if test="bean.paper.paperName != null and bean.paper.paperName != ''">
+				and p.paper_name like CONCAT(CONCAT('%',
+				#{bean.paper.paperName}),'%')
+			</if>
+			<if
+				test="bean.paper.createPaperId != null and bean.paper.createPaperId != ''">
+				and p.create_paper_id = #{bean.paper.createPaperId}
+			</if>
+			<if test="bean.paper.paperScore != null and bean.paper.paperScore != ''">
+				and p.paper_score = #{bean.paper.paperScore}
+			</if>
+			<if test="bean.examPaperId != null and bean.examPaperId != ''">
+				and s.exam_paper_id = #{bean.examPaperId}
+			</if>
+			<if test="bean.paperStatus != null and bean.paperStatus != ''">
+				and s.paper_status = #{bean.paperStatus}
+			</if>
+			<!--交卷日期 -->
+			<if test="bean.curday != null and bean.curday != ''">
+				and s.curday = #{bean.curday}
+			</if>
+		</if>
+	</select>
+	<!-- 查询该用户该试卷的分数表和试卷基本信息 -->
+	<select id="findByPaperIdAndUserId" resultMap="scoreMap">
+		SELECT * from
+		tb_xn_exam_score s LEFT JOIN tb_xn_sys_user t
+		ON
+		s.exam_paper_id=t.user_id LEFT JOIN tb_xn_exam_paper p ON
+		s.paper_id =
+		p.paper_id LEFT JOIN tb_xn_sys_user u ON
+		p.create_paper_id = u.user_id
+		WHERE s.is_ok = 0 AND s.paper_id = #{paperId} AND s.exam_paper_id =
+		#{userId}
+	</select>
+	<!-- 根据试卷ID和用户ID更新简答题分数和试卷状态 -->
+	<update id="updateScore">
+		UPDATE tb_xn_exam_score SET
+		brief_score =
+		#{sum},paper_status = 2
+		where paper_id=#{paperId} and exam_paper_id=#{userId}
+		and is_ok =0
+	</update>
+</mapper>

@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xn.hk.system.dao.FileDao">
+	<!--使用redis作为mybatis的二级缓存,针对具体某条语句禁用缓存,useCache="false",这里的RedisCache是个别名 
+		<cache eviction="LRU" type="RedisCache" /> -->
+	<!-- 用户映射 -->
+	<resultMap type="File" id="fileMap">
+		<id property="fileId" column="file_id" />
+		<result property="fileName" column="file_name" />
+		<result property="fileType" column="file_type" />
+		<result property="filePath" column="file_path" />
+		<result property="uploadBy" column="upload_by" />
+		<result property="uploadByName" column="user_name" />
+		<result property="isOk" column="is_ok" />
+		<result property="uploadTime" column="upload_time" />
+		<result property="updateTime" column="update_time" />
+		<result property="curday" column="curday" />
+		<result property="remark" column="remark" />
+
+	</resultMap>
+	<!-- 定义数据库基本列,只适用代替单表的* -->
+	<sql id="Base_Column_List">file_id,file_name,file_type,file_path,upload_by,is_ok,upload_time,update_time,curday,remark
+	</sql>
+	<!-- 分页显示所有文件 -->
+	<select id="pageList" parameterType="BasePage"
+		resultMap="fileMap">
+		select f.*,u.user_name from tb_xn_sys_file f left join tb_xn_sys_user
+		u on f.upload_by
+		= u.user_id where f.is_ok =0
+		<if test="bean != null">
+			<if test="bean.fileName != null and bean.fileName != '' ">
+				and f.file_name like CONCAT(CONCAT('%',
+				#{bean.fileName}),'%')
+			</if>
+			<if test="bean.uploadBy != null and bean.uploadBy != '' ">
+				and f.upload_by = #{bean.uploadBy}
+			</if>
+			<if test="bean.curday != null and bean.curday != ''">
+				and f.curday = #{bean.curday}
+			</if>
+		</if>
+		ORDER BY f.update_time DESC LIMIT #{start},#{size}
+	</select>
+	<!-- 分页显示所有文件的记录数 -->
+	<select id="pageCount" parameterType="BasePage"
+		resultType="java.lang.Integer">
+		select count(*) from tb_xn_sys_file f left join tb_xn_sys_user u on
+		f.upload_by
+		= u.user_id where f.is_ok =0
+		<if test="bean != null">
+			<if test="bean.fileName != null and bean.fileName != '' ">
+				and f.file_name like CONCAT(CONCAT('%',
+				#{bean.fileName}),'%')
+			</if>
+			<if test="bean.uploadBy != null and bean.uploadBy != '' ">
+				and f.upload_by = #{bean.uploadBy}
+			</if>
+			<if test="bean.curday != null and bean.curday != ''">
+				and f.curday = #{bean.curday}
+			</if>
+		</if>
+	</select>
+	<!-- 添加文件 -->
+	<insert id="insert" parameterType="File">
+		INSERT INTO
+		tb_xn_sys_file(file_id,file_name,file_type,file_path,upload_by,is_ok,upload_time,update_time,curday,remark)
+		VALUES(#{fileId},#{fileName},#{fileType},#{filePath},#{uploadBy},0,#{uploadTime},#{updateTime},#{curday},#{remark})
+	</insert>
+	<!-- 逻辑删除文件 -->
+	<update id="delete" parameterType="java.lang.String">
+		UPDATE tb_xn_sys_file SET
+		is_ok = 1,update_time=now() where file_id=#{0}
+	</update>
+	<!-- 更新文件 -->
+	<update id="update" parameterType="File">
+		UPDATE tb_xn_sys_file SET
+		update_time=now(),remark=#{remark}
+		where file_id=#{fileId}
+	</update>
+	<!-- 通过用户id查询该文件 -->
+	<select id="findById" parameterType="java.lang.String"
+		resultMap="fileMap">
+		SELECT
+		<include refid="Base_Column_List" />
+		FROM tb_xn_sys_file WHERE is_ok=0 AND file_id =
+		#{0}
+	</select>
+</mapper>
