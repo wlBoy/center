@@ -26,11 +26,11 @@ import com.xn.hk.common.constant.Constant;
 import com.xn.hk.common.constant.FileType;
 import com.xn.hk.common.constant.View;
 import com.xn.hk.common.utils.cfg.SystemCfg;
+import com.xn.hk.common.utils.date.DateUtil;
 import com.xn.hk.common.utils.file.FileUtil;
 import com.xn.hk.common.utils.log.LogHelper;
 import com.xn.hk.common.utils.log.LogType;
 import com.xn.hk.common.utils.page.BasePage;
-import com.xn.hk.common.utils.string.DateFormatUtil;
 import com.xn.hk.common.utils.string.StringUtil;
 import com.xn.hk.system.dao.AdminLogDao;
 import com.xn.hk.system.model.FileEntity;
@@ -118,7 +118,7 @@ public class FileController {
 		String newFileName = StringUtil.genUUIDString() + "_" + originalFileName;
 		// 得到配置文件中的文件存储位置(以yyyyMMdd目录分开存储)
 		String filePath = SystemCfg.loadCfg().getProperty(SystemCfg.FILE_PATH) + File.separator
-				+ String.valueOf(DateFormatUtil.getNumberDay()) + File.separator + newFileName;
+				+ String.valueOf(DateUtil.getNumberDay()) + File.separator + newFileName;
 		File localFile = new File(filePath);
 		// 目录不存在，则创建目录
 		if (!localFile.exists()) {
@@ -141,9 +141,9 @@ public class FileController {
 		fileEntity.setUploadBy(user.getUserId());
 		fileEntity.setUploadByName(user.getUserName());
 		fileEntity.setFilePath(filePath);// 文件存储位置即下载路径
-		fileEntity.setUploadTime(DateFormatUtil.formatDateTime());
-		fileEntity.setUpdateTime(DateFormatUtil.formatDateTime());
-		fileEntity.setCurday(DateFormatUtil.getNumberDay());
+		fileEntity.setUploadTime(DateUtil.formatDateTime());
+		fileEntity.setUpdateTime(DateUtil.formatDateTime());
+		fileEntity.setCurday(DateUtil.getNumberDay());
 		fileEntity.setRemark(remark);
 		int result = fileService.insert(session, "上传文件", LogType.FILE_LOG.getType(), fileEntity);
 		if (result == Constant.ZERO_VALUE) {

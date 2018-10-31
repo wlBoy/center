@@ -27,7 +27,7 @@ import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
-import com.xn.hk.common.utils.string.DateFormatUtil;
+import com.xn.hk.common.utils.date.DateUtil;
 
 /**
  * 
@@ -332,7 +332,7 @@ public class ExcelUtil {
 				// 如果是日期类型 进行 转换
 				if (rtn != null) {
 					if (rtn instanceof Date) {
-						value = DateFormatUtil.formatDateTime((Date) rtn, "yyyy-MM-dd");
+						value = DateUtil.formatDateTime((Date) rtn, "yyyy-MM-dd");
 					} else if (rtn instanceof BigDecimal) {
 						NumberFormat nf = new DecimalFormat("#,##0.00");
 						value = nf.format((BigDecimal) rtn).toString();

@@ -14,8 +14,8 @@ import com.xn.hk.common.constant.Constant;
 import com.xn.hk.common.constant.EnabledEnum;
 import com.xn.hk.common.constant.StatusEnum;
 import com.xn.hk.common.dao.BaseDao;
+import com.xn.hk.common.utils.date.DateUtil;
 import com.xn.hk.common.utils.ip.IpHelper;
-import com.xn.hk.common.utils.string.DateFormatUtil;
 import com.xn.hk.common.utils.string.StringUtil;
 import com.xn.hk.exam.model.Paper;
 import com.xn.hk.exam.model.Question;
@@ -88,11 +88,11 @@ public class LogHelper {
 		adminLog.setLogId(StringUtil.genUUIDString());
 		adminLog.setLogType(logType);
 		adminLog.setLogContent(logContent);
-		adminLog.setLogTime(DateFormatUtil.formatDateTime());
-		adminLog.setCurday(DateFormatUtil.getNumberDay());
+		adminLog.setLogTime(DateUtil.formatDateTime());
+		adminLog.setCurday(DateUtil.getNumberDay());
 		adminLog.setLogResult(logResult == true ? "成功" : "失败");
 		adminLog.setLogName(logName);
-		adminLog.setLogTimeStamp(DateFormatUtil.formatDateTime());
+		adminLog.setLogTimeStamp(DateUtil.formatDateTime());
 		adminLog.setLogIp(IpHelper.getIp());
 		adminLog.setIsOk(Constant.ZERO_VALUE);
 		int result = adminLogDao.insert(adminLog);
@@ -175,8 +175,8 @@ public class LogHelper {
 		user.setUserState(StatusEnum.ACTIVE.getCode());
 		user.setIsOk(EnabledEnum.ENABLED.getCode());
 		user.getRole().setRoleName("测试角色");
-		user.setCreateTime(DateFormatUtil.formatDateTime(new Date()));
-		user.setUpdateTime(DateFormatUtil.formatDateTime(new Date()));
+		user.setCreateTime(DateUtil.formatDateTime(new Date()));
+		user.setUpdateTime(DateUtil.formatDateTime(new Date()));
 		System.out.println("日志内容为:" + LogHelper.getInstance().getLogContent(user));
 		System.out.println("日志内容为:" + LogHelper.getInstance().getLogContentByReflect(user));
 	}

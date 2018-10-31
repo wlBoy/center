@@ -8,7 +8,7 @@ import java.util.Map;
 
 import org.apache.commons.beanutils.BeanUtils;
 
-import com.xn.hk.common.utils.string.DateFormatUtil;
+import com.xn.hk.common.utils.date.DateUtil;
 import com.xn.hk.system.model.Role;
 import com.xn.hk.system.model.User;
 
@@ -47,7 +47,7 @@ public class MapUtil {
 			// 将日期类型的值转换为字符串(格式为:yyyy-MM-dd HH:mm:ss)存储
 			Object fieldValue = map.get(field.getName());
 			if (fieldValue instanceof Date) {
-				fieldValue = DateFormatUtil.formatDateTime((Date) fieldValue);
+				fieldValue = DateUtil.formatDateTime((Date) fieldValue);
 			}
 			field.setAccessible(true);
 			field.set(obj, fieldValue);
@@ -119,8 +119,8 @@ public class MapUtil {
 		role.setRoleId(1);
 		role.setRoleName("测试模块");
 		role.setIsOk(0);
-		role.setCreateTime(DateFormatUtil.formatDateTime(new Date()));
-		role.setUpdateTime(DateFormatUtil.formatDateTime(new Date()));
+		role.setCreateTime(DateUtil.formatDateTime(new Date()));
+		role.setUpdateTime(DateUtil.formatDateTime(new Date()));
 		System.out.println(role);
 		Map<String, Object> roleMap = obj2MapByReflect(role);
 		for (String key : roleMap.keySet()) {
@@ -132,8 +132,8 @@ public class MapUtil {
 		userMap1.put("userPwd", "lisi");
 		userMap1.put("userState", 1);
 		userMap1.put("isOk", 1);
-		userMap1.put("createTime", DateFormatUtil.formatDateTime(new Date()));
-		userMap1.put("updateTime", DateFormatUtil.formatDateTime(new Date()));
+		userMap1.put("createTime", DateUtil.formatDateTime(new Date()));
+		userMap1.put("updateTime", DateUtil.formatDateTime(new Date()));
 		userMap1.put("remark", "李四");
 		User user1 = (User) map2ObjByBeanUtils(userMap1, User.class);
 		System.out.println(user1.toString());

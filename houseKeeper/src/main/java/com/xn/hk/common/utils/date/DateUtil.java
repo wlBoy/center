@@ -1,4 +1,4 @@
-package com.xn.hk.common.utils.string;
+package com.xn.hk.common.utils.date;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -14,6 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.xn.hk.common.constant.Constant;
+import com.xn.hk.common.utils.string.StringUtil;
 
 /**
  * 
@@ -23,11 +24,11 @@ import com.xn.hk.common.constant.Constant;
  * @Author: wanlei
  * @Date: 2018年8月22日 上午9:12:16
  */
-public final class DateFormatUtil {
+public final class DateUtil {
 	/**
 	 * 记录日志
 	 */
-	private static final Logger logger = LoggerFactory.getLogger(DateFormatUtil.class);
+	private static final Logger logger = LoggerFactory.getLogger(DateUtil.class);
 	// 定义日期格式
 	public static final String PATTERN_DATE = "yyyy-MM-dd";
 	public static final String PATTERN_DATE_TIME = "yyyy-MM-dd HH:mm:ss";
@@ -222,8 +223,8 @@ public final class DateFormatUtil {
 		if (StringUtil.isEmpty(dateStr))
 			return 0;
 		Date date = null;
-		date = DateFormatUtil.parseStrToDate(dateStr, DateFormatUtil.PATTERN_DATE_TIME);
-		return DateFormatUtil.getDays(date, new Date());
+		date = DateUtil.parseStrToDate(dateStr, DateUtil.PATTERN_DATE_TIME);
+		return DateUtil.getDays(date, new Date());
 	}
 
 	/**
@@ -254,8 +255,8 @@ public final class DateFormatUtil {
 	 */
 	public static int getValideTimeSeconds(Date date1, String date2) {
 		int nextUpdateTime = 0;
-		Date date = DateFormatUtil.parseStrToDate(date2, DateFormatUtil.PATTERN_DATE_TIME);
-		nextUpdateTime = DateFormatUtil.getValideTimeSeconds(date1, date);
+		Date date = DateUtil.parseStrToDate(date2, DateUtil.PATTERN_DATE_TIME);
+		nextUpdateTime = DateUtil.getValideTimeSeconds(date1, date);
 		return nextUpdateTime;
 	}
 
@@ -269,7 +270,7 @@ public final class DateFormatUtil {
 	 * @return 返回较小的时间
 	 */
 	public static Date getMinDate(Date date1, String date2) {
-		Date date = DateFormatUtil.parseStrToDate(date2, DateFormatUtil.PATTERN_DATE_TIME);
+		Date date = DateUtil.parseStrToDate(date2, DateUtil.PATTERN_DATE_TIME);
 		if (date.getTime() > System.currentTimeMillis()) {
 			if (date1 == null) {
 				date1 = date;
@@ -290,10 +291,10 @@ public final class DateFormatUtil {
 	public static String getLastDayOfMonth(String month) {
 		Calendar cal = Calendar.getInstance();
 		String day = month + "-01";
-		cal.setTime(DateFormatUtil.parseStrToDate(day));
+		cal.setTime(DateUtil.parseStrToDate(day));
 		int value = cal.getActualMaximum(Calendar.DAY_OF_MONTH);
 		cal.set(Calendar.DAY_OF_MONTH, value);
-		return DateFormatUtil.formatDate(cal.getTime());
+		return DateUtil.formatDate(cal.getTime());
 	}
 
 	/**
@@ -308,7 +309,7 @@ public final class DateFormatUtil {
 		cal.setTime(date);
 		int value = cal.getActualMinimum(Calendar.DAY_OF_MONTH);
 		cal.set(Calendar.DAY_OF_MONTH, value);
-		return DateFormatUtil.formatDate(cal.getTime());
+		return DateUtil.formatDate(cal.getTime());
 	}
 
 	/**
@@ -317,7 +318,7 @@ public final class DateFormatUtil {
 	 * @return 返回当前时间月份第一天的日期
 	 */
 	public static String getFirstDayOfMonth() {
-		return DateFormatUtil.getFirstDayOfMonth(new Date());
+		return DateUtil.getFirstDayOfMonth(new Date());
 	}
 
 	/**
@@ -329,7 +330,7 @@ public final class DateFormatUtil {
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(new Date());
 		cal.add(Calendar.MONTH, -1);
-		return DateFormatUtil.getFirstDayOfMonth(cal.getTime());
+		return DateUtil.getFirstDayOfMonth(cal.getTime());
 	}
 
 	/**
@@ -341,7 +342,7 @@ public final class DateFormatUtil {
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(new Date());
 		cal.add(Calendar.DAY_OF_MONTH, -1);
-		return DateFormatUtil.formatDate(cal.getTime());
+		return DateUtil.formatDate(cal.getTime());
 	}
 
 	/**
@@ -353,7 +354,7 @@ public final class DateFormatUtil {
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(new Date());
 		int dayOfWeek = cal.get(Calendar.DAY_OF_WEEK);
-		return DateFormatUtil.DAY_OF_WEEK[dayOfWeek - 1];
+		return DateUtil.DAY_OF_WEEK[dayOfWeek - 1];
 	}
 
 	/**
@@ -388,9 +389,9 @@ public final class DateFormatUtil {
 	 */
 	public static int getMonthsBetweenTowDays(String sDay, String eDay) {
 		Calendar sCal = Calendar.getInstance();
-		sCal.setTime(DateFormatUtil.parseStrToDate(sDay));
+		sCal.setTime(DateUtil.parseStrToDate(sDay));
 		Calendar eCal = Calendar.getInstance();
-		eCal.setTime(DateFormatUtil.parseStrToDate(eDay));
+		eCal.setTime(DateUtil.parseStrToDate(eDay));
 
 		return (eCal.get(Calendar.YEAR) - sCal.get(Calendar.YEAR)) * 12
 				+ (eCal.get(Calendar.MONTH) - sCal.get(Calendar.MONTH));
@@ -408,8 +409,8 @@ public final class DateFormatUtil {
 	 * @return
 	 */
 	public static String format(String dateTime, String srcPattern, String destPattern) {
-		Date date = DateFormatUtil.parseStrToDate(dateTime, srcPattern);
-		return DateFormatUtil.formatDateTime(date, destPattern);
+		Date date = DateUtil.parseStrToDate(dateTime, srcPattern);
+		return DateUtil.formatDateTime(date, destPattern);
 	}
 
 	/**

@@ -1,4 +1,4 @@
-package com.xn.hk.common.utils.string;
+package com.xn.hk.common.utils.json;
 
 import java.text.CharacterIterator;
 import java.text.StringCharacterIterator;
