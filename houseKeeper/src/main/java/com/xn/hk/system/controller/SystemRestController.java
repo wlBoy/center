@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.xn.hk.common.constant.Result;
 import com.xn.hk.common.utils.cfg.SystemCfg;
-import com.xn.hk.common.utils.encryption.Md5Util;
+import com.xn.hk.common.utils.encryption.HashUtil;
 import com.xn.hk.common.utils.string.StringUtil;
 import com.xn.hk.system.model.FileEntity;
 import com.xn.hk.system.model.Module;
@@ -195,7 +195,7 @@ public class SystemRestController {
 			return Result.genNullParamTip("新密码");
 		}
 		User user = userService.findById(userId);
-		String userPwd = Md5Util.MD5(newPwd + SystemCfg.USER_PWD_KEY);// 新密码加密
+		String userPwd = HashUtil.encryptStr(newPwd + SystemCfg.USER_PWD_KEY);// 新密码加密
 		if (userPwd.equals(user.getUserPwd())) {
 			logger.info("checkOldPwd-->新密码与旧密码一致!用户ID为:{}", userId);
 			return Result.genTip(Result.FAILURE, "新密码与旧密码一致!", newPwd);

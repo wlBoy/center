@@ -3,10 +3,12 @@ package com.xn.hk.common.utils.encryption;
 
 import java.lang.reflect.Method;
 
+import com.xn.hk.common.constant.Constant;
+
 /**
  * @Title: Base64
  * @Package: com.xn.hk.common.utils
- * @Description: Base64工具类
+ * @Description: Base64加密工具类，本类中提供两种方法实现base64
  * @Author: wanlei
  * @Date: 2018年1月8日 下午4:36:50
  */
@@ -248,7 +250,7 @@ public final class Base64Util {
 	 * @return 加码后的字符串
 	 */
 	@SuppressWarnings("all")
-	public static String encodeBase64(byte[] binaryData) throws Exception {
+	public static String encodeByReflect(byte[] binaryData) throws Exception {
 		Class clazz = Class.forName("com.sun.org.apache.xerces.internal.impl.dv.util.Base64");
 		Method mainMethod = clazz.getMethod("encode", byte[].class);
 		mainMethod.setAccessible(true);
@@ -264,7 +266,7 @@ public final class Base64Util {
 	 * @return 解码之后的byte数组
 	 */
 	@SuppressWarnings("all")
-	public static byte[] decodeBase64(String encoded) throws Exception {
+	public static byte[] decodeByReflect(String encoded) throws Exception {
 		Class clazz = Class.forName("com.sun.org.apache.xerces.internal.impl.dv.util.Base64");
 		Method mainMethod = clazz.getMethod("decode", String.class);
 		mainMethod.setAccessible(true);
@@ -279,10 +281,11 @@ public final class Base64Util {
 	 * @throws Exception
 	 */
 	public static void main(String[] args) throws Exception {
-		System.out.println("Base64加密后为:" + encodeBase64("万磊".getBytes()));
-		System.out.println("Base64解码后为:" + new String(decodeBase64(encode("万磊".getBytes())), "UTF-8"));
+		String str = "测试";
+		System.out.println("encodeByReflect加密后为:" + encodeByReflect(str.getBytes()));
+		System.out.println("decodeByReflect解码后为:" + new String(decodeByReflect("5rWL6K+V"), Constant.UTF8));
 		System.out.println("-------------------------------------");
-		System.out.println("Base64加密后为:" + encode("万磊".getBytes()));
-		System.out.println("Base64解码后为:" + new String(decode(encode("万磊".getBytes())), "UTF-8"));
+		System.out.println("encode加密后为:" + encode(str.getBytes()));
+		System.out.println("decode解码后为:" + new String(decode("5rWL6K+V"), Constant.UTF8));
 	}
 }
