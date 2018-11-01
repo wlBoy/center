@@ -6,6 +6,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.Properties;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -70,7 +71,7 @@ public class FileUtil {
 		String result = null;
 		File file = new File(path);
 		if (isExist(path)) {
-			logger.info("文件不存在!");
+			logger.error("{}路径下，文件不存在", path);
 			return result;
 		}
 		FileInputStream fis = null;
@@ -132,7 +133,8 @@ public class FileUtil {
 			return flag;
 		}
 		File file = new File(path);
-		if (!isExist(path)) {// 如果文件不存在,进行创建
+		if (!isExist(path)) {
+			// 如果路径不存在,创建好它的父级目录结构
 			new File(file.getParent()).mkdirs();
 		}
 		byte[] b = str.getBytes();
@@ -169,7 +171,7 @@ public class FileUtil {
 		int size = 0;
 		File f = new File(path);
 		if (!isExist(path)) {
-			logger.info("文件不存在");
+			logger.error("{}路径下，文件不存在", path);
 			return size;
 		}
 		FileInputStream fis = null;
@@ -221,17 +223,18 @@ public class FileUtil {
 		}
 		return result;
 	}
+
 	/**
 	 * 指定路径下的文件是否存在
-	 * @param filePath 指定文件路径
+	 * 
+	 * @param filePath
+	 *            指定文件路径
 	 * @return 存在返回true，否则返回false
 	 */
 	public static boolean isExist(String filePath) {
 		File file = new File(filePath);
 		return file.exists();
 	}
-
-
 
 	/**
 	 * 移动文件
@@ -259,12 +262,52 @@ public class FileUtil {
 		return oriFile.renameTo(destFile);
 	}
 
+	/**
+	 * 获取系统所有的key并将写到文件中，默认注释为空，为System.getProperty方法使用
+	 * 
+	 * @param path
+	 *            文件路径
+	 * @return 写入成功返回true，失败返回false
+	 */
+	public static boolean getSystemKeyToFile(String path) {
+		return getSystemKeyToFile(path, null);
+	}
+
+	/**
+	 * 获取系统所有的key并将写到文件中，为System.getProperty方法使用
+	 * 
+	 * @param path
+	 *            文件路径
+	 * @param comment
+	 *            文件注释
+	 * @return 写入成功返回true，失败返回false
+	 */
+	public static boolean getSystemKeyToFile(String path, String comment) {
+		boolean flag = false;
+		File sysFile = new File(path);
+		if (!sysFile.exists()) {
+			// 如果路径不存在,创建好它的父级目录结构
+			new File(sysFile.getParent()).mkdirs();
+		}
+		// 获取系统所有的key值
+		Properties sysPro = System.getProperties();
+		try {
+			sysPro.store(new FileOutputStream(sysFile), comment);
+			flag = true;
+		} catch (IOException e) {
+			logger.error("获取系统所有的key并将写到文件失败，原因为:" + e);
+		}
+		return flag;
+	}
+
 	public static void main(String[] args) throws IOException {
 		// System.out.println(deleteFile("D:/test/aa"));
-		System.out.println(readFile2String("D:/test/aa/aa.txt"));
-		System.out.println(writeString2File("D:/test/aa/bb.txt", "这是测试写文件", true));
-		System.out.println(getFileSize("E:\\develop tools\\apache-maven-3.5.3-bin.zip"));
-		System.out.println(join("E:/develop tools", "/apache-maven-3.5.3-bin.zip"));
-		System.out.println(moveFile("D:/test/aa/aa.txt", "D:/test/aa/b/aa.txt"));
+		// System.out.println(readFile2String("D:/test/aa/aa.txt"));
+		System.out.println(writeString2File("D:/test/bb.txt", "这是测试写文件", true));
+		// System.out.println(getFileSize("E:\\develop
+		// tools\\apache-maven-3.5.3-bin.zip"));
+		// System.out.println(join("E:/develop tools", "/apache-maven-3.5.3-bin.zip"));
+		// System.out.println(moveFile("D:/test/aa/aa.txt", "D:/test/aa/b/aa.txt"));
+		System.out.println(getSystemKeyToFile("D:/test/aa.txt"));
 	}
 }

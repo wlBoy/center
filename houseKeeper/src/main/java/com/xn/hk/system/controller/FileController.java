@@ -122,7 +122,7 @@ public class FileController {
 		File localFile = new File(filePath);
 		// 目录不存在，则创建目录
 		if (!localFile.exists()) {
-			localFile.mkdirs();
+			new File(localFile.getParent()).mkdirs();
 		}
 		try {
 			// 调用springmvc中自带的上传方法
