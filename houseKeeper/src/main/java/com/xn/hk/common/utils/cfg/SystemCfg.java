@@ -171,9 +171,26 @@ public class SystemCfg {
 	 * 短信编码
 	 */
 	public final static String SMS_CHARACTER_CODING = "smsCharacterCoding";
+	/*----------------------------------SFTP服务器---------------------------------*/
+	/**
+	 * sftp服务器主机IP
+	 */
+	public final static String SFTP_HOST = "sftpHost";
+	/**
+	 * sftp服务器端口号
+	 */
+	public final static String SFTP_PORT = "sftpPort";
+	/**
+	 * sftp服务器用户名
+	 */
+	public final static String SFTP_USERNAME = "sftpUsername";
+	/**
+	 * sftp服务器密码
+	 */
+	public final static String SFTP_PASSWORD = "sftpPassword";
 
 	/*-------------------------------以上定义该配置文件key对应的常量---------------------------------*/
-	
+
 	/**
 	 * 方式一:返回Properties实体,读取systemCfg.ini中所有的配置信息(支持中文)
 	 * 
@@ -202,8 +219,10 @@ public class SystemCfg {
 	public static boolean saveCfg(Map<String, Object> cfgMap) {
 		return InitConfigFile.getInstance().saveCfg(cfgMap, REALTIME_SYSTEM_CFG_INI);
 	}
+
 	/**
 	 * main测试方法
+	 * 
 	 * @param args
 	 */
 	public static void main(String[] args) {
