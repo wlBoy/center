@@ -14,15 +14,15 @@
         
    <!-- redis数据源-->
 	<bean id="poolConfig" class="redis.clients.jedis.JedisPoolConfig">
-		<property name="maxIdle" value="${redis.maxIdle}" />
-		<property name="maxTotal" value="${redis.maxActive}" />
-		<property name="maxWaitMillis" value="${redis.maxWait}" />
-		<property name="testOnBorrow" value="${redis.testOnBorrow}" />
+		<property name="maxIdle" value="${redisMaxIdle}" />
+		<property name="maxTotal" value="${redisMaxActive}" />
+		<property name="maxWaitMillis" value="${redisMaxWait}" />
+		<property name="testOnBorrow" value="${redisTestOnBorrow}" />
 	</bean>
 	<!-- Spring-redis连接池管理工厂  -->
 	<bean id="jedisConnectionFactory"
 		class="org.springframework.data.redis.connection.jedis.JedisConnectionFactory"
-		p:host-name="${redis.host}" p:port="${redis.port}" p:password="${redis.pass}"
+		p:host-name="${redisHost}" p:port="${redisPort}" p:password="${redisPassword}"
 		p:pool-config-ref="poolConfig" />
 	<!-- 使用中间类解决RedisCache.jedisConnectionFactory的静态注入，从而使MyBatis实现第三方缓存  -->
 	<bean id="redisCacheTransfer" class="com.xn.hk.common.utils.redis.RedisCacheTransfer">
