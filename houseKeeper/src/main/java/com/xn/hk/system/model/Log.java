@@ -2,6 +2,8 @@ package com.xn.hk.system.model;
 
 import java.io.Serializable;
 
+import com.xn.hk.common.utils.string.StringUtil;
+
 /**
  * @Title: Log
  * @Package: com.xn.hk.system.model
@@ -98,7 +100,7 @@ public class Log implements Serializable {
 
 	public String getCreateTime() {
 		// 解决mysql数据库datetime类型取出时间多个.0的问题，截取前19位即可，格式为:yyyy-MM-dd HH:mm:ss
-		return createTime.length() == 19 ? createTime : createTime.substring(0, 19);
+		return StringUtil.subMysqlTimeStr(createTime);
 	}
 
 	public void setCreateTime(String createTime) {

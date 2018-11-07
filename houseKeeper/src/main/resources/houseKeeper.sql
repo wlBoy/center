@@ -2256,6 +2256,35 @@ CREATE TABLE `tb_xn_sys_file` (
   `is_ok` tinyint(1) NOT NULL DEFAULT '0' COMMENT '是否有效',
   PRIMARY KEY (`file_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+-- ----------------------------
+-- Table structure for tb_xn_sys_data_dic
+-- ----------------------------
+DROP TABLE IF EXISTS `tb_xn_sys_data_dic`;
+CREATE TABLE `tb_xn_sys_data_dic` (
+  `data_dic_id` int(11) NOT NULL AUTO_INCREMENT COMMENT '数据字典ID',
+  `data_dic_name` varchar(255) NOT NULL COMMENT '数据字典名称',
+  `data_dic_code` varchar(255) NOT NULL COMMENT '数据字典代码',
+  `create_time` datetime NOT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT '创建时间',
+  `update_time` datetime NOT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  `remark` varchar(255) DEFAULT NULL COMMENT '数据字典描述',
+  `is_ok` tinyint(4) NOT NULL DEFAULT '0' COMMENT '是否有效',
+  PRIMARY KEY (`data_dic_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+-- ----------------------------
+-- Table structure for tb_xn_sys_data_dic_term
+-- ----------------------------
+DROP TABLE IF EXISTS `tb_xn_sys_data_dic_term`;
+CREATE TABLE `tb_xn_sys_data_dic_term` (
+  `data_dic_term` int(11) NOT NULL COMMENT '数据字典项ID',
+  `data_dic_code` varchar(255) NOT NULL COMMENT '数据字典代码',
+  `data_dic_term_code` varchar(255) NOT NULL COMMENT '数据字典项代码',
+  `data_dic_term_value` varchar(255) NOT NULL COMMENT '数据字典项值',
+  `remark` varchar(255) DEFAULT NULL COMMENT '数据字典项描述',
+  `create_time` datetime NOT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT '创建时间',
+  `update_time` datetime NOT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  `is_ok` tinyint(4) NOT NULL DEFAULT '0' COMMENT '是否有效',
+  PRIMARY KEY (`data_dic_term`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 /*Data for the table `tb_xn_sys_user` */
 

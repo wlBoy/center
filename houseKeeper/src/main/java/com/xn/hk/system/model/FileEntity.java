@@ -4,6 +4,7 @@ import java.io.Serializable;
 
 import com.xn.hk.common.constant.EnabledEnum;
 import com.xn.hk.common.constant.FileType;
+import com.xn.hk.common.utils.string.StringUtil;
 
 /**
  * 
@@ -130,7 +131,7 @@ public class FileEntity implements Serializable {
 
 	public String getUploadTime() {
 		// 解决mysql数据库datetime类型取出时间多个.0的问题，截取前19位即可，格式为:yyyy-MM-dd HH:mm:ss
-		return uploadTime.length() == 19 ? uploadTime : uploadTime.substring(0, 19);
+		return StringUtil.subMysqlTimeStr(uploadTime);
 	}
 
 	public void setUploadTime(String uploadTime) {
@@ -139,7 +140,7 @@ public class FileEntity implements Serializable {
 
 	public String getUpdateTime() {
 		// 解决mysql数据库datetime类型取出时间多个.0的问题，截取前19位即可，格式为:yyyy-MM-dd HH:mm:ss
-		return updateTime.length() == 19 ? updateTime : updateTime.substring(0, 19);
+		return StringUtil.subMysqlTimeStr(updateTime);
 	}
 
 	public void setUpdateTime(String updateTime) {

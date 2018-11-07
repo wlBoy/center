@@ -1,6 +1,8 @@
 package com.xn.hk.account.model;
 
 import java.io.Serializable;
+
+import com.xn.hk.common.utils.string.StringUtil;
 /**
  * 
  * @Title: Money
@@ -124,7 +126,7 @@ public class Money implements Serializable {
 
 	public String getCreateTime() {
 		// 解决mysql数据库datetime类型取出时间多个.0的问题，截取前19位即可，格式为:yyyy-MM-dd HH:mm:ss
-		return createTime.length() == 19 ? createTime : createTime.substring(0, 19);
+		return StringUtil.subMysqlTimeStr(createTime);
 	}
 
 	public void setCreateTime(String createTime) {
@@ -133,7 +135,7 @@ public class Money implements Serializable {
 
 	public String getUpdateTime() {
 		// 解决mysql数据库datetime类型取出时间多个.0的问题，截取前19位即可，格式为:yyyy-MM-dd HH:mm:ss
-		return updateTime.length() == 19 ? updateTime : updateTime.substring(0, 19);
+		return StringUtil.subMysqlTimeStr(updateTime);
 	}
 
 	public void setUpdateTime(String updateTime) {

@@ -267,6 +267,18 @@ public final class StringUtil {
 		return new String(baos.toByteArray());
 	}
 
+	/**
+	 * 解决mysql数据库datetime类型取出时间多个.0的问题，截取前19位即可，格式为:yyyy-MM-dd HH:mm:ss）
+	 * 
+	 * @param str
+	 *            时间字符串
+	 * @return 处理后的字符串
+	 */
+	public static String subMysqlTimeStr(String str) {
+		// 解决mysql数据库datetime类型取出时间多个.0的问题，截取前19位即可，格式为:yyyy-MM-dd HH:mm:ss
+		return str.length() == 19 ? str : str.substring(0, 19);
+	}
+
 	public static void main(String[] args) {
 		System.out.println(encode2Binary("111中啊法￥多少"));
 		System.out.println(decode2String("313131E4B8ADE5958AE6B395EFBFA5E5A49AE5B091"));

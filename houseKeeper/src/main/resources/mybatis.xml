@@ -35,6 +35,9 @@
 		<typeAlias type="com.xn.hk.exam.model.Question" alias="Question" />
 		<typeAlias type="com.xn.hk.exam.model.Paper" alias="Paper" />
 		<typeAlias type="com.xn.hk.exam.model.Score" alias="Score" />
+		<!-- 数据字典管理 -->
+		<typeAlias type="com.xn.hk.data.dic.model.DataDic" alias="DataDic" />
+		<typeAlias type="com.xn.hk.data.dic.model.DataDicTerm" alias="DataDicTerm" />
 	</typeAliases>
 	<!-- 配置mybatis分页插件pagehelper-->
 	<plugins>

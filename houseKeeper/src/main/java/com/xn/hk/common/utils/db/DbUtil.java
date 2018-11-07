@@ -40,24 +40,24 @@ public class DbUtil {
 	 * @return 影响的行数
 	 */
 	public static int executeUpdate(String sql, Object[] bindArgs) {
-		/** 影响的行数 **/
+		// 影响的行数
 		int affectRowCount = -1;
 		Connection connection = null;
 		PreparedStatement preparedStatement = null;
 		try {
-			/** 从数据库连接池中获取数据库连接 **/
+			// 从数据库连接池中获取数据库连接
 			connection = DbConnPool.getInstance().getConn();
-			/** 执行SQL预编译 **/
+			// 执行SQL预编译
 			preparedStatement = connection.prepareStatement(sql);
-			/** 设置不自动提交，以便于在出现异常的时候数据库回滚 **/
+			// 设置不自动提交，以便于在出现异常的时候数据库回滚
 			connection.setAutoCommit(false);
 			if (bindArgs != null) {
-				/** 绑定参数设置sql占位符中的值 **/
+				// 绑定参数设置sql占位符中的值
 				for (int i = 0; i < bindArgs.length; i++) {
 					preparedStatement.setObject(i + 1, bindArgs[i]);
 				}
 			}
-			/** 执行sql **/
+			// 执行sql
 			affectRowCount = preparedStatement.executeUpdate();
 			connection.commit();
 			String operate;
@@ -74,7 +74,7 @@ public class DbUtil {
 				try {
 					connection.rollback();
 				} catch (SQLException e1) {
-					logger.error("事务回滚失败，原因为:{}", e);
+					logger.error("事务回滚失败，原因为:{}", e1);
 				}
 			}
 			logger.error("执行executeUpdate方法失败，原因为:{}", e);
@@ -169,19 +169,20 @@ public class DbUtil {
 		PreparedStatement preparedStatement = null;
 		ResultSet resultSet = null;
 		try {
-			/** 获取数据库连接池中的连接 **/
+			// 获取数据库连接池中的连接
 			connection = DbConnPool.getInstance().getConn();
 			preparedStatement = connection.prepareStatement(sql);
 			if (bindArgs != null) {
-				/** 设置sql占位符中的值 **/
+				// 设置sql占位符中的值
 				for (int i = 0; i < bindArgs.length; i++) {
 					preparedStatement.setObject(i + 1, bindArgs[i]);
 				}
 			}
-			/** 执行sql语句，获取结果集 **/
+			// 执行sql语句，获取结果集
 			resultSet = preparedStatement.executeQuery();
+			// 将结果集转换为List<Map<String,Object>>存储
 			datas = ResultSetToList(resultSet);
-			logger.info("成功执行的sql为:" + sql);
+			logger.info("成功执行的sql为:{}", sql);
 		} catch (Exception e) {
 			logger.error("执行executeQuery方法失败，原因为:{}", e);
 		} finally {
@@ -191,11 +192,11 @@ public class DbUtil {
 	}
 
 	/**
-	 * 将resultSet返回List<Map>集合返回
+	 * 将结果集中的数据按照List<Map<String,Object>>集合返回
 	 * 
 	 * @param rs
 	 *            结果集
-	 * @return
+	 * @return List<Map<String,Object>>
 	 * @throws SQLException
 	 */
 	private static List<Map<String, Object>> ResultSetToList(ResultSet rs) throws SQLException {
@@ -228,12 +229,12 @@ public class DbUtil {
 	 * @return 影响的行数
 	 */
 	public static int insert(String tableName, Map<String, Object> valueMap) {
-		/** 获取数据库插入的Map的键值对的值 **/
+		// 获取数据库插入的Map的键值对的值
 		Set<String> keySet = valueMap.keySet();
 		Iterator<String> iterator = keySet.iterator();
-		/** 要插入的字段sql，其实就是用key拼起来的 **/
+		// 要插入的字段sql，其实就是用key拼起来的
 		StringBuilder columnSql = new StringBuilder();
-		/** 要插入的字段值，其实就是？ **/
+		// 要插入的字段值，其实就是？
 		StringBuilder unknownMarkSql = new StringBuilder();
 		Object[] bindArgs = new Object[valueMap.size()];
 		int i = 0;
@@ -247,7 +248,7 @@ public class DbUtil {
 			bindArgs[i] = valueMap.get(key);
 			i++;
 		}
-		/** 开始拼插入的sql语句 **/
+		// 开始拼接要插入的sql语句
 		StringBuilder sql = new StringBuilder();
 		sql.append("INSERT INTO ");
 		sql.append(tableName);
@@ -271,15 +272,15 @@ public class DbUtil {
 	 * @return 影响的行数
 	 */
 	public static int update(String tableName, Map<String, Object> valueMap, Map<String, Object> whereMap) {
-		/** 获取数据库插入的Map的键值对的值 **/
+		// 获取数据库插入的Map的键值对的值
 		Set<String> keySet = valueMap.keySet();
 		Iterator<String> iterator = keySet.iterator();
-		/** 开始拼插入的sql语句 **/
+		// 开始拼接要更新的sql语句
 		StringBuilder sql = new StringBuilder();
 		sql.append("UPDATE ");
 		sql.append(tableName);
 		sql.append(" SET ");
-		/** 要更改的的字段sql，其实就是用key拼起来的 **/
+		// 要更改的的字段sql，其实就是用key拼起来的
 		StringBuilder columnSql = new StringBuilder();
 		int i = 0;
 		List<Object> objects = new ArrayList<>();
@@ -292,7 +293,7 @@ public class DbUtil {
 		}
 		sql.append(columnSql);
 
-		/** 更新的条件:要更改的的字段sql，其实就是用key拼起来的 **/
+		// 更新的条件:要更改的的字段sql，其实就是用key拼起来的
 		StringBuilder whereSql = new StringBuilder();
 		int j = 0;
 		if (whereMap != null && whereMap.size() > 0) {
@@ -320,11 +321,11 @@ public class DbUtil {
 	 * @return 影响的行数
 	 */
 	public static int delete(String tableName, Map<String, Object> whereMap) {
-		/** 准备删除的sql语句 **/
+		// 准备删除的sql语句
 		StringBuilder sql = new StringBuilder();
 		sql.append("DELETE FROM ");
 		sql.append(tableName);
-		/** 更新的条件:要更改的的字段sql，其实就是用key拼起来的 **/
+		// 删除的条件:要删除的的字段sql，其实就是用key拼起来的
 		StringBuilder whereSql = new StringBuilder();
 		Object[] bindArgs = null;
 		if (whereMap != null && whereMap.size() > 0) {
@@ -357,16 +358,16 @@ public class DbUtil {
 	 */
 	public static int queryCount(String tableName, Map<String, Object> whereMap) {
 		Object[] bindArgs = null;
-		/** 准备查询的sql语句 **/
+		// 准备查询的sql语句
 		StringBuilder sql = new StringBuilder();
 		sql.append("SELECT COUNT(1) AS COUNT FROM ");
 		sql.append(tableName);
-		/** 查询的条件:要查询的的字段sql，其实就是用key拼起来的 **/
+		// 查询的条件:要查询的的字段sql，其实就是用key拼起来的
 		StringBuilder whereSql = new StringBuilder();
 		if (whereMap != null && whereMap.size() > 0) {
 			bindArgs = new Object[whereMap.size()];
 			whereSql.append(" WHERE ");
-			/** 获取数据库插入的Map的键值对的值 **/
+			// 获取数据库插入的Map的键值对的值
 			Set<String> keySet = whereMap.keySet();
 			Iterator<String> iterator = keySet.iterator();
 			int i = 0;
@@ -394,16 +395,16 @@ public class DbUtil {
 	 */
 	public static List<Map<String, Object>> queryList(String tableName, Map<String, Object> whereMap) {
 		Object[] bindArgs = null;
-		/** 准备查询的sql语句 **/
+		// 准备查询的sql语句
 		StringBuilder sql = new StringBuilder();
 		sql.append("SELECT * FROM ");
 		sql.append(tableName);
-		/** 查询的条件:要查询的的字段sql，其实就是用key拼起来的 **/
+		// 查询的条件:要查询的的字段sql，其实就是用key拼起来的
 		StringBuilder whereSql = new StringBuilder();
 		if (whereMap != null && whereMap.size() > 0) {
 			bindArgs = new Object[whereMap.size()];
 			whereSql.append(" WHERE ");
-			/** 获取数据库插入的Map的键值对的值 **/
+			// 获取数据库插入的Map的键值对的值
 			Set<String> keySet = whereMap.keySet();
 			Iterator<String> iterator = keySet.iterator();
 			int i = 0;
@@ -434,17 +435,17 @@ public class DbUtil {
 	 */
 	public static List<Map<String, Object>> queryList(String tableName, Map<String, Object> whereMap, String orderBy,
 			boolean isAsc) {
-		/** 准备查询的sql语句 **/
+		Object[] bindArgs = null;
+		// 准备查询的sql语句
 		StringBuilder sql = new StringBuilder();
 		sql.append("SELECT * FROM ");
 		sql.append(tableName);
-		/** 查询的条件:要查询的的字段sql，其实就是用key拼起来的 **/
+		// 查询的条件:要查询的的字段sql，其实就是用key拼起来的
 		StringBuilder whereSql = new StringBuilder();
-		Object[] bindArgs = null;
 		if (whereMap != null && whereMap.size() > 0) {
 			bindArgs = new Object[whereMap.size()];
 			whereSql.append(" WHERE ");
-			/** 获取数据库插入的Map的键值对的值 **/
+			// 获取数据库插入的Map的键值对的值
 			Set<String> keySet = whereMap.keySet();
 			Iterator<String> iterator = keySet.iterator();
 			int i = 0;
@@ -486,17 +487,17 @@ public class DbUtil {
 	 */
 	public static List<Map<String, Object>> queryList(String tableName, Map<String, Object> whereMap, String orderBy,
 			boolean isAsc, int start, int end) {
-		/** 准备查询的sql语句 **/
+		Object[] bindArgs = null;
+		// 准备查询的sql语句
 		StringBuilder sql = new StringBuilder();
 		sql.append("SELECT * FROM ");
 		sql.append(tableName);
-		/** 查询的条件:要查询的的字段sql，其实就是用key拼起来的 **/
+		// 查询的条件:要查询的的字段sql，其实就是用key拼起来的
 		StringBuilder whereSql = new StringBuilder();
-		Object[] bindArgs = null;
 		if (whereMap != null && whereMap.size() > 0) {
 			bindArgs = new Object[whereMap.size()];
 			whereSql.append(" WHERE ");
-			/** 获取数据库插入的Map的键值对的值 **/
+			// 获取数据库插入的Map的键值对的值
 			Set<String> keySet = whereMap.keySet();
 			Iterator<String> iterator = keySet.iterator();
 			int i = 0;
