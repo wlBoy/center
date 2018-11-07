@@ -38,5 +38,11 @@ public class ExceptionUtil {
 		}
 		return result;
 	}
-
+	/**
+	 * 测试方法
+	 * @param args
+	 */
+	public static void main(String[] args) {
+		System.out.println(getStackTrace(new Exception("测试打印异常信息!")));
+	}
 }

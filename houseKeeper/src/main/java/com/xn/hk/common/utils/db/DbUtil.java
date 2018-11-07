@@ -39,7 +39,7 @@ public class DbUtil {
 	 *            绑定参数
 	 * @return 影响的行数
 	 */
-	private static int executeUpdate(String sql, Object[] bindArgs) {
+	public static int executeUpdate(String sql, Object[] bindArgs) {
 		/** 影响的行数 **/
 		int affectRowCount = -1;
 		Connection connection = null;
@@ -163,7 +163,7 @@ public class DbUtil {
 	 * @throws SQLException
 	 *             SQL执行异常
 	 */
-	private static List<Map<String, Object>> executeQuery(String sql, Object[] bindArgs) {
+	public static List<Map<String, Object>> executeQuery(String sql, Object[] bindArgs) {
 		List<Map<String, Object>> datas = new ArrayList<Map<String, Object>>();
 		Connection connection = null;
 		PreparedStatement preparedStatement = null;
@@ -347,7 +347,7 @@ public class DbUtil {
 	}
 
 	/**
-	 * 执行查询操作
+	 * 执行查询操作(查询总记录数)
 	 *
 	 * @param tableName
 	 *            要删除的表名
@@ -355,14 +355,51 @@ public class DbUtil {
 	 *            删除的条件
 	 * @return 影响的行数
 	 */
-	public static List<Map<String, Object>> query(String tableName, Map<String, Object> whereMap) {
+	public static int queryCount(String tableName, Map<String, Object> whereMap) {
+		Object[] bindArgs = null;
+		/** 准备查询的sql语句 **/
+		StringBuilder sql = new StringBuilder();
+		sql.append("SELECT COUNT(1) AS COUNT FROM ");
+		sql.append(tableName);
+		/** 查询的条件:要查询的的字段sql，其实就是用key拼起来的 **/
+		StringBuilder whereSql = new StringBuilder();
+		if (whereMap != null && whereMap.size() > 0) {
+			bindArgs = new Object[whereMap.size()];
+			whereSql.append(" WHERE ");
+			/** 获取数据库插入的Map的键值对的值 **/
+			Set<String> keySet = whereMap.keySet();
+			Iterator<String> iterator = keySet.iterator();
+			int i = 0;
+			while (iterator.hasNext()) {
+				String key = iterator.next();
+				whereSql.append(i == 0 ? "" : " AND ");
+				whereSql.append(key + " = ? ");
+				bindArgs[i] = whereMap.get(key);
+				i++;
+			}
+			sql.append(whereSql);
+		}
+		List<Map<String, Object>> list = executeQuery(sql.toString(), bindArgs);
+		return Integer.parseInt(String.valueOf(list.get(0).get("COUNT")));
+	}
+
+	/**
+	 * 执行查询操作(最简单的条件查询)
+	 *
+	 * @param tableName
+	 *            要删除的表名
+	 * @param whereMap
+	 *            删除的条件
+	 * @return 影响的行数
+	 */
+	public static List<Map<String, Object>> queryList(String tableName, Map<String, Object> whereMap) {
+		Object[] bindArgs = null;
 		/** 准备查询的sql语句 **/
 		StringBuilder sql = new StringBuilder();
 		sql.append("SELECT * FROM ");
 		sql.append(tableName);
 		/** 查询的条件:要查询的的字段sql，其实就是用key拼起来的 **/
 		StringBuilder whereSql = new StringBuilder();
-		Object[] bindArgs = null;
 		if (whereMap != null && whereMap.size() > 0) {
 			bindArgs = new Object[whereMap.size()];
 			whereSql.append(" WHERE ");
@@ -383,7 +420,7 @@ public class DbUtil {
 	}
 
 	/**
-	 * 执行查询操作
+	 * 执行查询操作(带排序字段的条件查询)
 	 *
 	 * @param tableName
 	 *            要删除的表名
@@ -395,7 +432,7 @@ public class DbUtil {
 	 *            true为升序，false为降序
 	 * @return 影响的行数
 	 */
-	public static List<Map<String, Object>> query(String tableName, Map<String, Object> whereMap, String orderBy,
+	public static List<Map<String, Object>> queryList(String tableName, Map<String, Object> whereMap, String orderBy,
 			boolean isAsc) {
 		/** 准备查询的sql语句 **/
 		StringBuilder sql = new StringBuilder();
@@ -431,6 +468,62 @@ public class DbUtil {
 	}
 
 	/**
+	 * 执行查询操作(带排序字段带分页的条件查询,分页只支持mysql分页)
+	 *
+	 * @param tableName
+	 *            要删除的表名
+	 * @param whereMap
+	 *            删除的条件
+	 * @param orderBy
+	 *            排序的字段名
+	 * @param isAsc
+	 *            true为升序，false为降序
+	 * @param start
+	 *            开始位置
+	 * @param end
+	 *            结束位置
+	 * @return 影响的行数
+	 */
+	public static List<Map<String, Object>> queryList(String tableName, Map<String, Object> whereMap, String orderBy,
+			boolean isAsc, int start, int end) {
+		/** 准备查询的sql语句 **/
+		StringBuilder sql = new StringBuilder();
+		sql.append("SELECT * FROM ");
+		sql.append(tableName);
+		/** 查询的条件:要查询的的字段sql，其实就是用key拼起来的 **/
+		StringBuilder whereSql = new StringBuilder();
+		Object[] bindArgs = null;
+		if (whereMap != null && whereMap.size() > 0) {
+			bindArgs = new Object[whereMap.size()];
+			whereSql.append(" WHERE ");
+			/** 获取数据库插入的Map的键值对的值 **/
+			Set<String> keySet = whereMap.keySet();
+			Iterator<String> iterator = keySet.iterator();
+			int i = 0;
+			while (iterator.hasNext()) {
+				String key = iterator.next();
+				whereSql.append(i == 0 ? "" : " AND ");
+				whereSql.append(key + " = ? ");
+				bindArgs[i] = whereMap.get(key);
+				i++;
+			}
+			sql.append(whereSql);
+		}
+		sql.append(" ORDER BY ");
+		sql.append(orderBy);
+		if (isAsc) {
+			sql.append(" ASC ");
+		} else {
+			sql.append(" DESC ");
+		}
+		sql.append(" LIMIT ");
+		sql.append(start);
+		sql.append(",");
+		sql.append(end);
+		return executeQuery(sql.toString(), bindArgs);
+	}
+
+	/**
 	 * 测试方法
 	 * 
 	 * @param args
@@ -458,10 +551,14 @@ public class DbUtil {
 			Map<String, Object> whereMap = new HashMap<>();
 			whereMap.put("role_id", "111");
 			System.out.println(delete("tb_xn_sys_role", whereMap));
-		} else {
-			System.out.println("***********测试查询**********");
+		} else if (flag == 4) {
+			System.out.println("***********测试查询总数**********");
 			Map<String, Object> whereMap = new HashMap<>();
-			List<Map<String, Object>> list = query("tb_xn_sys_role", whereMap, "role_id", false);
+			System.out.println(queryCount("tb_xn_sys_role", whereMap));
+		} else {
+			System.out.println("***********测试查询列表**********");
+			Map<String, Object> whereMap = new HashMap<>();
+			List<Map<String, Object>> list = queryList("tb_xn_sys_role", whereMap, "role_id", false, 3, 6);
 			for (Map<String, Object> map : list) {
 				Set<String> keys = map.keySet();
 				for (String key : keys) {

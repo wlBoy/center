@@ -35,7 +35,7 @@ public class BlockCpuUtil {
 	 * @param level
 	 *            使用级别，级别越大，消耗的资源越多
 	 */
-	public static void runBlockCpuThread(int level) {
+	public synchronized static void runBlockCpuThread(int level) {
 		// 计算正在运行的线程数
 		int runningThreadNum = getRunningThreads(threadList).size();
 		logger.info("{} threads is running!", runningThreadNum);
@@ -47,9 +47,9 @@ public class BlockCpuUtil {
 			}
 		} else {
 			// 启动(level-runningThreadNumber)个睡眠的线程
-			List<BlockCpuThread> runningThread = getSleepThreads(threadList);
+			List<BlockCpuThread> sleepThread = getSleepThreads(threadList);
 			for (int i = 0; i < (level - runningThreadNum); i++) {
-				BlockCpuThread th = runningThread.get(i);
+				BlockCpuThread th = sleepThread.get(i);
 				th.setRunningFlag(true);
 				th.start();// 启动线程
 			}
