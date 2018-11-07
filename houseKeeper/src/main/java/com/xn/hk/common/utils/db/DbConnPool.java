@@ -1,4 +1,4 @@
-package com.xn.hk.common.utils.jdbc;
+package com.xn.hk.common.utils.db;
 
 import com.mchange.v2.c3p0.ComboPooledDataSource;
 import com.mchange.v2.c3p0.DataSources;

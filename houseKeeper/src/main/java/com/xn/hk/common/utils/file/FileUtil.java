@@ -70,7 +70,7 @@ public class FileUtil {
 	public static String readFile2String(String path, String charset) {
 		String result = null;
 		File file = new File(path);
-		if (isExist(path)) {
+		if (!isExist(path)) {
 			logger.error("{}路径下，文件不存在", path);
 			return result;
 		}
@@ -222,6 +222,17 @@ public class FileUtil {
 			result = true;
 		}
 		return result;
+	}
+
+	/**
+	 * 通过文件名获取文件后缀
+	 * 
+	 * @param fileName
+	 *            文件名
+	 * @return 文件后缀名
+	 */
+	public static String getFileSuffix(String fileName) {
+		return fileName.substring(fileName.lastIndexOf(".") + 1, fileName.length());
 	}
 
 	/**

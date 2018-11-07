@@ -12,9 +12,7 @@ MySQL - 5.7.20 : Database - housekeeper
 /*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
-CREATE DATABASE /*!32312 IF NOT EXISTS*/`housekeeper` /*!40100 DEFAULT CHARACTER SET utf8 */;
-
-USE `housekeeper`;
+CREATE DATABASE /*!32312 IF NOT EXISTS*/`houseKeeper` /*!40100 DEFAULT CHARACTER SET utf8 */;
 
 /*Table structure for table `tb_xn_account_account` */
 
@@ -32,7 +30,7 @@ CREATE TABLE `tb_xn_account_account` (
   `create_time` datetime NOT NULL COMMENT '创建时间',
   `update_time` datetime DEFAULT NULL COMMENT '更新时间',
   `remark` varchar(255) DEFAULT NULL COMMENT '备注信息',
-  `is_ok` tinyint(1) NOT NULL DEFAULT '0' COMMENT '是否有效,0:有效;1:无效',
+  `is_ok` tinyint(1) NOT NULL DEFAULT '0' COMMENT '是否有效',
   PRIMARY KEY (`account_id`),
   KEY `isDeleted` (`is_ok`),
   KEY `selected` (`user_id`,`type_id`,`curday`)
@@ -120,7 +118,7 @@ CREATE TABLE `tb_xn_account_type` (
   `create_time` datetime NOT NULL COMMENT '创建时间',
   `update_time` datetime NOT NULL COMMENT '修改时间',
   `remark` varchar(255) DEFAULT NULL COMMENT '备注信息',
-  `is_ok` tinyint(1) NOT NULL DEFAULT '0' COMMENT '是否有效,0:有效;1:无效',
+  `is_ok` tinyint(1) NOT NULL DEFAULT '0' COMMENT '是否有效',
   PRIMARY KEY (`type_id`),
   KEY `isDeleted` (`is_ok`),
   KEY `selected` (`user_id`,`parent_type`)
@@ -1369,11 +1367,11 @@ insert  into `tb_xn_exam_question`(`question_id`,`type_id`,`question_title`,`opt
 (28,2,'下列关于字符串的描叙中错误的是 ','A.字符串是对象 ','B.String对象存储字符串的效率比StringBuffer高','C.可以使用StringBuffer sb=\"这里是字符串\"声明并初始化StringBuffer ','D.String类提供了许多用来操作字符串的方法：连接，提取，查询等','BC','20180107','2018-01-07 15:54:36','2018-01-16 10:28:58',0,0,'Java开发'),
 (29,2,'下面关于数组的说法中，错误的是 ','A.在类中声明一个整数数组作为成员变量，如果没有给它赋值，数值 ','B.数组可以在内存空间连续存储任意一组数据 ','C.数组必须先声明，然后才能使用','D.数组本身是一个对象','AB','20180107','2018-01-07 15:54:36','2018-01-10 14:59:22',0,0,'Java开发'),
 (30,2,'在Java中，下面对于构造函数的描述错误的是','A.类不一定要显式定义构造函数 ','B.构造函数的返回类型是void ','C.如果构造函数不带任何参数，那么构造函数的名称和类名可以不同','D.一个类可以定义多个构造函数','BC','20180107','2018-01-07 15:54:36','2018-01-10 14:59:04',0,0,'Java开发'),
-(31,2,'在Java接口中，下列选项中有效的方法声明是 ','A.public void aMethod();','B. void aMethod(); ','C.protected void aMethod(); ','D.private void aMethod(); ','AB','20180107','2018-01-07 15:54:36','2018-01-09 14:48:56',0,0,'Java开发'),
+(31,2,'在Java接口中，下列选项中有效的方法声明是 ','A.public void aMethod()','B. void aMethod() ','C.protected void aMethod() ','D.private void aMethod() ','AB','20180107','2018-01-07 15:54:36','2018-01-09 14:48:56',0,0,'Java开发'),
 (35,2,'如下哪些不是java的关键字？','A.const','B.NULL','C.false','D.this','BC','20180107','2018-01-07 15:54:31','2018-01-07 15:54:31',0,0,'Java开发'),
 (36,2,'有关线程的哪些叙述是对的？','A.一旦一个线程被创建，它就立即开始运行。','B.使用start()方法可以使一个线程成为可运行的，但是它不一定立即开始运行。','C.当一个线程因为抢先机制而停止运行，它被放在可运行队列的前面。','D.一个线程可能因为不同的原因停止并进入就绪状态。','BCD','20180107','2018-01-07 15:54:31','2018-01-07 15:54:31',0,0,'Java开发'),
 (37,2,'下面的哪些声明是合法的？','A.long 1 = 499 ','B.int i = 4L','C.float f =1.1','D.double d = 34.4','AD','20180107','2018-01-07 15:54:31','2018-01-07 15:54:31',0,0,'Java开发'),
-(38,2,'从下列选项中选择正确的Java表达式','A.int k=new String(“aa”) ','B.String str=String(“bb”)','C.char c=74','D.long j=8888;','BCD','20180107','2018-01-07 15:54:31','2018-01-07 15:54:31',0,0,'Java开发'),
+(38,2,'从下列选项中选择正确的Java表达式','A.int k=new String(“aa”) ','B.String str=String(“bb”)','C.char c=74','D.long j=8888','BCD','20180107','2018-01-07 15:54:31','2018-01-07 15:54:31',0,0,'Java开发'),
 (39,2,'关于Java语言，下列描述正确的是','A.switch 不能够作用在String类型上','B.List， Set， Map都继承自Collection接口','C.Java语言支持goto语句','D.GC是垃圾收集器，程序员不用担心内存管理','AD','20180107','2018-01-07 15:54:31','2018-01-07 15:54:31',0,0,'Java开发'),
 (43,2,'不能用来修饰interface的有','A．private','B．public ','C．protected ','D.static','ACD','20180107','2018-01-07 15:54:32','2018-01-07 15:54:32',0,0,'Java开发'),
 (44,2,'Java网络程序设计中，下列正确的描述是 ','A.Java网络编程API建立在Socket基础之上','B.Java网络接口只支持TCP以及其上层协议 ','C.Java网络接口只支持UDP以及其上层协议','D.Java网络接口支持IP以上的所有高层协议','AD','20180107','2018-01-07 15:54:32','2018-01-07 15:54:32',0,0,'Java开发'),
@@ -1392,11 +1390,11 @@ insert  into `tb_xn_exam_question`(`question_id`,`type_id`,`question_title`,`opt
 (73,1,'当查询数据字典DBA_USERS时，这个数据字典将显示什么信息？','A．所有用户的表空间份额（quote）','B．当前用户的表空间份额',' C．数据库用户被创建的日期','D．当前用户在一个表空间上是否具有无限的份额','A','20180107','2018-01-07 15:54:32','2018-01-07 15:54:32',0,0,'Java开发'),
 (74,1,'要显示概要文件DOG_PROJECT的资源限制信息，请问应该查询如下哪一个数据字典？','A．DBA_USERS','B．DBA_TABLES ','C．DBA_OBJECTS','D．DBA_PROFILES','D','20180107','2018-01-07 15:54:32','2018-01-07 15:54:32',0,0,'Java开发'),
 (75,1,'在以下的数据字典的视图中，将查询哪一个以显示每个用户所使用的磁盘空间？',' A．ALL_USERS','B．DBA_USERS ','C．USER_USERS','D．DBA_TS_USERS','D','20180107','2018-01-07 15:54:32','2018-01-07 15:54:32',0,0,'Java开发'),
-(76,1,'在Oracle中，下面哪条语句当COMM字段为空时显示0，不为空时显示COMM的值','A．SELECT？ename,？NVL(comm,？0)？FROM？emp;？','B．SELECT？ename,？NULL(comm,？0)？FROM？emp;？','C．SELECT？ename,？NULLIF(comm,？0)？FROM？emp;？','D．SELECT？ename,？DECODE(comm,？NULL,？0)？FROM？emp;？','A','20180107','2018-01-07 15:54:32','2018-01-07 15:54:32',0,0,'Java开发'),
+(76,1,'在Oracle中，下面哪条语句当COMM字段为空时显示0，不为空时显示COMM的值','A．SELECT？ename,？NVL(comm,？0)？FROM？emp？','B．SELECT？ename,？NULL(comm,？0)？FROM？emp？','C．SELECT？ename,？NULLIF(comm,？0)？FROM？emp？','D．SELECT？ename,？DECODE(comm,？NULL,？0)？FROM？emp？','A','20180107','2018-01-07 15:54:32','2018-01-07 15:54:32',0,0,'Java开发'),
 (77,1,'在Oracle中，下面用于限制分组函数的返回值的子句是','A．WHERE','B．HAVING','C．ORDER BY','D．无法限定分组函数的返回值 ','B','20180107','2018-01-07 15:54:32','2018-01-07 15:54:32',0,0,'Java开发'),
 (78,1,'在Oracle中，有一个名为seq的序列对象，以下语句能返回序列值但不会引起序列值增加的是','A．select seq.ROWNUM from dual','B．select seq.ROWID from dual','C．select seq.CURRVAL from dual','D．select seq.NEXTVAL from dual','C','20180107','2018-01-07 15:54:33','2018-01-07 15:54:33',0,0,'Java开发'),
 (79,1,'如果要创建一个名为WUDA的数据库，则需要什么？','A．一个控制文件','B．系统（SYSTEM）表空间','C．WUDA数据库中的一个用户名','D．一个具有所需全部权限的合法账户','D','20180107','2018-01-07 15:54:32','2018-01-07 15:54:32',0,0,'Java开发'),
-(80,1,'看SQL语句“SELECT name,status FROM v$controlfile;”这一语句将显示以下哪个结果？','A．显示MAXDATAFILE的值','B．确定最后一个检查点所发生的时间','C．显示所有数据文件的名字和状态','D．显示所有控制文件的个数、名字、状态和位置','D','20180107','2018-01-07 15:54:33','2018-01-07 15:54:33',0,0,'Java开发'),
+(80,1,'看SQL语句“SELECT name,status FROM v$controlfile”这一语句将显示以下哪个结果？','A．显示MAXDATAFILE的值','B．确定最后一个检查点所发生的时间','C．显示所有数据文件的名字和状态','D．显示所有控制文件的个数、名字、状态和位置','D','20180107','2018-01-07 15:54:33','2018-01-07 15:54:33',0,0,'Java开发'),
 (81,3,'JDK和JRE的区别是什么？',NULL,NULL,NULL,NULL,'Java运行时环境(JRE)是将要执行Java程序的Java虚拟机。它同时也包含了执行applet需要的浏览器插件。Java开发工具包(JDK)是完整的Java软件开发包，包含了JRE，编译器和其他的工具(比如：JavaDoc，Java调试器)，可以让开发者开发、编译、执行Java应用程序。','20180107','2018-01-07 15:54:32','2018-01-07 15:54:32',0,0,'Java开发'),
 (82,3,'”static”关键字是什么意思？Java中是否可以覆盖(override)一个private或者是static的方法？',NULL,NULL,NULL,NULL,'“static”关键字表明一个成员变量或者是成员方法可以在没有所属的类的实例变量的情况下被访问。Java中static方法不能被覆盖，因为方法覆盖是基于运行时动态绑定的，而static方法是编译时静态绑定的。static方法跟类的任何实例都不相关，所以概念上不适用。','20180107','2018-01-07 15:54:34','2018-01-07 15:54:34',0,0,'Java开发'),
 (83,3,'Java中的方法覆盖(Overriding)和方法重载(Overloading)是什么意思？',NULL,NULL,NULL,NULL,'Java中的方法重载发生在同一个类里面两个或者是多个方法的方法名相同但是参数不同的情况。与此相对，方法覆盖是说子类重新定义了父类的方法。方法覆盖必须有相同的方法名，参数列表和返回类型。覆盖者可能不会限制它所覆盖的方法的访问。','20180107','2018-01-07 15:54:33','2018-01-07 15:54:33',0,0,'Java开发'),
@@ -2016,7 +2014,7 @@ insert  into `tb_xn_sys_module`(`module_id`,`module_name`,`parent_id`,`module_le
 (27,'已考试卷',24,2,'/exam/score/showPersonalScore.do',0,0,'2018-01-17 15:32:08','2018-01-17 15:32:08','已考试卷'),
 (28,'渠道数据',14,2,'/data/channel/showAllChannelData.do',1,0,'2018-01-22 11:56:06','2018-04-15 18:10:03','渠道数据'),
 (29,'日志管理',1,2,'/system/log/showAllLog.do',0,0,'2018-01-23 15:27:03','2018-01-23 15:27:03','日志管理'),
-(30,'系统日志管理',1,2,'/system/log/showAllAdminLog.do',0,0,'2018-01-23 15:27:03','2018-01-23 15:27:03','系统日志管理');
+(30,'系统日志管理',1,2,'/system/log/showAllAdminLog.do',0,0,'2018-01-23 15:27:03','2018-01-23 15:27:03','系统日志管理'),
 (31,'文件管理',1,2,'/system/file/showAllFile.do',0,0,'2018-01-23 15:27:03','2018-01-23 15:27:03','文件管理');
 
 /*Table structure for table `tb_xn_sys_role` */
@@ -2052,7 +2050,7 @@ CREATE TABLE `tb_xn_sys_role_module` (
   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '主键ID',
   `role_id` int(11) NOT NULL COMMENT '角色ID',
   `module_id` int(11) NOT NULL COMMENT '模块ID',
-  `is_ok` tinyint(1) NOT NULL DEFAULT '0' COMMENT '是否有效，默认为0代表有效',
+  `is_ok` tinyint(1) NOT NULL DEFAULT '0' COMMENT '是否有效',
   PRIMARY KEY (`id`),
   KEY `isDeleted` (`is_ok`)
 ) ENGINE=InnoDB AUTO_INCREMENT=372 DEFAULT CHARSET=utf8;
@@ -2232,7 +2230,7 @@ CREATE TABLE `tb_xn_sys_user` (
   `user_pwd` varchar(50) NOT NULL COMMENT '账号密码',
   `user_face` varchar(50) DEFAULT NULL COMMENT '用户头像,可为空',
   `user_state` tinyint(1) NOT NULL DEFAULT '0' COMMENT '用户状态：0：启用，1：禁用',
-  `is_ok` tinyint(1) NOT NULL DEFAULT '0' COMMENT '是否有效：0：未删，1：删除',
+  `is_ok` tinyint(1) NOT NULL DEFAULT '0' COMMENT '是否有效',
   `create_time` datetime NOT NULL COMMENT '创建时间',
   `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
   `remark` varchar(255) DEFAULT NULL COMMENT '备注',

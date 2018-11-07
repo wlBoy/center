@@ -1,10 +1,11 @@
-package com.xn.hk.common.utils.jdbc;
+package com.xn.hk.common.utils.db;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -26,8 +27,8 @@ import com.xn.hk.common.utils.date.DateUtil;
  * @Author: wanlei
  * @Date: 2018年11月1日 下午4:06:23
  */
-public class JdbcUtil {
-	private static final Logger logger = LoggerFactory.getLogger(JdbcUtil.class);
+public class DbUtil {
+	private static final Logger logger = LoggerFactory.getLogger(DbUtil.class);
 
 	/**
 	 * 可以执行新增，修改，删除
@@ -90,7 +91,7 @@ public class JdbcUtil {
 	 * @param pstmt
 	 * @param conn
 	 */
-	private static void closeAll(ResultSet rs, PreparedStatement pstmt, Connection conn) {
+	public static void closeAll(ResultSet rs, PreparedStatement pstmt, Connection conn) {
 		// 如果rs不空，关闭rs
 		if (rs != null) {
 			try {
@@ -105,6 +106,40 @@ public class JdbcUtil {
 				pstmt.close();
 			} catch (SQLException e) {
 				logger.error("执行预编译指令失败，原因为:{}", e);
+			}
+		}
+		// 如果conn不空，关闭conn
+		if (conn != null) {
+			try {
+				conn.close();
+			} catch (SQLException e) {
+				logger.error("执行数据库连接失败，原因为:{}", e);
+			}
+		}
+	}
+
+	/**
+	 * 释放数据库所有资源
+	 * 
+	 * @param rs
+	 * @param stmt
+	 * @param conn
+	 */
+	public static void closeAll(ResultSet rs, Statement stmt, Connection conn) {
+		// 如果rs不空，关闭rs
+		if (rs != null) {
+			try {
+				rs.close();
+			} catch (SQLException e) {
+				logger.error("关闭结果集失败，原因为:{}", e);
+			}
+		}
+		// 如果stmt不空，关闭stmt
+		if (stmt != null) {
+			try {
+				stmt.close();
+			} catch (SQLException e) {
+				logger.error("执行编译指令失败，原因为:{}", e);
 			}
 		}
 		// 如果conn不空，关闭conn

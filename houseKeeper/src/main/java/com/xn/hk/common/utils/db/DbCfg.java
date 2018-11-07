@@ -1,4 +1,4 @@
-package com.xn.hk.common.utils.jdbc;
+package com.xn.hk.common.utils.db;
 
 import java.util.Map;
 import java.util.Properties;

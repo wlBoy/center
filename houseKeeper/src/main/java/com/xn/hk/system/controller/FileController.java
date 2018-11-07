@@ -107,7 +107,7 @@ public class FileController {
 		// 得到原始上传的文件名
 		String originalFileName = uploadFile.getOriginalFilename();
 		// 截取文件后缀,判断系统是否支持该文件类型,这里注意要用lastIndexOf查找.，因为文件名中可能含有.
-		String suffix = originalFileName.substring(originalFileName.lastIndexOf(".") + 1, originalFileName.length());
+		String suffix = FileUtil.getFileSuffix(originalFileName); 
 		FileType type = FileType.getFileTypeBySuffix(suffix);
 		if (type == null) {
 			logger.error("系统不支持{}文件类型!", suffix);
