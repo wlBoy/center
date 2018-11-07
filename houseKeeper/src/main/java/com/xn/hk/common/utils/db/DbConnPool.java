@@ -53,16 +53,13 @@ public class DbConnPool {
 			String url = DbCfg.loadCfg().getProperty(DbCfg.MYSQL_URL);
 			String username = DbCfg.loadCfg().getProperty(DbCfg.MYSQL_USERNAME);
 			String password = DbCfg.loadCfg().getProperty(DbCfg.MYSQL_PASSWORD);
-			/** 数据库连接池对象 **/
+			/** 数据库连接池对象，设置数据库连接驱动，连接地址，用户名，密码 **/
 			cpds = new ComboPooledDataSource();
-			/** 设置数据库连接驱动 **/
 			cpds.setDriverClass(driverClassName);
-			/** 设置数据库连接地址 **/
 			cpds.setJdbcUrl(url);
-			/** 设置数据库连接用户名 **/
 			cpds.setUser(username);
-			/** 设置数据库连接密码 **/
 			cpds.setPassword(password);
+
 			/** 初始化时创建的连接数,应在minPoolSize与maxPoolSize之间取值.默认为3 **/
 			cpds.setInitialPoolSize(3);
 			/** 连接池中保留的最大连接数据.默认为15 **/

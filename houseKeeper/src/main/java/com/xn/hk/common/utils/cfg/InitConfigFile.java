@@ -6,7 +6,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
-import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -66,17 +65,15 @@ public class InitConfigFile {
 					Constant.UTF8);
 			prop.load(in);
 			logger.info("读取{}配置文件成功，共{}项配置", cfgFileName, prop.size());
-		} catch (UnsupportedEncodingException e) {
-			logger.error("初始化{}配置文件失败，原因为:{}", cfgFileName, e.getMessage());
-		} catch (IOException e) {
-			logger.error("初始化{}配置文件失败，原因为:{}", cfgFileName, e.getMessage());
+		} catch (Exception e) {
+			logger.error("初始化{}配置文件失败，原因为:{}", cfgFileName, e);
 		} finally {
 			try {
 				if (in != null) {
 					in.close();
 				}
 			} catch (IOException e) {
-				logger.error("关闭字符输入流失败，原因为:{}", e.getMessage());
+				logger.error("关闭字符输入流失败，原因为:{}", e);
 			}
 		}
 		return prop;
@@ -126,16 +123,16 @@ public class InitConfigFile {
 			isSuccess = true;
 			logger.info("保存{}配置文件成功，共改变了{}项配置", cfgFileName, cfgMap.size());
 		} catch (FileNotFoundException e) {
-			logger.error("路径{}下找不到{}配置文件，原因为:{}", saveCfgPath, cfgFileName, e.getMessage());
+			logger.error("路径{}下找不到{}配置文件，原因为:{}", saveCfgPath, cfgFileName, e);
 		} catch (IOException e) {
-			logger.error("保存{}配置文件失败，原因为:{}", cfgFileName, e.getMessage());
+			logger.error("保存{}配置文件失败，原因为:{}", cfgFileName, e);
 		} finally {
 			try {
 				if (out != null) {
 					out.close();
 				}
 			} catch (IOException e) {
-				logger.error("关闭字符输出流失败，原因为:{}", e.getMessage());
+				logger.error("关闭字符输出流失败，原因为:{}", e);
 			}
 		}
 		return isSuccess;

@@ -3,6 +3,8 @@ package com.xn.hk.common.utils.db;
 import java.io.File;
 import java.io.IOException;
 import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
@@ -33,6 +35,7 @@ public class DbInit {
 	 *            sql存放位置,即存放sql文件的目录
 	 * @param fileEncoding
 	 *            字符集编码
+	 * @return 初始化数据库成功返回true，否则返回false
 	 */
 	public static boolean initDb(String sqlFilePath, String fileEncoding) {
 		boolean flag = false;
@@ -46,6 +49,10 @@ public class DbInit {
 			List<String> sqls = readSqlFromFiles(fileEncoding, files);
 			statement = conn.createStatement();
 			for (String sql : sqls) {
+				// 当sql为空时，跳过
+				if (StringUtil.isEmpty(sql)) {
+					continue;
+				}
 				try {
 					statement.execute(sql);
 				} catch (Exception e) {
@@ -58,7 +65,7 @@ public class DbInit {
 		} catch (Exception e) {
 			logger.error("初始化数据库失败,原因为:{} ", e);
 		} finally {
-			// 关闭连接
+			// 关闭连接资源
 			DbUtil.closeAll(null, statement, conn);
 		}
 		return flag;
@@ -81,9 +88,10 @@ public class DbInit {
 			File sqlFile = files[i];
 			String fileSuffix = FileUtil.getFileSuffix(sqlFile.getName());
 			// 排除sql以外的文件
-			if (!SQL.equalsIgnoreCase(fileSuffix)) {
+			if (!SQL.equalsIgnoreCase(fileSuffix.trim())) {
 				continue;
 			}
+			logger.info("正在读取的sql文件是{}", sqlFile.getName());
 			if (StringUtil.isEmpty(fileEncoding)) {
 				sqlStr = FileUtil.readFile2String(sqlFile.getAbsolutePath());
 			} else {
@@ -145,6 +153,32 @@ public class DbInit {
 	}
 
 	/**
+	 * 数据库中是否存在某张数据表
+	 * 
+	 * @param tableName
+	 *            表名
+	 * @return 存在返回true，否则返回false
+	 */
+	public static boolean checkTableExist(String tableName) {
+		boolean flag = false;
+		String querySql = "SELECT 1 FROM " + tableName;
+		Statement stmt = null;
+		Connection conn = null;
+		ResultSet rs = null;
+		try {
+			conn = DbConnPool.getInstance().getConn();
+			stmt = conn.createStatement();
+			rs = stmt.executeQuery(querySql);
+			flag = true;
+		} catch (SQLException e) {
+			logger.error("查询{}数据表失败,原因为:{}", tableName, e);
+		} finally {
+			DbUtil.closeAll(rs, stmt, conn);
+		}
+		return flag;
+	}
+
+	/**
 	 * 测试方法
 	 * 
 	 * @param args
@@ -152,6 +186,7 @@ public class DbInit {
 	public static void main(String[] args) {
 		String filePath = System.getProperty("user.dir") + File.separator + "src" + File.separator + "main"
 				+ File.separator + "resources";
-		initDb(filePath, Constant.UTF8);
+		System.out.println(initDb(filePath, Constant.UTF8));
+		System.out.println(checkTableExist("tb_xn_sys_aa"));
 	}
 }
