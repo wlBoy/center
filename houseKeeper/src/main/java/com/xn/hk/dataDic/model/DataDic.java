@@ -1,4 +1,4 @@
-package com.xn.hk.data.dic.model;
+package com.xn.hk.dataDic.model;
 
 import java.io.Serializable;
 
@@ -7,30 +7,26 @@ import com.xn.hk.common.utils.string.StringUtil;
 
 /**
  * 
- * @ClassName: DataDicTerm
+ * @ClassName: DataDic
  * @Package: com.xn.hk.data.dic.model
- * @Description: 数据字典项的实体类
+ * @Description: 数据字典实体类
  * @Author: wanlei
- * @Date: 2018年11月7日 下午6:38:30
+ * @Date: 2018年11月7日 下午6:30:10
  */
-public class DataDicTerm implements Serializable {
+public class DataDic implements Serializable {
 	private static final long serialVersionUID = 1L;
 	/**
-	 * 数据字典项ID
+	 * 数据字典ID
 	 */
-	private Integer dataDicTermId;
+	private Integer dataDicId;
+	/**
+	 * 数据字典名称
+	 */
+	private String dataDicName;
 	/**
 	 * 数据字典代码
 	 */
 	private String dataDicCode;
-	/**
-	 * 数据字典项代码
-	 */
-	private String dataDicTermCode;
-	/**
-	 * 数据字典项值
-	 */
-	private String dataDicTermValue;
 	/**
 	 * 是否有效：0：未删状态(默认)，1：已删状态
 	 */
@@ -48,12 +44,20 @@ public class DataDicTerm implements Serializable {
 	 */
 	private String remark;
 
-	public Integer getDataDicTermId() {
-		return dataDicTermId;
+	public Integer getDataDicId() {
+		return dataDicId;
 	}
 
-	public void setDataDicTermId(Integer dataDicTermId) {
-		this.dataDicTermId = dataDicTermId;
+	public void setDataDicId(Integer dataDicId) {
+		this.dataDicId = dataDicId;
+	}
+
+	public String getDataDicName() {
+		return dataDicName;
+	}
+
+	public void setDataDicName(String dataDicName) {
+		this.dataDicName = dataDicName;
 	}
 
 	public String getDataDicCode() {
@@ -62,22 +66,6 @@ public class DataDicTerm implements Serializable {
 
 	public void setDataDicCode(String dataDicCode) {
 		this.dataDicCode = dataDicCode;
-	}
-
-	public String getDataDicTermCode() {
-		return dataDicTermCode;
-	}
-
-	public void setDataDicTermCode(String dataDicTermCode) {
-		this.dataDicTermCode = dataDicTermCode;
-	}
-
-	public String getDataDicTermValue() {
-		return dataDicTermValue;
-	}
-
-	public void setDataDicTermValue(String dataDicTermValue) {
-		this.dataDicTermValue = dataDicTermValue;
 	}
 
 	public Integer getIsOk() {
@@ -120,9 +108,9 @@ public class DataDicTerm implements Serializable {
 
 	@Override
 	public String toString() {
-		return "DataDicTerm [dataDicTermId=" + dataDicTermId + ", dataDicCode=" + dataDicCode + ", dataDicTermCode="
-				+ dataDicTermCode + ", dataDicTermValue=" + dataDicTermValue + ", isOk=" + isOk + ", createTime="
-				+ createTime + ", updateTime=" + updateTime + ", remark=" + remark + "]";
+		return "DataDic [dataDicId=" + dataDicId + ", dataDicName=" + dataDicName + ", dataDicCode=" + dataDicCode
+				+ ", isOk=" + isOk + ", createTime=" + createTime + ", updateTime=" + updateTime + ", remark=" + remark
+				+ "]";
 	}
 
 	/**
@@ -133,17 +121,14 @@ public class DataDicTerm implements Serializable {
 	public String getLogContent() {
 		StringBuffer sb = new StringBuffer();
 		sb.append("[");
-		if (getDataDicTermId() != null) {
-			sb.append("数据字典项ID=" + getDataDicTermId() + ",");
+		if (getDataDicId() != null) {
+			sb.append("数据字典ID=" + getDataDicId() + ",");
+		}
+		if (getDataDicName() != null) {
+			sb.append("数据字典名称=" + getDataDicName());
 		}
 		if (getDataDicCode() != null) {
 			sb.append("数据字典代码=" + getDataDicCode() + ",");
-		}
-		if (getDataDicTermCode() != null) {
-			sb.append("数据字典项代码=" + getDataDicTermCode() + ",");
-		}
-		if (getDataDicTermValue() != null) {
-			sb.append("数据字典项值=" + getDataDicTermValue() + ",");
 		}
 		if (getIsOk() != null) {
 			sb.append("是否可用=" + EnabledEnum.getDescByCode(getIsOk()) + ",");

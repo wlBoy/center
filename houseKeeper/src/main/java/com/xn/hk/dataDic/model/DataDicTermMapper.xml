@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xn.hk.dataDic.dao.DataDicTermDao">
+	<!--使用redis作为mybatis的二级缓存,针对具体某条语句禁用缓存,useCache="false",这里的RedisCache是个别名
+	<cache eviction="LRU" type="RedisCache" />-->
+	<!-- 数据字典项映射 -->
+	<resultMap type="DataDicTerm" id="dataDicTermMap">
+		<id property="dataDicTermId" column="data_dic_term_id" />
+		<result property="dataDicCode" column="data_dic_code" />
+		<result property="dataDicTermCode" column="data_dic_term_code" />
+		<result property="dataDicTermValue" column="data_dic_term_value" />
+		<result property="isOk" column="is_ok" />
+		<result property="createTime" column="create_time" />
+		<result property="updateTime" column="update_time" />
+		<result property="remark" column="remark" />
+	</resultMap>
+	<!-- 定义数据库基本列,只适用代替单表的* -->
+	<sql id="Base_Column_List">data_dic_term_id,data_dic_code,data_dic_term_code,data_dic_term_value,is_ok,create_time,update_time,remark
+	</sql>
+	<!-- 分页显示列表 -->
+	<select id="pageList" parameterType="BasePage"
+		resultMap="dataDicTermMap">
+		select * from tb_xn_data_dic_term where is_ok = 0 and data_dic_code = #{bean.dataDicCode}
+		<if test="bean != null">
+			<if test="bean.dataDicTermCode != null and bean.dataDicTermCode != ''">
+				and data_dic_term_code like CONCAT(CONCAT('%',
+				#{bean.dataDicTermCode}),'%')
+			</if>
+		</if>
+		order by create_time desc limit #{start},#{size}
+	</select>
+	<!-- 分页总记录数 -->
+	<select id="pageCount" parameterType="BasePage" resultType="int">
+		select count(1) from tb_xn_data_dic_term where is_ok = 0 and data_dic_code = #{bean.dataDicCode}
+		<if test="bean != null">
+			<if test="bean.dataDicTermCode != null and bean.dataDicTermCode != ''">
+				and data_dic_term_code like CONCAT(CONCAT('%',
+				#{bean.dataDicTermCode}),'%')
+			</if>
+		</if>
+	</select>
+	<!-- 逻辑删除数据字典项 -->
+	<update id="delete">
+		UPDATE tb_xn_data_dic_term SET
+		is_ok =
+		1,update_time=now() where data_dic_term_id=#{0}
+	</update>
+	<!-- 添加数据字典项 -->
+	<insert id="insert" parameterType="DataDicTerm">
+		INSERT INTO
+		tb_xn_data_dic_term(data_dic_code,data_dic_term_code,data_dic_term_value,is_ok,create_time,update_time,remark)
+		VALUES(#{dataDicCode},#{dataDicTermCode},#{dataDicTermValue},0,NOW(),NOW(),#{remark})
+	</insert>
+	<!-- 更新数据字典项 -->
+	<update id="update" parameterType="DataDicTerm">
+		UPDATE tb_xn_data_dic_term SET
+		data_dic_term_code = #{dataDicTermCode},data_dic_term_value =
+		#{dataDicTermValue},update_time=now(),remark=#{remark}
+		where
+		data_dic_term_id=#{dataDicTermId}
+	</update>
+	<!-- 通过数据字典项id查询该数据字典项 -->
+	<select id="findById" parameterType="java.lang.Integer"
+		resultMap="dataDicTermMap">
+		SELECT *
+		FROM tb_xn_data_dic_term WHERE is_ok=0 AND
+		data_dic_term_id =
+		#{0}
+	</select>
+	<!-- 通过数据字典项代码查询该数据字典项 -->
+	<select id="findByName" parameterType="java.lang.String"
+		resultMap="dataDicTermMap">
+		SELECT *
+		FROM tb_xn_data_dic_term WHERE is_ok=0 AND
+		data_dic_term_code =
+		#{0}
+	</select>
+</mapper>

@@ -141,6 +141,10 @@ public class Constant {
 	 * 试卷正确答案
 	 */
 	public final static String ANSWER = "answer";
-	
+	/*----------------------------------数据字典管理---------------------------------*/
+	/**
+	 * 数据字典代码
+	 */
+	public final static String DATA_DIC_CODE = "dataDicCode";
 
 }

@@ -1,13 +1,13 @@
-package com.xn.hk.data.dic.service.impl;
+package com.xn.hk.dataDic.service.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.xn.hk.common.dao.BaseDao;
 import com.xn.hk.common.service.impl.BaseServiceImpl;
-import com.xn.hk.data.dic.dao.DataDicDao;
-import com.xn.hk.data.dic.model.DataDic;
-import com.xn.hk.data.dic.service.DataDicService;
+import com.xn.hk.dataDic.dao.DataDicDao;
+import com.xn.hk.dataDic.model.DataDic;
+import com.xn.hk.dataDic.service.DataDicService;
 
 /**
  * 

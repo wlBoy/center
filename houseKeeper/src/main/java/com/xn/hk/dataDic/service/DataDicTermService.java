@@ -1,7 +1,7 @@
-package com.xn.hk.data.dic.service;
+package com.xn.hk.dataDic.service;
 
 import com.xn.hk.common.service.BaseService;
-import com.xn.hk.data.dic.model.DataDicTerm;
+import com.xn.hk.dataDic.model.DataDicTerm;
 /**
  * 
  * @ClassName: DataDicTermService

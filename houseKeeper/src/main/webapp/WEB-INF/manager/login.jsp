@@ -4,7 +4,7 @@
 <!DOCTYPE HTML>
 <html>
 	<head>
-		<title>管家婆后台登录界面</title>
+		<title>综合系统登录界面</title>
 		<meta
 			content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
 			name="viewport">
@@ -64,7 +64,7 @@
 		<div class="login-wrapper">
 			<div class="login-container">
 				<h3 style="margin-top: 150px; margin-bottom: 30px;">
-					管家婆系统-后台登录
+					综合系统-后台登录
 				</h3>
 				<form action="${ctx}/system/user/login.do" method="post"
 					onsubmit="return check();">

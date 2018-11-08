@@ -4,7 +4,7 @@
 <!DOCTYPE HTML>
 <html>
 <head>
-<title>管家婆后台首页</title>
+<title>综合系统首页</title>
 <meta
 	content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
 	name="viewport">
@@ -96,7 +96,7 @@
 							</ul></li>
 					</ul>
 				</div>
-				<div class="nav navbar-nav pull-left" style="font-size:16px;">管家婆后台管理系统</div>
+				<div class="nav navbar-nav pull-left" style="font-size:16px;">综合系统</div>
 			</div>
 			<div class="container-fluid main-nav clearfix">
 				<div class="nav-collapse">

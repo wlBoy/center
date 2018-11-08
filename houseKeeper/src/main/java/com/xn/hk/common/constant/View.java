@@ -30,4 +30,8 @@ public class View {
 	public static final ModelAndView QUESTION_REDITRCT_ACTION = new ModelAndView("redirect:showAllQuestion.do");// 重定向分页所有题目的Action
 	public static final ModelAndView QUESTION_TYPE_REDITRCT_ACTION = new ModelAndView("redirect:showAllType.do");// 重定向分页所有题型的Action
 	public static final ModelAndView SCORE_REDITRCT_ACTION = new ModelAndView("redirect:showAllScore.do");// 重定向分页所有分数的Action
+	/*----------------------------------数据字典管理---------------------------------*/
+	public static final ModelAndView DATA_DIC_REDITRCT_ACTION = new ModelAndView(
+			"redirect:showAllDataDic.do");// 重定向分页所有数据字典的Action
+	public static final ModelAndView DATA_DIC_TERM_REDITRCT_ACTION = new ModelAndView("redirect:showTermByDataDicCode.do");// 重定向分页所有数据字典项的Action
 }

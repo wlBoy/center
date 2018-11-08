@@ -1,7 +1,7 @@
-package com.xn.hk.data.dic.dao;
+package com.xn.hk.dataDic.dao;
 
 import com.xn.hk.common.dao.BaseDao;
-import com.xn.hk.data.dic.model.DataDicTerm;
+import com.xn.hk.dataDic.model.DataDicTerm;
 
 /**
  * 

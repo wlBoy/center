@@ -187,6 +187,6 @@ public class DbInit {
 		String filePath = System.getProperty("user.dir") + File.separator + "src" + File.separator + "main"
 				+ File.separator + "resources";
 		System.out.println(initDb(filePath, Constant.UTF8));
-		System.out.println(checkTableExist("tb_xn_sys_aa"));
+		System.out.println(checkTableExist("tb_xn_sys_user"));
 	}
 }
