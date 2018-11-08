@@ -104,19 +104,21 @@ public class DataRestController {
 	}
 
 	/**
-	 * 根据数据字典项代码查找该数据字典项
+	 * 根据数据字典项代码和所属数据字典代码查找该数据字典项
 	 * 
-	 * @param dataDicCode
+	 * @param dataDicTermCode
 	 *            数据字典项代码
+	 * @param dataDicCode
+	 *            数据字典代码
 	 * @return 结果提示信息实体
 	 */
 	@RequestMapping(value = "/findByDataDicTermCode.do", method = RequestMethod.POST)
-	public Result findByDataDicTermCode(String dataDicTermCode) {
+	public Result findByDataDicTermCode(String dataDicTermCode, String dataDicCode) {
 		// 校验参数非空性
 		if (StringUtil.isEmpty(dataDicTermCode)) {
 			return Result.genNullParamTip("数据字典项代码");
 		}
-		DataDicTerm dataDicTerm = dataDicTermService.findByName(dataDicTermCode);
+		DataDicTerm dataDicTerm = dataDicTermService.findTermCodeAndDataDicCode(dataDicTermCode, dataDicCode);
 		if (dataDicTerm == null) {
 			logger.info("findByDataDicTermCode-->{}数据字典项不存在!", dataDicTermCode);
 			return Result.genTip(Result.FAILURE, "该数据字典项不存在!", null);

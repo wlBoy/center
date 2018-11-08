@@ -29,4 +29,28 @@ public class DataDicTermServiceImpl extends BaseServiceImpl<DataDicTerm> impleme
 		return dataDicTermDao;
 	}
 
+	/**
+	 * 根据数据字典代码查找该数据字典项个数
+	 * 
+	 * @param dataDicCode
+	 *            数据字典代码
+	 * @return 返回数据字典项个数
+	 */
+	public int findCountByDataDicCode(String dataDicCode) {
+		return dataDicTermDao.findCountByDataDicCode(dataDicCode);
+	}
+
+	/**
+	 * 根据数据字典项代码和所属数据字典代码查找该数据字典项
+	 * 
+	 * @param dataDicTermCode
+	 *            数据字典项代码
+	 * @param dataDicCode
+	 *            数据字典代码
+	 * @return 数据字典项
+	 */
+	public DataDicTerm findTermCodeAndDataDicCode(String dataDicTermCode, String dataDicCode) {
+		return dataDicTermDao.findTermCodeAndDataDicCode(dataDicTermCode, dataDicCode);
+	}
+
 }

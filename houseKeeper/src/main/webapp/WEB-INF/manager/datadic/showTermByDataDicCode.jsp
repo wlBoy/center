@@ -73,10 +73,11 @@ $(function(){
 		modal.show();
 		modal.setHeigth("220px");
 		modal.setWidth("550px");
+		var dataDicCode = '${dataDicCode}';
 		//ajax请求数据库是否存在该数据字典项
 		$("#modal2 form :text[name=dataDicTermCode]").blur(function(){
 			var dataDicTermCode = $("#modal2 form :text[name=dataDicTermCode]").val();
-			$.post("${ctx}/data/rest/findByDataDicTermCode.do","dataDicTermCode="+dataDicTermCode,function(t){
+			$.post("${ctx}/data/rest/findByDataDicTermCode.do","dataDicTermCode="+dataDicTermCode+"&dataDicCode="+dataDicCode,function(t){
 				if(t.data != null){
 					swal("OMG!", "该数据字典项代码已存在，请更换一个!", "error");
 				}

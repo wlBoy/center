@@ -1,14 +1,15 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.xn.hk.dataDic.dao.DataDicTermDao">
-	<!--使用redis作为mybatis的二级缓存,针对具体某条语句禁用缓存,useCache="false",这里的RedisCache是个别名
-	<cache eviction="LRU" type="RedisCache" />-->
+	<!--使用redis作为mybatis的二级缓存,针对具体某条语句禁用缓存,useCache="false",这里的RedisCache是个别名 
+		<cache eviction="LRU" type="RedisCache" /> -->
 	<!-- 数据字典项映射 -->
 	<resultMap type="DataDicTerm" id="dataDicTermMap">
 		<id property="dataDicTermId" column="data_dic_term_id" />
 		<result property="dataDicCode" column="data_dic_code" />
 		<result property="dataDicTermCode" column="data_dic_term_code" />
-		<result property="dataDicTermValue" column="data_dic_term_value" />
+		<result property="dataDicTermValue"
+			column="data_dic_term_value" />
 		<result property="isOk" column="is_ok" />
 		<result property="createTime" column="create_time" />
 		<result property="updateTime" column="update_time" />
@@ -20,9 +21,11 @@
 	<!-- 分页显示列表 -->
 	<select id="pageList" parameterType="BasePage"
 		resultMap="dataDicTermMap">
-		select * from tb_xn_data_dic_term where is_ok = 0 and data_dic_code = #{bean.dataDicCode}
+		select * from tb_xn_data_dic_term where is_ok = 0 and data_dic_code =
+		#{bean.dataDicCode}
 		<if test="bean != null">
-			<if test="bean.dataDicTermCode != null and bean.dataDicTermCode != ''">
+			<if
+				test="bean.dataDicTermCode != null and bean.dataDicTermCode != ''">
 				and data_dic_term_code like CONCAT(CONCAT('%',
 				#{bean.dataDicTermCode}),'%')
 			</if>
@@ -31,9 +34,11 @@
 	</select>
 	<!-- 分页总记录数 -->
 	<select id="pageCount" parameterType="BasePage" resultType="int">
-		select count(1) from tb_xn_data_dic_term where is_ok = 0 and data_dic_code = #{bean.dataDicCode}
+		select count(1) from tb_xn_data_dic_term where is_ok = 0 and
+		data_dic_code = #{bean.dataDicCode}
 		<if test="bean != null">
-			<if test="bean.dataDicTermCode != null and bean.dataDicTermCode != ''">
+			<if
+				test="bean.dataDicTermCode != null and bean.dataDicTermCode != ''">
 				and data_dic_term_code like CONCAT(CONCAT('%',
 				#{bean.dataDicTermCode}),'%')
 			</if>
@@ -67,12 +72,21 @@
 		data_dic_term_id =
 		#{0}
 	</select>
-	<!-- 通过数据字典项代码查询该数据字典项 -->
-	<select id="findByName" parameterType="java.lang.String"
+	<!-- 根据数据字典项代码和所属数据字典代码查找该数据字典项 -->
+	<select id="findTermCodeAndDataDicCode"
 		resultMap="dataDicTermMap">
 		SELECT *
 		FROM tb_xn_data_dic_term WHERE is_ok=0 AND
-		data_dic_term_code =
+		data_dic_term_code = #{dataDicTermCode} AND data_dic_code =
+		#{dataDicCode}
+	</select>
+	<!-- 根据数据字典代码查找该数据字典项个数 -->
+	<select id="findCountByDataDicCode"
+		parameterType="java.lang.String" resultType="java.lang.Integer">
+		SELECT count(1)
+		FROM
+		tb_xn_data_dic_term WHERE is_ok=0 AND
+		data_dic_code =
 		#{0}
 	</select>
 </mapper>

@@ -18,6 +18,7 @@ import com.xn.hk.common.utils.page.BasePage;
 import com.xn.hk.common.utils.string.StringUtil;
 import com.xn.hk.dataDic.model.DataDic;
 import com.xn.hk.dataDic.service.DataDicService;
+import com.xn.hk.dataDic.service.DataDicTermService;
 
 /**
  * 
@@ -40,6 +41,8 @@ public class DataDicController {
 	 */
 	@Autowired
 	private DataDicService dataDicService;
+	@Autowired
+	private DataDicTermService dataDicTermService;
 
 	/**
 	 * 实现数据字典分页
@@ -113,6 +116,21 @@ public class DataDicController {
 	 */
 	@RequestMapping(value = "/delete.do")
 	public ModelAndView delete(Integer[] dataDicIds, HttpSession session) {
+		boolean flag = true;
+		for (Integer dataDicId : dataDicIds) {
+			DataDic dataDic = dataDicService.findById(dataDicId);
+			String dataDicCode = dataDic.getDataDicCode();
+			// 根据数据字典代码查找该数据字典项个数
+			int result = dataDicTermService.findCountByDataDicCode(dataDicCode);
+			if (result > 0) {
+				flag = false;
+			}
+		}
+		// 当该数据字典中含有数据字典项，是不允许删除的
+		if(!flag) {
+			session.setAttribute(Constant.TIP_MSG, StringUtil.genTipMsg("删除数据字典失败，其中含有数据字典项!", Constant.ERROR_TIP));
+			return View.DATA_DIC_REDITRCT_ACTION;
+		}
 		int result = dataDicService.batchDelete(session, "删除数据字典", LogType.DATA_DIC_LOG.getType(), dataDicIds);
 		if (result == Constant.ZERO_VALUE) {
 			logger.error("删除失败,该数组不存在!");
