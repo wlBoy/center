@@ -13,7 +13,7 @@ import java.io.Serializable;
 public class Email implements Serializable {
 	private static final long serialVersionUID = 1L;
 	/**
-	 * 邮件接收者的地址
+	 * 邮件接收者的地址数组
 	 */
 	private String[] toAddress;
 

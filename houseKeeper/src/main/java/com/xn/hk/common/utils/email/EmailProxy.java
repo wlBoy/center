@@ -155,18 +155,22 @@ public class EmailProxy {
 		return contentBuffer.toString();
 	}
 
+	/**
+	 * 测试方法
+	 * 
+	 * @param args
+	 */
 	public static void main(String[] args) {
 		// 这个类主要是设置邮件
 		Email mailInfo = new Email();
+		// 邮件接收者的地址数组
 		mailInfo.setToAddress(new String[] { "1354373900@qq.com" });
 		mailInfo.setSubject("这是邮箱标题");
 		mailInfo.setContent("这是邮箱内容");
 		// 这个类主要来发送邮件
 		try {
 			EmailProxy.getInstance().sendTextMail(mailInfo);
-		} catch (MessagingException e) {
-			logger.error("邮件发送失败，原因为:" + e.getMessage());
-		} catch (IOException e) {
+		} catch (Exception e) {
 			logger.error("邮件发送失败，原因为:" + e.getMessage());
 		}
 	}

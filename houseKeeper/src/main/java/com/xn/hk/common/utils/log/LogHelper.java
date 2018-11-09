@@ -97,9 +97,9 @@ public class LogHelper {
 		adminLog.setIsOk(Constant.ZERO_VALUE);
 		int result = adminLogDao.insert(adminLog);
 		if (result == Constant.ZERO_VALUE) {
-			logger.error("插入日志失败，日志信息为:" + adminLog.toString());
+			logger.error("插入日志失败，日志信息为:{}", adminLog.toString());
 		} else {
-			logger.error("插入日志成功，日志信息为:" + adminLog.toString());
+			logger.error("插入日志成功，日志信息为:{}", adminLog.toString());
 		}
 	}
 

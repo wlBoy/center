@@ -36,13 +36,13 @@ public class LogAspect {
 	 * @throws Throwable
 	 */
 	public Object doLog(ProceedingJoinPoint pjp) throws Throwable {
-		Object value = null;
-		HttpServletRequest request = null;
 		Log log = new Log();
-		value = pjp.proceed();
-		// 获取请求request
-		request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
+		Object value = pjp.proceed();
+		// 使用工具类获取请求IP
 		String ip = IpHelper.getIp();
+		// 获取请求request
+		HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes())
+				.getRequest();
 		// 获取当前session中的用户
 		User user = (User) request.getSession().getAttribute(Constant.SESSION_USER);
 		if (user == null) {

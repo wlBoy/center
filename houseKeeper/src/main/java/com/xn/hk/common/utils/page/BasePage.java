@@ -130,4 +130,10 @@ public class BasePage<T> implements Serializable {
 		this.list = list;
 	}
 
+	@Override
+	public String toString() {
+		return "BasePage [pageNum=" + pageNum + ", size=" + size + ", start=" + start + ", end=" + end + ", count="
+				+ count + ", pages=" + pages + ", list=" + list + ", bean=" + bean + "]";
+	}
+
 }

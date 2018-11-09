@@ -1,10 +1,10 @@
 package com.xn.hk.common.utils.string;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Random;
+
+import com.xn.hk.common.utils.date.DateUtil;
 
 /**
  * 
@@ -133,13 +133,9 @@ public class IdCardUtil {
 	 * @return
 	 */
 	private static boolean validDate(String id) {
-		try {
-			String birth = id.length() == 15 ? "19" + id.substring(6, 12) : id.substring(6, 14);
-			SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
-			Date birthDate = sdf.parse(birth);
-			if (!birth.equals(sdf.format(birthDate)))
-				return false;
-		} catch (ParseException e) {
+		String birth = id.length() == 15 ? "19" + id.substring(6, 12) : id.substring(6, 14);
+		Date birthDate = DateUtil.parseStrToDate(birth,DateUtil.PATTERN_DATE);
+		if (!birth.equals(DateUtil.formatDate(birthDate))) {
 			return false;
 		}
 		return true;
@@ -196,7 +192,7 @@ public class IdCardUtil {
 	 * 
 	 * @return
 	 */
-	public static String generateID() {
+	public static String generateIdCard() {
 		// 地址码
 		String body = CITY_CODE[rand(0, CITY_CODE.length - 1)] + "0101";
 		// 出生年
@@ -231,7 +227,7 @@ public class IdCardUtil {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		System.out.println(generateID());
+		System.out.println(generateIdCard());
 		System.out.println(isValid("362502199605263415"));
 	}
 }

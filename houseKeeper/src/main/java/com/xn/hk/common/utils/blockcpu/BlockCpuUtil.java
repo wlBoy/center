@@ -22,7 +22,7 @@ public class BlockCpuUtil {
 	 * 初始化8个CPU非运行线程，线程名为blockCpu(i)
 	 */
 	static {
-		for (int i = 0; i < WarnLevel.LEVE_RED.getValue().intValue(); i++) {
+		for (int i = 0; i < WarnLevel.LEVE_RED.getId().intValue(); i++) {
 			BlockCpuThread thread = new BlockCpuThread(false, "blockCpu" + i);
 			threadList.add(thread);
 		}

@@ -1,5 +1,10 @@
 package com.xn.hk.common.constant;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 /**
  * 
  * @ClassName: UserStatus
@@ -46,4 +51,29 @@ public enum EnabledEnum {
 		return desc;
 	}
 
+	/**
+	 * 拿到所有的状态枚举map
+	 * 
+	 * @return 所有的状态枚举map
+	 */
+	public static Map<Integer, String> getChoiceMap() {
+		Map<Integer, String> typeMaps = new HashMap<Integer, String>();
+		for (EnabledEnum item : EnabledEnum.values()) {
+			typeMaps.put(item.getCode(), item.getDesc());
+		}
+		return typeMaps;
+	}
+
+	/**
+	 * 拿到所有的状态枚举List
+	 * 
+	 * @return 所有的状态枚举List
+	 */
+	public static List<EnabledEnum> getChoiceList() {
+		List<EnabledEnum> typeList = new ArrayList<EnabledEnum>();
+		for (EnabledEnum item : EnabledEnum.values()) {
+			typeList.add(item);
+		}
+		return typeList;
+	}
 }

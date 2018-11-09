@@ -7,6 +7,9 @@ import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * 
  * @Title: MyEclipseGen
@@ -20,34 +23,34 @@ import java.text.SimpleDateFormat;
  * @Date: 2017-12-18 上午09:26:04
  */
 public class MyEclipseGen {
+	private static final Logger logger = LoggerFactory.getLogger(MyEclipseGen.class);
 	private static final String LL = "Decompiling this copyrighted software is a violation of both your license agreement and the Digital Millenium Copyright Act of 1998 (http://www.loc.gov/copyright/legislation/dmca.pdf). Under section 1204 of the DMCA, penalties range up to a $500,000 fine or up to five years imprisonment for a first offense. Think about it; pay for a license, avoid prosecution, and feel better about yourself.";
+
 	/**
 	 * 获取破解序列号
+	 * 
 	 * @param userId
 	 * @param licenseNum
 	 * @return
 	 */
-	public String getSerial(String userId, String licenseNum) {
+	public static String getSerial(String userId, String licenseNum) {
 		java.util.Calendar cal = java.util.Calendar.getInstance();
 		cal.add(1, 3);
 		cal.add(6, -1);
 		NumberFormat nf = new DecimalFormat("000");
 		licenseNum = nf.format(Integer.valueOf(licenseNum));
-		String verTime = new StringBuilder("-").append(
-				new SimpleDateFormat("yyMMdd").format(cal.getTime()))
-				.append("0").toString();
+		String verTime = new StringBuilder("-").append(new SimpleDateFormat("yyMMdd").format(cal.getTime())).append("0")
+				.toString();
 		String type = "YE3MP-";
-		String need = new StringBuilder(userId.substring(0, 1)).append(type)
-				.append("300").append(licenseNum).append(verTime).toString();
-		String dx = new StringBuilder(need).append(LL).append(userId)
-				.toString();
-		int suf = this.decode(dx);
-		String code = new StringBuilder(need).append(String.valueOf(suf))
-				.toString();
-		return this.change(code);
+		String need = new StringBuilder(userId.substring(0, 1)).append(type).append("300").append(licenseNum)
+				.append(verTime).toString();
+		String dx = new StringBuilder(need).append(LL).append(userId).toString();
+		int suf = decode(dx);
+		String code = new StringBuilder(need).append(String.valueOf(suf)).toString();
+		return change(code);
 	}
-	
-	private int decode(String s) {
+
+	private static int decode(String s) {
 		int i;
 		char[] ac;
 		int j;
@@ -63,7 +66,7 @@ public class MyEclipseGen {
 		return Math.abs(i);
 	}
 
-	private String change(String s) {
+	private static String change(String s) {
 		byte[] abyte0;
 		char[] ac;
 		int i;
@@ -88,22 +91,20 @@ public class MyEclipseGen {
 		return String.valueOf(ac);
 	}
 
-	public MyEclipseGen() {
-		super();
-	}
-
+	/**
+	 * 测试方法
+	 * 
+	 * @param args
+	 */
 	public static void main(String[] args) {
 		try {
 			System.out.print("请输入注册用户名(英文):");
-			BufferedReader reader = new BufferedReader(new InputStreamReader(
-					System.in));
-			String userId = null;
-			userId = reader.readLine();
-			MyEclipseGen myeclipsegen = new MyEclipseGen();
-			String res = myeclipsegen.getSerial(userId, "5");
-			System.out.println("破解序列号为:" + res);
+			BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+			String userId = reader.readLine();
+			System.out.println("破解序列号为:" + MyEclipseGen.getSerial(userId, "5"));
 			reader.readLine();
 		} catch (IOException ex) {
+			logger.error("获取破解序列号失败，原因为:{}", ex);
 		}
 	}
 }

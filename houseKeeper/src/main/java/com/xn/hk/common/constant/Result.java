@@ -66,6 +66,11 @@ public class Result implements Serializable {
 		return serialVersionUID;
 	}
 
+	@Override
+	public String toString() {
+		return "Result [code=" + code + ", msg=" + msg + ", data=" + data + "]";
+	}
+
 	/**
 	 * 当参数为空时，返回参数为空的提示信息
 	 * 

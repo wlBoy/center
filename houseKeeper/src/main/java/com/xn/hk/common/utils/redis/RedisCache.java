@@ -48,7 +48,7 @@ public class RedisCache implements Cache {
 			connection.flushDb();
 			connection.flushAll();
 		} catch (JedisConnectionException e) {
-			e.printStackTrace();
+			logger.error("清除redis缓存失败，原因为{}", e);
 		} finally {
 			if (connection != null) {
 				connection.close();
@@ -74,7 +74,7 @@ public class RedisCache implements Cache {
 			RedisSerializer<Object> serializer = new JdkSerializationRedisSerializer();
 			result = serializer.deserialize(connection.get(serializer.serialize(key)));
 		} catch (JedisConnectionException e) {
-			e.printStackTrace();
+			logger.error("根据key获取redis缓存的object失败，原因为{}", e);
 		} finally {
 			if (connection != null) {
 				connection.close();
@@ -100,7 +100,7 @@ public class RedisCache implements Cache {
 			connection = (JedisConnection) jedisConnectionFactory.getConnection();
 			result = Integer.valueOf(connection.dbSize().toString());
 		} catch (JedisConnectionException e) {
-			e.printStackTrace();
+			logger.error("获取redis缓存的大小失败，原因为{}", e);
 		} finally {
 			if (connection != null) {
 				connection.close();
@@ -119,7 +119,7 @@ public class RedisCache implements Cache {
 			RedisSerializer<Object> serializer = new JdkSerializationRedisSerializer();
 			connection.set(serializer.serialize(key), serializer.serialize(value));
 		} catch (JedisConnectionException e) {
-			e.printStackTrace();
+			logger.error("将值放入redis缓存中失败，原因为{}", e);
 		} finally {
 			if (connection != null) {
 				connection.close();
@@ -138,7 +138,7 @@ public class RedisCache implements Cache {
 			RedisSerializer<Object> serializer = new JdkSerializationRedisSerializer();
 			result = connection.expire(serializer.serialize(key), 0);
 		} catch (JedisConnectionException e) {
-			e.printStackTrace();
+			logger.error("从redis中删除该key对应的value值失败，原因为{}", e);
 		} finally {
 			if (connection != null) {
 				connection.close();
@@ -146,6 +146,7 @@ public class RedisCache implements Cache {
 		}
 		return result;
 	}
+
 	/**
 	 * 生成redis连接工厂方法
 	 */
