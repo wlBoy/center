@@ -23,7 +23,7 @@ import com.xn.hk.dataDic.service.DataDicTermService;
  * @Date: 2018年1月8日 上午9:17:36
  */
 @RestController
-@RequestMapping("/data/rest")
+@RequestMapping("/data/dic/rest")
 public class DataRestController {
 	/**
 	 * 记录日志

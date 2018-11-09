@@ -18,12 +18,13 @@ import org.snmp4j.smi.OctetString;
  * @Date: 2018年9月29日 下午4:46:23
  */
 final class CommunityTargetHelper {
+	private static final String PORT = "161";
 
 	/**
 	 * snmp V2
 	 */
 	protected static CommunityTarget createDefaultCommunityTarget(String targetAddress) {
-		Address address = GenericAddress.parse(targetAddress + "/" + "161");
+		Address address = GenericAddress.parse(targetAddress + "/" + PORT);
 		CommunityTarget target = new CommunityTarget();
 		target.setCommunity(new OctetString("public"));
 		target.setAddress(address);
@@ -37,7 +38,7 @@ final class CommunityTargetHelper {
 	 * snmp V3
 	 */
 	protected static Target createDefaultCommunityTargetAsV3(String targetAddress) {
-		Address address = GenericAddress.parse(targetAddress + "/" + "161");
+		Address address = GenericAddress.parse(targetAddress + "/" + PORT);
 		UserTarget target = new UserTarget();
 		target.setSecurityName(new OctetString("dky"));
 		target.setSecurityLevel(SecurityLevel.AUTH_PRIV);

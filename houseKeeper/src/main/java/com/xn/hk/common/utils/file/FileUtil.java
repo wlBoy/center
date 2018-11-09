@@ -230,7 +230,7 @@ public class FileUtil {
 	}
 
 	/**
-	 * 通过文件名获取文件后缀
+	 * 通过文件名获取文件后缀,注意要用lastIndexOf查找.，因为文件名中可能含有.
 	 * 
 	 * @param fileName
 	 *            文件名

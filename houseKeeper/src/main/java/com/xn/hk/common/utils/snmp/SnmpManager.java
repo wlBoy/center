@@ -71,14 +71,10 @@ public class SnmpManager {
 		TransportMapping<UdpAddress> transportMapping = null;
 		try {
 			transportMapping = new DefaultUdpTransportMapping();
-		} catch (IOException e) {
-			throw new RuntimeException("snmp初始化失败", e);
-		}
-		snmp = new Snmp(transportMapping);
-		try {
+			snmp = new Snmp(transportMapping);
 			snmp.listen();
 		} catch (IOException e) {
-			throw new RuntimeException("snmp初始化失败", e);
+			logger.error("snmp初始化失败,原因为:{}", e);
 		}
 		isReady.getAndSet(true);
 	}
@@ -295,7 +291,7 @@ public class SnmpManager {
 		try {
 			return set(targetAddress, oid, new Integer32(value));
 		} catch (IOException e) {
-			e.printStackTrace();
+			logger.error("setInteger失败,原因为:{}", e);
 			return false;
 		}
 	}
@@ -311,7 +307,7 @@ public class SnmpManager {
 		try {
 			return set(targetAddress, oid, new OctetString(value));
 		} catch (IOException e) {
-			e.printStackTrace();
+			logger.error("setString失败,原因为:{}", e);
 			return false;
 		}
 	}

@@ -83,7 +83,7 @@ public class DataDicTermController {
 			logger.info("添加数据字典项{}成功!", dataDicTerm.getDataDicTermCode());
 			session.setAttribute(Constant.TIP_MSG, StringUtil.genTipMsg("添加数据字典项成功!", Constant.SUCCESS_TIP));
 		}
-		// 重定向至showTermByDataDicCode的Action并将数据字典代码参数传递过去
+		// 重定向至数据字典项分页的Action并将所属数据字典代码传递过去，保证操作完还是在显示所有的数据字典项列表的页面
 		attr.addAttribute(Constant.DATA_DIC_CODE, dataDicTerm.getDataDicCode());
 		return View.DATA_DIC_TERM_REDITRCT_ACTION;
 	}
@@ -105,7 +105,7 @@ public class DataDicTermController {
 			logger.info("修改数据字典项{}成功!", dataDicTerm.getDataDicTermCode());
 			session.setAttribute(Constant.TIP_MSG, StringUtil.genTipMsg("修改数据字典项成功!", Constant.SUCCESS_TIP));
 		}
-		// 重定向至showTermByDataDicCode的Action并将数据字典代码参数传递过去
+		// 重定向至数据字典项分页的Action并将所属数据字典代码传递过去，保证操作完还是在显示所有的数据字典项列表的页面
 		attr.addAttribute(Constant.DATA_DIC_CODE, dataDicTerm.getDataDicCode());
 		return View.DATA_DIC_TERM_REDITRCT_ACTION;
 	}
@@ -120,6 +120,7 @@ public class DataDicTermController {
 	 */
 	@RequestMapping(value = "/delete.do")
 	public ModelAndView delete(Integer[] dataDicTermIds, HttpSession session,RedirectAttributes attr) {
+		// 根据字典项ID查找所属数据字典
 		DataDicTerm dataDicTerm = dataDicTermService.findById(dataDicTermIds[0]);
 		int result = dataDicTermService.batchDelete(session, "删除数据字典项", LogType.DATA_DIC_TERM_LOG.getType(),
 				dataDicTermIds);
@@ -129,7 +130,7 @@ public class DataDicTermController {
 			logger.info("删除数据字典项成功!");
 			session.setAttribute(Constant.TIP_MSG, StringUtil.genTipMsg("删除数据字典项成功!", Constant.SUCCESS_TIP));
 		}
-		// 重定向至showTermByDataDicCode的Action并将数据字典代码参数传递过去
+		// 重定向至数据字典项分页的Action并将所属数据字典代码传递过去，保证操作完还是在显示所有的数据字典项列表的页面
 		attr.addAttribute(Constant.DATA_DIC_CODE, dataDicTerm.getDataDicCode());
 		return View.DATA_DIC_TERM_REDITRCT_ACTION;
 	}

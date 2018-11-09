@@ -98,41 +98,42 @@ public class FileController {
 	 */
 	@RequestMapping(value = "/uploadFile.do")
 	public ModelAndView uploadFile(MultipartFile uploadFile, String remark, HttpSession session) {
-		// 上传文件非空判断
+		// 1.上传文件非空判断
 		if (uploadFile.isEmpty()) {
 			logger.info("上传文件为空!");
 			session.setAttribute(Constant.TIP_MSG, StringUtil.genTipMsg("上传文件为空!", Constant.ERROR_TIP));
 			return View.FILE_REDITRCT_ACTION;
 		}
-		// 得到原始上传的文件名
+		// 2.得到原始上传的文件名
 		String originalFileName = uploadFile.getOriginalFilename();
-		// 截取文件后缀,判断系统是否支持该文件类型,这里注意要用lastIndexOf查找.，因为文件名中可能含有.
-		String suffix = FileUtil.getFileSuffix(originalFileName); 
+		// 3.截取文件后缀,判断系统是否支持该文件类型
+		String suffix = FileUtil.getFileSuffix(originalFileName);
 		FileType type = FileType.getFileTypeBySuffix(suffix);
 		if (type == null) {
 			logger.error("系统不支持{}文件类型!", suffix);
-			session.setAttribute(Constant.TIP_MSG, StringUtil.genTipMsg("系统不支持" + suffix + "文件类型!", Constant.ERROR_TIP));
+			session.setAttribute(Constant.TIP_MSG,
+					StringUtil.genTipMsg("系统不支持" + suffix + "文件类型!", Constant.ERROR_TIP));
 			return View.FILE_REDITRCT_ACTION;
 		}
-		// 构建新的文件名(UUID_老文件名)
+		// 4.构建新的文件名(UUID_老文件名)
 		String newFileName = StringUtil.genUUIDString() + "_" + originalFileName;
-		// 得到配置文件中的文件存储位置(以yyyyMMdd目录分开存储)
+		// 5.得到配置文件中的文件存储位置(以yyyyMMdd目录分开存储)
 		String filePath = SystemCfg.loadCfg().getProperty(SystemCfg.FILE_PATH) + File.separator
 				+ String.valueOf(DateUtil.getNumberDay()) + File.separator + newFileName;
 		File localFile = new File(filePath);
-		// 目录不存在，则创建目录
+		// 6.目录不存在，则创建其父级目录
 		if (!localFile.exists()) {
 			new File(localFile.getParent()).mkdirs();
 		}
 		try {
-			// 调用springmvc中自带的上传方法
+			// 7.调用springmvc中自带的上传方法
 			uploadFile.transferTo(localFile);
 		} catch (Exception e) {
 			logger.error("上传文件失败，原因为:", e);
 			session.setAttribute(Constant.TIP_MSG, StringUtil.genTipMsg("上传文件失败!", Constant.ERROR_TIP));
 			return View.FILE_REDITRCT_ACTION;
 		}
-		// 封装文件实体类，调用service中insert方法入库
+		// 8.封装文件实体类，调用service中插入方法入库文件表
 		FileEntity fileEntity = new FileEntity();
 		User user = (User) session.getAttribute(Constant.SESSION_USER);
 		fileEntity.setFileId(StringUtil.genUUIDString());// 生成UUID的文件ID
@@ -207,12 +208,12 @@ public class FileController {
 	 */
 	@RequestMapping(value = "/delete.do")
 	public ModelAndView deleteFile(String[] fileIds, HttpSession session) {
-		// 先删除本地文件
+		// 1.先删除本地文件
 		for (String fileId : fileIds) {
 			FileEntity file = fileService.findById(fileId);
 			FileUtil.deleteFile(file.getFilePath());
 		}
-		// 再删除数据库记录
+		// 2.再删除数据库记录
 		int result = fileService.batchDelete(session, "删除文件", LogType.FILE_LOG.getType(), fileIds);
 		if (result == Constant.ZERO_VALUE) {
 			logger.error("删除失败,该数组不存在!");
@@ -237,18 +238,19 @@ public class FileController {
 	@RequestMapping(value = "/downloadFile.do")
 	public ModelAndView downloadFile(String fileId, HttpServletRequest request, HttpServletResponse response) {
 		String downloadFileName = "";// 下载文件名
+		// 1.校验下载文件ID
 		FileEntity fileEntity = fileService.findById(fileId);
 		if (fileEntity == null) {
 			request.getSession().setAttribute(Constant.TIP_MSG, StringUtil.genTipMsg("下载文件不存在!", Constant.ERROR_TIP));
 			logger.error("下载文件ID不存在，加载文件信息失败!");
 			return View.FILE_REDITRCT_ACTION;
 		}
-		// 获取要下载的原始文件名
+		// 2.获取要下载的原始文件名
 		String orginFileName = fileEntity.getFileName();
+		// 3.兼容各浏览器获取文件下载名，防止中文乱码问题
 		// 判断是否为IE11浏览器
 		Boolean isIE11 = request.getHeader("User-Agent").indexOf("like Gecko") > 0;
 		try {
-			// 兼容IE和非IE,下载文件名中文乱码问题
 			if (request.getHeader("user-agent").toLowerCase().contains("msie") || isIE11) {
 				// IE
 				downloadFileName = URLEncoder.encode(orginFileName, Constant.UTF8);
@@ -259,7 +261,7 @@ public class FileController {
 		} catch (Exception e) {
 			logger.error("构建下载文件名失败，原因为:" + e);
 		}
-		// 获取数据库中存的下载路径
+		// 4.获取数据库中存的下载路径，使用IO流进行文件下载
 		String filePath = fileEntity.getFilePath();
 		File file = new File(filePath);
 		if (file.exists()) {
@@ -298,13 +300,13 @@ public class FileController {
 				}
 			}
 			logger.info("下载{}文件成功!", orginFileName);
-			// 记录日志
+			// 5.记录日志
 			LogHelper.getInstance().saveLog(adminLogDao, request.getSession(), "下载文件", true, LogType.FILE_LOG.getType(),
 					fileEntity);
 			return null;
 		} else {
 			logger.error("路径{}下找不到下载文件:{}!", filePath, orginFileName);
-			// 记录日志
+			// 5.记录日志
 			LogHelper.getInstance().saveLog(adminLogDao, request.getSession(), "下载文件", false,
 					LogType.FILE_LOG.getType(), fileEntity);
 			request.getSession().setAttribute(Constant.TIP_MSG, StringUtil.genTipMsg("路径下找不到该文件!", Constant.ERROR_TIP));

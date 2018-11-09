@@ -77,6 +77,35 @@ public final class StringUtil {
 	}
 
 	/**
+	 * 用指定的字符替换一个字符串的指定位置，不改变原字符串的长度，例如:将15079077425换成150****7425
+	 * 
+	 * @param str
+	 *            要替换的字符串
+	 * @param c
+	 *            替换字符
+	 * @param start
+	 *            起始位置，字符串索引
+	 * @param end
+	 *            结束位置，字符串索引
+	 * @return 返回替换后的字符串
+	 */
+	public static String replaceStrWithChar(String str, char c, int start, int end) {
+		StringBuilder sb = new StringBuilder(str);
+		if (end <= start) {
+			logger.error("结束索引应该大于开始索引!");
+			return sb.toString();
+		}
+		char[] chars = new char[end - start];
+		for (int i = 0; i < chars.length; i++) {
+			chars[i] = c;
+		}
+		// 用替换字符构造新的替换字符串
+		String newStr = new String(chars);
+		sb.replace(start, end, newStr);
+		return sb.toString();
+	}
+
+	/**
 	 * 判断一个字符串为空
 	 * 
 	 * @param value
@@ -282,5 +311,6 @@ public final class StringUtil {
 	public static void main(String[] args) {
 		System.out.println(encode2Binary("111中啊法￥多少"));
 		System.out.println(decode2String("313131E4B8ADE5958AE6B395EFBFA5E5A49AE5B091"));
+		System.out.println(replaceStrWithChar("15079077425", '*', 3, 7));
 	}
 }

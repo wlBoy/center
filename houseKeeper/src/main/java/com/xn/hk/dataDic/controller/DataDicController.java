@@ -102,7 +102,6 @@ public class DataDicController {
 			logger.info("修改数据字典{}成功!", dataDic.getDataDicName());
 			session.setAttribute(Constant.TIP_MSG, StringUtil.genTipMsg("修改数据字典成功!", Constant.SUCCESS_TIP));
 		}
-		// 记录日志
 		return View.DATA_DIC_REDITRCT_ACTION;
 	}
 
@@ -119,18 +118,20 @@ public class DataDicController {
 		boolean flag = true;
 		for (Integer dataDicId : dataDicIds) {
 			DataDic dataDic = dataDicService.findById(dataDicId);
-			String dataDicCode = dataDic.getDataDicCode();
 			// 根据数据字典代码查找该数据字典项个数
-			int result = dataDicTermService.findCountByDataDicCode(dataDicCode);
+			int result = dataDicTermService.findCountByDataDicCode(dataDic.getDataDicCode());
+			// 当个数大于0，即存在字典项，只要其中一个含有字典项，就不允许删除
 			if (result > 0) {
 				flag = false;
+				break;
 			}
 		}
-		// 当该数据字典中含有数据字典项，是不允许删除的
-		if(!flag) {
+		// 1.当该数据字典中含有数据字典项，是不允许删除的
+		if (!flag) {
 			session.setAttribute(Constant.TIP_MSG, StringUtil.genTipMsg("删除数据字典失败，其中含有数据字典项!", Constant.ERROR_TIP));
 			return View.DATA_DIC_REDITRCT_ACTION;
 		}
+		// 2.批量删除数据字典
 		int result = dataDicService.batchDelete(session, "删除数据字典", LogType.DATA_DIC_LOG.getType(), dataDicIds);
 		if (result == Constant.ZERO_VALUE) {
 			logger.error("删除失败,该数组不存在!");

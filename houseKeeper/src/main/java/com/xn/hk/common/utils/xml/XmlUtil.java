@@ -31,8 +31,8 @@ import com.xn.hk.common.utils.string.StringUtil;
  * @Author: wanlei
  * @Date: 2018年10月17日 下午7:57:40
  */
-public class XmlOpt {
-	private static final Logger logger = LoggerFactory.getLogger(XmlOpt.class);
+public class XmlUtil {
+	private static final Logger logger = LoggerFactory.getLogger(XmlUtil.class);
 
 	/**
 	 * 生成空的xml文件头

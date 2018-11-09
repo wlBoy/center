@@ -56,7 +56,7 @@ $(function(){
 		modal.setWidth("550px");
 		var did = $(this).attr("value");
 		// 回显数据
-		$.post("${ctx}/data/rest/findByDataDicTermId.do","dataDicTermId="+did,function(t){
+		$.post("${ctx}/data/dic/rest/findByDataDicTermId.do","dataDicTermId="+did,function(t){
 			$("#modal2 form :text[name=dataDicTermCode]").val(t.data.dataDicTermCode);
 			$("#modal2 form :text[name=dataDicTermValue]").val(t.data.dataDicTermValue);
 			$("#modal2 form :text[name=remark]").val(t.data.remark);
@@ -77,7 +77,7 @@ $(function(){
 		//ajax请求数据库是否存在该数据字典项
 		$("#modal2 form :text[name=dataDicTermCode]").blur(function(){
 			var dataDicTermCode = $("#modal2 form :text[name=dataDicTermCode]").val();
-			$.post("${ctx}/data/rest/findByDataDicTermCode.do","dataDicTermCode="+dataDicTermCode+"&dataDicCode="+dataDicCode,function(t){
+			$.post("${ctx}/data/dic/rest/findByDataDicTermCode.do","dataDicTermCode="+dataDicTermCode+"&dataDicCode="+dataDicCode,function(t){
 				if(t.data != null){
 					swal("OMG!", "该数据字典项代码已存在，请更换一个!", "error");
 				}
