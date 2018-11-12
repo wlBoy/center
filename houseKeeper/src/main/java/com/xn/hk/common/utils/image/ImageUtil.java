@@ -21,7 +21,6 @@ import com.sun.image.codec.jpeg.JPEGImageEncoder;
  * @Author: wanlei
  * @Date: 2018年11月7日 下午2:23:28
  */
-@SuppressWarnings("restriction")
 public class ImageUtil {
 	private static final Logger logger = LoggerFactory.getLogger(ImageUtil.class);
 
