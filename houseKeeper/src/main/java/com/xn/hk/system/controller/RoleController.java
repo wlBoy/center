@@ -99,7 +99,7 @@ public class RoleController {
 			logger.error("添加角色{}失败!", role.getRoleName());
 		} else {
 			logger.info("添加角色{}成功!", role.getRoleName());
-			session.setAttribute(Constant.TIP_MSG, StringUtil.genTipMsg("添加角色成功!", Constant.SUCCESS_TIP));
+			session.setAttribute(Constant.TIP_MSG, StringUtil.genTipMsg("添加角色成功!", true));
 		}
 		// 记录日志
 		LogHelper.getInstance().saveLog(adminLogDao, session, "添加角色", logResult, LogType.ROLE_LOG.getType(), role);
@@ -123,7 +123,7 @@ public class RoleController {
 			logger.error("修改角色{}失败!", role.getRoleName());
 		} else {
 			logger.info("修改角色{}成功!", role.getRoleName());
-			session.setAttribute(Constant.TIP_MSG, StringUtil.genTipMsg("修改角色成功!", Constant.SUCCESS_TIP));
+			session.setAttribute(Constant.TIP_MSG, StringUtil.genTipMsg("修改角色成功!", true));
 		}
 		// 记录日志
 		LogHelper.getInstance().saveLog(adminLogDao, session, "修改角色", logResult, LogType.ROLE_LOG.getType(), role);
@@ -147,7 +147,7 @@ public class RoleController {
 			logger.error("删除失败,该角色ID不存在!");
 		} else {
 			logger.info("删除角色成功!");
-			session.setAttribute(Constant.TIP_MSG, StringUtil.genTipMsg("删除角色成功!", Constant.SUCCESS_TIP));
+			session.setAttribute(Constant.TIP_MSG, StringUtil.genTipMsg("删除角色成功!", true));
 		}
 		for (Integer roleId : roleIds) {
 			Role role = roleService.findById(roleId);

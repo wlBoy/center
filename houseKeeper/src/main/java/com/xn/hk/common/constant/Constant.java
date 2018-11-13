@@ -19,14 +19,6 @@ public class Constant {
 	 */
 	public final static String TIP_MSG = "msg";
 	/**
-	 * 提示信息-成功状态
-	 */
-	public final static String SUCCESS_TIP = "success";
-	/**
-	 * 提示信息-错误状态
-	 */
-	public final static String ERROR_TIP = "error";
-	/**
 	 * 分页信息
 	 */
 	public final static String PAGES = "pages";

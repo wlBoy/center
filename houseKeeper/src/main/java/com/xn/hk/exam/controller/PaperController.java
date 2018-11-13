@@ -105,7 +105,7 @@ public class PaperController {
 			logger.error("添加试卷{}失败!", paper.getPaperName());
 		} else {
 			logger.info("添加试卷{}成功!", paper.getPaperName());
-			session.setAttribute(Constant.TIP_MSG, StringUtil.genTipMsg("添加试卷成功!", Constant.SUCCESS_TIP));
+			session.setAttribute(Constant.TIP_MSG, StringUtil.genTipMsg("添加试卷成功!", true));
 		}
 		// 记录日志
 		LogHelper.getInstance().saveLog(adminLogDao, session, "添加试卷", logResult, LogType.PAPER_LOG.getType(), paper);
@@ -127,7 +127,7 @@ public class PaperController {
 			logger.error("修改试卷{}失败!", paper.getPaperName());
 		} else {
 			logger.info("修改试卷{}成功!", paper.getPaperName());
-			session.setAttribute(Constant.TIP_MSG, StringUtil.genTipMsg("修改试卷成功!", Constant.SUCCESS_TIP));
+			session.setAttribute(Constant.TIP_MSG, StringUtil.genTipMsg("修改试卷成功!", true));
 		}
 		return View.PAPER_REDITRCT_ACTION;
 	}
@@ -149,7 +149,7 @@ public class PaperController {
 			logger.error("删除失败,该数组不存在!");
 		} else {
 			logger.info("删除试卷成功!");
-			session.setAttribute(Constant.TIP_MSG, StringUtil.genTipMsg("删除试卷成功!", Constant.SUCCESS_TIP));
+			session.setAttribute(Constant.TIP_MSG, StringUtil.genTipMsg("删除试卷成功!", true));
 		}
 		for (Integer paperId : paperIds) {
 			Paper paper = paperService.findById(paperId);

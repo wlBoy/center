@@ -84,7 +84,7 @@ public class ModuleController {
 			logger.error("添加模块{}失败!", module.getModuleName());
 		} else {
 			logger.info("添加模块{}成功!", module.getModuleName());
-			session.setAttribute(Constant.TIP_MSG, StringUtil.genTipMsg("添加模块成功!", Constant.SUCCESS_TIP));
+			session.setAttribute(Constant.TIP_MSG, StringUtil.genTipMsg("添加模块成功!", true));
 		}
 		return View.MODULE_REDITRCT_ACTION;
 	}
@@ -103,7 +103,7 @@ public class ModuleController {
 			logger.error("修改模块{}失败!", module.getModuleName());
 		} else {
 			logger.info("修改模块{}成功!", module.getModuleName());
-			session.setAttribute(Constant.TIP_MSG, StringUtil.genTipMsg("修改模块成功!", Constant.SUCCESS_TIP));
+			session.setAttribute(Constant.TIP_MSG, StringUtil.genTipMsg("修改模块成功!", true));
 		}
 		return View.MODULE_REDITRCT_ACTION;
 	}
@@ -123,7 +123,7 @@ public class ModuleController {
 			logger.error("删除失败,该数组不存在!");
 		} else {
 			logger.info("删除模块成功!");
-			session.setAttribute(Constant.TIP_MSG, StringUtil.genTipMsg("删除模块成功!", Constant.SUCCESS_TIP));
+			session.setAttribute(Constant.TIP_MSG, StringUtil.genTipMsg("删除模块成功!", true));
 		}
 		return View.MODULE_REDITRCT_ACTION;
 	}

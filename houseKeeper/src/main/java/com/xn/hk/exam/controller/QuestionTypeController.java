@@ -68,7 +68,7 @@ public class QuestionTypeController {
 			logger.error("添加题型{}失败!", type.getTypeName());
 		} else {
 			logger.info("添加题型{}成功!", type.getTypeName());
-			session.setAttribute(Constant.TIP_MSG, StringUtil.genTipMsg("添加题型成功!", Constant.SUCCESS_TIP));
+			session.setAttribute(Constant.TIP_MSG, StringUtil.genTipMsg("添加题型成功!", true));
 		}
 		return View.QUESTION_TYPE_REDITRCT_ACTION;
 	}
@@ -88,7 +88,7 @@ public class QuestionTypeController {
 			logger.error("修改题型{}失败!", type.getTypeName());
 		} else {
 			logger.info("修改题型{}成功!", type.getTypeName());
-			session.setAttribute(Constant.TIP_MSG, StringUtil.genTipMsg("修改题型成功!", Constant.SUCCESS_TIP));
+			session.setAttribute(Constant.TIP_MSG, StringUtil.genTipMsg("修改题型成功!", true));
 		}
 		return View.QUESTION_TYPE_REDITRCT_ACTION;
 	}
@@ -108,7 +108,7 @@ public class QuestionTypeController {
 			logger.error("删除失败,该题型ID不存在!");
 		} else {
 			logger.info("删除题型成功!");
-			session.setAttribute(Constant.TIP_MSG, StringUtil.genTipMsg("删除题型成功!", Constant.SUCCESS_TIP));
+			session.setAttribute(Constant.TIP_MSG, StringUtil.genTipMsg("删除题型成功!", true));
 		}
 		return View.QUESTION_TYPE_REDITRCT_ACTION;
 	}

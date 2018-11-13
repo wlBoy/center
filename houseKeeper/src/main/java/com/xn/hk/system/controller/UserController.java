@@ -129,7 +129,7 @@ public class UserController {
 			String verifyCodeValue = (String) session.getAttribute(Constant.VERIFY_CODE_VALUE);
 			if (!user.getVerifyCode().equalsIgnoreCase(verifyCodeValue)) {
 				logger.error("验证码错误!");
-				session.setAttribute(Constant.TIP_MSG, StringUtil.genTipMsg("验证码错误!", Constant.ERROR_TIP));
+				session.setAttribute(Constant.TIP_MSG, StringUtil.genTipMsg("验证码错误!", false));
 				return View.USER_REDITRCT_LOGIN_VIEW;
 			}
 		}
@@ -141,7 +141,7 @@ public class UserController {
 				logger.error("用户{}已冻结，请联系管理员!", user.getUserName());
 				// 记录日志
 				LogHelper.getInstance().saveLog(adminLogDao, session, "用户登录", false, LogType.USER_LOG.getType(), u);
-				session.setAttribute(Constant.TIP_MSG, StringUtil.genTipMsg("该账户已冻结，请联系管理员!", Constant.ERROR_TIP));
+				session.setAttribute(Constant.TIP_MSG, StringUtil.genTipMsg("该账户已冻结，请联系管理员!", false));
 				return View.USER_REDITRCT_LOGIN_VIEW;
 			} else {
 				// 5.正常通过，可以登录
@@ -165,14 +165,14 @@ public class UserController {
 					logger.error("用户{}登录,密码错误!", userName);
 					// 记录日志
 					LogHelper.getInstance().saveLog(adminLogDao, session, "用户登录", false, LogType.USER_LOG.getType(), u);
-					session.setAttribute(Constant.TIP_MSG, StringUtil.genTipMsg("登录密码错误!", Constant.ERROR_TIP));
+					session.setAttribute(Constant.TIP_MSG, StringUtil.genTipMsg("登录密码错误!", false));
 					return View.USER_REDITRCT_LOGIN_VIEW;
 				}
 			}
 		} else {
 			// 账户不存在
 			logger.error("用户{}不存在!", userName);
-			session.setAttribute(Constant.TIP_MSG, StringUtil.genTipMsg("该账户不存在!", Constant.ERROR_TIP));
+			session.setAttribute(Constant.TIP_MSG, StringUtil.genTipMsg("该账户不存在!", false));
 			return View.USER_REDITRCT_LOGIN_VIEW;
 		}
 	}
@@ -251,7 +251,7 @@ public class UserController {
 		session.removeAttribute(Constant.SESSION_USER);
 		// 记录日志
 		LogHelper.getInstance().saveLog(adminLogDao, session, "用户注销", true, LogType.USER_LOG.getType(), user);
-		session.setAttribute(Constant.TIP_MSG, StringUtil.genTipMsg("用户注销成功!", Constant.SUCCESS_TIP));
+		session.setAttribute(Constant.TIP_MSG, StringUtil.genTipMsg("用户注销成功!", true));
 		return View.USER_REDITRCT_LOGIN_VIEW;
 	}
 
@@ -294,7 +294,7 @@ public class UserController {
 			logger.error("删除失败,该数组不存在!");
 		} else {
 			logger.info("删除用户成功!");
-			session.setAttribute(Constant.TIP_MSG, StringUtil.genTipMsg("删除用户成功!", Constant.SUCCESS_TIP));
+			session.setAttribute(Constant.TIP_MSG, StringUtil.genTipMsg("删除用户成功!", true));
 		}
 		return View.USER_REDITRCT_ACTION;
 	}
@@ -317,7 +317,7 @@ public class UserController {
 			logger.error("添加{}用户失败!", user.getUserName());
 		} else {
 			logger.info("添加{}用户成功!", user.getUserName());
-			session.setAttribute(Constant.TIP_MSG, StringUtil.genTipMsg("添加用户成功!", Constant.SUCCESS_TIP));
+			session.setAttribute(Constant.TIP_MSG, StringUtil.genTipMsg("添加用户成功!", true));
 		}
 		return View.USER_REDITRCT_ACTION;
 	}
@@ -360,7 +360,7 @@ public class UserController {
 			logger.error("修改{}用户失败!", user.getUserName());
 		} else {
 			logger.info("修改{}用户成功!", user.getUserName());
-			session.setAttribute(Constant.TIP_MSG, StringUtil.genTipMsg("修改用户成功!", Constant.SUCCESS_TIP));
+			session.setAttribute(Constant.TIP_MSG, StringUtil.genTipMsg("修改用户成功!", true));
 		}
 		return View.USER_REDITRCT_ACTION;
 	}
@@ -407,13 +407,13 @@ public class UserController {
 			// 重置密码
 			userPwd = genUserPwd(user);
 			logName = "重置密码";
-			session.setAttribute(Constant.TIP_MSG, StringUtil.genTipMsg("重置密码成功!", Constant.SUCCESS_TIP));
+			session.setAttribute(Constant.TIP_MSG, StringUtil.genTipMsg("重置密码成功!", true));
 			mv = View.USER_REDITRCT_ACTION;
 		} else {
 			// 修改密码
 			userPwd = newpassword;
 			logName = "修改密码";
-			session.setAttribute(Constant.TIP_MSG, StringUtil.genTipMsg("修改密码成功,可以去登录了!", Constant.SUCCESS_TIP));
+			session.setAttribute(Constant.TIP_MSG, StringUtil.genTipMsg("修改密码成功,可以去登录了!", true));
 			mv = View.USER_REDITRCT_UPDATE_PWD_VIEW;
 		}
 		// 使用MD5加密(用户登录密码+登录密码key)存入数据库中,提高密码的加密程度
@@ -460,13 +460,13 @@ public class UserController {
 			user = userService.findById(user.getUserId());
 			// 记录日志
 			LogHelper.getInstance().saveLog(adminLogDao, session, "上传头像", true, LogType.USER_LOG.getType(), user);
-			session.setAttribute(Constant.TIP_MSG, StringUtil.genTipMsg("上传头像成功!", Constant.SUCCESS_TIP));
+			session.setAttribute(Constant.TIP_MSG, StringUtil.genTipMsg("上传头像成功!", true));
 			return View.USER_REDITRCT_ACTION;
 		} catch (Exception e) {
 			logger.error("用户{}上传头像失败,原因是:{}", user.getUserName(), e.getMessage());
 			// 记录日志
 			LogHelper.getInstance().saveLog(adminLogDao, session, "上传头像", false, LogType.USER_LOG.getType(), user);
-			session.setAttribute(Constant.TIP_MSG, StringUtil.genTipMsg("上传头像失败!", Constant.ERROR_TIP));
+			session.setAttribute(Constant.TIP_MSG, StringUtil.genTipMsg("上传头像失败!", false));
 			return View.USER_REDITRCT_ACTION;
 		}
 	}

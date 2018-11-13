@@ -155,7 +155,7 @@ public class PaperClientController {
 		score.setPaperStatus(StatusEnum.LOCKED.getCode());
 		// 添加分数和用户答案
 		paperClientService.addScoreAndSolution(score, qlist, userList);
-		session.setAttribute(Constant.TIP_MSG, StringUtil.genTipMsg("交卷成功!", Constant.SUCCESS_TIP));
+		session.setAttribute(Constant.TIP_MSG, StringUtil.genTipMsg("交卷成功!", true));
 		return View.CLIENT_PAPER_REDITRCT_ACTION;
 	}
 

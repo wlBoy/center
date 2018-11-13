@@ -84,7 +84,7 @@ public class AccountTypeController {
 			logger.error("添加个人账务类别{}失败!", type.getTypeName());
 		} else {
 			logger.info("添加个人账务类别{}成功!", type.getTypeName());
-			session.setAttribute(Constant.TIP_MSG, StringUtil.genTipMsg("添加个人账务类别成功!", Constant.SUCCESS_TIP));
+			session.setAttribute(Constant.TIP_MSG, StringUtil.genTipMsg("添加个人账务类别成功!", true));
 		}
 		return View.ACCOUNT_TYPE_REDITRCT_ACTION;
 	}
@@ -104,7 +104,7 @@ public class AccountTypeController {
 			logger.error("修改个人账务类别{}失败!", type.getTypeName());
 		} else {
 			logger.info("修改个人账务类别{}成功!", type.getTypeName());
-			session.setAttribute(Constant.TIP_MSG, StringUtil.genTipMsg("修改个人账务类别成功!", Constant.SUCCESS_TIP));
+			session.setAttribute(Constant.TIP_MSG, StringUtil.genTipMsg("修改个人账务类别成功!", true));
 		}
 		// 记录日志
 		return View.ACCOUNT_TYPE_REDITRCT_ACTION;
@@ -125,7 +125,7 @@ public class AccountTypeController {
 			logger.error("删除失败,该数组不存在!");
 		} else {
 			logger.info("删除个人账务类别成功!");
-			session.setAttribute(Constant.TIP_MSG, StringUtil.genTipMsg("删除个人账务类别成功!", Constant.SUCCESS_TIP));
+			session.setAttribute(Constant.TIP_MSG, StringUtil.genTipMsg("删除个人账务类别成功!", true));
 		}
 		return View.ACCOUNT_TYPE_REDITRCT_ACTION;
 	}

@@ -131,7 +131,7 @@ public class AccountController {
 			logger.error("添加个人账务{}失败!", account.getAccountTitle());
 		} else {
 			logger.info("添加个人账务{}成功!", account.getAccountTitle());
-			session.setAttribute(Constant.TIP_MSG, StringUtil.genTipMsg("添加个人账务成功!", Constant.SUCCESS_TIP));
+			session.setAttribute(Constant.TIP_MSG, StringUtil.genTipMsg("添加个人账务成功!", true));
 		}
 		// 记录日志
 		LogHelper.getInstance().saveLog(adminLogDao, session, "添加账务", logResult, LogType.ACCOUNT_LOG.getType(),
@@ -156,7 +156,7 @@ public class AccountController {
 			logger.error("修改个人账务{}失败!", account.getAccountTitle());
 		} else {
 			logger.info("修改个人账务{}成功!", account.getAccountTitle());
-			session.setAttribute(Constant.TIP_MSG, StringUtil.genTipMsg("修改个人账务成功!", Constant.SUCCESS_TIP));
+			session.setAttribute(Constant.TIP_MSG, StringUtil.genTipMsg("修改个人账务成功!", true));
 		}
 		// 记录日志
 		LogHelper.getInstance().saveLog(adminLogDao, session, "修改账务", logResult, LogType.ACCOUNT_LOG.getType(),
@@ -181,7 +181,7 @@ public class AccountController {
 			logger.error("删除失败,该数组不存在!");
 		} else {
 			logger.info("删除个人账务成功!");
-			session.setAttribute(Constant.TIP_MSG, StringUtil.genTipMsg("删除个人账务成功!", Constant.SUCCESS_TIP));
+			session.setAttribute(Constant.TIP_MSG, StringUtil.genTipMsg("删除个人账务成功!", true));
 		}
 		for (Integer accountId : accountIds) {
 			Account account = accountService.findById(accountId);

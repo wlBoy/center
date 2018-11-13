@@ -24,11 +24,6 @@ import com.xn.hk.common.utils.string.StringUtil;
  */
 public class FileUtil {
 	private static final Logger logger = LoggerFactory.getLogger(FileUtil.class);
-	public static final String BIT_UNIT = "BIT";// 字节
-	public static final String KB_UNIT = "KB";// KB
-	public static final String MB_UNIT = "M";// 兆
-	public static final String GB_UNIT = "G";// G
-	public static final String TB_UNIT = "T";// T
 
 	/**
 	 * 删除指定路径的文件或递归删除文件夹中的所有文件
@@ -241,6 +236,17 @@ public class FileUtil {
 	}
 
 	/**
+	 * 通过文件名获取文件名(不包含后缀)
+	 * 
+	 * @param fileName
+	 *            文件名
+	 * @return 文件名(不包含后缀)
+	 */
+	public static String getFileBaseName(String fileName) {
+		return fileName.substring(0, fileName.lastIndexOf("."));
+	}
+
+	/**
 	 * 指定路径下的文件是否存在
 	 * 
 	 * @param filePath
@@ -317,29 +323,38 @@ public class FileUtil {
 	}
 
 	/**
-	 * 格式化文件大小
+	 * 获取指定文件的格式化文件大小
 	 * 
-	 * @param size
-	 *            文件大小
+	 * @param filepath
+	 *            文件路径
 	 * @param unit
-	 *            单位:B,K,M,G,T等
-	 * @return
+	 *            单位:BYTE,KB,MB,GB,TB,PB,EB,ZB,YB等
+	 * @return 换算单位后的文件大小
 	 */
-	public static double formatFileSize(int size, String unit) {
-		// fileSize为接收换算后文件大小的容器
+	public static double formatFileSize(String filepath, String unit) {
+		// 获取该文件大小，单位为:字节
+		double size = getFileSize(filepath) * 1.0;
 		double fileSize = 0;
-		if (BIT_UNIT.equalsIgnoreCase(unit.toUpperCase())) {
-			fileSize = size * 1.0;
-		} else if (KB_UNIT.equalsIgnoreCase(unit.toUpperCase())) {
-			fileSize = size * 1.0 / 1024;
-		} else if (MB_UNIT.equalsIgnoreCase(unit.toUpperCase())) {
-			fileSize = size * 1.0 / (1024 * 1024);
-		} else if (GB_UNIT.equalsIgnoreCase(unit.toUpperCase())) {
-			fileSize = size * 1.0 / (1024 * 1024 * 1024);
-		} else if (TB_UNIT.equalsIgnoreCase(unit.toUpperCase())) {
-			fileSize = size * 1.0 / (1024 * 1024 * 1024 * 1024);
+		if (UnitEnum.BYTE_UNIT.getCode().equalsIgnoreCase(unit)) {
+			fileSize = size;
+		} else if (UnitEnum.KB_UNIT.getCode().equalsIgnoreCase(unit)) {
+			fileSize = size / 1024;
+		} else if (UnitEnum.MB_UNIT.getCode().equalsIgnoreCase(unit)) {
+			fileSize = size / (1024 * 1024);
+		} else if (UnitEnum.GB_UNIT.getCode().equalsIgnoreCase(unit)) {
+			fileSize = size / (1024 * 1024 * 1024);
+		} else if (UnitEnum.TB_UNIT.getCode().equalsIgnoreCase(unit)) {
+			fileSize = size / (1024 * 1024 * 1024 * 1024);
+		} else if (UnitEnum.PB_UNIT.getCode().equalsIgnoreCase(unit)) {
+			fileSize = size / (1024 * 1024 * 1024 * 1024 * 1024);
+		} else if (UnitEnum.EB_UNIT.getCode().equalsIgnoreCase(unit)) {
+			fileSize = size / (1024 * 1024 * 1024 * 1024 * 1024 * 1024);
+		} else if (UnitEnum.ZB_UNIT.getCode().equalsIgnoreCase(unit)) {
+			fileSize = size / (1024 * 1024 * 1024 * 1024 * 1024 * 1024 * 1024);
+		} else if (UnitEnum.YB_UNIT.getCode().equalsIgnoreCase(unit)) {
+			fileSize = size / (1024 * 1024 * 1024 * 1024 * 1024 * 1024 * 1024 * 1024);
 		} else {
-			logger.info("暂不支持此{}单位转换", unit);
+			logger.error("不支持此{}单位转换!", unit);
 		}
 		return fileSize;
 	}
@@ -354,6 +369,7 @@ public class FileUtil {
 		// System.out.println(moveFile("D:/test/aa/aa.txt", "D:/test/aa/b/aa.txt"));
 		// System.out.println(getSystemKeyToFile("D:/test/aa.txt"));
 		// System.out.println(getFileSuffix("aa.txt"));
-		System.out.println(formatFileSize(getFileSize("E:\\develop tools\\apache-maven-3.5.3-bin.zip"), MB_UNIT));
+		System.out.println(formatFileSize("E:\\develop tools\\apache-maven-3.5.3-bin.zip", UnitEnum.MB_UNIT.getCode()));
+		System.out.println(getFileBaseName("aa.txt"));
 	}
 }

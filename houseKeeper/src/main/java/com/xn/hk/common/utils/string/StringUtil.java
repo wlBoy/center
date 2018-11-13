@@ -121,12 +121,18 @@ public final class StringUtil {
 	 * 
 	 * @param tip
 	 *            提示语
-	 * @param status
-	 *            success 或 error
+	 * @param isSuccess
+	 *            true则代表success，false代表error
 	 * @return 返回生成提示语
 	 */
-	public static String genTipMsg(String tip, String status) {
-		return "<script>$(function(){swal('OMG!', '" + tip + "', '" + status + "');});</script>";
+	public static String genTipMsg(String tip, boolean isSuccess) {
+		String status = null;
+		if (isSuccess) {
+			status = "success";
+		} else {
+			status = "error";
+		}
+		return String.format("<script>$(function(){swal('OMG!', '%s', '%s');});</script>", tip, status);
 	}
 
 	/**
@@ -312,5 +318,6 @@ public final class StringUtil {
 		System.out.println(encode2Binary("111中啊法￥多少"));
 		System.out.println(decode2String("313131E4B8ADE5958AE6B395EFBFA5E5A49AE5B091"));
 		System.out.println(replaceStrWithChar("15079077425", '*', 3, 7));
+		System.out.println(genTipMsg("aaa", false));
 	}
 }

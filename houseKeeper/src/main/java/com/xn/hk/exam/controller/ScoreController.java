@@ -114,7 +114,7 @@ public class ScoreController {
 		logger.info("用户{}试卷{}简答题总分为:{}", userId, paperId, sum);
 		// 根据试卷ID和用户ID给该试卷主观题打分
 		scoreService.updateScore(paperId, userId, sum);
-		session.setAttribute(Constant.TIP_MSG, StringUtil.genTipMsg("批阅试卷成功!", Constant.SUCCESS_TIP));
+		session.setAttribute(Constant.TIP_MSG, StringUtil.genTipMsg("批阅试卷成功!", true));
 		return View.SCORE_REDITRCT_ACTION;
 	}
 }

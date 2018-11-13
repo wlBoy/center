@@ -101,7 +101,7 @@ public class FileController {
 		// 1.上传文件非空判断
 		if (uploadFile.isEmpty()) {
 			logger.info("上传文件为空!");
-			session.setAttribute(Constant.TIP_MSG, StringUtil.genTipMsg("上传文件为空!", Constant.ERROR_TIP));
+			session.setAttribute(Constant.TIP_MSG, StringUtil.genTipMsg("上传文件为空!", false));
 			return View.FILE_REDITRCT_ACTION;
 		}
 		// 2.得到原始上传的文件名
@@ -111,8 +111,7 @@ public class FileController {
 		FileType type = FileType.getFileTypeBySuffix(suffix);
 		if (type == null) {
 			logger.error("系统不支持{}文件类型!", suffix);
-			session.setAttribute(Constant.TIP_MSG,
-					StringUtil.genTipMsg("系统不支持" + suffix + "文件类型!", Constant.ERROR_TIP));
+			session.setAttribute(Constant.TIP_MSG, StringUtil.genTipMsg("系统不支持" + suffix + "文件类型!", false));
 			return View.FILE_REDITRCT_ACTION;
 		}
 		// 4.构建新的文件名(UUID_老文件名)
@@ -130,7 +129,7 @@ public class FileController {
 			uploadFile.transferTo(localFile);
 		} catch (Exception e) {
 			logger.error("上传文件失败，原因为:", e);
-			session.setAttribute(Constant.TIP_MSG, StringUtil.genTipMsg("上传文件失败!", Constant.ERROR_TIP));
+			session.setAttribute(Constant.TIP_MSG, StringUtil.genTipMsg("上传文件失败!", false));
 			return View.FILE_REDITRCT_ACTION;
 		}
 		// 8.封装文件实体类，调用service中插入方法入库文件表
@@ -151,7 +150,7 @@ public class FileController {
 			logger.error("添加{}文件失败!", originalFileName);
 		} else {
 			logger.info("添加{}文件成功!", originalFileName);
-			session.setAttribute(Constant.TIP_MSG, StringUtil.genTipMsg("上传文件成功!", Constant.SUCCESS_TIP));
+			session.setAttribute(Constant.TIP_MSG, StringUtil.genTipMsg("上传文件成功!", true));
 		}
 		return View.FILE_REDITRCT_ACTION;
 	}
@@ -171,8 +170,7 @@ public class FileController {
 			long maxSize = ((MaxUploadSizeExceededException) ex).getMaxUploadSize();
 			String fileSize = maxSize / (1024 * 1024) + "M";
 			logger.error("上传文件大小超过{},异常信息为:{}", fileSize, ex);
-			session.setAttribute(Constant.TIP_MSG,
-					StringUtil.genTipMsg("上传文件大小超过" + fileSize + ",请更换文件!", Constant.ERROR_TIP));
+			session.setAttribute(Constant.TIP_MSG, StringUtil.genTipMsg("上传文件大小超过" + fileSize + ",请更换文件!", false));
 			return View.FILE_REDITRCT_ACTION;
 		}
 		return null;
@@ -193,7 +191,7 @@ public class FileController {
 			logger.error("修改{}文件失败!", file.getFileName());
 		} else {
 			logger.info("修改{}文件成功!", file.getFileName());
-			session.setAttribute(Constant.TIP_MSG, StringUtil.genTipMsg("修改文件成功!", Constant.SUCCESS_TIP));
+			session.setAttribute(Constant.TIP_MSG, StringUtil.genTipMsg("修改文件成功!", true));
 		}
 		return View.FILE_REDITRCT_ACTION;
 	}
@@ -219,7 +217,7 @@ public class FileController {
 			logger.error("删除失败,该数组不存在!");
 		} else {
 			logger.info("删除文件成功!");
-			session.setAttribute(Constant.TIP_MSG, StringUtil.genTipMsg("删除文件成功!", Constant.SUCCESS_TIP));
+			session.setAttribute(Constant.TIP_MSG, StringUtil.genTipMsg("删除文件成功!", true));
 		}
 		return View.FILE_REDITRCT_ACTION;
 	}
@@ -241,7 +239,7 @@ public class FileController {
 		// 1.校验下载文件ID
 		FileEntity fileEntity = fileService.findById(fileId);
 		if (fileEntity == null) {
-			request.getSession().setAttribute(Constant.TIP_MSG, StringUtil.genTipMsg("下载文件不存在!", Constant.ERROR_TIP));
+			request.getSession().setAttribute(Constant.TIP_MSG, StringUtil.genTipMsg("下载文件不存在!", false));
 			logger.error("下载文件ID不存在，加载文件信息失败!");
 			return View.FILE_REDITRCT_ACTION;
 		}
@@ -309,7 +307,7 @@ public class FileController {
 			// 5.记录日志
 			LogHelper.getInstance().saveLog(adminLogDao, request.getSession(), "下载文件", false,
 					LogType.FILE_LOG.getType(), fileEntity);
-			request.getSession().setAttribute(Constant.TIP_MSG, StringUtil.genTipMsg("路径下找不到该文件!", Constant.ERROR_TIP));
+			request.getSession().setAttribute(Constant.TIP_MSG, StringUtil.genTipMsg("路径下找不到该文件!", false));
 			return View.FILE_REDITRCT_ACTION;
 		}
 	}

@@ -75,13 +75,13 @@ public class DataDicTermController {
 	 * @return ModelAndView
 	 */
 	@RequestMapping(value = "/add.do")
-	public ModelAndView add(DataDicTerm dataDicTerm, HttpSession session,RedirectAttributes attr) {
+	public ModelAndView add(DataDicTerm dataDicTerm, HttpSession session, RedirectAttributes attr) {
 		int result = dataDicTermService.insert(session, "添加数据字典项", LogType.DATA_DIC_TERM_LOG.getType(), dataDicTerm);
 		if (result == Constant.ZERO_VALUE) {
 			logger.error("添加数据字典项{}失败!", dataDicTerm.getDataDicTermCode());
 		} else {
 			logger.info("添加数据字典项{}成功!", dataDicTerm.getDataDicTermCode());
-			session.setAttribute(Constant.TIP_MSG, StringUtil.genTipMsg("添加数据字典项成功!", Constant.SUCCESS_TIP));
+			session.setAttribute(Constant.TIP_MSG, StringUtil.genTipMsg("添加数据字典项成功!", true));
 		}
 		// 重定向至数据字典项分页的Action并将所属数据字典代码传递过去，保证操作完还是在显示所有的数据字典项列表的页面
 		attr.addAttribute(Constant.DATA_DIC_CODE, dataDicTerm.getDataDicCode());
@@ -97,13 +97,13 @@ public class DataDicTermController {
 	 * @return ModelAndView
 	 */
 	@RequestMapping(value = "/update.do")
-	public ModelAndView update(DataDicTerm dataDicTerm, HttpSession session,RedirectAttributes attr) {
+	public ModelAndView update(DataDicTerm dataDicTerm, HttpSession session, RedirectAttributes attr) {
 		int result = dataDicTermService.update(session, "修改数据字典项", LogType.DATA_DIC_TERM_LOG.getType(), dataDicTerm);
 		if (result == Constant.ZERO_VALUE) {
 			logger.error("修改数据字典项{}失败!", dataDicTerm.getDataDicTermCode());
 		} else {
 			logger.info("修改数据字典项{}成功!", dataDicTerm.getDataDicTermCode());
-			session.setAttribute(Constant.TIP_MSG, StringUtil.genTipMsg("修改数据字典项成功!", Constant.SUCCESS_TIP));
+			session.setAttribute(Constant.TIP_MSG, StringUtil.genTipMsg("修改数据字典项成功!", true));
 		}
 		// 重定向至数据字典项分页的Action并将所属数据字典代码传递过去，保证操作完还是在显示所有的数据字典项列表的页面
 		attr.addAttribute(Constant.DATA_DIC_CODE, dataDicTerm.getDataDicCode());
@@ -119,7 +119,7 @@ public class DataDicTermController {
 	 * @return ModelAndView
 	 */
 	@RequestMapping(value = "/delete.do")
-	public ModelAndView delete(Integer[] dataDicTermIds, HttpSession session,RedirectAttributes attr) {
+	public ModelAndView delete(Integer[] dataDicTermIds, HttpSession session, RedirectAttributes attr) {
 		// 根据字典项ID查找所属数据字典
 		DataDicTerm dataDicTerm = dataDicTermService.findById(dataDicTermIds[0]);
 		int result = dataDicTermService.batchDelete(session, "删除数据字典项", LogType.DATA_DIC_TERM_LOG.getType(),
@@ -128,7 +128,7 @@ public class DataDicTermController {
 			logger.error("删除失败,该数组不存在!");
 		} else {
 			logger.info("删除数据字典项成功!");
-			session.setAttribute(Constant.TIP_MSG, StringUtil.genTipMsg("删除数据字典项成功!", Constant.SUCCESS_TIP));
+			session.setAttribute(Constant.TIP_MSG, StringUtil.genTipMsg("删除数据字典项成功!", true));
 		}
 		// 重定向至数据字典项分页的Action并将所属数据字典代码传递过去，保证操作完还是在显示所有的数据字典项列表的页面
 		attr.addAttribute(Constant.DATA_DIC_CODE, dataDicTerm.getDataDicCode());

@@ -80,7 +80,7 @@ public class DataDicController {
 			logger.error("添加数据字典{}失败!", dataDic.getDataDicName());
 		} else {
 			logger.info("添加数据字典{}成功!", dataDic.getDataDicName());
-			session.setAttribute(Constant.TIP_MSG, StringUtil.genTipMsg("添加数据字典成功!", Constant.SUCCESS_TIP));
+			session.setAttribute(Constant.TIP_MSG, StringUtil.genTipMsg("添加数据字典成功!", true));
 		}
 		return View.DATA_DIC_REDITRCT_ACTION;
 	}
@@ -100,7 +100,7 @@ public class DataDicController {
 			logger.error("修改数据字典{}失败!", dataDic.getDataDicName());
 		} else {
 			logger.info("修改数据字典{}成功!", dataDic.getDataDicName());
-			session.setAttribute(Constant.TIP_MSG, StringUtil.genTipMsg("修改数据字典成功!", Constant.SUCCESS_TIP));
+			session.setAttribute(Constant.TIP_MSG, StringUtil.genTipMsg("修改数据字典成功!", true));
 		}
 		return View.DATA_DIC_REDITRCT_ACTION;
 	}
@@ -128,7 +128,7 @@ public class DataDicController {
 		}
 		// 1.当该数据字典中含有数据字典项，是不允许删除的
 		if (!flag) {
-			session.setAttribute(Constant.TIP_MSG, StringUtil.genTipMsg("删除数据字典失败，其中含有数据字典项!", Constant.ERROR_TIP));
+			session.setAttribute(Constant.TIP_MSG, StringUtil.genTipMsg("删除数据字典失败，其中含有数据字典项!", false));
 			return View.DATA_DIC_REDITRCT_ACTION;
 		}
 		// 2.批量删除数据字典
@@ -137,7 +137,7 @@ public class DataDicController {
 			logger.error("删除失败,该数组不存在!");
 		} else {
 			logger.info("删除数据字典成功!");
-			session.setAttribute(Constant.TIP_MSG, StringUtil.genTipMsg("删除数据字典成功!", Constant.SUCCESS_TIP));
+			session.setAttribute(Constant.TIP_MSG, StringUtil.genTipMsg("删除数据字典成功!", true));
 		}
 		return View.DATA_DIC_REDITRCT_ACTION;
 	}

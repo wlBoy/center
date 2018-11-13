@@ -76,4 +76,5 @@ public enum EnabledEnum {
 		}
 		return typeList;
 	}
+	
 }

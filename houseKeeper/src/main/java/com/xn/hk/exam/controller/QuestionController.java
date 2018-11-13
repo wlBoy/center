@@ -89,7 +89,7 @@ public class QuestionController {
 			logger.error("添加题目{}失败!", question.getQuestionTitle());
 		} else {
 			logger.info("添加题目{}成功!", question.getQuestionTitle());
-			session.setAttribute(Constant.TIP_MSG, StringUtil.genTipMsg("添加题目成功!", Constant.SUCCESS_TIP));
+			session.setAttribute(Constant.TIP_MSG, StringUtil.genTipMsg("添加题目成功!", true));
 		}
 		return View.QUESTION_REDITRCT_ACTION;
 	}
@@ -109,7 +109,7 @@ public class QuestionController {
 			logger.error("修改题目{}失败!", question.getQuestionTitle());
 		} else {
 			logger.info("修改题目{}成功!", question.getQuestionTitle());
-			session.setAttribute(Constant.TIP_MSG, StringUtil.genTipMsg("修改题目成功!", Constant.SUCCESS_TIP));
+			session.setAttribute(Constant.TIP_MSG, StringUtil.genTipMsg("修改题目成功!", true));
 		}
 		return View.QUESTION_REDITRCT_ACTION;
 	}
@@ -129,7 +129,7 @@ public class QuestionController {
 			logger.error("删除失败,该数组不存在!");
 		} else {
 			logger.info("删除题目成功!");
-			session.setAttribute(Constant.TIP_MSG, StringUtil.genTipMsg("删除题目成功!", Constant.SUCCESS_TIP));
+			session.setAttribute(Constant.TIP_MSG, StringUtil.genTipMsg("删除题目成功!", true));
 		}
 		return View.QUESTION_REDITRCT_ACTION;
 	}
