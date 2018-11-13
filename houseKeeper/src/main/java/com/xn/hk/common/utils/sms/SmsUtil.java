@@ -13,17 +13,17 @@ import com.xn.hk.common.utils.string.StringUtil;
 
 /**
  * 
- * @ClassName: SendSmsUtil
+ * @ClassName: SmsUtil
  * @Package: com.xn.hk.common.utils.sms
  * @Description: 调用第三方SDK(中国网建SMS短信通)发送短信，短信条数需要付费购买
  * @Author: wanlei
  * @Date: 2018年9月29日 下午8:41:07
  */
-public class SendSmsUtil {
+public class SmsUtil {
 	/**
 	 * 记录日志
 	 */
-	private static final Logger logger = LoggerFactory.getLogger(SendSmsUtil.class);
+	private static final Logger logger = LoggerFactory.getLogger(SmsUtil.class);
 	private static final String GBK_URL = "http://gbk.api.smschinese.cn";
 	private static final String UTF8_URL = "http://utf8.api.smschinese.cn";
 	// 中国网建SMS短信通SDK中的key(官方固定的)
@@ -37,9 +37,9 @@ public class SendSmsUtil {
 			.get(SystemCfg.SMS_CHARACTER_CODING).toLowerCase();
 	private static final String CONTENT_TYPE_VALUE = "application/x-www-form-urlencoded;charset="
 			+ SMS_CHARACTER_CODING;
-	private static SendSmsUtil instance;
+	private static SmsUtil instance;
 
-	private SendSmsUtil() {
+	private SmsUtil() {
 	}
 
 	/**
@@ -47,9 +47,9 @@ public class SendSmsUtil {
 	 * 
 	 * @return
 	 */
-	public static synchronized SendSmsUtil getInstance() {
+	public static synchronized SmsUtil getInstance() {
 		if (instance == null) {
-			instance = new SendSmsUtil();
+			instance = new SmsUtil();
 		}
 		return instance;
 	}
@@ -110,6 +110,6 @@ public class SendSmsUtil {
 		String code = StringUtil.randomDigit(6);// 随机生成6位验证码数字
 		String smsText = "您正在注册本站会员,本次验证码为:" + code + ",有效时间为5分钟!";
 		// 调用该方法发送验证码短信
-		SendSmsUtil.getInstance().sendSms(smsText);
+		SmsUtil.getInstance().sendSms(smsText);
 	}
 }

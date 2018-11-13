@@ -31,6 +31,34 @@ public class Result implements Serializable {
 		super();
 	}
 
+	/**
+	 * 错误提示的实体构造方法
+	 * 
+	 * @param msg
+	 *            错误提示信息
+	 */
+	public Result(String msg) {
+		super();
+		this.code = FAILURE;
+		this.msg = msg;
+		this.data = null;
+	}
+
+	/**
+	 * 成功提示的实体构造方法
+	 * 
+	 * @param msg
+	 *            成功提示信息
+	 * @param data
+	 *            返回的数据对象
+	 */
+	public Result(String msg, Object data) {
+		super();
+		this.code = SUCCESS;
+		this.msg = msg;
+		this.data = data;
+	}
+
 	public Result(Integer code, String msg, Object data) {
 		super();
 		this.code = code;
@@ -72,23 +100,36 @@ public class Result implements Serializable {
 	}
 
 	/**
-	 * 当参数为空时，返回参数为空的提示信息
+	 * 返回失败信息的信息实体
 	 * 
 	 * @param desc
-	 *            参数提示语
+	 *            失败提示语
 	 * @return 返回提示信息实体
 	 */
-	public static Result genNullParamTip(String desc) {
-		return new Result(FAILURE, desc + "参数不能为空!", null);
+	public static Result genErrorTip(String desc) {
+		return new Result(desc);
 	}
 
 	/**
-	 * 生成信息实体
+	 * 返回成功信息的信息实体
+	 * 
+	 * @param desc
+	 *            成功提示语
+	 * @param data
+	 *            返回数据
+	 * @return 返回提示信息实体
+	 */
+	public static Result genSuccessTip(String desc, Object data) {
+		return new Result(desc, data);
+	}
+
+	/**
+	 * 返回信息实体
 	 * 
 	 * @param code
 	 *            状态码
 	 * @param desc
-	 *            提示信息
+	 *            成功提示语
 	 * @param data
 	 *            返回数据
 	 * @return 返回提示信息实体

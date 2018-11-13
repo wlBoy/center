@@ -1,7 +1,5 @@
 package com.xn.hk.system.controller;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -31,10 +29,6 @@ import com.xn.hk.system.service.UserService;
 @RestController
 @RequestMapping("/system/rest")
 public class SystemRestController {
-	/**
-	 * 记录日志
-	 */
-	private static final Logger logger = LoggerFactory.getLogger(SystemRestController.class);
 	@Autowired
 	private UserService userService;
 	@Autowired
@@ -55,15 +49,13 @@ public class SystemRestController {
 	public Result findByUserId(Integer userId) {
 		// 校验参数非空性
 		if (userId == null) {
-			return Result.genNullParamTip("用户ID");
+			return Result.genErrorTip("用户ID不能为空!");
 		}
 		User user = userService.findById(userId);
 		if (user == null) {
-			logger.info("findByUserId-->{}用户不存在!", userId);
-			Result.genTip(Result.FAILURE, "该用户不存在!", null);
+			Result.genErrorTip("该用户不存在!");
 		}
-		logger.info("findByUserId-->查到{}用户!", userId);
-		return Result.genTip(Result.SUCCESS, "查到该用户!", user);
+		return Result.genSuccessTip("查到该用户!", user);
 	}
 
 	/**
@@ -77,15 +69,13 @@ public class SystemRestController {
 	public Result findByUserName(String userName) {
 		// 校验参数非空性
 		if (StringUtil.isEmpty(userName)) {
-			return Result.genNullParamTip("用户名");
+			return Result.genErrorTip("用户名不能为空!");
 		}
 		User user = userService.findByName(userName);
 		if (user == null) {
-			logger.info("findByUserName-->{}用户不存在!", userName);
-			Result.genTip(Result.FAILURE, "该用户不存在!", null);
+			Result.genErrorTip("该用户不存在!");
 		}
-		logger.info("findByUserName-->查到{}用户!", userName);
-		return Result.genTip(Result.SUCCESS, "查到该用户!", user);
+		return Result.genSuccessTip("查到该用户!", user);
 	}
 
 	/**
@@ -99,15 +89,13 @@ public class SystemRestController {
 	public Result findByRoleId(Integer roleId) {
 		// 校验参数非空性
 		if (roleId == null) {
-			return Result.genNullParamTip("角色ID");
+			return Result.genErrorTip("角色ID不能为空!");
 		}
 		Role role = roleService.findById(roleId);
 		if (role == null) {
-			logger.info("findByRoleId-->{}角色不存在!", roleId);
-			Result.genTip(Result.FAILURE, "该角色不存在!", null);
+			Result.genErrorTip("该角色不存在!");
 		}
-		logger.info("findByRoleId-->查到{}角色!", roleId);
-		return Result.genTip(Result.SUCCESS, "查到该角色!", role);
+		return Result.genSuccessTip("查到该角色!", role);
 	}
 
 	/**
@@ -121,15 +109,13 @@ public class SystemRestController {
 	public Result findByRoleName(String roleName) {
 		// 校验参数非空性
 		if (StringUtil.isEmpty(roleName)) {
-			return Result.genNullParamTip("角色名");
+			return Result.genErrorTip("角色名不能为空!");
 		}
 		Role role = roleService.findByName(roleName);
 		if (role == null) {
-			logger.info("findByRoleName-->{}角色不存在!", roleName);
-			Result.genTip(Result.FAILURE, "该角色不存在!", null);
+			Result.genErrorTip("该角色不存在!");
 		}
-		logger.info("findByRoleName-->查到{}角色!", roleName);
-		return Result.genTip(Result.SUCCESS, "查到该角色!", role);
+		return Result.genSuccessTip("查到该角色!", role);
 	}
 
 	/**
@@ -143,15 +129,13 @@ public class SystemRestController {
 	public Result findByModuleId(Integer moduleId) {
 		// 校验参数非空性
 		if (moduleId == null) {
-			return Result.genNullParamTip("模块ID");
+			return Result.genErrorTip("模块ID不能为空!");
 		}
 		Module module = moduleService.findById(moduleId);
 		if (module == null) {
-			logger.info("findByModuleId-->{}模块不存在!", moduleId);
-			return Result.genTip(Result.FAILURE, "该模块不存在!", null);
+			return Result.genErrorTip("该模块不存在!");
 		}
-		logger.info("findByModuleId-->查到{}模块!", moduleId);
-		return Result.genTip(Result.SUCCESS, "查到该模块!", module);
+		return Result.genSuccessTip("查到该模块!", module);
 	}
 
 	/**
@@ -165,15 +149,13 @@ public class SystemRestController {
 	public Result findByModuleName(String moduleName) {
 		// 校验参数非空性
 		if (StringUtil.isEmpty(moduleName)) {
-			return Result.genNullParamTip("模块名");
+			return Result.genErrorTip("模块名不能为空!");
 		}
 		Module module = moduleService.findByName(moduleName);
 		if (module == null) {
-			logger.info("findByModuleName-->{}模块不存在!", moduleName);
-			return Result.genTip(Result.FAILURE, "该模块不存在!", null);
+			return Result.genErrorTip("该模块不存在!");
 		}
-		logger.info("findByModuleName-->查到{}模块!", moduleName);
-		return Result.genTip(Result.SUCCESS, "查到该模块!", module);
+		return Result.genSuccessTip("查到该模块!", module);
 	}
 
 	/**
@@ -189,19 +171,17 @@ public class SystemRestController {
 	public Result checkOldPwd(Integer userId, String newPwd) {
 		// 校验参数非空性
 		if (userId == null) {
-			return Result.genNullParamTip("用户ID");
+			return Result.genErrorTip("用户ID不能为空!");
 		}
 		if (StringUtil.isEmpty(newPwd)) {
-			return Result.genNullParamTip("新密码");
+			return Result.genErrorTip("新密码不能为空!");
 		}
 		User user = userService.findById(userId);
 		String userPwd = HashUtil.encryptStr(newPwd + SystemCfg.USER_PWD_KEY);// 新密码加密
-		if (userPwd.equals(user.getUserPwd())) {
-			logger.info("checkOldPwd-->新密码与旧密码一致!用户ID为:{}", userId);
-			return Result.genTip(Result.FAILURE, "新密码与旧密码一致!", newPwd);
+		if (!userPwd.equals(user.getUserPwd())) {
+			return Result.genErrorTip("新密码与旧密码不一致!");
 		}
-		logger.info("checkOldPwd-->新密码与旧密码不一致!用户ID为:{}", userId);
-		return Result.genTip(Result.SUCCESS, "新密码与旧密码不一致!", newPwd);
+		return Result.genSuccessTip("新密码与旧密码一致!", newPwd);
 	}
 
 	/**
@@ -217,12 +197,12 @@ public class SystemRestController {
 	public Result test(Integer userId, String userName) {
 		// 校验参数非空性
 		if (userId == null) {
-			return Result.genNullParamTip("用户ID");
+			return Result.genErrorTip("用户ID不能为空!");
 		}
 		if (StringUtil.isEmpty(userName)) {
-			return Result.genNullParamTip("用户姓名");
+			return Result.genErrorTip("用户姓名不能为空!");
 		}
-		return Result.genTip(Result.SUCCESS, "请求成功!", userId + "-" + userName);
+		return Result.genSuccessTip("请求成功!", userId + "-" + userName);
 	}
 
 	/**
@@ -236,14 +216,12 @@ public class SystemRestController {
 	public Result findByFileId(String fileId) {
 		// 校验参数非空性
 		if (fileId == null) {
-			return Result.genNullParamTip("文件ID");
+			return Result.genErrorTip("文件ID不能为空!");
 		}
 		FileEntity file = fileService.findById(fileId);
 		if (file == null) {
-			logger.info("findByFileId-->{}文件不存在!", fileId);
-			Result.genTip(Result.FAILURE, "该文件不存在!", null);
+			Result.genErrorTip("该文件不存在!");
 		}
-		logger.info("findByFileId-->查到{}文件!", fileId);
-		return Result.genTip(Result.SUCCESS, "查到该文件!", file);
+		return Result.genSuccessTip("查到该文件!", file);
 	}
 }

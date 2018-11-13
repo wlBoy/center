@@ -1,7 +1,5 @@
 package com.xn.hk.dataDic.controller;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -26,10 +24,6 @@ import com.xn.hk.dataDic.service.DataDicTermService;
 @RequestMapping("/data/dic/rest")
 public class DataRestController {
 	/**
-	 * 记录日志
-	 */
-	private static final Logger logger = LoggerFactory.getLogger(DataRestController.class);
-	/**
 	 * 注入service层
 	 */
 	@Autowired
@@ -48,15 +42,13 @@ public class DataRestController {
 	public Result findByDataDicId(Integer dataDicId) {
 		// 校验参数非空性
 		if (dataDicId == null) {
-			return Result.genNullParamTip("数据字典ID");
+			return Result.genErrorTip("数据字典ID不能为空!");
 		}
 		DataDic dataDic = dataDicService.findById(dataDicId);
 		if (dataDic == null) {
-			logger.info("findByDataDicId-->查到{}数据字典!", dataDicId);
-			return new Result(Result.FAILURE, "该数据字典不存在!", null);
+			return Result.genErrorTip("该数据字典不存在!");
 		}
-		logger.info("findByDataDicId-->查到{}数据字典!", dataDicId);
-		return Result.genTip(Result.SUCCESS, "查到该数据字典!", dataDic);
+		return Result.genSuccessTip("查到该数据字典!", dataDic);
 	}
 
 	/**
@@ -70,15 +62,13 @@ public class DataRestController {
 	public Result findByDataDicCode(String dataDicCode) {
 		// 校验参数非空性
 		if (StringUtil.isEmpty(dataDicCode)) {
-			return Result.genNullParamTip("数据字典代码");
+			return Result.genErrorTip("数据字典代码不能为空!");
 		}
 		DataDic dataDic = dataDicService.findByName(dataDicCode);
 		if (dataDic == null) {
-			logger.info("findByDataDicCode-->{}数据字典不存在!", dataDicCode);
-			return Result.genTip(Result.FAILURE, "该数据字典不存在!", null);
+			return Result.genErrorTip("该数据字典不存在!");
 		}
-		logger.info("findByDataDicCode-->查到{}数据字典!", dataDicCode);
-		return Result.genTip(Result.SUCCESS, "查到该数据字典!", dataDic);
+		return Result.genSuccessTip("查到该数据字典!", dataDic);
 	}
 
 	/**
@@ -92,15 +82,13 @@ public class DataRestController {
 	public Result findByDataDicTermId(Integer dataDicTermId) {
 		// 校验参数非空性
 		if (dataDicTermId == null) {
-			return Result.genNullParamTip("数据字典项ID");
+			return Result.genErrorTip("数据字典项ID不能为空!");
 		}
 		DataDicTerm dataDicTerm = dataDicTermService.findById(dataDicTermId);
 		if (dataDicTerm == null) {
-			logger.info("findByDataDicTermId-->查到{}数据字典项!", dataDicTermId);
-			return new Result(Result.FAILURE, "该数据字典项不存在!", null);
+			return Result.genErrorTip("该数据字典项不存在!");
 		}
-		logger.info("findByDataDicTermId-->查到{}数据字典项!", dataDicTermId);
-		return Result.genTip(Result.SUCCESS, "查到该数据字典项!", dataDicTerm);
+		return Result.genSuccessTip("查到该数据字典项!", dataDicTerm);
 	}
 
 	/**
@@ -116,14 +104,12 @@ public class DataRestController {
 	public Result findByDataDicTermCode(String dataDicTermCode, String dataDicCode) {
 		// 校验参数非空性
 		if (StringUtil.isEmpty(dataDicTermCode)) {
-			return Result.genNullParamTip("数据字典项代码");
+			return Result.genErrorTip("数据字典项代码不能为空!");
 		}
 		DataDicTerm dataDicTerm = dataDicTermService.findTermCodeAndDataDicCode(dataDicTermCode, dataDicCode);
 		if (dataDicTerm == null) {
-			logger.info("findByDataDicTermCode-->{}数据字典项不存在!", dataDicTermCode);
-			return Result.genTip(Result.FAILURE, "该数据字典项不存在!", null);
+			return Result.genErrorTip("该数据字典项不存在!");
 		}
-		logger.info("findByDataDicTermCode-->查到{}数据字典项!", dataDicTermCode);
-		return Result.genTip(Result.SUCCESS, "查到该数据字典项!", dataDicTerm);
+		return Result.genSuccessTip("查到该数据字典项!", dataDicTerm);
 	}
 }

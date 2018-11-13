@@ -24,23 +24,23 @@ import com.xn.hk.common.utils.cfg.SystemCfg;
 
 /**
  * 
- * @ClassName: EmailProxy
+ * @ClassName: EmailUtil
  * @Package: com.xn.hk.common.utils.email
  * @Description: 用来发email的工具类
  * @Author: wanlei
  * @Date: 2018年9月12日 上午11:37:17
  */
-public class EmailProxy {
-	private static EmailProxy sender = null;
+public class EmailUtil {
+	private static EmailUtil sender = null;
 	/**
 	 * 记录日志
 	 */
-	private static final Logger logger = LoggerFactory.getLogger(EmailProxy.class);
+	private static final Logger logger = LoggerFactory.getLogger(EmailUtil.class);
 	private static final String MAIL_SMTP_HOST = "mail.smtp.host";// 邮箱服务器(固定的)
 	private static final String MAIL_SMTP_PORT = "mail.smtp.port";// 服务器端口号(固定的)
 	private static final String MAIL_SMTP_AUTH = "mail.smtp.auth";// 是否需要授权验证(固定的)
 
-	private EmailProxy() {
+	private EmailUtil() {
 		super();
 	}
 
@@ -49,9 +49,9 @@ public class EmailProxy {
 	 * 
 	 * @return
 	 */
-	public synchronized static EmailProxy getInstance() {
+	public synchronized static EmailUtil getInstance() {
 		if (sender == null) {
-			sender = new EmailProxy();
+			sender = new EmailUtil();
 		}
 		return sender;
 	}
@@ -169,7 +169,7 @@ public class EmailProxy {
 		mailInfo.setContent("这是邮箱内容");
 		// 这个类主要来发送邮件
 		try {
-			EmailProxy.getInstance().sendTextMail(mailInfo);
+			EmailUtil.getInstance().sendTextMail(mailInfo);
 		} catch (Exception e) {
 			logger.error("邮件发送失败，原因为:" + e.getMessage());
 		}

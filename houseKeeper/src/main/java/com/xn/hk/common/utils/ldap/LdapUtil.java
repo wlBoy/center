@@ -25,14 +25,14 @@ import com.xn.hk.common.utils.string.StringUtil;
 
 /**
  * 
- * @ClassName: LdapOpt
+ * @ClassName: LdapUtil
  * @Package:com.xn.hk.common.utils.ldap
  * @Description: LDAP基本操作类
  * @Author: wanl
  * @Date: 2018年9月20日 上午11:16:20
  */
-public class LdapOpt {
-	private static final Logger logger = LoggerFactory.getLogger(LdapOpt.class);
+public class LdapUtil {
+	private static final Logger logger = LoggerFactory.getLogger(LdapUtil.class);
 	// 加密通道端口
 	private static final String SSL_LDAP_URL_PORT = "636";
 	// 非加密通道端口

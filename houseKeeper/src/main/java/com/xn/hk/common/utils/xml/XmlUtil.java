@@ -25,7 +25,7 @@ import com.xn.hk.common.utils.string.StringUtil;
 
 /**
  * 
- * @ClassName: XmlOpt
+ * @ClassName: XmlUtil
  * @Package: com.xn.hk.common.utils.xml
  * @Description: xml操作工具类
  * @Author: wanlei

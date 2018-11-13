@@ -1,7 +1,5 @@
 package com.xn.hk.exam.controller;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -28,10 +26,6 @@ import com.xn.hk.exam.service.QuestionTypeService;
 @RequestMapping("/exam/rest")
 public class ExamRestController {
 	/**
-	 * 记录日志
-	 */
-	private static final Logger logger = LoggerFactory.getLogger(ExamRestController.class);
-	/**
 	 * 注入service层
 	 */
 	@Autowired
@@ -52,15 +46,13 @@ public class ExamRestController {
 	public Result findByTypeId(Integer typeId) {
 		// 校验参数非空性
 		if (typeId == null) {
-			return Result.genNullParamTip("题型ID");
+			return Result.genErrorTip("题型ID不能为空!");
 		}
 		QuestionType type = questionTypeService.findById(typeId);
 		if (type == null) {
-			logger.info("findByTypeId-->{}题型不存在!", typeId);
-			return Result.genTip(Result.FAILURE, "该题型不存在!", null);
+			return Result.genErrorTip("该题型不存在!");
 		}
-		logger.info("findByTypeId-->查到{}题型!", typeId);
-		return Result.genTip(Result.SUCCESS, "查到该题型!", type);
+		return Result.genSuccessTip("查到该题型!", type);
 	}
 
 	/**
@@ -74,15 +66,13 @@ public class ExamRestController {
 	public Result findByTypeName(String typeName) {
 		// 校验参数非空性
 		if (StringUtil.isEmpty(typeName)) {
-			return Result.genNullParamTip("题型名称");
+			return Result.genErrorTip("题型名称不能为空!");
 		}
 		QuestionType type = questionTypeService.findByName(typeName);
 		if (type == null) {
-			logger.info("findByTypeName-->{}题型不存在!", typeName);
-			return Result.genTip(Result.FAILURE, "该题型不存在!", null);
+			return Result.genErrorTip("该题型不存在!");
 		}
-		logger.info("findByTypeName-->查到{}题型!", typeName);
-		return Result.genTip(Result.SUCCESS, "查到该题型!", type);
+		return Result.genSuccessTip("查到该题型!", type);
 	}
 
 	/**
@@ -96,15 +86,13 @@ public class ExamRestController {
 	public Result findByQuestionId(Integer questionId) {
 		// 校验参数非空性
 		if (questionId == null) {
-			return Result.genNullParamTip("题目ID");
+			return Result.genErrorTip("题目ID不能为空!");
 		}
 		Question question = questionService.findById(questionId);
 		if (question == null) {
-			logger.info("findByQuestionId-->{}题目不存在!", questionId);
-			return Result.genTip(Result.FAILURE, "该题目不存在!", null);
+			return Result.genErrorTip("该题目不存在!");
 		}
-		logger.info("findByQuestionId-->查到{}题目!", questionId);
-		return Result.genTip(Result.SUCCESS, "查到该题目!", question);
+		return Result.genSuccessTip("查到该题目!", question);
 	}
 
 	/**
@@ -118,14 +106,12 @@ public class ExamRestController {
 	public Result findByPaperId(Integer paperId) {
 		// 校验参数非空性
 		if (paperId == null) {
-			return Result.genNullParamTip("试卷iD");
+			return Result.genErrorTip("试卷ID不能为空!");
 		}
 		Paper paper = paperService.findById(paperId);
 		if (paper == null) {
-			logger.info("findByPaperId-->{}试卷不存在!", paperId);
-			return Result.genTip(Result.FAILURE, "该试卷不存在!", null);
+			return Result.genErrorTip("该试卷不存在!");
 		}
-		logger.info("findByPaperId-->查到{}试卷!", paperId);
-		return Result.genTip(Result.SUCCESS, "查到该试卷!", paper);
+		return Result.genSuccessTip("查到该试卷!", paper);
 	}
 }

@@ -2,8 +2,6 @@ package com.xn.hk.account.controller;
 
 import javax.servlet.http.HttpSession;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -30,10 +28,6 @@ import com.xn.hk.system.model.User;
 @RequestMapping("/account/rest")
 public class AccountRestController {
 	/**
-	 * 记录日志
-	 */
-	private static final Logger logger = LoggerFactory.getLogger(AccountRestController.class);
-	/**
 	 * 注入service层
 	 */
 	@Autowired
@@ -52,15 +46,13 @@ public class AccountRestController {
 	public Result findByTypeId(Integer typeId) {
 		// 校验参数非空性
 		if (typeId == null) {
-			return Result.genNullParamTip("账务类别ID");
+			return Result.genErrorTip("账务类别ID不能为空!");
 		}
 		AccountType type = accountTypeService.findById(typeId);
 		if (type == null) {
-			logger.info("findByTypeId-->查到{}账务类别!", typeId);
-			return new Result(Result.FAILURE, "该账务类别不存在!", null);
+			return Result.genErrorTip("该账务类别不存在!");
 		}
-		logger.info("findByTypeId-->查到{}账务类别!", typeId);
-		return Result.genTip(Result.SUCCESS, "查到该账务类别!", type);
+		return Result.genSuccessTip("查到该账务类别!", type);
 	}
 
 	/**
@@ -78,21 +70,19 @@ public class AccountRestController {
 			// 从session中拿出当前用户信息
 			User user = (User) session.getAttribute(Constant.SESSION_USER);
 			if (user == null) {
-				return Result.genNullParamTip("用户ID");
+				return Result.genErrorTip("用户ID不能为空!");
 			}
 			userId = user.getUserId();
 		}
 		// 校验参数非空性
 		if (StringUtil.isEmpty(typeName)) {
-			return Result.genNullParamTip("账务类别名称");
+			return Result.genErrorTip("账务类别名称不能为空!");
 		}
 		AccountType type = accountTypeService.findByNameAndUserId(typeName, userId);
 		if (type == null) {
-			logger.info("findByTypeName-->{}个人账务类别不存在!", typeName);
-			return Result.genTip(Result.FAILURE, "该个人账务类别不存在!", null);
+			return Result.genErrorTip("该个人账务类别不存在!");
 		}
-		logger.info("findByTypeName-->查到{}个人账务类别!", typeName);
-		return Result.genTip(Result.SUCCESS, "查到该个人账务类别!", type);
+		return Result.genSuccessTip("查到该个人账务类别!", type);
 	}
 
 	/**
@@ -106,15 +96,13 @@ public class AccountRestController {
 	public Result findByAccountId(Integer accountId) {
 		// 校验参数非空性
 		if (accountId == null) {
-			return Result.genNullParamTip("账务ID");
+			return Result.genErrorTip("账务ID不能为空!");
 		}
 		Account account = accountService.findById(accountId);
 		if (account == null) {
-			logger.info("findByAccountId-->{}账务不存在!", accountId);
-			return Result.genTip(Result.FAILURE, "该账务不存在!", null);
+			return Result.genErrorTip("该账务不存在!");
 		}
-		logger.info("findByAccountId-->查到{}账务!", accountId);
-		return Result.genTip(Result.SUCCESS, "查到该账务!", account);
+		return Result.genSuccessTip("查到该账务!", account);
 	}
 
 	/**
@@ -132,20 +120,18 @@ public class AccountRestController {
 			// 从session中拿出当前用户信息
 			User user = (User) session.getAttribute(Constant.SESSION_USER);
 			if (user == null) {
-				return Result.genNullParamTip("用户ID");
+				return Result.genErrorTip("用户ID不能为空!");
 			}
 			userId = user.getUserId();
 		}
 		// 校验参数非空性
 		if (StringUtil.isEmpty(accountTitle)) {
-			return Result.genNullParamTip("账务标题");
+			return Result.genErrorTip("账务标题不能为空!");
 		}
 		Account account = accountService.findByNameAndUserId(accountTitle, userId);
 		if (account == null) {
-			logger.info("findByAccountTitle-->{}个人账务不存在!", accountTitle);
-			return Result.genTip(Result.FAILURE, "该个人账务不存在!", null);
+			return Result.genErrorTip("该个人账务不存在!");
 		}
-		logger.info("findByAccountTitle-->查到{}个人账务!", accountTitle);
-		return Result.genTip(Result.SUCCESS, "查到该个人账务!", account);
+		return Result.genSuccessTip("查到该个人账务!", account);
 	}
 }

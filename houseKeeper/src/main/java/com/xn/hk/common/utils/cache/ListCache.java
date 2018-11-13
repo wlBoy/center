@@ -134,7 +134,7 @@ public class ListCache<T> extends TimerTask implements ICache<T>, Serializable {
 				}
 			}
 		} else {
-			// 如果存在则需要清理，如果不存在测不需要清理
+			// 如果存在则需要清理，如果不存在则不需要清理
 			synchronized (cacheList) {
 				if (cacheList.contains(topElement)) {
 					T keyElement = null;
@@ -150,7 +150,7 @@ public class ListCache<T> extends TimerTask implements ICache<T>, Serializable {
 	}
 
 	public void onRemoveFromCache(T element) {
-
+		remove(element);
 	};
 
 	public ConcurrentLinkedDeque<T> getValues() {

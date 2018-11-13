@@ -24,7 +24,7 @@ function checkOldPwd(obj){
 	var userId = '${user.userId}';
 	var newPwd = $(obj).val();
 	$.get("${pageContext.request.contextPath}/system/rest/checkOldPwd.do","userId="+userId+"&newPwd="+newPwd,function(result){
-		if(result.code == 0){
+		if(result.code == 1){
 			$(obj).val("");
 			$(obj).select();
 			swal("OMG!", "新密码与旧密码一致，请更换!", "error");

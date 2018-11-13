@@ -1,4 +1,4 @@
-package com.xn.hk.common.utils.blockcpu;
+package com.xn.hk.common.utils.tool;
 
 /**
  * 
