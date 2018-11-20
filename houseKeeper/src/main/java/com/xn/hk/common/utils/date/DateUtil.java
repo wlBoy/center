@@ -4,11 +4,15 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Random;
+import java.util.TreeMap;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -463,7 +467,101 @@ public final class DateUtil {
 		return newDate;
 	}
 
+	/**
+	 * 得到最近天数的map集合,key为描述,value为yyyy-MM-dd格式的时间字符串
+	 * 
+	 * @return 最近天数的map集合
+	 */
+	public static Map<String, Object> getRecentDayMap() {
+		Map<String, Object> logTimeMap = new TreeMap<String, Object>();
+		Calendar cal = Calendar.getInstance();
+		cal.set(Calendar.HOUR_OF_DAY, 0);
+		cal.set(Calendar.MINUTE, 0);
+		cal.set(Calendar.SECOND, 0);
+		cal.set(Calendar.MILLISECOND, 0);
+		cal.add(Calendar.DATE, -1);
+		logTimeMap.put("最近一天", formatDate(cal.getTime()));
+		cal.add(Calendar.DATE, -6);
+		logTimeMap.put("最近一周", formatDate(cal.getTime()));
+		cal.add(Calendar.DATE, -8);
+		logTimeMap.put("最近半月", formatDate(cal.getTime()));
+		cal = Calendar.getInstance();
+		cal.add(Calendar.MONTH, -1);
+		logTimeMap.put("最近1月", formatDate(cal.getTime()));
+		return logTimeMap;
+	}
+
+	/**
+	 * 得到最近月份的map集合,key为描述,value为yyyy-MM-dd格式的时间字符串
+	 * 
+	 * @return 最近月份的map集合
+	 */
+	public static Map<String, Object> getRecentMonthMap() {
+		Map<String, Object> logTimeMap = new TreeMap<String, Object>();
+		Calendar cal = Calendar.getInstance();
+		cal.set(Calendar.HOUR_OF_DAY, 0);
+		cal.set(Calendar.MINUTE, 0);
+		cal.set(Calendar.SECOND, 0);
+		cal.set(Calendar.MILLISECOND, 0);
+		cal.add(Calendar.MONTH, -1);
+		logTimeMap.put("最近1月", formatDate(cal.getTime()));
+		cal.add(Calendar.MONTH, -2);
+		logTimeMap.put("最近3月", formatDate(cal.getTime()));
+		cal.add(Calendar.MONTH, -3);
+		logTimeMap.put("最近6月", formatDate(cal.getTime()));
+		cal.add(Calendar.MONTH, -6);
+		logTimeMap.put("最近1年", formatDate(cal.getTime()));
+		return logTimeMap;
+	}
+
+	/**
+	 * 得到一年中的所有月份的数字集合
+	 * 
+	 * @return 得到一年中的所有月份的数字集合
+	 */
+	public static List<Integer> getSumMonthList() {
+		List<Integer> yearList = new ArrayList<Integer>();
+		for (int i = 1; i <= 12; i++) {
+			yearList.add(i);
+		}
+		return yearList;
+	}
+
+	/**
+	 * 得到一月中的所有日的数字集合
+	 * 
+	 * @return 得到一月中的所有日的数字集合
+	 */
+	public static List<Integer> getSumDayList() {
+		List<Integer> yearList = new ArrayList<Integer>();
+		for (int i = 1; i <= 31; i++) {
+			yearList.add(i);
+		}
+		return yearList;
+	}
+
+	/**
+	 * 得到一天中的所有日的数字集合
+	 * 
+	 * @return 得到一天中的所有小时的数字集合
+	 */
+	public static List<Integer> getSumHourList() {
+		List<Integer> hourList = new ArrayList<Integer>();
+		for (int i = 0; i < 24; i++) {
+			hourList.add(i);
+		}
+		return hourList;
+	}
+
 	public static void main(String[] args) {
 		System.out.println(genCurrentSecond());
+		Map<String, Object> timeMap = getRecentDayMap();
+		for (String key : timeMap.keySet()) {
+			System.out.println(key + "-" + timeMap.get(key));
+		}
+		List<Integer> list = getSumHourList();
+		for (Integer integer : list) {
+			System.out.println(integer);
+		}
 	}
 }
