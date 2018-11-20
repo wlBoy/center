@@ -40,6 +40,8 @@ public final class DateUtil {
 	public static final String PATTERN_SIMPLE_DATE = "yyyyMMdd";
 	private static final String[] DAY_OF_WEEK = new String[] { "SUNDAY", "MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY",
 			"FRIDAY", "SATURDAY" };
+	// 初始化日历实例
+	private static final Calendar gregorianCalendar = new GregorianCalendar();
 
 	/**
 	 * 把当前时间格式化为yyyy-MM-dd格式
@@ -130,8 +132,17 @@ public final class DateUtil {
 	 * 
 	 * @return 返回日期格式yyyy-MM-dd HH:mm:ss
 	 */
-	public static Date parseStrToDate(String dateStr) {
+	public static Date parseStrToDateTime(String dateStr) {
 		return parseStrToDate(dateStr, PATTERN_DATE_TIME);
+	}
+
+	/**
+	 * 将指定的字符串转换成日期
+	 * 
+	 * @return 返回日期格式yyyy-MM-dd
+	 */
+	public static Date parseStrToDate(String dateStr) {
+		return parseStrToDate(dateStr, PATTERN_DATE);
 	}
 
 	/**
@@ -302,42 +313,6 @@ public final class DateUtil {
 	}
 
 	/**
-	 * 返回每月第一天的日期,格式为yyyy-MM-dd
-	 * 
-	 * @param month
-	 *            月份
-	 * @return 返回每月第一天的日期
-	 */
-	public static String getFirstDayOfMonth(Date date) {
-		Calendar cal = Calendar.getInstance();
-		cal.setTime(date);
-		int value = cal.getActualMinimum(Calendar.DAY_OF_MONTH);
-		cal.set(Calendar.DAY_OF_MONTH, value);
-		return DateUtil.formatDate(cal.getTime());
-	}
-
-	/**
-	 * 返回当前时间月份第一天的日期,格式为yyyy-MM-dd
-	 * 
-	 * @return 返回当前时间月份第一天的日期
-	 */
-	public static String getFirstDayOfMonth() {
-		return DateUtil.getFirstDayOfMonth(new Date());
-	}
-
-	/**
-	 * 返回每月第一天的日期,格式为yyyy-MM-dd
-	 * 
-	 * @return 返回每月第一天的日期
-	 */
-	public static String getFirstDayOfLastMonth() {
-		Calendar cal = Calendar.getInstance();
-		cal.setTime(new Date());
-		cal.add(Calendar.MONTH, -1);
-		return DateUtil.getFirstDayOfMonth(cal.getTime());
-	}
-
-	/**
 	 * 获取昨天的日期,格式为yyyy-MM-dd
 	 * 
 	 * @return 获取昨天的日期
@@ -418,11 +393,49 @@ public final class DateUtil {
 	}
 
 	/**
+	 * 获取指定几个月前的时间，返回格式为:yyyy-MM-dd
+	 * 
+	 * @param month
+	 *            月份数
+	 * @return 获取指定几个月前的时间
+	 */
+	public static String getBeforeMonth(int month) {
+		Calendar c = Calendar.getInstance();
+		c.add(Calendar.MONTH, -month);
+		return formatDate(c.getTime());
+	}
+
+	/**
+	 * 获取指定时间段的每一天，返回格式为:yyyy-MM-dd
+	 * 
+	 * @param 开始日期
+	 * @param 结算日期
+	 * @return 日期列表,返回格式为yyyy-MM-dd的时间字符串
+	 */
+	public static List<String> getEveryDay(String startDateStr, String endDateStr) {
+		List<String> dates = new ArrayList<String>();
+		if (StringUtil.isEmpty(startDateStr) || StringUtil.isEmpty(endDateStr)) {
+			return dates;
+		}
+		// 格式化日期(yy-MM-dd)
+		Date startDate = parseStrToDate(startDateStr);
+		Date endDate = parseStrToDate(endDateStr);
+		gregorianCalendar.setTime(startDate);
+		dates.add(formatDate(gregorianCalendar.getTime()));
+		while (gregorianCalendar.getTime().compareTo(endDate) < 0) {
+			// 加1天
+			gregorianCalendar.add(Calendar.DAY_OF_MONTH, 1);
+			dates.add(formatDate(gregorianCalendar.getTime()));
+		}
+		return dates;
+	}
+
+	/**
 	 * 从字符日期中得到月份
 	 * 
 	 * @param dateString
 	 *            格式为:yyyy-MM-dd
-	 * @return
+	 * @return 返回月份
 	 */
 	public static String getMonth(String dateString) {
 		return dateString.substring(4, 7).replace("-", "");
@@ -515,6 +528,108 @@ public final class DateUtil {
 	}
 
 	/**
+	 * 获取日期前一天
+	 * 
+	 * @param date
+	 * @return
+	 */
+	public static Date getDayBefore(Date date) {
+		gregorianCalendar.setTime(date);
+		int day = gregorianCalendar.get(Calendar.DATE);
+		gregorianCalendar.set(Calendar.DATE, day - 1);
+		return gregorianCalendar.getTime();
+	}
+
+	/**
+	 * 获取日期后一天
+	 * 
+	 * @param date
+	 * @return
+	 */
+	public static Date getDayAfter(Date date) {
+		gregorianCalendar.setTime(date);
+		int day = gregorianCalendar.get(Calendar.DATE);
+		gregorianCalendar.set(Calendar.DATE, day + 1);
+		return gregorianCalendar.getTime();
+	}
+
+	/**
+	 * 获取当前年
+	 * 
+	 * @return
+	 */
+	public static int getNowYear() {
+		Calendar d = Calendar.getInstance();
+		return d.get(Calendar.YEAR);
+	}
+
+	/**
+	 * 获取当前月份
+	 * 
+	 * @return
+	 */
+	public static int getNowMonth() {
+		Calendar d = Calendar.getInstance();
+		return d.get(Calendar.MONTH) + 1;
+	}
+
+	/**
+	 * 获取当前日
+	 * 
+	 * @return
+	 */
+	public static int getNowDay() {
+		Calendar calendar = Calendar.getInstance();
+		return calendar.get(Calendar.DATE);
+	}
+
+	/**
+	 * 获取当前时
+	 * 
+	 * @return
+	 */
+	public static int getNowHour() {
+		Calendar calendar = Calendar.getInstance();
+		return calendar.get(Calendar.HOUR);
+	}
+
+	/**
+	 * 获取哪一年共有多少周
+	 * 
+	 * @param year
+	 * @return
+	 */
+	public static int getMaxWeekNumOfYear(int year) {
+		Calendar c = new GregorianCalendar();
+		c.set(year, Calendar.DECEMBER, 31, 23, 59, 59);
+		return getWeekNumOfYear(c.getTime());
+	}
+
+	/**
+	 * 取得某天是一年中的多少周
+	 * 
+	 * @param date
+	 * @return
+	 */
+	public static int getWeekNumOfYear(Date date) {
+		Calendar c = new GregorianCalendar();
+		c.setFirstDayOfWeek(Calendar.MONDAY);
+		c.setMinimalDaysInFirstWeek(7);
+		c.setTime(date);
+		return c.get(Calendar.WEEK_OF_YEAR);
+	}
+
+	/**
+	 * 获取当月天数
+	 * 
+	 * @return
+	 */
+	public static int getNowMonthDay() {
+		Calendar d = Calendar.getInstance();
+		return d.getActualMaximum(Calendar.DATE);
+	}
+
+	/**
 	 * 得到一年中的所有月份的数字集合
 	 * 
 	 * @return 得到一年中的所有月份的数字集合
@@ -553,6 +668,177 @@ public final class DateUtil {
 		return hourList;
 	}
 
+	/**
+	 * 获取当前月的第一天
+	 * 
+	 * @return date
+	 */
+	public static Date getFirstDayOfMonth() {
+		return getFirstDayOfMonth(new Date());
+	}
+
+	/**
+	 * 获取指定月的第一天
+	 * 
+	 * @param date
+	 * @return
+	 */
+	public static Date getFirstDayOfMonth(Date date) {
+		gregorianCalendar.setTime(date);
+		gregorianCalendar.set(Calendar.DAY_OF_MONTH, 1);
+		return gregorianCalendar.getTime();
+	}
+
+	/**
+	 * 获取当前月的最后一天
+	 * 
+	 * @return
+	 */
+	public static Date getLastDayOfMonth() {
+		return getLastDayOfMonth(new Date());
+	}
+
+	/**
+	 * 获取指定月的最后一天
+	 * 
+	 * @param date
+	 * @return
+	 */
+	public static Date getLastDayOfMonth(Date date) {
+		gregorianCalendar.setTime(date);
+		gregorianCalendar.set(Calendar.DAY_OF_MONTH, 1);
+		gregorianCalendar.add(Calendar.MONTH, 1);
+		gregorianCalendar.add(Calendar.DAY_OF_MONTH, -1);
+		return gregorianCalendar.getTime();
+	}
+
+	/**
+	 * 增加时间，calendarField解释:1则代表的是对年份操作， 2是对月份操作， 3是对星期操作， 5是对日期操作， 11是对小时操作，
+	 * 12是对分钟操作， 13是对秒操作， 14是对毫秒操作
+	 * 
+	 * @param date
+	 *            时间
+	 * @param calendarField
+	 *            日历字段
+	 * @param amount
+	 *            增加数
+	 * @return 增加之后的时间
+	 */
+	private static Date add(Date date, int calendarField, int amount) {
+		if (date == null) {
+			throw new IllegalArgumentException("The date must not be null");
+		} else {
+			Calendar c = Calendar.getInstance();
+			c.setTime(date);
+			c.add(calendarField, amount);
+			return c.getTime();
+		}
+	}
+
+	/**
+	 * 增加年
+	 * 
+	 * @param date
+	 *            时间
+	 * @param amount
+	 *            增加数
+	 * @return 增加之后的时间
+	 */
+	public static Date addYears(Date date, int amount) {
+		return add(date, 1, amount);
+	}
+
+	/**
+	 * 增加月
+	 * 
+	 * @param date
+	 *            时间
+	 * @param amount
+	 *            增加数
+	 * @return 增加之后的时间
+	 */
+	public static Date addMonths(Date date, int amount) {
+		return add(date, 2, amount);
+	}
+
+	/**
+	 * 增加周
+	 * 
+	 * @param date
+	 *            时间
+	 * @param amount
+	 *            增加数
+	 * @return 增加之后的时间
+	 */
+	public static Date addWeeks(Date date, int amount) {
+		return add(date, 3, amount);
+	}
+
+	/**
+	 * 增加天
+	 * 
+	 * @param date
+	 *            时间
+	 * @param amount
+	 *            增加数
+	 * @return 增加之后的时间
+	 */
+	public static Date addDays(Date date, int amount) {
+		return add(date, 5, amount);
+	}
+
+	/**
+	 * 增加时
+	 * 
+	 * @param date
+	 *            时间
+	 * @param amount
+	 *            增加数
+	 * @return 增加之后的时间
+	 */
+	public static Date addHours(Date date, int amount) {
+		return add(date, 11, amount);
+	}
+
+	/**
+	 * 增加分
+	 * 
+	 * @param date
+	 *            时间
+	 * @param amount
+	 *            增加数
+	 * @return 增加之后的时间
+	 */
+	public static Date addMinutes(Date date, int amount) {
+		return add(date, 12, amount);
+	}
+
+	/**
+	 * 增加秒
+	 * 
+	 * @param date
+	 *            时间
+	 * @param amount
+	 *            增加数
+	 * @return 增加之后的时间
+	 */
+	public static Date addSeconds(Date date, int amount) {
+		return add(date, 13, amount);
+	}
+
+	/**
+	 * 增加毫秒
+	 * 
+	 * @param date
+	 *            时间
+	 * @param amount
+	 *            增加数
+	 * @return 增加之后的时间
+	 */
+	public static Date addMilliseconds(Date date, int amount) {
+		return add(date, 14, amount);
+	}
+
 	public static void main(String[] args) {
 		System.out.println(genCurrentSecond());
 		Map<String, Object> timeMap = getRecentDayMap();
@@ -563,5 +849,14 @@ public final class DateUtil {
 		for (Integer integer : list) {
 			System.out.println(integer);
 		}
+		List<String> everyDay = getEveryDay("2018-11-1", "2018-11-20");
+		for (String string : everyDay) {
+			System.out.println(string);
+		}
+		System.out.println(getNowMonthDay());
+		System.out.println(formatDate(getDayBefore(new Date())));
+		System.out.println(formatDate(getDayAfter(new Date())));
+		System.out.println(getWeekNumOfYear(new Date()));
+		System.out.println(getMaxWeekNumOfYear(2018));
 	}
 }
