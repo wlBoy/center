@@ -23,7 +23,7 @@ import com.xn.hk.dataDic.service.DataDicTermService;
 /**
  * 
  * @ClassName: DataDicController
- * @Package: com.xn.hk.data.dic.controller
+ * @Package: com.xn.hk.dataDic.controller
  * @Description: 数据字典的控制层
  * @Author: wanlei
  * @Date: 2018年11月7日 下午6:54:51

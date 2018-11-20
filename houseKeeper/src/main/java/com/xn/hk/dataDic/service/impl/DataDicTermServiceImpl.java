@@ -12,7 +12,7 @@ import com.xn.hk.dataDic.service.DataDicTermService;
 /**
  * 
  * @ClassName: DataDicTermServiceImpl
- * @Package: com.xn.hk.data.dic.service.impl
+ * @Package: com.xn.hk.dataDic.service.impl
  * @Description: 数据字典项的service实现层
  * @Author: wanlei
  * @Date: 2018年11月7日 下午6:51:21

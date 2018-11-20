@@ -8,7 +8,7 @@ import com.xn.hk.common.utils.string.StringUtil;
 /**
  * 
  * @ClassName: DataDicTerm
- * @Package: com.xn.hk.data.dic.model
+ * @Package: com.xn.hk.dataDic.model
  * @Description: 数据字典项的实体类
  * @Author: wanlei
  * @Date: 2018年11月7日 下午6:38:30

@@ -15,7 +15,7 @@ import com.xn.hk.dataDic.service.DataDicTermService;
 /**
  * 
  * @Title: DataRestController
- * @Package: com.xn.hk.account.controller
+ * @Package: com.xn.hk.dataDic.controller
  * @Description: 处理数据字典管理中的所有ajax请求(接口)
  * @Author: wanlei
  * @Date: 2018年1月8日 上午9:17:36
