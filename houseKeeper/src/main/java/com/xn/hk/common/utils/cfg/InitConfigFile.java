@@ -29,6 +29,7 @@ public class InitConfigFile {
 	 * 记录日志
 	 */
 	private static final Logger logger = LoggerFactory.getLogger(InitConfigFile.class);
+	// 配置文件存放位置，必须在src/main/resources目录下
 	private static final String SAVE_CFG_PATH = System.getProperty("user.dir") + File.separator + "src" + File.separator
 			+ "main" + File.separator + "resources" + File.separator;
 	private static InitConfigFile instance;
@@ -38,9 +39,9 @@ public class InitConfigFile {
 	}
 
 	/**
-	 * 构造器私有化,单例模式建实例
+	 * 构造器私有化,单例模式建实例，synchronized线程安全
 	 * 
-	 * @return
+	 * @return 实例对象
 	 */
 	public synchronized static InitConfigFile getInstance() {
 		if (instance == null) {
@@ -53,7 +54,7 @@ public class InitConfigFile {
 	 * 方式一:返回Properties实体(支持中文)
 	 * 
 	 * @param cfgFileName
-	 *            件名 配置文
+	 *            配置文件名
 	 * @return 返回Properties实体
 	 */
 	public Properties loadCfg(String cfgFileName) {
@@ -83,7 +84,7 @@ public class InitConfigFile {
 	 * 方式二:返回配置信息map集合(支持中文)
 	 * 
 	 * @param cfgFileName
-	 *            件名 配置文
+	 *            配置文件名
 	 * @return 返回配置信息map集合
 	 */
 	public Map<String, String> loadCfgMap(String cfgFileName) {
@@ -96,13 +97,30 @@ public class InitConfigFile {
 	}
 
 	/**
+	 * 将配置信息map中的配置信息保存至配置文件,默认不追加，即每次都是清空再重写
+	 * 
+	 * @param cfgMap
+	 *            配置信息map
+	 * @param cfgFileName
+	 *            配置文件名
+	 * @return 保存成功返回true，否则返回false
+	 */
+	public boolean saveCfg(Map<String, Object> cfgMap, String cfgFileName) {
+		return saveCfg(cfgMap, cfgFileName, false);
+	}
+
+	/**
 	 * 将配置信息map中的配置信息保存至配置文件
 	 * 
 	 * @param cfgMap
 	 *            配置信息map
+	 * @param cfgFileName
+	 *            配置文件名
+	 * @param isAppend
+	 *            是否追加文件末尾 ，true表示追加,false每次都是清空再重写
 	 * @return 保存成功返回true，否则返回false
 	 */
-	public boolean saveCfg(Map<String, Object> cfgMap, String cfgFileName) {
+	public boolean saveCfg(Map<String, Object> cfgMap, String cfgFileName, boolean isAppend) {
 		boolean isSuccess = false;
 		if (cfgMap.isEmpty()) {
 			logger.error("保存的配置信息map不能为空!");
@@ -113,7 +131,7 @@ public class InitConfigFile {
 		Properties prop = loadCfg(cfgFileName);
 		FileOutputStream out = null;
 		try {
-			out = new FileOutputStream(new File(saveCfgPath), false);// //true表示追加打开,false每次都是清空再重写
+			out = new FileOutputStream(new File(saveCfgPath), isAppend);
 			Set<String> keys = cfgMap.keySet();
 			for (String key : keys) {
 				prop.setProperty(key, String.valueOf(cfgMap.get(key)));

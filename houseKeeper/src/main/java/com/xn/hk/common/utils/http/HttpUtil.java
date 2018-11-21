@@ -18,7 +18,7 @@ import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.utils.URIBuilder;
-import org.apache.http.entity.ByteArrayEntity;
+import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
@@ -211,7 +211,10 @@ public class HttpUtil {
 		HttpPost post = new HttpPost(url);
 		CloseableHttpResponse response = null;
 		try {
-			post.setEntity(new ByteArrayEntity(json.getBytes(Constant.UTF8)));
+			StringEntity stringEntity = new StringEntity(json);
+			stringEntity.setContentEncoding(Constant.UTF8);
+			stringEntity.setContentType("application/json"); //发送json数据需要设置contentType为application/json
+			post.setEntity(stringEntity);
 			response = httpClient.execute(post);
 			if (response != null && response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
 				String resultStr = entityToString(response.getEntity());
