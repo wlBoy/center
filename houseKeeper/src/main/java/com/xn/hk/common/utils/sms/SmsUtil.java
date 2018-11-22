@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.xn.hk.common.utils.cfg.SystemCfg;
+import com.xn.hk.common.utils.string.RegexUtil;
 import com.xn.hk.common.utils.string.StringUtil;
 
 /**
@@ -67,8 +68,8 @@ public class SmsUtil {
 			return;
 		}
 		String smsMobile = SystemCfg.loadCfgMap().get(SystemCfg.SMS_MOBILE);
-		if (StringUtil.isMobileNumber(smsMobile)) {
-			logger.error("{}电话号码不合法!", smsMobile);
+		if (RegexUtil.checkMobile(smsMobile)) {
+			logger.error("{}手机号码不合法!", smsMobile);
 			return;
 		}
 		// 根据配置文件中的SMS编码判断smsUrl发送地址

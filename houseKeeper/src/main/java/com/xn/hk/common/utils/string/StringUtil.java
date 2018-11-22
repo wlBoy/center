@@ -117,6 +117,17 @@ public final class StringUtil {
 	}
 
 	/**
+	 * 判断一个字符串不为空
+	 * 
+	 * @param value
+	 *            字符串
+	 * @return 不为空返回true，否则返回false
+	 */
+	public static boolean isNotEmpty(String value) {
+		return !isEmpty(value);
+	}
+
+	/**
 	 * 生成提示语,供houseKeeper项目的提示框插件使用
 	 * 
 	 * @param tip
@@ -198,36 +209,6 @@ public final class StringUtil {
 		Pattern p = Pattern.compile(regEx);
 		Matcher m = p.matcher(str);
 		return m.replaceAll("").trim();
-	}
-
-	/**
-	 * 判断一个字符串是否为纯数字字符串
-	 * 
-	 * @param str
-	 *            字符串
-	 * @return 是纯数字返回true，否则返回false
-	 */
-	public static boolean isDigit(String str) {
-		String regEx = "(\\d+?)";
-		Pattern p = Pattern.compile(regEx);
-		Matcher m = p.matcher(str);
-		return m.matches();
-	}
-
-	/**
-	 * 判断一个字符串是否为手机号码
-	 * 
-	 * @param number
-	 *            手机号码字符串
-	 * @return 是电话号码返回true，否则返回false
-	 */
-	public static boolean isMobileNumber(String number) {
-		if (StringUtil.isEmpty(number) || number.length() != 11) {
-			return false;
-		}
-		Pattern p = Pattern.compile("^((13[0-9])|(15[^4,\\\\D])|(18[0,5-9]))\\\\d{8}$");
-		Matcher m = p.matcher(number);
-		return m.matches();
 	}
 
 	/**
