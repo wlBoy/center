@@ -2,8 +2,6 @@ package com.xn.hk.common.utils.http;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
-import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -12,7 +10,6 @@ import java.util.Map;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpStatus;
 import org.apache.http.NameValuePair;
-import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
@@ -77,7 +74,7 @@ public class HttpUtil {
 				}
 			}
 		} catch (IOException e) {
-			logger.error("get请求{}失败，失败原因为:", url, e);
+			logger.error("发送GET请求[url={}]失败，失败原因为:", url, e);
 		} finally {
 			try {
 				httpClient.close();
@@ -85,7 +82,7 @@ public class HttpUtil {
 					response.close();
 				}
 			} catch (IOException e) {
-				logger.error(e.getMessage());
+				logger.error("关闭流失败，失败原因为:{}", e);
 			}
 		}
 		return result;
@@ -117,12 +114,8 @@ public class HttpUtil {
 				HttpEntity entity = response.getEntity();
 				result = entityToString(entity);
 			}
-		} catch (URISyntaxException e) {
-			logger.error(e.getMessage());
-		} catch (ClientProtocolException e) {
-			logger.error(e.getMessage());
-		} catch (IOException e) {
-			logger.error("get请求{}失败，失败原因为:", url, e);
+		} catch (Exception e) {
+			logger.error("发送GET请求[url={}]失败，失败原因为:", url, e);
 		} finally {
 			try {
 				httpClient.close();
@@ -130,7 +123,7 @@ public class HttpUtil {
 					response.close();
 				}
 			} catch (IOException e) {
-				logger.error(e.getMessage());
+				logger.error("关闭流失败，失败原因为:{}", e);
 			}
 		}
 		return result;
@@ -161,12 +154,8 @@ public class HttpUtil {
 				HttpEntity entity = response.getEntity();
 				result = entityToString(entity);
 			}
-		} catch (UnsupportedEncodingException e) {
-			logger.error(e.getMessage());
-		} catch (ClientProtocolException e) {
-			logger.error(e.getMessage());
-		} catch (IOException e) {
-			logger.error("post请求{}失败，失败原因为:", url, e);
+		} catch (Exception e) {
+			logger.error("发送POST请求[url={}]失败，失败原因为:", url, e);
 		} finally {
 			try {
 				httpClient.close();
@@ -174,7 +163,7 @@ public class HttpUtil {
 					response.close();
 				}
 			} catch (IOException e) {
-				logger.error(e.getMessage());
+				logger.error("关闭流失败，失败原因为:{}", e);
 			}
 
 		}
@@ -211,9 +200,10 @@ public class HttpUtil {
 		HttpPost post = new HttpPost(url);
 		CloseableHttpResponse response = null;
 		try {
-			StringEntity stringEntity = new StringEntity(json);
-			stringEntity.setContentEncoding(Constant.UTF8);
-			stringEntity.setContentType("application/json"); //发送json数据需要设置contentType为application/json
+			StringEntity stringEntity = new StringEntity(json, Constant.UTF8);
+			// stringEntity.setContentType("application/json"); //
+			// 发送json数据需要设置contentType为application/json
+			post.addHeader("Content-Type", "application/x-www-form-urlencoded;charset=" + Constant.UTF8);
 			post.setEntity(stringEntity);
 			response = httpClient.execute(post);
 			if (response != null && response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
@@ -225,12 +215,8 @@ public class HttpUtil {
 					result = resultStr;
 				}
 			}
-		} catch (UnsupportedEncodingException e) {
-			logger.error(e.getMessage());
-		} catch (ClientProtocolException e) {
-			logger.error(e.getMessage());
-		} catch (IOException e) {
-			logger.error("post请求{}失败，失败原因为:", url, e);
+		} catch (Exception e) {
+			logger.error("发送POST请求[url={}]失败，失败原因为:", url, e);
 		} finally {
 			try {
 				httpClient.close();
@@ -238,7 +224,7 @@ public class HttpUtil {
 					response.close();
 				}
 			} catch (IOException e) {
-				logger.error(e.getMessage());
+				logger.error("关闭流失败，失败原因为:{}", e);
 			}
 		}
 		return result;
@@ -273,9 +259,12 @@ public class HttpUtil {
 	}
 
 	public static void main(String[] args) {
-		String getUrl = "http://127.0.0.1:8030/houseKeeper/system/rest/test.do?userId=1&userName=张三";
+		Map<String, String> datamap = new HashMap<String, String>();
+		datamap.put("userId", "45");
+		datamap.put("userName", "测试");
 		String postUrl = "http://127.0.0.1:8030/houseKeeper/system/rest/test.do";
-		System.out.println("*******测试get请求***********");
+		String getUrl = "http://127.0.0.1:8030/houseKeeper/system/rest/test.do?userId=1&userName=张三";
+		System.out.println("测试get请求");
 		Object resultObj = httpGet(getUrl, true);
 		if (resultObj != null) {
 			if (resultObj instanceof String) {
@@ -285,13 +274,11 @@ public class HttpUtil {
 				System.out.println("返回的字符串为:" + jsonObj.toJSONString());
 			}
 		}
-		Map<String, String> datamap = new HashMap<String, String>();
-		datamap.put("userId", "45");
-		datamap.put("userName", "测试");
 		System.out.println("返回的字符串为:" + httpGetMap(postUrl, datamap));
 		System.out.println("*******测试post请求***********");
-		String json = "{\"userId\":789,\"userName\":\"李柳\"}";
-		Object resultObject = httpPost(postUrl, json, true);
+		String json = "{\"userId\":789,\"userName\":\"张三\"}";
+		// String json = "userId=789&userName=李四";
+		Object resultObject = httpPost(postUrl, json);
 		if (resultObject != null) {
 			if (resultObject instanceof String) {
 				System.out.println("返回的字符串为:" + resultObject.toString());
