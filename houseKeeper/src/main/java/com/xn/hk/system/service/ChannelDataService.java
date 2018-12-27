@@ -30,5 +30,5 @@ public interface ChannelDataService extends BaseService<ChannelData>{
 	 * @return EXCEL文件对象
 	 * @throws Exception 
 	 */
-	XSSFWorkbook exportAll() throws Exception;
+	XSSFWorkbook exportExcel() throws Exception;
 }

@@ -2,9 +2,7 @@ package com.xn.hk.system.service.impl;
 
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,7 +48,7 @@ public class ChannelDataServiceImpl extends BaseServiceImpl<ChannelData> impleme
 	 */
 	public int importExcelInfo(InputStream in, String fileName) throws Exception {
 		// 调用工具类将EXCEL表格中的内容封装成list集合
-		List<List<Object>> listob = ExcelUtil.getBankListByExcel(in, fileName);
+		List<List<Object>> listob = ExcelUtil.readExcel(in, fileName);
 		List<ChannelData> list = new ArrayList<ChannelData>();
 		for (int i = 0; i < listob.size(); i++) {
 			List<Object> ob = listob.get(i);
@@ -77,27 +75,30 @@ public class ChannelDataServiceImpl extends BaseServiceImpl<ChannelData> impleme
 	 * @return EXCEL文件对象
 	 * @throws Exception
 	 */
-	public XSSFWorkbook exportAll() throws Exception {
+	public XSSFWorkbook exportExcel() throws Exception {
+		// 创建一个新的Excel2007对象
+		XSSFWorkbook xssfWorkbook = new XSSFWorkbook();
 		// 查询要生成EXCEL表格中的内容数据
 		List<ChannelData> list = channelDataDao.findAll();
-		// 生成EXCEL格式文件
+		// 定义一个EXCEL对象
 		List<ExcelBean> excel = new ArrayList<ExcelBean>();
-		Map<Integer, List<ExcelBean>> map = new LinkedHashMap<Integer, List<ExcelBean>>();
-		XSSFWorkbook xssfWorkbook = null;
-		// 设置标题栏
-		excel.add(new ExcelBean("日期", "curday", 0));
-		excel.add(new ExcelBean("合作方", "partner", 0));
-		excel.add(new ExcelBean("应用名字", "appName", 0));
-		excel.add(new ExcelBean("渠道号", "channelNum", 0));
-		excel.add(new ExcelBean("激活数", "activeNum", 0));
-		excel.add(new ExcelBean("单价", "fee", 0));
-		excel.add(new ExcelBean("总金额", "sumFee", 0));
-		excel.add(new ExcelBean("开发状态", "status", 0));
-		excel.add(new ExcelBean("合作方式", "partnerType", 0));
-		map.put(0, excel);
+		// 设置第一个sheet的标题和对应的字段名
+		excel.add(new ExcelBean("日期", "curday"));
+		excel.add(new ExcelBean("合作方", "partner"));
+		excel.add(new ExcelBean("应用名字", "appName"));
+		excel.add(new ExcelBean("渠道号", "channelNum"));
+		excel.add(new ExcelBean("激活数", "activeNum"));
+		excel.add(new ExcelBean("单价", "fee"));
+		excel.add(new ExcelBean("总金额", "sumFee"));
+		excel.add(new ExcelBean("开发状态", "status"));
+		excel.add(new ExcelBean("合作方式", "partnerType"));
 		String sheetName = "每天渠道数据";
-		// 调用ExcelUtil的方法,将查询出的结果封装到EXCEL文件中
-		xssfWorkbook = ExcelUtil.createExcelFile(ChannelData.class, list, map, sheetName);
+
+		// 生成EXCEL表格中的第一个sheet工作簿
+		ExcelUtil.createExcel(xssfWorkbook, ChannelData.class, list, 0, excel, sheetName);
+		
+		// 这样可实现创建多个sheet的EXCEL表格
+		//ExcelUtil.createExcel(xssfWorkbook, ChannelData2.class, list2, 1, excel1, "sheetName2");
 		return xssfWorkbook;
 	}
 

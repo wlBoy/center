@@ -8,6 +8,7 @@ import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -33,7 +34,7 @@ import com.xn.hk.common.utils.date.DateUtil;
  * 
  * @Title: ExcelUtil
  * @Package: com.xn.ad.common.utils
- * @Description: 操作EXCEL导入和导出的工具类
+ * @Description: EXCEL导入和导出的操作工具类
  * @Author: wanlei
  * @Date: 2018-1-20 上午11:28:00
  */
@@ -51,21 +52,22 @@ public class ExcelUtil {
 	 * @return EXCEL表格所有的数据集合
 	 * @throws Exception
 	 */
-	public static List<List<Object>> getBankListByExcel(InputStream in, String fileName) throws Exception {
+	public static List<List<Object>> readExcel(InputStream in, String fileName) throws Exception {
 		List<List<Object>> list = null;
 		// 创建Excel工作薄
 		Workbook work = getWorkbook(in, fileName);
 		// 拿到对应的FormulaEvaluator对象(计算Excel表格中公式值的类)
 		FormulaEvaluator formulaEvaluator = getFormulaEvaluator(fileName, work);
 		if (null == work) {
-			throw new Exception("创建Excel工作薄为空！");
+			throw new Exception("Excel工作薄为空！");
 		}
 		Sheet sheet = null;
 		Row row = null;
 		list = new ArrayList<List<Object>>();
-		// 遍历当前sheet中的所有行,从第一行到最后一首行,索引从0开始
+		// 循环遍历EXCEL中的所有sheet工作簿
 		for (int i = 0; i < work.getNumberOfSheets(); i++) {
 			sheet = work.getSheetAt(i);
+			// 工作簿为空，跳过
 			if (sheet == null) {
 				continue;
 			}
@@ -75,7 +77,7 @@ public class ExcelUtil {
 				if (row == null || row.getFirstCellNum() == j) {
 					continue;
 				}
-				// 遍历所有的列,从第一行到最后一首行,索引从0开始
+				// 遍历当前sheet中的所有的列,从第一行到最后一首行,索引从0开始
 				List<Object> li = new ArrayList<Object>();
 				for (int y = row.getFirstCellNum(); y < row.getLastCellNum(); y++) {
 					li.add(getCellValue(row.getCell(y), formulaEvaluator));
@@ -120,7 +122,7 @@ public class ExcelUtil {
 	 * @return EXCEL表格所有的数据集合
 	 * @throws Exception
 	 */
-	public static Workbook getWorkbook(InputStream inStr, String fileName) throws Exception {
+	private static Workbook getWorkbook(InputStream inStr, String fileName) throws Exception {
 		Workbook wb = null;
 		String fileType = fileName.substring(fileName.lastIndexOf("."));
 		if (excel2003L.equals(fileType)) {
@@ -144,7 +146,7 @@ public class ExcelUtil {
 	 *            计算EXCEL表格单元格中的公式对象
 	 * @return EXCEL表格单元格中的内容
 	 */
-	public static Object getCellValue(Cell cell, FormulaEvaluator formulaEvaluator) {
+	private static Object getCellValue(Cell cell, FormulaEvaluator formulaEvaluator) {
 		Object value = null;
 		// 格式化数字
 		DecimalFormat df = new DecimalFormat("0.0");
@@ -184,28 +186,31 @@ public class ExcelUtil {
 	/**
 	 * 多列头创建EXCEL
 	 * 
+	 * @param xssfWorkbook
+	 *            2007以后的工作簿对象，兼容2003
+	 * @param clazz
+	 *            数据源model类型,字节码
+	 * @param list
+	 *            需要导入的数据list列表
+	 * @param count
+	 *            第几个(0代表第一个)
+	 * @param excel
+	 *            对应的List<ExcelBean>对象
 	 * @param sheetName
 	 *            工作簿名称
-	 * @param clazz
-	 *            数据源model类型
-	 * @param objs
-	 *            excel标题列以及对应model字段名
-	 * @param map
-	 *            标题列行数以及cell字体样式
-	 * @return
 	 * @throws Exception
 	 */
-	public static <T> XSSFWorkbook createExcelFile(Class<T> clazz, List<T> objs, Map<Integer, List<ExcelBean>> map,
-			String sheetName) throws Exception {
-		// 创建新的Excel 工作簿
-		XSSFWorkbook workbook = new XSSFWorkbook();
+	public static <T> void createExcel(XSSFWorkbook xssfWorkbook, Class<T> clazz, List<T> list, Integer count,
+			List<ExcelBean> excel, String sheetName) throws Exception {
+		// 初始化sheet
+		Map<Integer, List<ExcelBean>> sheetMap = new LinkedHashMap<Integer, List<ExcelBean>>();
+		sheetMap.put(count, excel);
 		// 在Excel工作簿中建一工作表，其名为缺省值, 也可以指定Sheet名称
-		XSSFSheet sheet = workbook.createSheet(sheetName);
+		XSSFSheet xssfSheet = xssfWorkbook.createSheet(sheetName);
 		// 以下为excel的字体样式以及excel的标题与内容的创建,下面会具体分析
-		createFont(workbook);// 字体样式
-		createTableHeader(sheet, map);// 创建标题（头）
-		createTableRows(sheet, map, objs, clazz);// 创建内容
-		return workbook;
+		createFont(xssfWorkbook);// 字体样式
+		createTableHeader(xssfSheet, sheetMap);// 创建标题（头）
+		createTableRows(xssfSheet, sheetMap, list, clazz);// 创建内容
 	}
 
 	// 表头
@@ -219,7 +224,7 @@ public class ExcelUtil {
 	 * @param workbook
 	 *            ECXEL表格对象
 	 */
-	public static void createFont(XSSFWorkbook workbook) {
+	private static void createFont(XSSFWorkbook workbook) {
 		// 表头
 		fontStyle = workbook.createCellStyle();
 		XSSFFont font1 = workbook.createFont();
@@ -254,7 +259,7 @@ public class ExcelUtil {
 	 * @param map
 	 *            已经封装好的map数据(即要生成EXCEL中的内容)
 	 */
-	public static final void createTableHeader(XSSFSheet sheet, Map<Integer, List<ExcelBean>> map) {
+	private static final void createTableHeader(XSSFSheet sheet, Map<Integer, List<ExcelBean>> map) {
 		int startIndex = 0;// cell起始位置
 		int endIndex = 0;// cell终止位置
 
@@ -307,7 +312,7 @@ public class ExcelUtil {
 	 *            要封装的Javabean字节码
 	 * @throws Exception
 	 */
-	public static <T> void createTableRows(XSSFSheet sheet, Map<Integer, List<ExcelBean>> map, List<T> objs,
+	private static <T> void createTableRows(XSSFSheet sheet, Map<Integer, List<ExcelBean>> map, List<T> objs,
 			Class<T> clazz) throws Exception {
 		int rowindex = map.size();
 		int maxKey = 0;

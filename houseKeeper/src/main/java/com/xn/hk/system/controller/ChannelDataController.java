@@ -87,20 +87,20 @@ public class ChannelDataController {
 	@ResponseBody
 	public void exportAll(String fileName, HttpServletResponse response) throws Exception {
 		response.setCharacterEncoding(Constant.UTF8);
-		fileName = new String(fileName.getBytes(Constant.UTF8), Constant.ISO_8859_1) + ExcelUtil.excel2003L;
+		fileName = new String(fileName.getBytes(Constant.UTF8), Constant.ISO_8859_1);
 		// 防止下载的文件名中文乱码
-		response.setHeader("Content-Disposition", "attachment;filename=" + fileName);
+		response.setHeader("Content-Disposition", "attachment;filename=" + fileName + ExcelUtil.excel2003L);
 		response.setContentType("application/vnd.ms-excel;charset=UTF-8");
-		XSSFWorkbook workbook = null;
 		// 导出Excel文件
-		workbook = channelDataService.exportAll();
+		XSSFWorkbook workbook = channelDataService.exportExcel();
 		OutputStream output;
 		try {
 			output = response.getOutputStream();
 			BufferedOutputStream bot = new BufferedOutputStream(output);
-			bot.flush();
 			workbook.write(bot);
+			bot.flush();
 			bot.close();
+			workbook.close();
 			logger.info("导出EXCEL数据成功!");
 		} catch (IOException e) {
 			logger.error(e.getMessage());

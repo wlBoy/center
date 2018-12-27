@@ -23,9 +23,9 @@ public class ExcelBean implements Serializable {
 	 */
 	private String propertyName;
 	/**
-	 * 合并单元格数
+	 * 合并单元格数,0代表不合并
 	 */
-	private Integer cols;
+	private Integer cols = 0;
 	/**
 	 * EXCEL表格样式
 	 */
