@@ -66,7 +66,7 @@ public class DbInit {
 			logger.error("初始化数据库失败,原因为:{} ", e);
 		} finally {
 			// 关闭连接资源
-			DbUtil.closeAll(null, statement, conn);
+			JdbcUtil.closeAll(null, statement, conn);
 		}
 		return flag;
 	}
@@ -173,7 +173,7 @@ public class DbInit {
 		} catch (SQLException e) {
 			logger.error("查询{}数据表失败,原因为:{}", tableName, e);
 		} finally {
-			DbUtil.closeAll(rs, stmt, conn);
+			JdbcUtil.closeAll(rs, stmt, conn);
 		}
 		return flag;
 	}

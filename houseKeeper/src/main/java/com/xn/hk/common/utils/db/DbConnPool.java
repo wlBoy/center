@@ -109,6 +109,20 @@ public class DbConnPool {
 	}
 
 	/**
+	 * 关闭数据库连接
+	 *
+	 */
+	public void closeConn(Connection conn) {
+		try {
+			if (conn != null) {
+				conn.close();
+			}
+		} catch (SQLException e) {
+			logger.error("关闭数据库连接失败，原因为:{}", e);
+		}
+	}
+
+	/**
 	 * finalize()方法是在垃圾收集器删除对象之前对这个对象调用的。
 	 *
 	 * @throws Throwable
@@ -117,4 +131,5 @@ public class DbConnPool {
 		DataSources.destroy(cpds);
 		super.finalize();
 	}
+
 }
