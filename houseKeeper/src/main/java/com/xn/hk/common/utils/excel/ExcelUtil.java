@@ -75,13 +75,13 @@ public class ExcelUtil {
 			if (sheet == null) {
 				continue;
 			}
-			// 遍历当前sheet中的所有行,从第一行到最后一首行,索引从0开始
+			// 遍历当前sheet中的所有行,从第一行到最后一行,索引从0开始
 			for (int j = sheet.getFirstRowNum(); j <= sheet.getLastRowNum(); j++) {
 				row = sheet.getRow(j);
 				if (row == null || row.getFirstCellNum() == j) {
 					continue;
 				}
-				// 遍历当前sheet中的所有的列,从第一行到最后一首行,索引从0开始
+				// 遍历当前sheet中的所有列,从第一列到最后一列,索引从0开始
 				List<Object> li = new ArrayList<Object>();
 				for (int y = row.getFirstCellNum(); y < row.getLastCellNum(); y++) {
 					li.add(getCellValue(row.getCell(y), xssfFormulaEvaluator));
@@ -139,6 +139,7 @@ public class ExcelUtil {
 	}
 
 	/*---------------分割线,以上是将EXCEL数据导出,以下是生成EXCEL表格----------------------*/
+
 	/**
 	 * 多列头创建EXCEL
 	 * 
@@ -161,7 +162,6 @@ public class ExcelUtil {
 		// 生成一个sheet
 		XSSFSheet xssfSheet = xssfWorkbook.createSheet();
 		xssfWorkbook.setSheetName(sheetNum, sheetName);
-		System.out.println(xssfSheet.getSheetName());
 		// 以下为excel的字体样式以及excel的标题与内容的创建,下面会具体分析
 		createFont(xssfWorkbook);// 字体样式
 		createTableHeader(xssfSheet, excel);// 创建标题（头）
@@ -271,24 +271,13 @@ public class ExcelUtil {
 			// 创建行
 			XSSFRow row = sheet.createRow(rowindex);
 			for (int i = 0; i < ems.size(); i++) {
-				ExcelBean em = (ExcelBean) ems.get(i);
-				// 获得get方法
-				PropertyDescriptor pd = new PropertyDescriptor(em.getPropertyName(), clazz);
-				Method getMethod = pd.getReadMethod();
-				Object rtn = getMethod.invoke(obj);
 				String value = "";
-				// 如果是日期类型 进行 转换
-				if (rtn != null) {
-					if (rtn instanceof Date) {
-						value = formatDate((Date) rtn);
-					} else if (rtn instanceof BigDecimal) {
-						NumberFormat nf = new DecimalFormat("#,##0.00");
-						value = nf.format((BigDecimal) rtn).toString();
-					} else if ((rtn instanceof Integer) && (Integer.valueOf(rtn.toString()) < 0)) {
-						value = "--";
-					} else {
-						value = rtn.toString();
-					}
+				ExcelBean em = (ExcelBean) ems.get(i);
+				// 特殊处理序号这一列
+				if ("序号".equals(em.getHeadTextName())) {
+					value = String.valueOf(rowindex);
+				} else {
+					value = getCellValueByReflect(clazz, obj, value, em);
 				}
 				XSSFCell cell = row.createCell(i);
 				cell.setCellValue(value);
@@ -315,6 +304,39 @@ public class ExcelUtil {
 			width = width > 10000 ? 10000 + 300 : width + 300;
 			sheet.setColumnWidth(index, width);
 		}
+	}
+
+	/**
+	 * 通过反射实现表头与javaBean字段的映射，得到javaBean中的值返回
+	 * 
+	 * @param clazz
+	 * @param obj
+	 * @param value
+	 * @param em
+	 * @return javaBean中对应属性的值
+	 * @throws Exception
+	 */
+	private static <T> String getCellValueByReflect(Class<T> clazz, Object obj, String value, ExcelBean em)
+			throws Exception {
+		// 获得get方法
+		PropertyDescriptor pd = new PropertyDescriptor(em.getPropertyName(), clazz);
+		Method getMethod = pd.getReadMethod();
+		Object rtn = getMethod.invoke(obj);
+		// 如果是日期类型 进行 转换
+		if (rtn != null) {
+			if (rtn instanceof Date) {
+				value = formatDate((Date) rtn);
+			} else if (rtn instanceof BigDecimal) {
+				NumberFormat nf = new DecimalFormat("#,##0.00");
+				value = nf.format((BigDecimal) rtn).toString();
+			} else if ((rtn instanceof Integer) && (Integer.valueOf(rtn.toString()) < 0)) {
+				// 小于0的数字显示--
+				value = "--";
+			} else {
+				value = rtn.toString();
+			}
+		}
+		return value;
 	}
 
 	/**
@@ -407,30 +429,12 @@ public class ExcelUtil {
 	private XSSFWorkbook testExportExcelByString() throws Exception {
 		XSSFWorkbook workbook = new XSSFWorkbook();
 		// 定义EXCEL表格的头标题
-		String[] roleHeaders = { "序号", "角色名", "备注", };
-		String[] userHeaders = { "序号", "用户名", "角色名", "备注" };
+		String[] roleHeaders = { "序号", "角色名", "备注", "创建时间" };
+		String[] userHeaders = { "序号", "用户名", "角色名", "备注", "创建时间" };
 		// 角色数据列表
-		List<Role> roleList = new ArrayList<Role>();
-		Role role1 = new Role();
-		role1.setRoleName("role1");
-		role1.setRemark("role1");
-		Role role2 = new Role();
-		role2.setRoleName("role2");
-		role2.setRemark("role2");
-		roleList.add(role1);
-		roleList.add(role2);
+		List<Role> roleList = getRoleList();
 		// 用户数据列表
-		List<User> userList = new ArrayList<User>();
-		User user1 = new User();
-		user1.setUserName("user1");
-		user1.setRole(role1);
-		user1.setRemark("user1");
-		User user2 = new User();
-		user2.setUserName("user2");
-		user2.setRole(role1);
-		user2.setRemark("user2");
-		userList.add(user1);
-		userList.add(user2);
+		List<User> userList = getUserList();
 		// 生成多个sheet
 		ExcelUtil.createExcelByString(workbook, 0, "角色汇总", roleHeaders, covertRoleData(roleList));
 		ExcelUtil.createExcelByString(workbook, 1, "用户汇总", userHeaders, covertUserData(userList));
@@ -446,39 +450,76 @@ public class ExcelUtil {
 	private XSSFWorkbook testExportExcelByJavaBean() throws Exception {
 		XSSFWorkbook workbook = new XSSFWorkbook();
 		// 角色数据列表
-		List<Role> roleList = new ArrayList<Role>();
-		Role role1 = new Role();
-		role1.setRoleName("role1");
-		role1.setRemark("role1");
-		Role role2 = new Role();
-		role2.setRoleName("role2");
-		role2.setRemark("role2");
-		roleList.add(role1);
-		roleList.add(role2);
+		List<Role> roleList = getRoleList();
 		// 用户数据列表
-		List<User> userList = new ArrayList<User>();
-		User user1 = new User();
-		user1.setUserName("user1");
-		user1.setRole(role1);
-		user1.setRemark("user1");
-		User user2 = new User();
-		user2.setUserName("user2");
-		user2.setRole(role1);
-		user2.setRemark("user2");
-		userList.add(user1);
-		userList.add(user2);
+		List<User> userList = getUserList();
 		List<ExcelBean> excel = new ArrayList<ExcelBean>();
 		// 设置第一个sheet的标题和对应的字段名
+		excel.add(new ExcelBean("序号", null));
 		excel.add(new ExcelBean("角色名", "roleName"));
 		excel.add(new ExcelBean("备注", "remark"));
+		excel.add(new ExcelBean("创建时间", "createTime"));
 		List<ExcelBean> excel1 = new ArrayList<ExcelBean>();
 		// 设置第二个sheet的标题和对应的字段名
+		excel1.add(new ExcelBean("序号", null));
 		excel1.add(new ExcelBean("用户名", "userName"));
+		excel1.add(new ExcelBean("角色", "role"));
 		excel1.add(new ExcelBean("备注", "remark"));
+		excel1.add(new ExcelBean("创建时间", "createTime"));
 		// 生成多个sheet
 		ExcelUtil.createExcelByJavaBean(workbook, Role.class, roleList, 0, excel, "角色汇总");
 		ExcelUtil.createExcelByJavaBean(workbook, User.class, userList, 1, excel1, "用户汇总");
 		return workbook;
+	}
+
+	/**
+	 * 生成角色数据列表
+	 * 
+	 * @return
+	 */
+	private List<Role> getRoleList() {
+		List<Role> roleList = new ArrayList<Role>();
+		Role role1 = new Role();
+		role1.setRoleName("role1");
+		role1.setRemark("role1");
+		role1.setCreateTime(formatDate(new Date()));
+		Role role2 = new Role();
+		role2.setRoleName("role2");
+		role2.setRemark("role2");
+		role2.setCreateTime(formatDate(new Date()));
+		roleList.add(role1);
+		roleList.add(role2);
+		return roleList;
+	}
+
+	/**
+	 * 生成用户数据列表
+	 * 
+	 * @return
+	 */
+	private List<User> getUserList() {
+		List<User> userList = new ArrayList<User>();
+		Role role1 = new Role();
+		role1.setRoleName("role1");
+		role1.setRemark("role1");
+		role1.setCreateTime(formatDate(new Date()));
+		Role role2 = new Role();
+		role2.setRoleName("role2");
+		role2.setRemark("role2");
+		role2.setCreateTime(formatDate(new Date()));
+		User user1 = new User();
+		user1.setUserName("user1");
+		user1.setRole(role1);
+		user1.setRemark("user1");
+		user1.setCreateTime(formatDate(new Date()));
+		User user2 = new User();
+		user2.setUserName("user2");
+		user2.setRole(role1);
+		user2.setRemark("user2");
+		user2.setCreateTime(formatDate(new Date()));
+		userList.add(user1);
+		userList.add(user2);
+		return userList;
 	}
 
 	/**
@@ -497,6 +538,7 @@ public class ExcelUtil {
 			list.add(user.getUserName());
 			list.add(user.getRole().getRoleName());
 			list.add(user.getRemark());
+			list.add(user.getCreateTime());
 			listSum.add(list);
 		}
 		return listSum;
@@ -517,6 +559,7 @@ public class ExcelUtil {
 			list.add(String.valueOf(count));
 			list.add(role.getRoleName());
 			list.add(role.getRemark());
+			list.add(role.getCreateTime());
 			listSum.add(list);
 		}
 		return listSum;
@@ -529,9 +572,9 @@ public class ExcelUtil {
 	 * @throws Exception
 	 */
 	public static void main(String[] args) throws Exception {
+		File file = new File("D:/testExport.xlsx");
 		System.out.println("*****测试生成EXCEL*********");
 		ExcelUtil eu = new ExcelUtil();
-		File file = new File("D:/testExport.xlsx");
 		FileOutputStream out = null;
 		try {
 			out = new FileOutputStream(file);
@@ -546,19 +589,19 @@ public class ExcelUtil {
 			e.printStackTrace();
 		}
 		System.out.println("*****测试读取EXCEL*********");
-		File readFile = new File("D:/testExport.xlsx");
-		FileInputStream in = new FileInputStream(readFile);
-		Map<Integer, List<List<Object>>> mapList = readExcel(in, readFile.getName());
+		FileInputStream in = new FileInputStream(file);
+		Map<Integer, List<List<Object>>> mapList = readExcel(in, file.getName());
 		for (Integer key : mapList.keySet()) {
 			if (key == 0) {
 				System.out.println("第一个sheet工作簿中的数据为:");
 				for (List<Object> objs : mapList.get(key)) {
-					System.out.println(objs.get(0) + "-" + objs.get(1) + "-" + objs.get(2));
+					System.out.println(objs.get(0) + "-" + objs.get(1) + "-" + objs.get(2) + "-" + objs.get(3));
 				}
 			} else if (key == 1) {
 				System.out.println("第二个sheet工作簿中的数据为:");
 				for (List<Object> objs : mapList.get(key)) {
-					System.out.println(objs.get(0) + "-" + objs.get(1) + "-" + objs.get(2) + "-" + objs.get(3));
+					System.out.println(objs.get(0) + "-" + objs.get(1) + "-" + objs.get(2) + "-" + objs.get(3) + "-"
+							+ objs.get(4));
 				}
 
 			}
