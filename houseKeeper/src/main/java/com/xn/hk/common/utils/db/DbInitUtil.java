@@ -18,14 +18,14 @@ import com.xn.hk.common.utils.string.StringUtil;
 
 /**
  * 
- * @ClassName: DbInit
+ * @ClassName: DbInitUtil
  * @Package: com.xn.hk.common.utils.jdbc
  * @Description: 数据库初始化工具类
  * @Author: wanlei
  * @Date: 2018年11月7日 上午10:26:58
  */
-public class DbInit {
-	private static final Logger logger = LoggerFactory.getLogger(DbInit.class);
+public class DbInitUtil {
+	private static final Logger logger = LoggerFactory.getLogger(DbInitUtil.class);
 	private static final String SQL = "sql";
 
 	/**

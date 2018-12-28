@@ -23,7 +23,7 @@ import org.slf4j.LoggerFactory;
  * 
  * @ClassName: DbUtil
  * @Package: com.xn.hk.common.utils.db
- * @Description: 使用commons-dbutils访问数据库
+ * @Description: 使用commons-dbutils访问数据库(要求数据库字段名与javaBean字段名相同)
  * @Author: wanlei
  * @Date: 2018年12月28日 上午10:18:52
  */
