@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.xn.hk.common.utils.cfg.SystemCfg;
+import com.xn.hk.common.utils.encryption.HashUtil;
 import com.xn.hk.common.utils.string.RegexUtil;
 import com.xn.hk.common.utils.string.StringUtil;
 
@@ -30,6 +31,7 @@ public class SmsUtil {
 	// 中国网建SMS短信通SDK中的key(官方固定的)
 	private static final String UID = "Uid";
 	private static final String KEY = "Key";
+	private static final String KEY_MD5 = "KeyMD5";
 	private static final String SMSMOB = "smsMob";
 	private static final String SMSTEXT = "smsText";
 	private static final String CONTENT_TYPE_KEY = "Content-Type";
@@ -83,9 +85,10 @@ public class SmsUtil {
 		post.addRequestHeader(CONTENT_TYPE_KEY, CONTENT_TYPE_VALUE);// 在头文件中设置转码
 		NameValuePair[] data = {
 				new NameValuePair(UID, SystemCfg.loadCfgMap().get(SystemCfg.SMS_USERNAME)), // 登录的用户名
-				new NameValuePair(KEY, SystemCfg.loadCfgMap().get(SystemCfg.SMS_PASSWORD)), // 接口安全密钥
-				new NameValuePair(SMSMOB, smsMobile), // 接受验证码的手机号
-				new NameValuePair(SMSTEXT, smsText) };// 发送短信内容
+				//new NameValuePair(KEY, SystemCfg.loadCfgMap().get(SystemCfg.SMS_PASSWORD)), // 接口安全密钥
+				new NameValuePair(KEY_MD5, HashUtil.encryptStr(SystemCfg.loadCfgMap().get(SystemCfg.SMS_PASSWORD)).toUpperCase()), //接口秘钥32位MD5加密，大写
+				new NameValuePair(SMSMOB, smsMobile), // 接受验证码的手机号（多个手机号请用半角逗号隔开，如：13888888886,13888888887等，一次最多对100个手机发送） 
+				new NameValuePair(SMSTEXT, smsText) };// 发送短信内容，支持长短信，最多400字，普通短信70个字/条含签名，长短信64字/条计费
 		post.setRequestBody(data);
 		try {
 			client.executeMethod(post);// 执行POST请求
@@ -96,9 +99,13 @@ public class SmsUtil {
 					logger.info("响应头信息如下:" + h.toString());
 				}
 				String result = new String(post.getResponseBodyAsString().getBytes(SMS_CHARACTER_CODING));
-				logger.info(result + "条短信发送成功!");
+				if (Integer.parseInt(result) > 0) {
+					logger.info(result + "条短信发送成功!");
+				} else {
+					logger.error("发送短信失败，接口返回值为:" + result + ",其描述为:" + SmsResult.getResultDesc(result));
+				}
 			} else {
-				logger.error("返回状态码异常，状态码为:" + statusCode);
+				logger.error("返回http请求状态码异常，状态码为:" + statusCode);
 			}
 		} catch (Exception e) {
 			logger.info("短信发送失败,原因为:" + e.getMessage());
