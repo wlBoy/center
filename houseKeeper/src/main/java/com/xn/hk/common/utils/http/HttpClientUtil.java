@@ -34,8 +34,8 @@ import com.xn.hk.common.constant.Constant;
  * @Author: wanlei
  * @Date: 2018年1月12日 下午12:20:03
  */
-public class HttpUtil {
-	private static Logger logger = LoggerFactory.getLogger(HttpUtil.class);
+public class HttpClientUtil {
+	private static Logger logger = LoggerFactory.getLogger(HttpClientUtil.class);
 
 	/**
 	 * 发送get请求，参数拼接在地址上key=value&key=value
@@ -201,9 +201,8 @@ public class HttpUtil {
 		CloseableHttpResponse response = null;
 		try {
 			StringEntity stringEntity = new StringEntity(json, Constant.UTF8);
-			// stringEntity.setContentType("application/json"); //
 			// 发送json数据需要设置contentType为application/json
-			post.addHeader("Content-Type", "application/x-www-form-urlencoded;charset=" + Constant.UTF8);
+			post.addHeader("Content-Type", "application/json");
 			post.setEntity(stringEntity);
 			response = httpClient.execute(post);
 			if (response != null && response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
