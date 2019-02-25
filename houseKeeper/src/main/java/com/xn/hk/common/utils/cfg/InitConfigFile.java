@@ -90,8 +90,8 @@ public class InitConfigFile {
 	public Map<String, String> loadCfgMap(String cfgFileName) {
 		Map<String, String> cfgMap = new HashMap<String, String>();
 		Properties prop = loadCfg(cfgFileName);
-		for (Object key : prop.stringPropertyNames()) {
-			cfgMap.put(String.valueOf(key), prop.getProperty(String.valueOf(key)));
+		for (String key : prop.stringPropertyNames()) {
+			cfgMap.put(key, prop.getProperty(key));
 		}
 		return cfgMap;
 	}
