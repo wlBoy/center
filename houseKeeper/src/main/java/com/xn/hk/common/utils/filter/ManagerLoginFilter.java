@@ -13,7 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import com.xn.hk.common.constant.Constant;
-import com.xn.hk.common.utils.ip.IpHelper;
+import com.xn.hk.common.utils.net.IpHelper;
 import com.xn.hk.common.utils.string.StringUtil;
 
 /**

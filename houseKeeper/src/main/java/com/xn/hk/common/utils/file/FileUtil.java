@@ -1,12 +1,17 @@
 package com.xn.hk.common.utils.file;
 
+import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
+import java.util.regex.Pattern;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -56,6 +61,40 @@ public class FileUtil {
 	 */
 	public static String readFile2String(String path) {
 		return readFile2String(path, Constant.UTF8);
+	}
+
+	/**
+	 * 以byteArray的形式读文件的全部内容
+	 *
+	 * @param path
+	 * @return
+	 * @throws FileNotFoundException
+	 * @throws Exception
+	 */
+	public static final byte[] readFileAsByteArray(String path) {
+		File file = new File(path);
+		if (!isExist(path)) {
+			logger.error("{}路径下，文件不存在", path);
+			return null;
+		}
+		int count;
+		FileInputStream fi = null;
+		byte[] data = new byte[(int) file.length()];
+		try {
+			fi = new FileInputStream(file);
+			do {
+				count = fi.read(data);
+			} while (count > 0);
+		} catch (Exception e) {
+			logger.error("读取文件{}失败,，原因为:{}", file.getName(), e);
+		} finally {
+			try {
+				fi.close();
+			} catch (IOException e) {
+				logger.error("关闭文件流失败，原因为:{}", e);
+			}
+		}
+		return data;
 	}
 
 	/**
@@ -390,6 +429,106 @@ public class FileUtil {
 			size = size * 100 / 1024;
 			return String.valueOf((size / 100)) + "." + String.valueOf((size % 100)) + "GB";
 		}
+	}
+
+	/**
+	 * 删除文件中 某行为指定内容 的行
+	 *
+	 * @param path
+	 * @param delContent
+	 *            需要删除的行的内容
+	 * @throws Exception
+	 */
+	public static void delFileLine(String path, String delContent) throws Exception {
+		if (StringUtil.isEmpty(delContent)) {
+			logger.error("删除的内容不能为空!");
+			return;
+		}
+		File file = new File(path);
+		if (!file.exists()) {
+			logger.error("要删除内容的文件不存在!");
+			return;
+		}
+		List<String> lineList = new ArrayList<String>();
+		try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+			String s;
+			while ((s = reader.readLine()) != null) {
+				lineList.add(s);
+			}
+			lineList.remove(delContent);
+			StringBuilder sb = new StringBuilder();
+			if (!lineList.isEmpty()) {
+				for (int i = 0; i < lineList.size() - 1; i++) {
+					sb.append(lineList.get(i));
+					sb.append("\r\n");
+				}
+				sb.append(lineList.get(lineList.size() - 1));
+			}
+			FileUtil.writeString2File(path, sb.toString());
+		}
+	}
+
+	/**
+	 * 递归的读取一个文件夹下面的所有文件，包含文件夹下面的文件夹
+	 *
+	 * @param pathDirectory
+	 * @param fileList
+	 */
+	public static void readDirectoryFile(String pathDirectory, List<String> fileList) {
+		File directory = new File(pathDirectory);
+		if (directory.isFile()) {
+			fileList.add(pathDirectory);
+		} else {
+			File[] files = directory.listFiles();
+			if (files != null) {
+				for (File temp : files) {
+					readDirectoryFile(temp.getAbsolutePath(), fileList);
+				}
+			}
+		}
+	}
+
+	/**
+	 * 读文件转成行内容的集合
+	 *
+	 * @param path
+	 * @return 行内容的集合
+	 * @throws IOException
+	 */
+	public static List<String> readFileToLineList(String path) {
+		File file = new File(path);
+		if (!file.exists() || file.isDirectory()) {
+			logger.error("文件不存在或者该文件为目录!");
+			return null;
+		}
+		List<String> lineList = new ArrayList<String>();
+		BufferedReader br = null;
+		try {
+			br = new BufferedReader(new FileReader(file));
+			String temp = null;
+			while ((temp = br.readLine()) != null) {
+				lineList.add(temp);
+			}
+		} catch (Exception e) {
+			logger.error("读取文件失败，原因为:{}", e);
+		} finally {
+			try {
+				br.close();
+			} catch (IOException e) {
+				logger.error("关闭流失败，原因为:{}", e);
+			}
+		}
+		return lineList;
+	}
+
+	/**
+	 * 分割路径
+	 *
+	 * @param filePath
+	 * @return
+	 */
+	public static String[] splitFilepath(String filePath) {
+		return filePath.split(Pattern.quote(File.separator));
 	}
 
 	public static void main(String[] args) throws IOException {

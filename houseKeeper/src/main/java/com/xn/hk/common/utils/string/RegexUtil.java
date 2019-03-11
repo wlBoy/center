@@ -14,7 +14,8 @@ import java.util.regex.Pattern;
 public class RegexUtil {
 	private static final String mobile = "^(13|15|18|17|16)[0-9]{9}$";
 	private static final String codeAndMobile = "^\\+[0-9]{2}\\-(13|15|18|17|16)[0-9]{9}$";
-
+	public static final Pattern PATTERN_IP = Pattern
+			.compile("^(25[0-5]|2[0-4]\\d|[0-1]?\\d?\\d)(\\.(25[0-5]|2[0-4]\\d|[0-1]?\\d?\\d)){3}$");
 	/** 整数 */
 	private static final String intege = "^-?[1-9]\\d*$";
 	/** 正整数 */
@@ -367,6 +368,36 @@ public class RegexUtil {
 	}
 
 	/**
+	 * 匹配正则表达式
+	 * 
+	 * @param data
+	 * @param regexString
+	 * @return
+	 */
+	public static boolean isMatched(String data, String regexString) {
+
+		boolean result = false;
+
+		Matcher matcher = getMatcher(data, regexString);
+
+		result = matcher.find();
+
+		return result;
+	}
+
+	public static Matcher getMatcher(String data, String regexString) {
+
+		Pattern pattern = Pattern.compile(regexString);
+		Matcher matcher = pattern.matcher(data);
+
+		return matcher;
+	}
+
+	public static boolean matches(String str, Pattern pattern) {
+		return pattern.matcher(str).find();
+	}
+
+	/**
 	 * 验证整数和浮点数（正负整数和正负浮点数）
 	 * 
 	 * @param decimals
@@ -471,16 +502,14 @@ public class RegexUtil {
 	}
 
 	public static void main(String[] args) {
-	/*	System.out.println(isInteger("1"));
-		System.out.println(isInteger("0"));
-		System.out.println(isInteger("-1"));
-		System.out.println(isInteger("1.0"));
-		System.out.println("--------------------");
-		System.out.println(isUInteger("-1"));
-		System.out.println(isUInteger("0"));
-		System.out.println(isUInteger("10"));
-		System.out.println(isUInteger("1.3"));
-		System.out.println(isLetterAndSpace("tai  wan"));*/
+		/*
+		 * System.out.println(isInteger("1")); System.out.println(isInteger("0"));
+		 * System.out.println(isInteger("-1")); System.out.println(isInteger("1.0"));
+		 * System.out.println("--------------------");
+		 * System.out.println(isUInteger("-1")); System.out.println(isUInteger("0"));
+		 * System.out.println(isUInteger("10")); System.out.println(isUInteger("1.3"));
+		 * System.out.println(isLetterAndSpace("tai  wan"));
+		 */
 		System.out.println(isPassword("fdasfsd2432"));
 
 	}

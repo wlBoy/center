@@ -11,6 +11,8 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 import java.util.UUID;
 import java.util.regex.Matcher;
@@ -61,6 +63,28 @@ public final class StringUtil {
 	}
 
 	/**
+	 * 判断String集合中哪个是重复的
+	 * 
+	 * @param sourceList
+	 * @return 返回重复的String，没有则返回null
+	 */
+	public static String isDuplicated(List<String> sourceList) {
+		String result = null;
+		if (sourceList.size() < 2) {
+			return result;
+		}
+		for (String s : sourceList) {
+			List<String> tempList = new ArrayList<String>();
+			tempList.addAll(sourceList);
+			tempList.remove(s);
+			if (tempList.contains(s)) {
+				return s;
+			}
+		}
+		return result;
+	}
+
+	/**
 	 * 生成指定长度的随机字符串
 	 * 
 	 * @param len
@@ -102,6 +126,47 @@ public final class StringUtil {
 		// 用替换字符构造新的替换字符串
 		String newStr = new String(chars);
 		sb.replace(start, end, newStr);
+		return sb.toString();
+	}
+
+	/**
+	 * 将字符串按照指定字符切割为list<String>
+	 * 
+	 * @param source
+	 *            源字符串
+	 * @param splitSymbol
+	 *            指定字符
+	 * @return 返回切割后的list<String>
+	 */
+	public static List<String> splitStringToList(String source, String splitSymbol) {
+		List<String> list = new ArrayList<String>();
+		if (!StringUtil.isEmpty(source)) {
+			String[] ss = source.trim().split(splitSymbol);
+			for (int i = 0; i < ss.length; i++) {
+				list.add(ss[i]);
+			}
+		}
+		return list;
+	}
+
+	/**
+	 * 将list<String>用指定字符连接成新字符串
+	 * 
+	 * @param sourceList
+	 *            原list<String>
+	 * @param splitSymbol
+	 *            指定字符
+	 * @return 返回连接后的新字符串
+	 */
+	public static String concatListToString(List<String> sourceList, String splitSymbol) {
+		StringBuffer sb = new StringBuffer();
+		if (sourceList.size() > 0) {
+			for (int i = 0; i < sourceList.size() - 1; i++) {
+				sb.append(sourceList.get(i));
+				sb.append(splitSymbol);
+			}
+			sb.append(sourceList.get(sourceList.size() - 1));
+		}
 		return sb.toString();
 	}
 

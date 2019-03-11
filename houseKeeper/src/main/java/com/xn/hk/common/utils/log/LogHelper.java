@@ -15,7 +15,7 @@ import com.xn.hk.common.constant.EnabledEnum;
 import com.xn.hk.common.constant.StatusEnum;
 import com.xn.hk.common.dao.BaseDao;
 import com.xn.hk.common.utils.date.DateUtil;
-import com.xn.hk.common.utils.ip.IpHelper;
+import com.xn.hk.common.utils.net.IpHelper;
 import com.xn.hk.common.utils.string.StringUtil;
 import com.xn.hk.exam.model.Paper;
 import com.xn.hk.exam.model.Question;

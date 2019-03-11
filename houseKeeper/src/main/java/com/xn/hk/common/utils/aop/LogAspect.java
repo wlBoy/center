@@ -9,7 +9,7 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import com.xn.hk.common.constant.Constant;
-import com.xn.hk.common.utils.ip.IpHelper;
+import com.xn.hk.common.utils.net.IpHelper;
 import com.xn.hk.common.utils.string.StringUtil;
 import com.xn.hk.system.dao.LogDao;
 import com.xn.hk.system.model.Log;

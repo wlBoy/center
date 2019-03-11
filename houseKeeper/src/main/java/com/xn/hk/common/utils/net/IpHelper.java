@@ -1,4 +1,4 @@
-package com.xn.hk.common.utils.ip;
+package com.xn.hk.common.utils.net;
 
 /**
  * 
