@@ -14,7 +14,7 @@ import com.xn.hk.common.utils.string.StringUtil;
  * 
  * @ClassName: NetworkUtil
  * @Package: com.xn.hk.common.utils.net
- * @Description: netWork工具类
+ * @Description: 网络相关操作的工具类
  * @Author: wanlei
  * @Date: 2019年3月11日 上午10:43:02
  */
@@ -22,7 +22,7 @@ public class NetworkUtil {
 	private static final Logger logger = LoggerFactory.getLogger(NetworkUtil.class);
 
 	/**
-	 * 通过命令返回值 获取 mac 地址
+	 * 通过命令返回值 获取 mac地址
 	 * 
 	 * @param commandRes
 	 * @return
@@ -183,7 +183,7 @@ public class NetworkUtil {
 	 *
 	 * @param network
 	 * @param maskString
-	 * 			@return @throws Exception @throws
+	 * @return @throws Exception @throws
 	 */
 	public static boolean checkNetwork(String network, String maskString) {
 		boolean validate = true;
@@ -308,5 +308,11 @@ public class NetworkUtil {
 			result = result + "." + maskParts[i];
 		}
 		return result;
+	}
+
+	public static void main(String[] args) {
+		System.out.println(ip2long("192.168.229.130"));
+		System.out.println(isIpV4("192.168.229.130"));
+		System.out.println(maskNum2Ip(25));
 	}
 }

@@ -11,7 +11,7 @@ import org.apache.commons.lang3.ArrayUtils;
  * 
  * @ClassName: OsName
  * @Package: com.xn.hk.common.utils.os
- * @Description: 判断操作系统及其发行版本的帮助类
+ * @Description: 判断操作系统及其发行版本的工具类
  * @Author: wanlei
  * @Date: 2019年3月11日 上午10:51:58
  */
@@ -29,7 +29,7 @@ public enum OsName {
 	/**
 	 * 获取当前操作系统的枚举类
 	 * 
-	 * @return
+	 * @return 返回当前操作系统版本
 	 * @throws Exception
 	 */
 	public static OsName getOS() throws Exception {
@@ -91,11 +91,22 @@ public enum OsName {
 	}
 
 	/**
-	 * 是否在给定的数组范围内
+	 * 判断当前操作系统是否在给定的数组范围内
 	 */
 	public static boolean containsOs(OsName... osNames) throws Exception {
 		OsName name = OsName.getOS();
 		return ArrayUtils.contains(osNames, name);
 	}
 
+	/**
+	 * 测试方法
+	 * 
+	 * @param args
+	 * @throws Exception
+	 */
+	public static void main(String[] args) throws Exception {
+		System.out.println(getOS());
+		System.out.println(isPortUsing("127.0.0.1", 443));
+		System.out.println(containsOs(Windows, Ubuntu));
+	}
 }

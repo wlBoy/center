@@ -13,7 +13,7 @@ import java.io.*;
  * 
  * @ClassName: ProcUtil
  * @Package: com.xn.hk.common.utils.os
- * @Description: 进程相关的函数(开源的Java调用外部程序类库Apache Commons Exce)
+ * @Description: 进程相关的函数(使用开源的Java调用外部程序类库Apache Commons Exce)
  * @Author: wanlei
  * @Date: 2019年3月11日 上午10:57:28
  */
