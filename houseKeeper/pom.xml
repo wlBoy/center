@@ -275,6 +275,12 @@
 			<artifactId>bcpkix-jdk15on</artifactId>
 			<version>1.60</version>
 		</dependency>
+		<!-- jjwt -->
+		<dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt</artifactId>
+            <version>0.9.1</version>
+        </dependency>
 	</dependencies>
 	<build>
 		<finalName>houseKeeper</finalName>

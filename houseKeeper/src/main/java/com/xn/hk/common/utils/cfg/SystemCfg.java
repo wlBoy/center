@@ -46,6 +46,10 @@ public class SystemCfg {
 	 * 文件存放位置
 	 */
 	public final static String FILE_PATH = "filePath";
+	/**
+	 * jwt密钥
+	 */
+	public final static String JWT_SCRECT = "jwtScrect";
 
 	/*----------------------------------邮件服务器---------------------------------*/
 	/**
