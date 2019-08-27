@@ -192,6 +192,43 @@ public class SystemCfg {
 	 * sftp服务器密码
 	 */
 	public final static String SFTP_PASSWORD = "sftpPassword";
+	/*----------------------------------alipay配置-------------------------------*/
+	/**
+	 * 应用ID,您的APPID，收款账号即是您的APPID对应支付宝账号
+	 */
+	public final static String ALIPAY_APP_ID = "appId";
+	/**
+	 * 商户私钥，您的PKCS8格式RSA2私钥
+	 */
+	public final static String ALIPAY_PRIVATE_KEY = "privateKey";
+	/**
+	 * 支付宝公钥
+	 */
+	public final static String ALIPAY_PUBLIC_KEY = "publicKey";
+	/**
+	 * 服务器异步通知页面路径，需http://格式的完整路径，不能加?id=123这类自定义参数，外网能访问得到
+	 */
+	public final static String ALIPAY_NOTIFY_URL = "notifyUrl";
+	/**
+	 * 页面跳转同步通知页面路径，需http://格式的完整路径，不能加?id=123这类自定义参数 ，外网能访问得到
+	 */
+	public final static String ALIPAY_RETURN_URL = "returnUrl";
+	/**
+	 * 签名方式
+	 */
+	public final static String ALIPAY_SIGN_TYPE = "signType";
+	/**
+	 * 字符编码格式
+	 */
+	public final static String ALIPAY_CHARSET = "charset";
+	/**
+	 * 支付宝网关
+	 */
+	public final static String ALIPAY_GATEWAY_URL = "gatewayUrl";
+	/**
+	 * 日志路径
+	 */
+	public final static String ALIPAY_LOG_PATH = "logPath";
 
 	/*-------------------------------以上定义该配置文件key对应的常量---------------------------------*/
 
