@@ -13,27 +13,39 @@
 		<context:include-filter type="annotation"
 			expression="org.springframework.stereotype.Controller" />
 	</context:component-scan>
-	<!-- 采用SpringMVC自带的JSON转换工具，支持@ResponseBody注解 -->
-	<bean class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter">
-		<property name="messageConverters">
-			<list>
-				<ref bean="mappingJacksonHttpMessageConverter" /> <!-- json转换器 -->
-			</list>
-		</property>
-	</bean>
-	<!-- 避免IE执行AJAX时,返回JSON出现下载文件 -->
-	<bean id="mappingJacksonHttpMessageConverter"
-		class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">
-		<property name="supportedMediaTypes">
-			<list>
-				<value>text/json;charset=UTF-8</value>
-				<value>text/html;charset=UTF-8</value>
-				<value>application/json;charset=UTF-8</value>
-			</list>
-		</property>
-	</bean>
+   <!--自定义消息转换器的编码,解决后台传输json回前台时，中文乱码问题 -->
+    <bean id="stringHttpMessageConverter"
+          class="org.springframework.http.converter.StringHttpMessageConverter">
+        <constructor-arg value="UTF-8" />
+    </bean>
+    <!-- 配置json转换器 -->
+    <bean id="jsonMessageConverters"
+          class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">
+        <property name="supportedMediaTypes">
+            <list>
+                <value>application/json;charset=UTF-8</value>
+            </list>
+        </property>
+    </bean>
+    <!-- 避免IE执行AJAX时,返回JSON出现下载文件 -->
+    <bean id="fastJsonHttpMessageConverter"
+          class="com.alibaba.fastjson.support.spring.FastJsonHttpMessageConverter">
+        <property name="supportedMediaTypes">
+            <list>
+                <!-- 这里顺序不能反，一定先写text/html,不然ie下出现下载提示 -->
+                <value>text/html;charset=UTF-8</value>
+                <value>application/json;charset=UTF-8</value>
+            </list>
+        </property>
+    </bean>
 	<!-- 启动注解，注册服务，如验证框架、全局类型转换器 -->
-	<mvc:annotation-driven/>
+    <mvc:annotation-driven>
+        <mvc:message-converters>
+            <ref bean="stringHttpMessageConverter" />
+            <ref bean="jsonMessageConverters" />
+            <ref bean="fastJsonHttpMessageConverter" />
+        </mvc:message-converters>
+    </mvc:annotation-driven>
 	<!-- SpringMVC不处理静态资源如jsp,html,jpg,js,css -->
 	<mvc:default-servlet-handler />
 	<!-- 页面解析前后缀 -->
