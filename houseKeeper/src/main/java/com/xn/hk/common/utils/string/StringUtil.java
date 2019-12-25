@@ -63,6 +63,55 @@ public final class StringUtil {
 	}
 
 	/**
+	 * 去空格
+	 */
+	public static String trim(String str) {
+		return (str == null ? "" : str.trim());
+	}
+
+	/**
+	 * 是否包含字符串
+	 * 
+	 * @param str
+	 *            验证字符串
+	 * @param strs
+	 *            字符串组
+	 * @return 包含返回true
+	 */
+	public static boolean inStringIgnoreCase(String str, String... strs) {
+		if (str != null && strs != null) {
+			for (String s : strs) {
+				if (str.equalsIgnoreCase(trim(s))) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
+	/**
+	 * * 判断一个对象数组是否为空
+	 * 
+	 * @param objects
+	 *            要判断的对象数组
+	 ** @return true：为空 false：非空
+	 */
+	public static boolean isEmpty(Object[] objects) {
+		return isNull(objects) || (objects.length == 0);
+	}
+
+	/**
+	 * * 判断一个对象是否为空
+	 * 
+	 * @param object
+	 *            Object
+	 * @return true：为空 false：非空
+	 */
+	public static boolean isNull(Object object) {
+		return object == null;
+	}
+
+	/**
 	 * 判断String集合中哪个是重复的
 	 * 
 	 * @param sourceList

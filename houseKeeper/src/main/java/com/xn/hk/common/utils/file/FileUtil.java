@@ -9,10 +9,14 @@ import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.RandomAccessFile;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 import java.util.regex.Pattern;
+
+import javax.servlet.http.HttpServletRequest;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -97,7 +101,7 @@ public class FileUtil {
 		}
 		return data;
 	}
-	
+
 	private static int unpack(byte[] b) {
 		int num = 0;
 		for (int i = 0; i < b.length; i++) {
@@ -471,6 +475,36 @@ public class FileUtil {
 			logger.error("获取系统所有的key并将写到文件失败，原因为:" + e);
 		}
 		return flag;
+	}
+
+	/**
+	 * 下载文件名重新编码
+	 * 
+	 * @param request
+	 *            请求对象
+	 * @param fileName
+	 *            文件名
+	 * @return 编码后的文件名
+	 */
+	public static String setFileDownloadHeader(HttpServletRequest request, String fileName)
+			throws UnsupportedEncodingException {
+		final String agent = request.getHeader("USER-AGENT");
+		String filename = fileName;
+		if (agent.contains("MSIE")) {
+			// IE浏览器
+			filename = URLEncoder.encode(filename, "utf-8");
+			filename = filename.replace("+", " ");
+		} else if (agent.contains("Firefox")) {
+			// 火狐浏览器
+			filename = new String(fileName.getBytes(), "ISO8859-1");
+		} else if (agent.contains("Chrome")) {
+			// google浏览器
+			filename = URLEncoder.encode(filename, "utf-8");
+		} else {
+			// 其它浏览器
+			filename = URLEncoder.encode(filename, "utf-8");
+		}
+		return filename;
 	}
 
 	/**
