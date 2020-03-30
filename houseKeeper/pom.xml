@@ -30,6 +30,8 @@
 		<httpclient.version>4.5.2</httpclient.version>
 		<!--snmp版本号 -->
 		<snmp.version>2.6.2</snmp.version>
+		<!--kaptcha版本号 -->
+		<kaptcha.version>2.3.2</kaptcha.version>
 	</properties>
 	<dependencies>
 		<!--Spring框架核心库 -->
@@ -298,6 +300,18 @@
 		    <groupId>com.aliyun.oss</groupId>
 		    <artifactId>aliyun-sdk-oss</artifactId>
 		    <version>3.4.2</version>
+		</dependency>
+		<!--kaptcha验证码 -->
+		<dependency>
+			<groupId>com.github.penggle</groupId>
+			<artifactId>kaptcha</artifactId>
+			<version>${kaptcha.version}</version>
+			<exclusions>
+				<exclusion>
+					<artifactId>javax.servlet-api</artifactId>
+					<groupId>javax.servlet</groupId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 	</dependencies>
 	<build>

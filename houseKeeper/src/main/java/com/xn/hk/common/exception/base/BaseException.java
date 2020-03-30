@@ -2,7 +2,7 @@ package com.xn.hk.common.exception.base;
 
 import org.springframework.util.StringUtils;
 
-import com.xn.hk.common.utils.string.MessageUtil;
+import com.xn.hk.common.utils.spring.MessageUtil;
 
 /**
  * 基础异常

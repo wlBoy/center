@@ -27,8 +27,8 @@ public class DataSourceAspect
 {
     protected Logger logger = LoggerFactory.getLogger(getClass());
 
-    @Pointcut("@annotation(com.ruoyi.framework.aspectj.lang.annotation.DataSource)"
-            + "|| @within(com.ruoyi.framework.aspectj.lang.annotation.DataSource)")
+    @Pointcut("@annotation(com.xn.hk.common.aspectj.annotation.DataSource)"
+            + "|| @within(com.xn.hk.common.aspectj.annotation.DataSource)")
     public void dsPointCut()
     {
 

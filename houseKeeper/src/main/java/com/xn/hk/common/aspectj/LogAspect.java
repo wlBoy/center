@@ -38,7 +38,7 @@ public class LogAspect
     private static final Logger log = LoggerFactory.getLogger(LogAspect.class);
 
     // 配置织入点
-    @Pointcut("@annotation(com.ruoyi.framework.aspectj.lang.annotation.Log)")
+    @Pointcut("@annotation(com.xn.hk.common.aspectj.annotation.Log)")
     public void logPointCut()
     {
     }

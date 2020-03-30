@@ -1,9 +1,7 @@
-package com.xn.hk.common.utils.string;
+package com.xn.hk.common.utils.spring;
 
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
-
-import com.xn.hk.common.utils.spring.SpringUtil;
 
 /**
  * 获取i18n资源文件
