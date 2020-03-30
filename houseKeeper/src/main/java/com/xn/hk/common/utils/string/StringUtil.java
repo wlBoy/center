@@ -35,6 +35,9 @@ import com.xn.hk.common.utils.text.StrFormatter;
  */
 public final class StringUtil {
 	private static final Logger logger = LoggerFactory.getLogger(StringUtil.class);
+
+	/** 空字符串 */
+	private static final String NULLSTR = "";
 	/** 下划线 */
 	private static final char SEPARATOR = '_';
 	/**
@@ -49,6 +52,47 @@ public final class StringUtil {
 	 * 16进制数
 	 */
 	private static final String hexString = "0123456789ABCDEF";
+
+	/**
+	 * 截取字符串
+	 * 
+	 * @param str
+	 *            字符串
+	 * @param start
+	 *            开始
+	 * @param end
+	 *            结束
+	 * @return 结果
+	 */
+	public static String substring(final String str, int start, int end) {
+		if (str == null) {
+			return NULLSTR;
+		}
+
+		if (end < 0) {
+			end = str.length() + end;
+		}
+		if (start < 0) {
+			start = str.length() + start;
+		}
+
+		if (end > str.length()) {
+			end = str.length();
+		}
+
+		if (start > end) {
+			return NULLSTR;
+		}
+
+		if (start < 0) {
+			start = 0;
+		}
+		if (end < 0) {
+			end = 0;
+		}
+
+		return str.substring(start, end);
+	}
 
 	/**
 	 * 随机生成指定长度的纯数字字符串
@@ -229,6 +273,17 @@ public final class StringUtil {
 	 */
 	public static boolean isNull(Object object) {
 		return object == null;
+	}
+
+	/**
+	 * * 判断一个对象是否非空
+	 * 
+	 * @param object
+	 *            Object
+	 * @return true：非空 false：空
+	 */
+	public static boolean isNotNull(Object object) {
+		return !isNull(object);
 	}
 
 	/**

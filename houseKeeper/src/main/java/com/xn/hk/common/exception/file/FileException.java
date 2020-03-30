@@ -1,6 +1,6 @@
 package com.xn.hk.common.exception.file;
 
-import com.xn.hk.common.exception.file.base.BaseException;
+import com.xn.hk.common.exception.base.BaseException;
 
 /**
  * 文件信息异常类

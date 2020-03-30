@@ -1,4 +1,4 @@
-package com.xn.hk.common.exception.file.base;
+package com.xn.hk.common.exception.base;
 
 import org.springframework.util.StringUtils;
 
