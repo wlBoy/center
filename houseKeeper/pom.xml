@@ -27,7 +27,7 @@
 		<!--quartz版本号 -->
 		<quartz.version>2.3.0</quartz.version>
 		<!--httpclient版本号 -->
-		<httpclient.version>4.5.2</httpclient.version>
+		<httpclient.version>4.5.5</httpclient.version>
 		<!--snmp版本号 -->
 		<snmp.version>2.6.2</snmp.version>
 		<!--kaptcha版本号 -->
@@ -297,9 +297,9 @@
 		</dependency>
 		<!-- aliyun-sdk-oss -->
 		<dependency>
-		    <groupId>com.aliyun.oss</groupId>
-		    <artifactId>aliyun-sdk-oss</artifactId>
-		    <version>3.4.2</version>
+			<groupId>com.aliyun.oss</groupId>
+			<artifactId>aliyun-sdk-oss</artifactId>
+			<version>3.4.2</version>
 		</dependency>
 		<!--kaptcha验证码 -->
 		<dependency>
@@ -317,14 +317,31 @@
 	<build>
 		<finalName>houseKeeper</finalName>
 		<plugins>
+			<!-- 编译插件 -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
-				<version>2.3.2</version>
+				<version>3.1</version>
 				<configuration>
 					<!-- 将maven发布的代码编译成和IDE一样的版本 -->
 					<source>1.8</source>
 					<target>1.8</target>
+					<!-- 字符集编码 -->
+					<encoding>UTF-8</encoding>
+				</configuration>
+			</plugin>
+			<!-- tomcat插件 -->
+			<plugin>
+				<groupId>org.apache.tomcat.maven</groupId>
+				<artifactId>tomcat7-maven-plugin</artifactId>
+				<version>2.2</version>
+				<configuration>
+					<port>9090</port>
+					<path>/</path>
+					<uriEncoding>UTF-8</uriEncoding>
+					<username>tomcat</username>
+					<password>tomcat</password>
+					<url>http://192.168.91.128:8080/manager/text</url>
 				</configuration>
 			</plugin>
 		</plugins>
