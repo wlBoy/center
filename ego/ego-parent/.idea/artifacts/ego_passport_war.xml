@@ -1,0 +1,14 @@
+<component name="ArtifactManager">
+  <artifact type="war" name="ego-passport:war">
+    <output-path>$PROJECT_DIR$/ego-passport/target</output-path>
+    <properties id="maven-jee-properties">
+      <options>
+        <module>ego-passport</module>
+        <packaging>war</packaging>
+      </options>
+    </properties>
+    <root id="archive" name="ego-passport-0.0.1-SNAPSHOT.war">
+      <element id="artifact" artifact-name="ego-passport:war exploded" />
+    </root>
+  </artifact>
+</component>

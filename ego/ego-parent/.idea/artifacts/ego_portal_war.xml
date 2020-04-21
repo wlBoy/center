@@ -1,0 +1,14 @@
+<component name="ArtifactManager">
+  <artifact type="war" name="ego-portal:war">
+    <output-path>$PROJECT_DIR$/ego-portal/target</output-path>
+    <properties id="maven-jee-properties">
+      <options>
+        <module>ego-portal</module>
+        <packaging>war</packaging>
+      </options>
+    </properties>
+    <root id="archive" name="ego-portal-0.0.1-SNAPSHOT.war">
+      <element id="artifact" artifact-name="ego-portal:war exploded" />
+    </root>
+  </artifact>
+</component>

@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>报告列表</title>
+
+    <!-- Bootstrap Core CSS -->
+    <link href="../vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- MetisMenu CSS -->
+    <link href="../vendor/metisMenu/metisMenu.min.css" rel="stylesheet">
+
+    <!-- DataTables CSS -->
+    <link href="../vendor/datatables-plugins/dataTables.bootstrap.css" rel="stylesheet">
+
+    <!-- DataTables Responsive CSS -->
+    <link href="../vendor/datatables-responsive/dataTables.responsive.css" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <link href="../dist/css/sb-admin-2.css" rel="stylesheet">
+
+    <!-- Custom Fonts -->
+    <link href="../vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+   
+    <link href="../plugin/bootstrap-table/bootstrap-table.css" rel="stylesheet" type="text/css">
+
+</head>
+
+<body>
+
+    <div id="wrapper">
+
+        <!-- Navigation -->
+        <nav class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="index.html">年终总结报告系统</a>
+            </div>
+            <!-- /.navbar-header -->
+
+            <ul class="nav navbar-top-links navbar-right">
+                <!-- /.dropdown -->
+                <li class="dropdown">
+                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                        <i class="fa fa-user fa-fw"></i>
+                        <i class="fa fa-caret-down"></i>
+                    </a>
+                    <ul class="dropdown-menu dropdown-user">
+                        <li>
+                            <a href="#">
+                                <i class="fa fa-user fa-fw"></i> 张宪清</a>
+                        </li>
+
+                        <li class="divider"></li>
+                        <li>
+                            <a href="login.html">
+                                <i class="fa fa-sign-out fa-fw"></i> 登出</a>
+                        </li>
+                    </ul>
+                    <!-- /.dropdown-user -->
+                </li>
+                <!-- /.dropdown -->
+            </ul>
+            <!-- /.navbar-top-links -->
+
+            <div class="navbar-default sidebar" role="navigation">
+                <div class="sidebar-nav navbar-collapse">
+                    <ul class="nav" id="side-menu">
+                        <li>
+                            <a href="index.html">
+                                <i class="fa fa-files-o fa-fw"></i> 新总结</a>
+                        </li>
+                        <li>
+                            <a href="reportList.html">
+                                <i class="fa fa-table fa-fw"></i> 总结管理</a>
+                        </li>
+                        <li>
+                            <a href="reportReview.html">
+                                <i class="fa fa-edit fa-fw"></i> 总结审批</a>
+                        </li>
+                    </ul>
+                </div>
+                <!-- /.sidebar-collapse -->
+            </div>
+            <!-- /.navbar-static-side -->
+        </nav>
+
+        <div id="page-wrapper">
+            <div class="row">
+                <div class="col-lg-12">
+                    <h1 class="page-header">总结管理</h1>
+                </div>
+                <!-- /.col-lg-12 -->
+            </div>
+            <div class="panel-body" style="padding-bottom:0px;">
+                <div class="panel panel-default">
+                    <div class="panel-heading">查询条件</div>
+                    <div class="panel-body">
+                        <form id="formSearch" class="form-horizontal">
+                            <div class="form-group" style="margin-top:15px">
+                                <label class="control-label col-sm-1" for="txt_search_departmentname">部门名称</label>
+                                <div class="col-sm-3">
+                                    <input type="text" class="form-control" id="txt_search_departmentname">
+                                </div>
+                                <label class="control-label col-sm-1" for="txt_search_statu">状态</label>
+                                <div class="col-sm-3">
+                                    <input type="text" class="form-control" id="txt_search_statu">
+                                </div>
+                                <div class="col-sm-4" style="text-align:left;">
+                                    <button type="button" style="margin-left:50px" id="btn_query" class="btn btn-primary">查询</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <table id="tb_departments"></table>
+            </div>
+
+        </div>
+        <!-- /#page-wrapper -->
+
+    </div>
+    <!-- /#wrapper -->
+
+    <!-- jQuery -->
+    <script src="../vendor/jquery/jquery.min.js"></script>
+
+    <!-- Bootstrap Core JavaScript -->
+    <script src="../vendor/bootstrap/js/bootstrap.min.js"></script>
+
+    <!-- Metis Menu Plugin JavaScript -->
+    <script src="../vendor/metisMenu/metisMenu.min.js"></script>
+
+    <!-- DataTables JavaScript -->
+    <script src="../vendor/datatables/js/jquery.dataTables.min.js"></script>
+    <script src="../vendor/datatables-plugins/dataTables.bootstrap.min.js"></script>
+    <script src="../vendor/datatables-responsive/dataTables.responsive.js"></script>
+
+    <!-- Custom Theme JavaScript -->
+    <script src="../dist/js/sb-admin-2.js"></script>
+
+
+     <!-- bootstrap table -->
+    <script src="../plugin/bootstrap-table/bootstrap-table.js"></script>
+    <script src="../plugin/bootstrap-table/locale/bootstrap-table-zh-CN.js"></script>
+    <script>
+        $(function () {
+
+            //1.初始化Table
+            var oTable = new TableInit();
+            oTable.Init();
+
+            //2.初始化Button的点击事件
+            var oButtonInit = new ButtonInit();
+            oButtonInit.Init();
+
+        });
+
+
+        var TableInit = function () {
+            var oTableInit = new Object();
+            //初始化Table
+            oTableInit.Init = function () {
+                $('#tb_departments').bootstrapTable({
+                    url: '/Home/GetDepartment', //请求后台的URL（*）
+                    method: 'get', //请求方式（*）
+                    striped: true, //是否显示行间隔色
+                    cache: false, //是否使用缓存，默认为true，所以一般情况下需要设置一下这个属性（*）
+                    pagination: true, //是否显示分页（*）
+                    sortable: false, //是否启用排序
+                    sortOrder: "asc", //排序方式
+                    queryParams: oTableInit.queryParams, //传递参数（*）
+                    sidePagination: "server", //分页方式：client客户端分页，server服务端分页（*）
+                    pageNumber: 1, //初始化加载第一页，默认第一页
+                    pageSize: 10, //每页的记录行数（*）
+                    pageList: [10, 25, 50, 100], //可供选择的每页的行数（*）
+                    minimumCountColumns: 2, //最少允许的列数
+                    clickToSelect: true, //是否启用点击选中行
+                    height: 500, //行高，如果没有设置height属性，表格自动根据记录条数觉得表格高度
+                    uniqueId: "ID", //每一行的唯一标识，一般为主键列
+                    cardView: false, //是否显示详细视图
+                    detailView: false, //是否显示父子表
+                    columns: [{
+                        checkbox: true
+                    }, {
+                        field: 'Name',
+                        title: '报告类型'
+                    }, {
+                        field: 'ParentName',
+                        title: '报告时间'
+                    }, {
+                        field: 'Level',
+                        title: '报告状态'
+                    }, {
+                        field: 'opt',
+                        title: '操作',
+                        formatter:function(value, row ,index){
+                            return ""
+                        }
+                    }, ]
+                });
+            };
+
+            //得到查询的参数
+            oTableInit.queryParams = function (params) {
+                var temp = { //这里的键的名字和控制器的变量名必须一直，这边改动，控制器也需要改成一样的
+                    limit: params.limit, //页面大小
+                    offset: params.offset, //页码
+                    departmentname: $("#txt_search_departmentname").val(),
+                    statu: $("#txt_search_statu").val()
+                };
+                return temp;
+            };
+            return oTableInit;
+        };
+
+
+        var ButtonInit = function () {
+            var oInit = new Object();
+            var postdata = {};
+
+            oInit.Init = function () {
+                //初始化页面上面的按钮事件
+            };
+
+            return oInit;
+        };
+    </script>
+</body>
+
+</html>

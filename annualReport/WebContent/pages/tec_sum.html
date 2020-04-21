@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>SB Admin 2 - Bootstrap Admin Theme</title>
+
+    <!-- Bootstrap Core CSS -->
+    <link href="../vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- MetisMenu CSS -->
+    <link href="../vendor/metisMenu/metisMenu.min.css" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <link href="../dist/css/sb-admin-2.css" rel="stylesheet">
+
+    <!-- Custom Fonts -->
+    <link href="../vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+</head>
+
+<body>
+
+    <div id="wrapper">
+
+       <!-- Navigation -->
+        <nav class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="index.html">年终总结报告系统</a>
+            </div>
+            <!-- /.navbar-header -->
+
+            <ul class="nav navbar-top-links navbar-right">
+                <!-- /.dropdown -->
+                <li class="dropdown">
+                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                        <i class="fa fa-user fa-fw"></i> <i class="fa fa-caret-down"></i>
+                    </a>
+                    <ul class="dropdown-menu dropdown-user">
+                        <li><a href="#"><i class="fa fa-user fa-fw"></i> 张宪清</a>
+                        </li>
+
+                        <li class="divider"></li>
+                        <li><a href="login.html"><i class="fa fa-sign-out fa-fw"></i> 登出</a>
+                        </li>
+                    </ul>
+                    <!-- /.dropdown-user -->
+                </li>
+                <!-- /.dropdown -->
+            </ul>
+            <!-- /.navbar-top-links -->
+
+            <div class="navbar-default sidebar" role="navigation">
+                <div class="sidebar-nav navbar-collapse">
+                    <ul class="nav" id="side-menu">
+                        <li>
+                            <a href="index.html"><i class="fa fa-files-o fa-fw"></i> 新总结</a>
+                        </li>
+                        <li>
+                            <a href="reportList.html"><i class="fa fa-table fa-fw"></i> 总结管理</a>
+                        </li>
+                        <li>
+                            <a href="reportReview.html"><i class="fa fa-edit fa-fw"></i> 总结审批</a>
+                        </li>
+                    </ul>
+                </div>
+                <!-- /.sidebar-collapse -->
+            </div>
+            <!-- /.navbar-static-side -->
+        </nav>
+
+        <div id="page-wrapper">
+            <div class="row">
+                <div class="col-lg-12">
+                    <h1 class="page-header">填写总结</h1>
+                </div>
+                <!-- /.col-lg-12 -->
+            </div>
+            <!-- /.row -->
+	
+
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            工作总结
+                        </div>
+                        <div class="panel-body">
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <form role="form">
+                                        <div class="form-group">
+                                            <label>技术研发情况</label>
+                                            <textarea class="form-control" rows="10" placeholder="描述今年自己在技术上主要的成就，包括重要的产品模块、有价值的代码、设计、文档等。适用于研发人员工作总结"></textarea>
+                                        </div>
+										<div class="form-group">
+                                            <label>项目和任务单</label>
+                                            <textarea class="form-control" rows="10" placeholder="描述自己参与的每个项目，以及承担的主要工作（研发、测试、项目实施等），说明投入的工作量，对该项目的主要贡献，如：测试发现的有效代码缺陷数、文档缺陷数，以及参与的项目文档评审过程发现的缺陷数等"></textarea>
+                                        </div>
+										<div class="form-group">
+                                            <label>生产出货工作</label>
+                                            <textarea class="form-control" rows="10" placeholder="生产人员描述生产出货产品的种类及数量、产品授权控制情况，产品检测人员描述检测发现的缺陷等"></textarea>
+                                        </div>
+                                        <div class="form-group">
+                                            <label>质量管理工作</label>
+                                            <textarea class="form-control" rows="10"></textarea>
+                                        </div>
+										<div class="form-group">
+                                            <label>维护和支持</label>
+                                            <textarea class="form-control" rows="10"></textarea>
+                                        </div>
+										 <button type="submit" class="btn btn-primary" style="width:200px">提交</button>
+                                  	</form>
+                                </div>
+                                <!-- /.col-lg-6 (nested) -->
+                            </div>
+                            <!-- /.row (nested) -->
+                        </div>
+				
+                        <!-- /.panel-body -->
+                    </div>
+                    <!-- /.panel -->
+					
+					<div class="panel panel-default">
+                        <div class="panel-heading">
+                            个人总结
+                        </div>
+                        <div class="panel-body">
+                            <div class="row">
+                                <div class="col-lg-6">
+                                        
+									 <form role="form">
+
+                                        <div class="form-group">
+                                            <label>个人目标的实现程度</label>
+                                            <textarea class="form-control" rows="10" placeholder="参考自己2017年初的目标，自我评价"></textarea>
+                                        </div>
+										<div class="form-group">
+                                            <label>进步和收获</label>
+                                            <textarea class="form-control" rows="10" placeholder="技能和能力的进步&#13;&#10;对业务的理解&#13;&#10;产品和项目的经验及其他收获&#13;&#10;对外交流或团队合作上的进步&#13;&#10;获奖、发表论文、申请专利、技能证书、职称申报等情况"></textarea>
+                                        </div>
+										<div class="form-group">
+                                            <label>问题与不足</label>
+                                            <textarea class="form-control" rows="10" placeholder=""></textarea>
+                                        </div>
+										<button type="submit" class="btn btn-primary" style="width:200px">提交</button>
+                                   </form>                                    
+                                </div>
+                                <!-- /.col-lg-6 (nested) -->
+                            </div>
+                            <!-- /.row (nested) -->
+                        </div>
+				
+                        <!-- /.panel-body -->
+                    </div>
+                    <!-- /.panel -->
+					
+					
+					
+					<div class="panel panel-default">
+                        <div class="panel-heading">
+                            2018年目标
+                        </div>
+                        <div class="panel-body">
+                            <div class="row">
+                                <div class="col-lg-6">
+                                        <form role="form">
+
+                                        <div class="form-group">
+                                            <label></label>
+                                            <textarea class="form-control" rows="10" placeholder="技术目标：包括自己希望掌握或提高的技术能力，从事的技术方向等&#13;&#10;产品和项目目标&#13;&#10;其他目标&#13;&#10;对公司和团队的需求——希望公司和团队为你创造一个什么样的环境，来帮助你完成上述目标"></textarea>
+                                        </div>
+										<button type="submit" class="btn btn-primary" style="width:200px">提交</button>
+										</form>                                                                      
+                                </div>
+                                <!-- /.col-lg-6 (nested) -->
+                            </div>
+                            <!-- /.row (nested) -->
+                        </div>
+				
+                        <!-- /.panel-body -->
+                    </div>
+                    <!-- /.panel -->
+					
+					
+					
+					
+						<div class="panel panel-default">
+                        <div class="panel-heading">
+                            4对公司和团队的建议
+                        </div>
+                        <div class="panel-body">
+                            <div class="row">
+                                <div class="col-lg-6">
+                                        
+                                        <div class="form-group">
+                                            <label>产品建议</label>
+                                            <textarea class="form-control" rows="10" placeholder="针对今年参与研发过的产品，你觉得主要问题和缺陷在什么地方，缺少哪些重要的功能？&#13;&#10;部门目前的产品及相关技术中，你觉得哪些是需要进行重大改进的，如果由你来主导，你希望如何进行。&#13;&#10;你觉得有哪些其他公司的产品或产品模块可以借鉴或引入？&#13;&#10;"></textarea>
+                                        </div>
+										<div class="form-group">
+                                            <label>项目建议</label>
+                                            <textarea class="form-control" rows="10" placeholder="针对你今年参与过的项目，你觉得项目过程和管理上存在哪些问题，有哪些好的建议？&#13;&#10;公司目前的研发类项目涉及到至少三个团队（营销实施团队，研发团队，品质管理团队），对于这类跨部门跨团队的合作，你认为存在哪些问题，有什么好的建议？&#13;&#10;公司目前的技术支持工作涉及到至少两个团队（营销实施团队，研发团队），对于这类过程，你认为存在哪些问题，有什么好的建议？&#13;&#10;你认为公司目前的质量体系目前存在哪些问题，你觉得有哪些可以改进的地方？"></textarea>
+                                        </div>
+										<div class="form-group">
+                                            <label>管理建议</label>
+                                            <textarea class="form-control" rows="10" placeholder="对于部门培训，学习，招聘等各方面的建议&#13;&#10;对于公司日常管理的建议&#13;&#10;在公司内部，你是否有更向往的团队和工作方向？（包括其他技术团队和营销团队）&#13;&#10;对于你的直属上级和部门管理者，你认为他们在2017年主要存在的问题有哪些（欢迎具体指出）？希望他们明年做出哪些改进？"></textarea>
+                                        </div>
+										
+										                                                                      
+                                </div>
+                                <!-- /.col-lg-6 (nested) -->
+                            </div>
+                            <!-- /.row (nested) -->
+                        </div>
+				
+                        <!-- /.panel-body -->
+                    </div>
+                    <!-- /.panel -->
+					
+					
+					
+					
+                </div>
+                <!-- /.col-lg-12 -->
+            </div>
+            <!-- /.row -->
+	
+        </div>
+        <!-- /#page-wrapper -->
+
+    </div>
+    <!-- /#wrapper -->
+
+    <!-- jQuery -->
+    <script src="../vendor/jquery/jquery.min.js"></script>
+
+    <!-- Bootstrap Core JavaScript -->
+    <script src="../vendor/bootstrap/js/bootstrap.min.js"></script>
+
+    <!-- Metis Menu Plugin JavaScript -->
+    <script src="../vendor/metisMenu/metisMenu.min.js"></script>
+
+    <!-- Custom Theme JavaScript -->
+    <script src="../dist/js/sb-admin-2.js"></script>
+
+</body>
+
+</html>
