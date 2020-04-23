@@ -76,4 +76,9 @@ public enum StatusEnum {
 		}
 		return typeList;
 	}
+
+	@Override
+	public String toString() {
+		return "StatusEnum{" + "code=" + code + ", desc='" + desc + '\'' + '}';
+	}
 }
