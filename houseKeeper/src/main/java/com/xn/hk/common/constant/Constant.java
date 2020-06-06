@@ -42,6 +42,26 @@ public class Constant {
 	 * GBK编码
 	 */
 	public final static String ISO_8859_1 = "ISO-8859-1";
+	/**
+	 * 随机数
+	 */
+	public static final String HEADER_PARAM_ONCE = "once";
+	/**
+	 * 时间戳
+	 */
+	public static final String HEADER_PARAM_TIME_STAMP = "ts";
+	/**
+	 * 应用KEY
+	 */
+	public static final String HEADER_PARAM_APP_KEY = "appKey";
+	/**
+	 * 签名算法
+	 */
+	public static final String HEADER_PARAM_SIGN_METHOD = "signMethod";
+	/**
+	 * 签名结果
+	 */
+	public static final String HEADER_PARAM_SIGN_DATA = "signData";
 
 	/*----------------------------------用户管理---------------------------------*/
 	/**

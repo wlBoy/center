@@ -50,6 +50,26 @@ public class SystemCfg {
 	 * jwt密钥
 	 */
 	public final static String JWT_SCRECT = "jwtScrect";
+	/**
+	 * 是否启用接口签名
+	 */
+	public final static String ENABLE_INTERFACE_SIGN = "enableIntefaceSign";
+	/**
+	 * 是否启用签名有效期校验
+	 */
+	public final static String ENABLE_CHECK_SIGN_TIME = "enableCheckSignTime";
+	/**
+	 * 签名有效期，单位:s
+	 */
+	public final static String SIGN_VALID_TIME = "signValidTime";
+	/**
+	 * 签名算法：支持MD5, SHA-1, SHA-256, SHA-512
+	 */
+	public final static String SIGN_ALGORITHM = "signAlgorithm";
+	/**
+	 * 应用编码和应用KEY的对应关系
+	 */
+	public final static String APP_INFO_LIST = "appInfoList";
 
 	/*----------------------------------邮件服务器---------------------------------*/
 	/**
@@ -253,8 +273,7 @@ public class SystemCfg {
 	/**
 	 * 将配置信息map中的配置信息保存至配置文件
 	 * 
-	 * @param cfgMap
-	 *            配置信息map
+	 * @param cfgMap 配置信息map
 	 * @return 保存成功返回true，否则返回false
 	 */
 	public static boolean saveCfg(Map<String, Object> cfgMap) {
