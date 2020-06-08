@@ -5,6 +5,9 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.xn.hk.common.constant.Constant;
 import com.xn.hk.common.exception.sign.SignException;
 import com.xn.hk.common.utils.cfg.SystemCfg;
@@ -19,6 +22,8 @@ import com.xn.hk.common.utils.string.StringUtil;
  * @Date: 2019年2月25日 下午5:28:25
  */
 public class InterfaceUtil {
+	private static final Logger logger = LoggerFactory.getLogger(InterfaceUtil.class);
+
 	/**
 	 * 接口签名保护，更安全
 	 * 
@@ -60,8 +65,12 @@ public class InterfaceUtil {
 		}
 		// 6.构建原文
 		String originData = String.format("appKey=%s&once=%s&signMethod=%s&ts=%s", appKey, once, signMethod, ts);
+		logger.info("接口签名安全保护-签名原文为:[{}],签名算法为:[{}]", originData, signMethod);
 		// 7.验证签名
-		if (!HashUtil.getSignResult(appPwd, originData, signMethod).equals(signData)) {
+		String signResult = HashUtil.getSignResult(appPwd, originData, signMethod);
+		boolean isValid = signResult.equals(signData);
+		logger.info("接口签名安全保护-参数中的签名结果为:[{}],服务端的签名结果为:[{}],比对结果为:[{}]", signData, signResult, isValid);
+		if (!isValid) {
 			throw new SignException("签名结果验证失败");
 		}
 		// 8.判断是否验证签名有效期
