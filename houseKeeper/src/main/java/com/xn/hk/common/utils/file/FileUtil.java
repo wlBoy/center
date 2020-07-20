@@ -478,7 +478,7 @@ public class FileUtil {
 	}
 
 	/**
-	 * 下载文件名重新编码
+	 * 下载文件名重新中文编码,兼容各浏览器，防止文件名中文乱码下载文件名重新编码
 	 * 
 	 * @param request
 	 *            请求对象
@@ -486,25 +486,17 @@ public class FileUtil {
 	 *            文件名
 	 * @return 编码后的文件名
 	 */
-	public static String setFileDownloadHeader(HttpServletRequest request, String fileName)
+	public static String getDownloadFileName(HttpServletRequest request, String fileName)
 			throws UnsupportedEncodingException {
 		final String agent = request.getHeader("USER-AGENT");
-		String filename = fileName;
-		if (agent.contains("MSIE")) {
-			// IE浏览器
-			filename = URLEncoder.encode(filename, "utf-8");
-			filename = filename.replace("+", " ");
-		} else if (agent.contains("Firefox")) {
-			// 火狐浏览器
-			filename = new String(fileName.getBytes(), "ISO8859-1");
-		} else if (agent.contains("Chrome")) {
-			// google浏览器
-			filename = URLEncoder.encode(filename, "utf-8");
+		if (agent.toLowerCase().contains("msie") || agent.indexOf("like Gecko") > 0) {
+			// IE
+			fileName = URLEncoder.encode(fileName, "utf-8");
 		} else {
-			// 其它浏览器
-			filename = URLEncoder.encode(filename, "utf-8");
+			// 非IE
+			fileName = new String(fileName.getBytes("utf-8"), "ISO8859-1");
 		}
-		return filename;
+		return fileName;
 	}
 
 	/**

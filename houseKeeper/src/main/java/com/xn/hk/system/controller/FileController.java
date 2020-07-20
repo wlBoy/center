@@ -245,27 +245,15 @@ public class FileController {
 		}
 		// 2.获取要下载的原始文件名
 		String orginFileName = fileEntity.getFileName();
-		// 3.兼容各浏览器获取文件下载名，防止中文乱码问题
-		// 判断是否为IE11浏览器
-		Boolean isIE11 = request.getHeader("User-Agent").indexOf("like Gecko") > 0;
-		try {
-			if (request.getHeader("user-agent").toLowerCase().contains("msie") || isIE11) {
-				// IE
-				downloadFileName = URLEncoder.encode(orginFileName, Constant.UTF8);
-			} else {
-				// 非IE
-				downloadFileName = new String(orginFileName.getBytes(Constant.UTF8), Constant.ISO_8859_1);
-			}
-		} catch (Exception e) {
-			logger.error("构建下载文件名失败，原因为:" + e);
-		}
-		// 4.获取数据库中存的下载路径，使用IO流进行文件下载
+		// 3.获取数据库中存的下载路径，使用IO流进行文件下载
 		String filePath = fileEntity.getFilePath();
 		File file = new File(filePath);
 		if (file.exists()) {
 			BufferedInputStream bis = null;
 			OutputStream os = null;
 			try {
+				// 4.兼容各浏览器获取文件下载名，防止中文乱码问题
+				downloadFileName = FileUtil.getDownloadFileName(request, orginFileName);
 				response.setContentType("application/force-download");// 设置强制下载不打开
 				response.setContentLength(FileUtil.getFileSize(filePath));// 设置下载文件大小
 				response.addHeader("Content-Disposition", "attachment;fileName=" + downloadFileName);// 设置下载文件名
