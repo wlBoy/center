@@ -1,4 +1,4 @@
-package com.xn.hk.common.utils.encryption;
+package com.xn.hk.common.utils.encryption.opt;
 
 import java.lang.reflect.UndeclaredThrowableException;
 import java.math.BigInteger;

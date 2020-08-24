@@ -6,7 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.xn.hk.common.constant.AjaxResult;
-import com.xn.hk.common.utils.encryption.InterfaceUtil;
+import com.xn.hk.common.utils.encryption.InterfaceSignUtil;
 
 /**
  * 
@@ -27,7 +27,7 @@ public class BaseController {
 	 */
 	public AjaxResult interfaceProtect(HttpServletRequest request) {
 		try {
-			InterfaceUtil.interfaceProtect(request);
+			InterfaceSignUtil.protect(request);
 			return null;
 		} catch (Exception e) {
 			logger.error("接口签名验证失败，原因为:", e);

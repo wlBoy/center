@@ -21,8 +21,8 @@ import com.xn.hk.common.utils.string.StringUtil;
  * @Author: wanlei
  * @Date: 2019年2月25日 下午5:28:25
  */
-public class InterfaceUtil {
-	private static final Logger logger = LoggerFactory.getLogger(InterfaceUtil.class);
+public class InterfaceSignUtil {
+	private static final Logger logger = LoggerFactory.getLogger(InterfaceSignUtil.class);
 
 	/**
 	 * 接口签名保护，更安全
@@ -30,7 +30,7 @@ public class InterfaceUtil {
 	 * @param request
 	 * @throws Exception
 	 */
-	public static void interfaceProtect(HttpServletRequest request) throws Exception {
+	public static void protect(HttpServletRequest request) throws Exception {
 		// 1.判断是否开启接口签名验证功能
 		String enableIntefaceSign = SystemCfg.loadCfgMap().get(SystemCfg.ENABLE_INTERFACE_SIGN);
 		if (!Boolean.valueOf(enableIntefaceSign)) {

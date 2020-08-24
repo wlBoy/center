@@ -1,4 +1,4 @@
-package com.xn.hk.common.utils.encryption;
+package com.xn.hk.common.utils.encryption.sm;
 
 import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;

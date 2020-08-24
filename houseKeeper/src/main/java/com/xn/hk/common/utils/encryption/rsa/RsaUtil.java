@@ -1,4 +1,4 @@
-package com.xn.hk.common.utils.encryption;
+package com.xn.hk.common.utils.encryption.rsa;
 
 import java.io.ByteArrayOutputStream;
 import java.security.KeyFactory;
