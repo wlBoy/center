@@ -32,6 +32,8 @@
 		<snmp.version>2.6.2</snmp.version>
 		<!--kaptcha版本号 -->
 		<kaptcha.version>2.3.2</kaptcha.version>
+		<!--zxing版本号 -->
+		<zxing.version>3.4.0</zxing.version>
 	</properties>
 	<dependencies>
 		<!--Spring框架核心库 -->
@@ -276,12 +278,12 @@
 		<dependency>
 			<groupId>org.bouncycastle</groupId>
 			<artifactId>bcprov-jdk15on</artifactId>
-			<version>1.60</version>
+			<version>1.65</version>
 		</dependency>
 		<dependency>
 			<groupId>org.bouncycastle</groupId>
 			<artifactId>bcpkix-jdk15on</artifactId>
-			<version>1.60</version>
+			<version>1.65</version>
 		</dependency>
 		<!-- jjwt -->
 		<dependency>
@@ -313,11 +315,16 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
-		<!-- bcprov-jdk15on -->
+		<!-- com.google.zxing二维码 -->
 		<dependency>
-			<groupId>org.bouncycastle</groupId>
-			<artifactId>bcprov-jdk15on</artifactId>
-			<version>1.65</version>
+			<groupId>com.google.zxing</groupId>
+			<artifactId>core</artifactId>
+			<version>${zxing.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.google.zxing</groupId>
+			<artifactId>javase</artifactId>
+			<version>${zxing.version}</version>
 		</dependency>
 	</dependencies>
 	<build>
