@@ -12,7 +12,7 @@ import java.security.Security;
  * @Author: wanlei
  * @Date: 2020年8月24日 上午11:50:23
  */
-public class SMBaseUtil {
+public class SmBaseUtil {
 	private static final double MIN_REQUIRED_VERSION = 1.59;
 	static {
 		if (null != Security.getProvider(BouncyCastleProvider.PROVIDER_NAME)) {

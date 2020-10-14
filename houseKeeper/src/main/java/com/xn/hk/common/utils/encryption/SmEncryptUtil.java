@@ -2,9 +2,9 @@ package com.xn.hk.common.utils.encryption;
 
 import org.bouncycastle.util.encoders.Hex;
 
-import com.xn.hk.common.utils.encryption.sm.SM3Util;
-import com.xn.hk.common.utils.encryption.sm.SM4KeyUtil;
-import com.xn.hk.common.utils.encryption.sm.SM4Util;
+import com.xn.hk.common.utils.encryption.sm.Sm3Util;
+import com.xn.hk.common.utils.encryption.sm.Sm4KeyUtil;
+import com.xn.hk.common.utils.encryption.sm.Sm4Util;
 
 import java.security.MessageDigest;
 
@@ -16,7 +16,7 @@ import java.security.MessageDigest;
  * @Author: wanlei
  * @Date: 2020年8月24日 上午11:58:07
  */
-public class SMEncryptUtil {
+public class SmEncryptUtil {
 
 	/**
 	 * PIN 码用SM4 对称加密 对称密钥=SM3(手机号+格尔软件)前16个字节 SM4加密算法 加密算法/分组加密模式/分组填充方式 =
@@ -30,8 +30,8 @@ public class SMEncryptUtil {
 	 */
 	public static String encryptWithSM4(String userName, String pin) throws Exception {
 		String newPIN = null;
-		byte[] key = SM4KeyUtil.generateKey(userName);
-		byte[] encryptedPIN = SM4Util.encrypt_Ecb_Padding(key, pin.getBytes("UTF-8"));
+		byte[] key = Sm4KeyUtil.generateKey(userName);
+		byte[] encryptedPIN = Sm4Util.encrypt_Ecb_Padding(key, pin.getBytes("UTF-8"));
 		newPIN = Hex.toHexString(encryptedPIN);
 		return newPIN;
 	}
@@ -48,8 +48,8 @@ public class SMEncryptUtil {
 	 */
 	public static String decryptWithSM4(String userName, String pin) throws Exception {
 		String newPIN = null;
-		byte[] key = SM4KeyUtil.generateKey(userName);
-		byte[] encryptedPIN = SM4Util.decrypt_Ecb_Padding(key, pin.getBytes("UTF-8"));
+		byte[] key = Sm4KeyUtil.generateKey(userName);
+		byte[] encryptedPIN = Sm4Util.decrypt_Ecb_Padding(key, pin.getBytes("UTF-8"));
 		newPIN = new String(encryptedPIN, "UTF-8");
 		return newPIN;
 	}
@@ -66,8 +66,8 @@ public class SMEncryptUtil {
 	 */
 	public static String decryptWithSM4(String userName, byte[] pin) throws Exception {
 		String newPIN = null;
-		byte[] key = SM4KeyUtil.generateKey(userName);
-		byte[] encryptedPIN = SM4Util.decrypt_Ecb_Padding(key, pin);
+		byte[] key = Sm4KeyUtil.generateKey(userName);
+		byte[] encryptedPIN = Sm4Util.decrypt_Ecb_Padding(key, pin);
 		newPIN = new String(encryptedPIN, "UTF-8");
 		return newPIN;
 	}
@@ -83,7 +83,7 @@ public class SMEncryptUtil {
 		String newPwd = null;
 		MessageDigest messageDigest = MessageDigest.getInstance("SHA"); // 此处的sha代表sha1
 		byte[] shaDigestedBytes = messageDigest.digest(pwd.getBytes("UTF-8"));
-		byte[] sm3DigestedBytes = SM3Util.hash(shaDigestedBytes);
+		byte[] sm3DigestedBytes = Sm3Util.hash(shaDigestedBytes);
 		newPwd = Hex.toHexString(sm3DigestedBytes);
 		return newPwd;
 	}

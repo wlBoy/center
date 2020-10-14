@@ -1,7 +1,5 @@
 package com.xn.hk.common.utils.encryption.sm;
 
-import org.bouncycastle.util.encoders.Hex;
-
 import java.io.UnsupportedEncodingException;
 
 /**
@@ -12,7 +10,7 @@ import java.io.UnsupportedEncodingException;
  * @Author: wanlei
  * @Date: 2020年8月24日 上午11:56:53
  */
-public class SM4KeyUtil {
+public class Sm4KeyUtil {
 	/**
 	 * 生成对称密钥=SM3(手机号+格尔软件)前16个字节
 	 * 
@@ -25,7 +23,7 @@ public class SM4KeyUtil {
 			throw new IllegalArgumentException();
 		}
 		String source = phoneNumber + "格尔软件";
-		byte[] basekey = SM3Util.hash(source.getBytes("UTF-8"));
+		byte[] basekey = Sm3Util.hash(source.getBytes("UTF-8"));
 		byte[] key = new byte[16];
 		System.arraycopy(basekey, 0, key, 0, 16);
 		return key;

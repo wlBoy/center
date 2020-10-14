@@ -35,7 +35,7 @@ import javax.crypto.spec.SecretKeySpec;
  * @Author: wanlei
  * @Date: 2020年8月24日 上午11:51:13
  */
-public class SM4Util extends SMBaseUtil {
+public class Sm4Util extends SmBaseUtil {
 	public static final String ALGORITHM_NAME = "SM4";
 	public static final String ALGORITHM_NAME_ECB_PADDING = "SM4/ECB/PKCS5Padding";
 	public static final String ALGORITHM_NAME_ECB_NOPADDING = "SM4/ECB/NoPadding";
