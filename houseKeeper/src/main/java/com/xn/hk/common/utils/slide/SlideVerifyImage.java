@@ -1,7 +1,5 @@
 package com.xn.hk.common.utils.slide;
 
-import java.util.UUID;
-
 /**
  * 
  * @ClassName: SlideVerifyCodeEntity
@@ -10,11 +8,7 @@ import java.util.UUID;
  * @Author: wanlei
  * @Date: 2020年11月20日 上午10:46:46
  */
-public class SlideVerifyCodeImage {
-	/**
-	 * 唯一标识
-	 */
-	private String id;
+public class SlideVerifyImage {
 	/**
 	 * 背景图片base64码
 	 */
@@ -32,25 +26,15 @@ public class SlideVerifyCodeImage {
 	 */
 	private int yLocation;
 
-	public SlideVerifyCodeImage() {
+	public SlideVerifyImage() {
 		super();
 	}
 
-	public SlideVerifyCodeImage(String backImgBase64, String markImgBase64, int xLocation, int yLocation) {
-		super();
-		this.id = UUID.randomUUID().toString();
+	public SlideVerifyImage(String backImgBase64, String markImgBase64, int xLocation, int yLocation) {
 		this.backImgBase64 = backImgBase64;
 		this.markImgBase64 = markImgBase64;
 		this.xLocation = xLocation;
 		this.yLocation = yLocation;
-	}
-
-	public String getId() {
-		return id;
-	}
-
-	public void setId(String id) {
-		this.id = id;
 	}
 
 	public String getBackImgBase64() {
@@ -87,8 +71,9 @@ public class SlideVerifyCodeImage {
 
 	@Override
 	public String toString() {
-		return "SlideVerifyCodeImage [id=" + id + ", backImgBase64=" + backImgBase64 + ", markImgBase64="
-				+ markImgBase64 + ", xLocation=" + xLocation + ", yLocation=" + yLocation + "]";
+		return "SlideVerifyImage [backImgBase64=" + backImgBase64 + ", markImgBase64=" + markImgBase64 + ", xLocation="
+				+ xLocation + ", yLocation=" + yLocation + "]";
 	}
+
 
 }
