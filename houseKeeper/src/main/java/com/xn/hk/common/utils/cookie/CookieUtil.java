@@ -3,11 +3,14 @@ package com.xn.hk.common.utils.cookie;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
+import java.util.Arrays;
+import java.util.Objects;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -217,4 +220,91 @@ public final class CookieUtil {
 		return domainName;
 	}
 
+	/**
+	 * 根据name获取cookies中的值
+	 *
+	 * @param request
+	 *            请求
+	 * @param name
+	 *            key的名称
+	 * @return String 值
+	 */
+	public static String getValueByName(HttpServletRequest request, String name) {
+		Cookie[] cookies = request.getCookies();
+		if (Objects.isNull(cookies)) {
+			return null;
+		}
+		Cookie cookie = Arrays.stream(cookies).filter(data -> data.getName().equals(name)).findFirst().orElse(null);
+		if (Objects.nonNull(cookie)) {
+			return cookie.getValue();
+		}
+		return "";
+	}
+
+	/**
+	 * 设置cookies信息
+	 *
+	 * @param key
+	 *            key值
+	 * @param value
+	 *            设置的内容
+	 * @param domain
+	 *            cookie域名
+	 * @param ttl
+	 *            失效时间
+	 * @param response
+	 *            返回请求
+	 */
+	public static void setValueByName(String key, String value, String domain, Integer ttl,
+			HttpServletResponse response) {
+		Cookie cookie = new Cookie(key, value);
+		if (StringUtils.isNotBlank(domain)) {
+			cookie.setDomain(domain);
+		}
+		cookie.setMaxAge(Objects.nonNull(ttl) ? ttl : 1000);
+		cookie.setPath("/");
+		cookie.setSecure(false);
+		cookie.setVersion(0);
+		cookie.setHttpOnly(true);
+		response.addCookie(cookie);
+	}
+
+	/**
+	 * 设置cookies信息
+	 *
+	 * @param key
+	 *            key值
+	 * @param value
+	 *            设置的内容
+	 * @param ttl
+	 *            失效时间
+	 * @param response
+	 *            返回请求
+	 */
+	public static void setValueByName(String key, String value, Integer ttl, HttpServletResponse response) {
+		setValueByName(key, value, null, ttl, response);
+	}
+
+	/**
+	 * 删除cookies信息
+	 *
+	 * @param name
+	 *            key的名称
+	 * @param request
+	 * @param response
+	 */
+	public static void deleteValueByName(String name, HttpServletRequest request, HttpServletResponse response) {
+		Cookie[] cookies = request.getCookies();
+		if (Objects.nonNull(cookies)) {
+			Cookie cookie = Arrays.stream(cookies).filter(data -> data.getName().equals(name)).findFirst().orElse(null);
+			if (Objects.nonNull(cookie)) {
+				cookie.setMaxAge(1);
+				cookie.setPath("/");
+				cookie.setSecure(false);
+				cookie.setVersion(0);
+				cookie.setHttpOnly(true);
+				response.addCookie(cookie);
+			}
+		}
+	}
 }
