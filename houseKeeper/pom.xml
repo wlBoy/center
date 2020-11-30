@@ -332,6 +332,12 @@
 			<artifactId>googleauth</artifactId>
 			<version>1.5.0</version>
 		</dependency>
+		<!-- okhttp -->
+		<dependency>
+			<groupId>com.squareup.okhttp3</groupId>
+			<artifactId>okhttp</artifactId>
+			<version>4.9.0</version>
+		</dependency>
 	</dependencies>
 	<build>
 		<finalName>houseKeeper</finalName>
