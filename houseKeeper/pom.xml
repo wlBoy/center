@@ -338,6 +338,12 @@
 			<artifactId>okhttp</artifactId>
 			<version>4.9.0</version>
 		</dependency>
+		<!-- UserAgentUtils -->
+		<dependency>
+			<groupId>eu.bitwalker</groupId>
+			<artifactId>UserAgentUtils</artifactId>
+			<version>1.21</version>
+		</dependency>
 	</dependencies>
 	<build>
 		<finalName>houseKeeper</finalName>
