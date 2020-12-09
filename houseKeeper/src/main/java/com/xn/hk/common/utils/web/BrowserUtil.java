@@ -46,7 +46,7 @@ public class BrowserUtil {
 		// 获取操作系统信息
 		OperatingSystem os = UserAgent.parseUserAgentString(userAgent).getOperatingSystem();
 		// 获取浏览器版本号
-		Version version = browser.getVersion(req.getHeader(userAgent));
+		Version version = browser.getVersion(userAgent);
 		browserMap.put(TYPE, browser.getName());
 		browserMap.put(VERSION, version.getVersion());
 		browserMap.put(OS, os.getName());
