@@ -344,6 +344,12 @@
 			<artifactId>UserAgentUtils</artifactId>
 			<version>1.21</version>
 		</dependency>
+		<!-- commons-collections4 -->
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-collections4</artifactId>
+			<version>4.4</version>
+		</dependency>
 	</dependencies>
 	<build>
 		<finalName>houseKeeper</finalName>
