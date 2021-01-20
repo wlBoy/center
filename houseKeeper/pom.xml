@@ -21,7 +21,7 @@
 		<!--jedis版本号 -->
 		<jedis.version>2.9.0</jedis.version>
 		<!--jackson版本号 -->
-		<jackson.version>2.9.0</jackson.version>
+		<jackson.version>2.12.1</jackson.version>
 		<!--druid版本号 -->
 		<druid.version>1.0.29</druid.version>
 		<!--quartz版本号 -->
