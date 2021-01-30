@@ -8,8 +8,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.jose4j.jwa.AlgorithmConstraints.ConstraintType;
 import org.jose4j.jwk.EcJwkGenerator;
 import org.jose4j.jwk.EllipticCurveJsonWebKey;
+import org.jose4j.jwk.HttpsJwks;
 import org.jose4j.jwk.JsonWebKey;
 import org.jose4j.jwk.JsonWebKeySet;
 import org.jose4j.jwk.OctJwkGenerator;
@@ -24,6 +26,8 @@ import org.jose4j.jwt.consumer.InvalidJwtException;
 import org.jose4j.jwt.consumer.JwtConsumer;
 import org.jose4j.jwt.consumer.JwtConsumerBuilder;
 import org.jose4j.keys.EllipticCurves;
+import org.jose4j.keys.resolvers.HttpsJwksVerificationKeyResolver;
+import org.jose4j.keys.resolvers.JwksVerificationKeyResolver;
 import org.jose4j.lang.JoseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -169,7 +173,7 @@ public class Jose4jUtil {
 	}
 
 	/**
-	 * 解析jwt字符串，使用公钥验签
+	 * 解析jwt字符串，使用公钥验签， https://bitbucket.org/b_c/jose4j/wiki/JWT%20Examples
 	 *
 	 * @param jwtStr
 	 *            jwt字符串
@@ -186,7 +190,6 @@ public class Jose4jUtil {
 			// 解析idToken, 验签
 			JwtConsumer jwtConsumer = new JwtConsumerBuilder().setRequireExpirationTime() // the JWT must have an
 																							// expiration time
-					.setMaxFutureValidityInMinutes(300) // but the expiration time can't be too crazy
 					.setAllowedClockSkewInSeconds(30) // allow some leeway in validating time based claims to account
 														// for clock skew
 					.setRequireSubject() // the JWT must have a subject claim
@@ -194,6 +197,72 @@ public class Jose4jUtil {
 					.setExpectedAudience(audience) // to whom the JWT is intended for
 					// 公钥
 					.setVerificationKey(jsonWebKey.getKey()) // verify the signature with the public key
+					.setJwsAlgorithmConstraints( // only allow the expected signature algorithm(s) in the given context
+							ConstraintType.PERMIT, jsonWebKey.getAlgorithm())
+					.build(); // create the JwtConsumer instance
+			final JwtClaims jwtClaims = jwtConsumer.processToClaims(jwtStr);
+			return jwtClaims.getClaimsMap();
+		} catch (Exception e) {
+			logger.error("解析JWT失败，原因为:{}", e);
+			return null;
+		}
+	}
+
+	/**
+	 * 使用jwks.json文件解析JWT
+	 * 
+	 * @param jwtStr
+	 * @param issuer
+	 * @param audience
+	 * @param jwksJson
+	 * @return
+	 */
+	public static Map<String, Object> parseJwtByJwksJson(String jwtStr, String issuer, String audience,
+			String jwksJson) {
+		try {
+			JsonWebKeySet jsonWebKeySet = new JsonWebKeySet(jwksJson);
+			JwksVerificationKeyResolver jwksResolver = new JwksVerificationKeyResolver(jsonWebKeySet.getJsonWebKeys());
+			// 解析idToken, 验签
+			JwtConsumer jwtConsumer = new JwtConsumerBuilder().setRequireExpirationTime() // the JWT must have an
+					.setAllowedClockSkewInSeconds(30) // allow some leeway in validating time based claims to account
+														// for clock skew
+					.setRequireSubject() // the JWT must have a subject claim
+					.setExpectedIssuer(issuer) // whom the JWT needs to have been issued by
+					.setExpectedAudience(audience) // to whom the JWT is intended for
+					.setVerificationKeyResolver(jwksResolver) // Set the VerificationKeyResolver to use to select the
+																// key for JWS signature/MAC verification.
+					.build(); // create the JwtConsumer instance
+			final JwtClaims jwtClaims = jwtConsumer.processToClaims(jwtStr);
+			return jwtClaims.getClaimsMap();
+		} catch (Exception e) {
+			logger.error("解析JWT失败，原因为:{}", e);
+			return null;
+		}
+	}
+
+	/**
+	 * 使用jwksUrl地址解析JWT
+	 * 
+	 * @param jwtStr
+	 * @param issuer
+	 * @param audience
+	 * @param jwksJson
+	 * @return
+	 */
+	public static Map<String, Object> parseJwtByJwksUrl(String jwtStr, String issuer, String audience, String jwksUrl) {
+		try {
+			HttpsJwks httpsJkws = new HttpsJwks(jwksUrl);
+			HttpsJwksVerificationKeyResolver httpsJwksKeyResolver = new HttpsJwksVerificationKeyResolver(httpsJkws);
+			// 解析idToken, 验签
+			JwtConsumer jwtConsumer = new JwtConsumerBuilder().setRequireExpirationTime() // the JWT must have an
+					.setAllowedClockSkewInSeconds(30) // allow some leeway in validating time based claims to account
+														// for clock skew
+					.setRequireSubject() // the JWT must have a subject claim
+					.setExpectedIssuer(issuer) // whom the JWT needs to have been issued by
+					.setExpectedAudience(audience) // to whom the JWT is intended for
+					.setVerificationKeyResolver(httpsJwksKeyResolver) // Set the VerificationKeyResolver to use to
+																		// select the
+					// key for JWS signature/MAC verification.
 					.build(); // create the JwtConsumer instance
 			final JwtClaims jwtClaims = jwtConsumer.processToClaims(jwtStr);
 			return jwtClaims.getClaimsMap();
@@ -334,25 +403,6 @@ public class Jose4jUtil {
 	}
 
 	/**
-	 * 在jwks.json中查询指定的JsonWebKey
-	 * 
-	 * @param jsonWebKeySet
-	 * @param algorithm
-	 * @param keyId
-	 * @return
-	 * @throws JoseException
-	 */
-	public static JsonWebKey findJsonWebKey(String jwksJson, String algorithm, String keyId) throws JoseException {
-		JsonWebKeySet jsonWebKeySet = new JsonWebKeySet(jwksJson);
-		Pair<String, PrivateKey> privateKeyPair = getPrivateKeyAndTypeByAlgorithm(null, algorithm);
-		if (privateKeyPair == null) {
-			logger.warn("根据jsonWebKey中的算法获取对应的key类型失败");
-			return null;
-		}
-		return jsonWebKeySet.findJsonWebKey(keyId, privateKeyPair.getKey(), Use.SIGNATURE, algorithm);
-	}
-
-	/**
 	 * 测试方法
 	 * 
 	 * @param args
@@ -366,24 +416,24 @@ public class Jose4jUtil {
 		Map<String, Object> claimMap = buildIdTokenClaims("张三");
 		RsaJsonWebKey rsaJsonWebKey = genRsaJwks();
 		EllipticCurveJsonWebKey ellipticCurveJsonWebKey = genEcJwks();
-//		OctetSequenceJsonWebKey octetSequenceJsonWebKey = genOctJwks();
+		// OctetSequenceJsonWebKey octetSequenceJsonWebKey = genOctJwks();
 		List<JsonWebKey> jsonWebKeys = new ArrayList<>();
 		jsonWebKeys.add(rsaJsonWebKey);
 		jsonWebKeys.add(ellipticCurveJsonWebKey);
-//		jsonWebKeys.add(octetSequenceJsonWebKey);
+		// jsonWebKeys.add(octetSequenceJsonWebKey);
 		String jwksJson = genJwksJson(jsonWebKeys);
 		System.out.println("生成各算法的jwks.json为:" + jwksJson);
 		// =======================上面是生成jwks.json文件，下面是生成jwt和解析jwt的代码============================//
+		// 生成随机的jwt并解析
 		String randomJwt = buildRandomJwt(issuer, audience, expireTime, subject, claimMap, jwksJson);
+		System.out.println("随机生成jwt为:" + randomJwt);
+		Map<String, Object> randomMap = parseJwtByJwksJson(randomJwt, issuer, audience, jwksJson);
+		System.out.println("解析随机生成的jwt为:" + randomMap);
+		// 生成指定算法的jwt并解析
 		String rsaJwt = buildJwt(issuer, audience, expireTime, subject, claimMap, rsaJsonWebKey);
 		String ecJwt = buildJwt(issuer, audience, expireTime, subject, claimMap, ellipticCurveJsonWebKey);
-		System.out.println("随机生成jwt为:" + randomJwt);
 		System.out.println("生成RSA算法的jwt为:" + rsaJwt);
 		System.out.println("生成EC算法的jwt为:" + ecJwt);
-		// 这里不清楚怎么从随机的jwt中解析keyId和algorithm，暂不使用该方法
-//		JsonWebKey jsonWebKey = findJsonWebKey(jwksJson, algorithm, keyId);
-//		Map<String, Object> randomMap = parseJwt(randomJwt, issuer, audience, jsonWebKey);
-//		System.out.println("解析随机生成的jwt为:" + randomMap);
 		Map<String, Object> rsaMap = parseJwt(rsaJwt, issuer, audience, rsaJsonWebKey);
 		Map<String, Object> ecMap = parseJwt(ecJwt, issuer, audience, ellipticCurveJsonWebKey);
 		System.out.println("解析RSA算法的jwt为:" + rsaMap);
