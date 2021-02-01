@@ -414,16 +414,21 @@ public class Jose4jUtil {
 		return genJwksJson(jwkList);
 	}
 
-	/**
-	 * 获取支持的所有签名算法
-	 *
-	 * @return
-	 */
-	public static List<String> getTokenAllSignAlg() {
-		List<String> resultList = getAllRsaAlg();
-		resultList.addAll(getAllEcAlg());
-		return resultList;
-	}
+	 /**
+     * 获取支持的所有签名算法
+     *
+     * @return
+     */
+    public static List<String> getTokenAllSignAlg() {
+        List<String> algList = new ArrayList<>();
+        getAllRsaAlg().forEach(rsaAlg -> {
+            algList.add(rsaAlg);
+        });
+        getAllEcAlg().forEach(ecAlg -> {
+            algList.add(ecAlg);
+        });
+        return algList;
+    }
 
 	/**
 	 * 获取支持的所有签名RSA算法
