@@ -193,15 +193,11 @@ public class HashUtil {
 	 */
 	public static String HMacEncryptStr(String str, String salt, String algorithm) {
 		try {
-			StringBuilder sb = new StringBuilder();
 			Mac mac = Mac.getInstance(algorithm);
 			SecretKeySpec secretKey = new SecretKeySpec(salt.getBytes(StandardCharsets.UTF_8), algorithm);
 			mac.init(secretKey);
 			byte[] array = mac.doFinal(str.getBytes(StandardCharsets.UTF_8));
-			for (byte item : array) {
-				sb.append(Integer.toHexString((item & 0xFF) | 0x100).substring(1, 3));
-			}
-			return sb.toString().toLowerCase();
+			return bytes2Hex(array);
 		} catch (Exception e) {
 			logger.error("hmac{}加密字符串失败，原因为:{}", algorithm, e);
 		}
@@ -215,8 +211,8 @@ public class HashUtil {
 	 * @throws NoSuchAlgorithmException
 	 */
 	public static void main(String args[]) {
-		System.out
-				.println("hmac加密之后的hash值为：" + HMacEncryptStr("123456", "CFYWZZILUE3KP54PKHQ6SI2AVH9IFHFG", "HmacSHA512"));
+		System.out.println(
+				"hmac加密之后的hash值为：" + HMacEncryptStr("123456", "CFYWZZILUE3KP54PKHQ6SI2AVH9IFHFG", "HmacSHA512"));
 		System.out.println("加密之后的密码hash值为：" + encryptStr("admin" + SystemCfg.USER_PWD_KEY));
 		System.out.println("加密之后的文件hash值为：" + encryptFile(new File("E:\\inductiontraining\\公司内部资源.txt")));
 		String originData = String.format("appKey=%s&ts=%s&signMethod=%s&once=%s", "1500288560477836",
