@@ -7,6 +7,9 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 
+import javax.crypto.Mac;
+import javax.crypto.spec.SecretKeySpec;
+
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -34,7 +37,8 @@ public class HashUtil {
 	/**
 	 * 根据MD5加密任意长度的数据, 返回固定长度的十六进制小写哈希值
 	 *
-	 * @param str 需要加密的字符串
+	 * @param str
+	 *            需要加密的字符串
 	 */
 	public static String encryptStr(String str) {
 		return encryptStr(str, MD5);
@@ -43,8 +47,10 @@ public class HashUtil {
 	/**
 	 * 根据指定的算法加密任意长度的数据, 返回固定长度的十六进制小写哈希值
 	 *
-	 * @param str       需要加密的字符串
-	 * @param algorithm 加密算法, 例如: MD5, SHA-1, SHA-256, SHA-512 等
+	 * @param str
+	 *            需要加密的字符串
+	 * @param algorithm
+	 *            加密算法, 例如: MD5, SHA-1, SHA-256, SHA-512 等
 	 * @throws NoSuchAlgorithmException
 	 */
 	public static String encryptStr(String str, String algorithm) {
@@ -68,7 +74,8 @@ public class HashUtil {
 	/**
 	 * 根据MD5加密文件数据, 返回固定长度的十六进制小写哈希值
 	 *
-	 * @param file 需要加密的文件
+	 * @param file
+	 *            需要加密的文件
 	 */
 	public static String encryptFile(File file) {
 		return encryptFile(file, MD5);
@@ -77,8 +84,10 @@ public class HashUtil {
 	/**
 	 * 根据指定的算法加密文件数据, 返回固定长度的十六进制小写哈希值
 	 *
-	 * @param file      需要加密的文件
-	 * @param algorithm 加密算法, 例如: MD5, SHA-1, SHA-256, SHA-512 等
+	 * @param file
+	 *            需要加密的文件
+	 * @param algorithm
+	 *            加密算法, 例如: MD5, SHA-1, SHA-256, SHA-512 等
 	 */
 	public static String encryptFile(File file, String algorithm) {
 		String result = null;
@@ -137,9 +146,12 @@ public class HashUtil {
 	/**
 	 * 根据应用秘钥获取签名结果
 	 * 
-	 * @param appPwd        应用秘钥
-	 * @param originData    签名原文
-	 * @param signAlgorithm 签名算法
+	 * @param appPwd
+	 *            应用秘钥
+	 * @param originData
+	 *            签名原文
+	 * @param signAlgorithm
+	 *            签名算法
 	 * @return 返回签名之后的结果
 	 */
 	public static String getSignResult(String appPwd, String originData, String signAlgorithm) {
@@ -167,14 +179,45 @@ public class HashUtil {
 	}
 
 	/**
+	 * 使用hmac算法加密字符串
+	 * 
+	 * @param str
+	 *            待处理数据
+	 * @param salt
+	 *            加密盐
+	 * @param algorithm
+	 *            加密算法, 例如: HmacMD5, HmacSHA1, HmacSHA256, HmacSHA512 等
+	 * @return 加密结果
+	 * @throws Exception
+	 */
+	public static String HMacEncryStr(String str, String salt, String algorithm) {
+		try {
+			StringBuilder sb = new StringBuilder();
+			Mac mac = Mac.getInstance(algorithm);
+			SecretKeySpec secretKey = new SecretKeySpec(salt.getBytes("UTF-8"), algorithm);
+			mac.init(secretKey);
+			byte[] array = mac.doFinal(str.getBytes("UTF-8"));
+			for (byte item : array) {
+				sb.append(Integer.toHexString((item & 0xFF) | 0x100).substring(1, 3));
+			}
+			return sb.toString().toLowerCase();
+		} catch (Exception e) {
+			logger.error("hmac{}加密字符串失败，原因为:{}", algorithm, e);
+		}
+		return null;
+	}
+
+	/**
 	 * 测试main方法
 	 * 
 	 * @param args
 	 * @throws NoSuchAlgorithmException
 	 */
 	public static void main(String args[]) {
+		System.out
+				.println("hmac加密之后的hash值为：" + HMacEncryStr("123456", "CFYWZZILUE3KP54PKHQ6SI2AVH9IFHFG", "HmacSHA512"));
 		System.out.println("加密之后的密码hash值为：" + encryptStr("admin" + SystemCfg.USER_PWD_KEY));
-		System.out.println("加密之后的文件hash值为：" + encryptFile(new File("E:\\induction training\\公司内部资源.txt")));
+		System.out.println("加密之后的文件hash值为：" + encryptFile(new File("E:\\inductiontraining\\公司内部资源.txt")));
 		String originData = String.format("appKey=%s&ts=%s&signMethod=%s&once=%s", "1500288560477836",
 				System.currentTimeMillis(), "SHA-256", "123456");
 		String appPwd = "abcdefg";
