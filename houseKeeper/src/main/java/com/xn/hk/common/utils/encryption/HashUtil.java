@@ -216,7 +216,7 @@ public class HashUtil {
 	 */
 	public static void main(String args[]) {
 		System.out
-				.println("hmac加密之后的hash值为：" + HMacEncryStr("123456", "CFYWZZILUE3KP54PKHQ6SI2AVH9IFHFG", "HmacSHA512"));
+				.println("hmac加密之后的hash值为：" + HMacEncryptStr("123456", "CFYWZZILUE3KP54PKHQ6SI2AVH9IFHFG", "HmacSHA512"));
 		System.out.println("加密之后的密码hash值为：" + encryptStr("admin" + SystemCfg.USER_PWD_KEY));
 		System.out.println("加密之后的文件hash值为：" + encryptFile(new File("E:\\inductiontraining\\公司内部资源.txt")));
 		String originData = String.format("appKey=%s&ts=%s&signMethod=%s&once=%s", "1500288560477836",
