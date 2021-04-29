@@ -3,6 +3,7 @@ package com.xn.hk.common.utils.encryption;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
@@ -190,13 +191,13 @@ public class HashUtil {
 	 * @return 加密结果
 	 * @throws Exception
 	 */
-	public static String HMacEncryStr(String str, String salt, String algorithm) {
+	public static String HMacEncryptStr(String str, String salt, String algorithm) {
 		try {
 			StringBuilder sb = new StringBuilder();
 			Mac mac = Mac.getInstance(algorithm);
-			SecretKeySpec secretKey = new SecretKeySpec(salt.getBytes("UTF-8"), algorithm);
+			SecretKeySpec secretKey = new SecretKeySpec(salt.getBytes(StandardCharsets.UTF_8), algorithm);
 			mac.init(secretKey);
-			byte[] array = mac.doFinal(str.getBytes("UTF-8"));
+			byte[] array = mac.doFinal(str.getBytes(StandardCharsets.UTF_8));
 			for (byte item : array) {
 				sb.append(Integer.toHexString((item & 0xFF) | 0x100).substring(1, 3));
 			}
