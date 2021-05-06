@@ -12,6 +12,8 @@ import org.bouncycastle.crypto.generators.KDF1BytesGenerator;
 import org.bouncycastle.crypto.params.ISO18033KDFParameters;
 import org.bouncycastle.math.ec.ECCurve;
 import org.bouncycastle.math.ec.ECPoint;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * 
@@ -23,6 +25,7 @@ import org.bouncycastle.math.ec.ECPoint;
  */
 @SuppressWarnings("deprecation")
 public class Sm2Util {
+	private static final Logger logger = LoggerFactory.getLogger(Sm2Util.class);
 	/** 素数p */
 	private static final BigInteger p = new BigInteger(
 			"FFFFFFFE" + "FFFFFFFF" + "FFFFFFFF" + "FFFFFFFF" + "FFFFFFFF" + "00000000" + "FFFFFFFF" + "FFFFFFFF", 16);
@@ -78,8 +81,10 @@ public class Sm2Util {
 	/**
 	 * 公钥加密
 	 * 
-	 * @param input     待加密消息
-	 * @param publicKey 公钥
+	 * @param input
+	 *            待加密消息
+	 * @param publicKey
+	 *            公钥
 	 * @return byte[] 加密后的字节数组
 	 * @throws UnsupportedEncodingException
 	 */
@@ -93,12 +98,6 @@ public class Sm2Util {
 		ECPoint C1 = G.multiply(k);
 		byte[] C1Buffer = C1.getEncoded(false);
 		hexString(C1Buffer);
-		// 3 计算椭圆曲线点 S = [h]Pb * curve没有指定余因子，h为空
-		// BigInteger h = curve.getCofactor(); System.out.print("h: ");
-		// printHexString(h.toByteArray()); if (publicKey != null) { ECPoint
-		// result = publicKey.multiply(h); if (!result.isInfinity()) {
-		// System.out.println("pass"); } else {
-		// System.err.println("计算椭圆曲线点 S = [h]Pb失败"); return null; } }
 		/* 4 计算 [k]PB = (x2, y2) */
 		ECPoint kpb = publicKey.multiply(k).normalize();
 		/* 5 计算 t = KDF(x2||y2, klen) */
@@ -119,7 +118,6 @@ public class Sm2Util {
 		System.arraycopy(C1Buffer, 0, encryptResult, 0, C1Buffer.length);
 		System.arraycopy(C2, 0, encryptResult, C1Buffer.length, C2.length);
 		System.arraycopy(C3, 0, encryptResult, C1Buffer.length + C2.length, C3.length);
-		System.out.println("公钥加密之后的字符串为:" + hexString(encryptResult));
 		return encryptResult;
 	}
 
@@ -157,9 +155,9 @@ public class Sm2Util {
 		if (Arrays.equals(u, C3)) {
 			return new String(M);
 		} else {
-			System.out.println("u:" + hexString(u));
-			System.out.println("C3:" + hexString(C3));
-			System.out.println("SM2解密验证失败");
+			logger.warn("u:" + hexString(u));
+			logger.warn("C3:" + hexString(C3));
+			logger.warn("SM2解密验证失败");
 			return null;
 		}
 	}
@@ -222,7 +220,8 @@ public class Sm2Util {
 	/**
 	 * 公钥校验
 	 * 
-	 * @param publicKey 公钥
+	 * @param publicKey
+	 *            公钥
 	 * @return boolean true或false
 	 */
 	private static boolean checkPublicKey(ECPoint publicKey) {
@@ -256,12 +255,12 @@ public class Sm2Util {
 		Sm2KeyPair keyPair = generateKeyPair();
 		ECPoint publicKey = keyPair.getPublicKey();
 		BigInteger privateKey = keyPair.getPrivateKey();
-		System.out.println("随机生成的公钥为:" + publicKey);
-		System.out.println("随机生成的私钥为:" + privateKey);
-		System.out.println("######################");
+		System.out.println("随机生成的公钥为:" + hexString(publicKey.getEncoded(false)));
+		System.out.println("随机生成的私钥为:" + hexString(privateKey.toByteArray()));
+		System.out.println("#####################################################");
 		// 2.公钥加密字符串
 		byte[] data = encrypt(message, publicKey);
-		System.out.println("公钥加密后的字节数组为:" + Arrays.toString(data));
+		System.out.println("公钥加密之后的字符串为:" + hexString(data));
 		// 3.私钥解密字符串
 		String result = decrypt(data, privateKey);
 		System.out.println("私钥解密后的字符串为:" + result);
