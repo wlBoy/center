@@ -27,7 +27,7 @@
 		<!--quartz版本号 -->
 		<quartz.version>2.3.0</quartz.version>
 		<!--httpclient版本号 -->
-		<httpclient.version>4.5.5</httpclient.version>
+		<httpclient.version>4.5.13</httpclient.version>
 		<!--snmp版本号 -->
 		<snmp.version>2.6.2</snmp.version>
 		<!--kaptcha版本号 -->
