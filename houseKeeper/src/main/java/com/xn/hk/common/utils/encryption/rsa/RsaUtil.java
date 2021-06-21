@@ -1,6 +1,7 @@
 package com.xn.hk.common.utils.encryption.rsa;
 
 import java.io.ByteArrayOutputStream;
+import java.nio.charset.StandardCharsets;
 import java.security.KeyFactory;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
@@ -18,6 +19,8 @@ import java.util.Map;
 import javax.crypto.Cipher;
 
 import org.apache.commons.codec.binary.Base64;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.xn.hk.common.utils.string.StringUtil;
 
@@ -34,38 +37,49 @@ import com.xn.hk.common.utils.string.StringUtil;
  * 
  * @ClassName: RsaUtil
  * @Package: com.xn.hk.common.utils.encryption
- * @Description: RSA算法加解密工具类
+ * @Description: RSA算法加解密工具类，支持RSA加解密和签名验签的方法
  * @Author: wanlei
  * @Date: 2020年5月14日 下午4:14:28
  */
 public class RsaUtil {
+	private static final Logger logger = LoggerFactory.getLogger(RsaUtil.class);
+
+	private RsaUtil() {
+	}
+
 	// RSA算法
 	private static final String RSA = "RSA";
-	private static final String UTF_8 = "UTF-8";
-	// 秘钥长度，64的倍数，一般为:1024或2048
-	private static final int KEY_SIZE = 2048;
-	// RSA最大加密明文大小
-	private static final int MAX_ENCRYPT_BLOCK = KEY_SIZE / 8 - 11;
-	// RSA最大解密密文大小
-	private static final int MAX_DECRYPT_BLOCK = KEY_SIZE / 8;
-	// 公私钥
-	private static final String PUBLIC_KEY = "publicKey";
-	private static final String PRIVATE_KEY = "privateKey";
-	// RSA签名算法
-	private static final String SIGN_ALGORITHMS = "SHA256withRSA";
+	// RSA默认秘钥长度
+	private static final int DEFAULT_KEY_SIZE = 1024;
+	// RSA默认签名算法
+	private static final String DEFAULT_SIGN_ALGORITHMS = "SHA256withRSA";
+	// 公私钥key
+	public static final String PUBLIC_KEY = "publicKey";
+	public static final String PRIVATE_KEY = "privateKey";
+
+	/**
+	 * 随机生成一对默认秘钥长度的RSA密钥对MAP
+	 *
+	 * @return 返回一对RSA密钥对
+	 */
+	public static Map<String, String> genKeyPair() {
+		return genKeyPair(DEFAULT_KEY_SIZE);
+	}
 
 	/**
 	 * 随机生成一对RSA密钥对MAP
-	 * 
-	 * @return 返回一对RSA密钥对:0表示公钥，1表示私钥
+	 *
+	 * @param keySize
+	 *            秘钥长度(64的倍数)，一般为:1024或2048
+	 * @return 返回一对RSA密钥对
 	 */
-	public static Map<String, String> genKeyPair() {
-		Map<String, String> keyMap = new HashMap<String, String>();
+	public static Map<String, String> genKeyPair(int keySize) {
+		Map<String, String> keyMap = new HashMap<>();
 		try {
 			// KeyPairGenerator类用于生成公钥和私钥对，基于RSA算法生成对象
 			KeyPairGenerator keyPairGen = KeyPairGenerator.getInstance(RSA);
-			// 初始化密钥对生成器，密钥大小为64的倍数
-			keyPairGen.initialize(KEY_SIZE, new SecureRandom());
+			// 初始化密钥对生成器，设置密钥大小
+			keyPairGen.initialize(keySize, new SecureRandom());
 			// 生成一个密钥对，保存在keyPair中
 			KeyPair keyPair = keyPairGen.generateKeyPair();
 			RSAPrivateKey privateKey = (RSAPrivateKey) keyPair.getPrivate(); // 得到私钥
@@ -75,14 +89,14 @@ public class RsaUtil {
 			keyMap.put(PUBLIC_KEY, publicKeyString);
 			keyMap.put(PRIVATE_KEY, privateKeyString);
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error("gen rsa keyPair failed ", e);
 		}
 		return keyMap;
 	}
 
 	/**
-	 * RSA公钥加密
-	 * 
+	 * 使用默认秘钥长度进行，RSA公钥加密
+	 *
 	 * @param str
 	 *            加密字符串
 	 * @param publicKey
@@ -90,19 +104,36 @@ public class RsaUtil {
 	 * @return 密文
 	 */
 	public static String encrypt(String str, String publicKey) {
+		return encrypt(str, publicKey, DEFAULT_KEY_SIZE);
+	}
+
+	/**
+	 * RSA公钥加密
+	 *
+	 * @param str
+	 *            加密字符串
+	 * @param publicKey
+	 *            公钥
+	 * @param keySize
+	 *            秘钥长度
+	 * @return 密文
+	 */
+	public static String encrypt(String str, String publicKey, int keySize) {
 		if (StringUtil.isEmpty(str)) {
 			return null;
 		}
-		if (str.length() < MAX_ENCRYPT_BLOCK) {
+		// 根据秘钥长度计算RSA最大加密明文大小
+		int maxEncryptBlock = keySize / 8 - 11;
+		if (str.length() < maxEncryptBlock) {
 			return encryptAll(str, publicKey);
 		} else {
-			return encryptWithSection(str, publicKey);
+			return encryptWithSection(str, publicKey, maxEncryptBlock);
 		}
 	}
 
 	/**
-	 * RSA公钥加密(加密字符串长度小于117)
-	 * 
+	 * RSA公钥加密
+	 *
 	 * @param str
 	 *            加密字符串
 	 * @param publicKey
@@ -118,23 +149,25 @@ public class RsaUtil {
 			// RSA加密
 			Cipher cipher = Cipher.getInstance(RSA);
 			cipher.init(Cipher.ENCRYPT_MODE, pubKey);
-			return Base64.encodeBase64String(cipher.doFinal(str.getBytes(UTF_8)));
+			return Base64.encodeBase64String(cipher.doFinal(str.getBytes(StandardCharsets.UTF_8)));
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error("rsa encrypt failed ", e);
 		}
 		return null;
 	}
 
 	/**
-	 * RSA公钥加密(支持分段加密),加密字符串长度大于117
-	 * 
+	 * RSA公钥加密(支持分段加密)
+	 *
 	 * @param str
 	 *            加密字符串
 	 * @param publicKey
 	 *            公钥
+	 * @param maxEncryptBlock
+	 *            RSA最大加密明文大小
 	 * @return 密文
 	 */
-	private static String encryptWithSection(String str, String publicKey) {
+	private static String encryptWithSection(String str, String publicKey, int maxEncryptBlock) {
 		try {
 			// base64编码的公钥
 			byte[] decoded = Base64.decodeBase64(publicKey);
@@ -143,7 +176,7 @@ public class RsaUtil {
 			// RSA加密
 			Cipher cipher = Cipher.getInstance(RSA);
 			cipher.init(Cipher.ENCRYPT_MODE, pubKey);
-			byte[] data = str.getBytes(UTF_8);
+			byte[] data = str.getBytes(StandardCharsets.UTF_8);
 			int inputLen = data.length;
 			ByteArrayOutputStream out = new ByteArrayOutputStream();
 			int offSet = 0;
@@ -151,49 +184,64 @@ public class RsaUtil {
 			int i = 0;
 			// 对数据分段加密
 			while (inputLen - offSet > 0) {
-				if (inputLen - offSet > MAX_ENCRYPT_BLOCK) {
-					cache = cipher.doFinal(data, offSet, MAX_ENCRYPT_BLOCK);
+				if (inputLen - offSet > maxEncryptBlock) {
+					cache = cipher.doFinal(data, offSet, maxEncryptBlock);
 				} else {
 					cache = cipher.doFinal(data, offSet, inputLen - offSet);
 				}
 				out.write(cache, 0, cache.length);
 				i++;
-				offSet = i * MAX_ENCRYPT_BLOCK;
+				offSet = i * maxEncryptBlock;
 			}
 			byte[] encryptedData = out.toByteArray();
 			out.close();
 			return Base64.encodeBase64String(encryptedData);
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error("rsa encrypt failed ", e);
 		}
 		return null;
 	}
 
 	/**
-	 * RSA私钥解密
-	 * 
+	 * 使用默认秘钥长度进行RSA私钥解密
+	 *
 	 * @param str
 	 *            加密字符串
 	 * @param privateKey
 	 *            私钥
-	 * @return 铭文
-	 * @throws Exception
-	 *             解密过程中的异常信息
+	 * @return
 	 */
 	public static String decrypt(String str, String privateKey) {
+		return decrypt(str, privateKey, DEFAULT_KEY_SIZE);
+	}
+
+	/**
+	 * RSA私钥解密
+	 *
+	 * @param str
+	 *            加密字符串
+	 * @param privateKey
+	 *            私钥
+	 * @param keySize
+	 *            秘钥长度
+	 * @return
+	 */
+	public static String decrypt(String str, String privateKey, int keySize) {
 		if (StringUtil.isEmpty(str)) {
 			return null;
 		}
-		if (str.length() < MAX_DECRYPT_BLOCK) {
+		// 根据秘钥长度计算RSA最大解密密文大小
+		int maxDecryptBlock = keySize / 8;
+		if (str.length() < maxDecryptBlock) {
 			return decryptAll(str, privateKey);
 		} else {
-			return decryptWithSection(str, privateKey);
+			return decryptWithSection(str, privateKey, maxDecryptBlock);
 		}
 	}
 
 	/**
-	 * RSA私钥解密(解密字符串长度小于128)
-	 * 
+	 * RSA私钥解密
+	 *
 	 * @param str
 	 *            加密字符串
 	 * @param privateKey
@@ -205,7 +253,7 @@ public class RsaUtil {
 	private static String decryptAll(String str, String privateKey) {
 		try {
 			// 64位解码加密后的字符串
-			byte[] inputByte = Base64.decodeBase64(str.getBytes(UTF_8));
+			byte[] inputByte = Base64.decodeBase64(str.getBytes(StandardCharsets.UTF_8));
 			// base64编码的私钥
 			byte[] decoded = Base64.decodeBase64(privateKey);
 			RSAPrivateKey priKey = (RSAPrivateKey) KeyFactory.getInstance(RSA)
@@ -215,26 +263,28 @@ public class RsaUtil {
 			cipher.init(Cipher.DECRYPT_MODE, priKey);
 			return new String(cipher.doFinal(inputByte));
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error("rsa decrypt failed ", e);
 		}
 		return null;
 	}
 
 	/**
-	 * RSA私钥解密(支持分段解密)，解密字符串长度大于128
-	 * 
+	 * RSA私钥解密(支持分段解密)
+	 *
 	 * @param str
 	 *            加密字符串
 	 * @param privateKey
 	 *            私钥
-	 * @return 铭文
+	 * @param maxDecryptBlock
+	 *            RSA最大解密密文大小
+	 * @return
 	 * @throws Exception
 	 *             解密过程中的异常信息
 	 */
-	private static String decryptWithSection(String str, String privateKey) {
+	private static String decryptWithSection(String str, String privateKey, int maxDecryptBlock) {
 		try {
 			// 64位解码加密后的字符串
-			byte[] data = Base64.decodeBase64(str.getBytes(UTF_8));
+			byte[] data = Base64.decodeBase64(str.getBytes(StandardCharsets.UTF_8));
 			// base64编码的私钥
 			byte[] decoded = Base64.decodeBase64(privateKey);
 			RSAPrivateKey priKey = (RSAPrivateKey) KeyFactory.getInstance(RSA)
@@ -249,28 +299,29 @@ public class RsaUtil {
 			int i = 0;
 			// 对数据分段解密
 			while (inputLen - offSet > 0) {
-				if (inputLen - offSet > MAX_DECRYPT_BLOCK) {
-					cache = cipher.doFinal(data, offSet, MAX_DECRYPT_BLOCK);
+				if (inputLen - offSet > maxDecryptBlock) {
+					cache = cipher.doFinal(data, offSet, maxDecryptBlock);
 				} else {
 					cache = cipher.doFinal(data, offSet, inputLen - offSet);
 				}
 				out.write(cache, 0, cache.length);
 				i++;
-				offSet = i * MAX_DECRYPT_BLOCK;
+				offSet = i * maxDecryptBlock;
 			}
 			byte[] decryptedData = out.toByteArray();
 			out.close();
 			return new String(decryptedData);
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error("rsa decrypt failed ", e);
 		}
 		return null;
 	}
 
-	/******************** 以上是RSA加解密方法，以下是RSA签名验签方法 ********************/
+	// *************************************上面为RSA加解密方法，下面为RSA签名验签方法**************************************
+
 	/**
-	 * RSA私钥签名
-	 * 
+	 * 使用默认签名算法进行RSA私钥签名
+	 *
 	 * @param content
 	 *            待签名数据
 	 * @param privateKey
@@ -278,24 +329,65 @@ public class RsaUtil {
 	 * @return 签名值
 	 */
 	public static String sign(String content, String privateKey) {
+		return sign(content, privateKey, DEFAULT_SIGN_ALGORITHMS);
+	}
+
+	/**
+	 * RSA私钥签名
+	 *
+	 * @param content
+	 *            待签名数据
+	 * @param privateKey
+	 *            RSA私钥
+	 * @return 签名值
+	 */
+	public static String sign(String content, String privateKey, String signAlg) {
+		return sign(content.getBytes(StandardCharsets.UTF_8), privateKey.getBytes(), signAlg);
+	}
+
+	/**
+	 * 使用默认签名算法进行RSA私钥签名
+	 *
+	 * @param content
+	 *            待签名数据
+	 * @param privateKey
+	 *            RSA私钥
+	 * @return 签名值
+	 */
+	public static String sign(byte[] content, byte[] privateKey) {
+		return sign(content, privateKey, DEFAULT_SIGN_ALGORITHMS);
+	}
+
+	/**
+	 * RSA私钥签名
+	 *
+	 * @param content
+	 *            待签名数据
+	 * @param privateKey
+	 *            RSA私钥
+	 * @param signAlg
+	 *            签名算法
+	 * @return 签名值
+	 */
+	public static String sign(byte[] content, byte[] privateKey, String signAlg) {
 		try {
 			PKCS8EncodedKeySpec priPKCS8 = new PKCS8EncodedKeySpec(Base64.decodeBase64(privateKey));
 			KeyFactory keyf = KeyFactory.getInstance(RSA);
 			PrivateKey priKey = keyf.generatePrivate(priPKCS8);
-			Signature signature = Signature.getInstance(SIGN_ALGORITHMS);
+			Signature signature = Signature.getInstance(signAlg);
 			signature.initSign(priKey);
-			signature.update(content.getBytes(UTF_8));
+			signature.update(content);
 			byte[] signed = signature.sign();
 			return Base64.encodeBase64String(signed);
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error("rsa sign failed ", e);
 		}
 		return null;
 	}
 
 	/**
-	 * RSA公钥验签
-	 * 
+	 * 使用默认签名算法进行RSA公钥验签
+	 *
 	 * @param content
 	 *            待签名数据
 	 * @param sign
@@ -304,18 +396,66 @@ public class RsaUtil {
 	 *            分配给开发商公钥
 	 * @return 布尔值
 	 */
-	public static boolean checkSign(String content, String sign, String publicKey) {
+	public static boolean verifySign(String content, String sign, String publicKey) {
+		return verifySign(content, sign, publicKey, DEFAULT_SIGN_ALGORITHMS);
+	}
+
+	/**
+	 * RSA公钥验签
+	 *
+	 * @param content
+	 *            待签名数据
+	 * @param sign
+	 *            签名值
+	 * @param publicKey
+	 *            分配给开发商公钥
+	 * @param signAlg
+	 *            签名算法
+	 * @return 布尔值
+	 */
+	public static boolean verifySign(String content, String sign, String publicKey, String signAlg) {
+		return verifySign(content.getBytes(StandardCharsets.UTF_8), sign.getBytes(), publicKey.getBytes(), signAlg);
+	}
+
+	/**
+	 * 使用默认签名算法进行RSA公钥验签
+	 *
+	 * @param content
+	 *            待签名数据
+	 * @param sign
+	 *            签名值
+	 * @param publicKey
+	 *            分配给开发商公钥
+	 * @return 布尔值
+	 */
+	public static boolean verifySign(byte[] content, byte[] sign, byte[] publicKey) {
+		return verifySign(content, sign, publicKey, DEFAULT_SIGN_ALGORITHMS);
+	}
+
+	/**
+	 * RSA公钥验签
+	 *
+	 * @param content
+	 *            待签名数据
+	 * @param sign
+	 *            签名值
+	 * @param publicKey
+	 *            分配给开发商公钥
+	 * @param signAlg
+	 *            签名算法
+	 * @return 布尔值
+	 */
+	public static boolean verifySign(byte[] content, byte[] sign, byte[] publicKey, String signAlg) {
 		try {
 			KeyFactory keyFactory = KeyFactory.getInstance(RSA);
 			byte[] encodedKey = Base64.decodeBase64(publicKey);
 			PublicKey pubKey = keyFactory.generatePublic(new X509EncodedKeySpec(encodedKey));
-			Signature signature = Signature.getInstance(SIGN_ALGORITHMS);
+			Signature signature = Signature.getInstance(signAlg);
 			signature.initVerify(pubKey);
-			signature.update(content.getBytes(UTF_8));
-			boolean bverify = signature.verify(Base64.decodeBase64(sign));
-			return bverify;
+			signature.update(content);
+			return signature.verify(Base64.decodeBase64(sign));
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error("rsa verify sign failed ", e);
 		}
 		return false;
 	}
@@ -330,25 +470,29 @@ public class RsaUtil {
 		// 字符串原文
 		String message = "{\"code\":0,\"data\":{\"createTime\":\"2020-05-14 22:46:38\",\"isOk\":0,\"logContent\":\"[用户ID=1237678678,用户姓名=张三,角色名称=管理员,创建时间=2020-05-14 22:46:38,更新时间=2020-05-14 22:46:38]\",\"remark\":\"\",\"rememberMe\":\"\",\"role\":{\"createTime\":\"2020-05-14 22:46:38\",\"isOk\":0,\"logContent\":\"[角色ID=1234871,角色姓名=管理员,创建时间=2020-05-14 22:46:38,更新时间=2020-05-14 22:46:38]\",\"moduleName\":\"\",\"modules\":[],\"remark\":\"\",\"roleId\":1234871,\"roleName\":\"管理员\",\"updateTime\":\"2020-05-14 22:46:38\"},\"updateTime\":\"2020-05-14 22:46:38\",\"userFace\":\"\",\"userId\":1237678678,\"userName\":\"张三\",\"userPwd\":\"zhangsan12345678\",\"userState\":0,\"verifyCode\":\"\"},\"msg\":\"请求成功\"}";
 		// String message = "123456";
+		// rsa秘钥长度
+		int keySize = 2048;
+		// rsa签名算法
+		String sigAlg = "SHA256withRSA";
 		// 1.随机生成一对公钥和私钥
-		Map<String, String> keyMap = genKeyPair();
-		String publicKey = keyMap.get(PUBLIC_KEY);
-		String privateKey = keyMap.get(PRIVATE_KEY);
+		Map<String, String> keyMap = RsaUtil.genKeyPair(keySize);
+		String publicKey = keyMap.get(RsaUtil.PUBLIC_KEY);
+		String privateKey = keyMap.get(RsaUtil.PRIVATE_KEY);
 		System.out.println("随机生成的公钥为:" + publicKey);
 		System.out.println("随机生成的私钥为:" + privateKey);
 		System.out.println("######################");
 		// 2.公钥加密字符串
-		String messageEn = encrypt(message, publicKey);
+		String messageEn = RsaUtil.encrypt(message, publicKey, keySize);
 		System.out.println("公钥加密后的字符串为:" + messageEn);
 		// 3.私钥解密字符串
-		String messageDe = decrypt(messageEn, privateKey);
+		String messageDe = RsaUtil.decrypt(messageEn, privateKey, keySize);
 		System.out.println("私钥解密后的字符串为:" + messageDe);
 		System.out.println("######################");
 		// 4.私钥签名字符串
-		String signStr = sign(message, privateKey);
+		String signStr = RsaUtil.sign(message, privateKey, sigAlg);
 		System.out.println("私钥签名后的字符串为:" + signStr);
 		// 5.公钥验签
-		boolean isValid = checkSign(message, signStr, publicKey);
+		boolean isValid = RsaUtil.verifySign(message, signStr, publicKey, sigAlg);
 		System.out.println("公钥验签结果为:" + isValid);
 
 	}
