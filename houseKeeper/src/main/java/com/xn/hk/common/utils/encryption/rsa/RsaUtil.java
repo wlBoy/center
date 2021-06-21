@@ -20,6 +20,7 @@ import javax.crypto.Cipher;
 import org.apache.commons.codec.binary.Base64;
 
 import com.xn.hk.common.utils.string.StringUtil;
+
 /**
  *    注意：
  *　　 1、因为rsa在加解密的时候，有长度限制，所以在加解密的时候应该采用分段式加解密。
@@ -41,15 +42,17 @@ public class RsaUtil {
 	// RSA算法
 	private static final String RSA = "RSA";
 	private static final String UTF_8 = "UTF-8";
+	// 秘钥长度，64的倍数，一般为:1024或2048
+	private static final int KEY_SIZE = 2048;
 	// RSA最大加密明文大小
-	private static final int MAX_ENCRYPT_BLOCK = 117;
+	private static final int MAX_ENCRYPT_BLOCK = KEY_SIZE / 8 - 11;
 	// RSA最大解密密文大小
-	private static final int MAX_DECRYPT_BLOCK = 128;
+	private static final int MAX_DECRYPT_BLOCK = KEY_SIZE / 8;
 	// 公私钥
 	private static final String PUBLIC_KEY = "publicKey";
 	private static final String PRIVATE_KEY = "privateKey";
 	// RSA签名算法
-	private static final String SIGN_ALGORITHMS = "SHA512withRSA";
+	private static final String SIGN_ALGORITHMS = "SHA256withRSA";
 
 	/**
 	 * 随机生成一对RSA密钥对MAP
@@ -61,8 +64,8 @@ public class RsaUtil {
 		try {
 			// KeyPairGenerator类用于生成公钥和私钥对，基于RSA算法生成对象
 			KeyPairGenerator keyPairGen = KeyPairGenerator.getInstance(RSA);
-			// 初始化密钥对生成器，密钥大小为96-1024位
-			keyPairGen.initialize(1024, new SecureRandom());
+			// 初始化密钥对生成器，密钥大小为64的倍数
+			keyPairGen.initialize(KEY_SIZE, new SecureRandom());
 			// 生成一个密钥对，保存在keyPair中
 			KeyPair keyPair = keyPairGen.generateKeyPair();
 			RSAPrivateKey privateKey = (RSAPrivateKey) keyPair.getPrivate(); // 得到私钥
@@ -80,8 +83,10 @@ public class RsaUtil {
 	/**
 	 * RSA公钥加密
 	 * 
-	 * @param str       加密字符串
-	 * @param publicKey 公钥
+	 * @param str
+	 *            加密字符串
+	 * @param publicKey
+	 *            公钥
 	 * @return 密文
 	 */
 	public static String encrypt(String str, String publicKey) {
@@ -98,8 +103,10 @@ public class RsaUtil {
 	/**
 	 * RSA公钥加密(加密字符串长度小于117)
 	 * 
-	 * @param str       加密字符串
-	 * @param publicKey 公钥
+	 * @param str
+	 *            加密字符串
+	 * @param publicKey
+	 *            公钥
 	 * @return 密文
 	 */
 	private static String encryptAll(String str, String publicKey) {
@@ -121,8 +128,10 @@ public class RsaUtil {
 	/**
 	 * RSA公钥加密(支持分段加密),加密字符串长度大于117
 	 * 
-	 * @param str       加密字符串
-	 * @param publicKey 公钥
+	 * @param str
+	 *            加密字符串
+	 * @param publicKey
+	 *            公钥
 	 * @return 密文
 	 */
 	private static String encryptWithSection(String str, String publicKey) {
@@ -163,10 +172,13 @@ public class RsaUtil {
 	/**
 	 * RSA私钥解密
 	 * 
-	 * @param str        加密字符串
-	 * @param privateKey 私钥
+	 * @param str
+	 *            加密字符串
+	 * @param privateKey
+	 *            私钥
 	 * @return 铭文
-	 * @throws Exception 解密过程中的异常信息
+	 * @throws Exception
+	 *             解密过程中的异常信息
 	 */
 	public static String decrypt(String str, String privateKey) {
 		if (StringUtil.isEmpty(str)) {
@@ -182,10 +194,13 @@ public class RsaUtil {
 	/**
 	 * RSA私钥解密(解密字符串长度小于128)
 	 * 
-	 * @param str        加密字符串
-	 * @param privateKey 私钥
+	 * @param str
+	 *            加密字符串
+	 * @param privateKey
+	 *            私钥
 	 * @return 铭文
-	 * @throws Exception 解密过程中的异常信息
+	 * @throws Exception
+	 *             解密过程中的异常信息
 	 */
 	private static String decryptAll(String str, String privateKey) {
 		try {
@@ -208,10 +223,13 @@ public class RsaUtil {
 	/**
 	 * RSA私钥解密(支持分段解密)，解密字符串长度大于128
 	 * 
-	 * @param str        加密字符串
-	 * @param privateKey 私钥
+	 * @param str
+	 *            加密字符串
+	 * @param privateKey
+	 *            私钥
 	 * @return 铭文
-	 * @throws Exception 解密过程中的异常信息
+	 * @throws Exception
+	 *             解密过程中的异常信息
 	 */
 	private static String decryptWithSection(String str, String privateKey) {
 		try {
@@ -253,8 +271,10 @@ public class RsaUtil {
 	/**
 	 * RSA私钥签名
 	 * 
-	 * @param content    待签名数据
-	 * @param privateKey RSA私钥
+	 * @param content
+	 *            待签名数据
+	 * @param privateKey
+	 *            RSA私钥
 	 * @return 签名值
 	 */
 	public static String sign(String content, String privateKey) {
@@ -276,9 +296,12 @@ public class RsaUtil {
 	/**
 	 * RSA公钥验签
 	 * 
-	 * @param content   待签名数据
-	 * @param sign      签名值
-	 * @param publicKey 分配给开发商公钥
+	 * @param content
+	 *            待签名数据
+	 * @param sign
+	 *            签名值
+	 * @param publicKey
+	 *            分配给开发商公钥
 	 * @return 布尔值
 	 */
 	public static boolean checkSign(String content, String sign, String publicKey) {
