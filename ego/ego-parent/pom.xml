@@ -22,7 +22,7 @@
 		<zkClient-version>0.10</zkClient-version>
 		<tomcat-version>2.2</tomcat-version>
 		<pagehelper-version>4.1.6</pagehelper-version>
-		<ftpclient-version>3.3</ftpclient-version>
+		<ftpclient-version>3.9.0</ftpclient-version>
 		<solrj-version>5.3.1</solrj-version>
 		<httpclient-version>4.4.1</httpclient-version>
 		<myredis-version>0.0.1-SNAPSHOT</myredis-version>
