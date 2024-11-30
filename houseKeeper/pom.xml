@@ -25,7 +25,7 @@
 		<!--druid版本号 -->
 		<druid.version>1.0.29</druid.version>
 		<!--quartz版本号 -->
-		<quartz.version>2.3.0</quartz.version>
+		<quartz.version>2.3.2</quartz.version>
 		<!--httpclient版本号 -->
 		<httpclient.version>4.5.5</httpclient.version>
 		<!--snmp版本号 -->
